@@ -216,6 +216,7 @@ baseEnv.Append(INCDIR         = Dir(override).Dir('include'))
 baseEnv.Append(PFILESDIR      = Dir(override).Dir('syspfiles'))
 baseEnv.Append(DATADIR        = Dir(override).Dir('data'))
 baseEnv.Append(XMLDIR         = Dir(override).Dir('xml'))
+baseEnv.Append(JODIR          = Dir(override).Dir('jobOptions'))
 baseEnv.Append(TOOLDIR        = Dir(override).Dir('sconsTools'))
 baseEnv.Append(TESTDIR        = baseEnv['BINDIR'])
 baseEnv.Append(TESTSCRIPTDIR  = baseEnv['SCRIPTDIR'])
@@ -248,6 +249,7 @@ if baseEnv.GetOption('userRelease'):
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['PFILESDIR'])
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['DATADIR'])
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['XMLDIR'])
+        baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['JODIR'])
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['TOOLDIR'])
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['TESTDIR'])
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['TESTSCRIPTDIR'])
@@ -260,6 +262,7 @@ if baseEnv.GetOption('userRelease'):
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['PFILESDIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['DATADIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['XMLDIR'])
+        baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['JODIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['TOOLDIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['TESTDIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['TESTSCRIPTDIR'])
@@ -269,13 +272,13 @@ if baseEnv.GetOption('userRelease'):
 if baseEnv.GetOption('sourceRelease'):
     if baseEnv['PLATFORM'] != 'win32':
         baseEnv['TARFLAGS']+=' -z'
-        for exclude in (baseEnv['BINDIR'].path, baseEnv['SCRIPTDIR'].path, baseEnv['INCDIR'].path, baseEnv['PFILESDIR'].path,
+        for exclude in (baseEnv['BINDIR'].path, baseEnv['SCRIPTDIR'].path, baseEnv['INCDIR'].path, baseEnv['PFILESDIR'].path, baseEnv['JODIR'].path,
                         baseEnv['DATADIR'].path, baseEnv['XMLDIR'].path, baseEnv['TOOLDIR'].path, baseEnv['TESTDIR'].path,
                         baseEnv['TESTSCRIPTDIR'].path, baseEnv['PYTHONDIR'].path, baseEnv['LIBDIR'].path, 'build'):
             baseEnv['TARFLAGS']+='--exclude '+exclude
         baseEnv.Default(baseEnv.Tar(baseEnv.GetOption('sourceRelease'), glob.glob('*')))
     else:
-        for exclude in (baseEnv['BINDIR'].path, baseEnv['SCRIPTDIR'].path, baseEnv['INCDIR'].path, baseEnv['PFILESDIR'].path,
+        for exclude in (baseEnv['BINDIR'].path, baseEnv['SCRIPTDIR'].path, baseEnv['INCDIR'].path, baseEnv['PFILESDIR'].path, baseEnv['JODIR'].path,
                                                 baseEnv['DATADIR'].path, baseEnv['XMLDIR'].path, baseEnv['TOOLDIR'].path, baseEnv['TESTDIR'].path,
                         baseEnv['TESTSCRIPTDIR'].path, baseEnv['PYTHONDIR'].path, baseEnv['LIBDIR'].path, 'build'):
             baseEnv['ZIPFLAGS']+='-x '+exclude
