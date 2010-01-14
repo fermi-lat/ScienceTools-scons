@@ -16,6 +16,10 @@ namespace facilities {
 	@param pacakge String representing a package
     */
     static std::string getDataPath(const std::string &package);
+    /** Function to return the job options location of a given package 
+	@param pacakge String representing a package
+    */
+    static std::string getJobOptionsPath(const std::string &package);
     /** Function to return the xml location of a given package
 	@param package String representing the name of a package
     */
