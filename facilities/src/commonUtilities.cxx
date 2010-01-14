@@ -62,6 +62,27 @@ namespace facilities {
 #endif
   }
 
+  std::string commonUtilities::getJobOptionsPath(const std::string &package) {
+#ifdef SCons
+    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    std::string joPath = joinPath(joinPath(packageRoot, "jobOptions"), package);
+    if (pathFound(joPath)) return joPath;
+    // Otherwise, might have supersede and our package could be in base
+    const char *env = getenv("BASE_DIR");
+    if (env == NULL) return "";
+    packageRoot = std::string(env);
+
+    joPath = joinPath(joinPath(packageRoot, "jobOptions"), package);
+
+    return (pathFound(joPath)) ?  joPath : "";
+#else
+    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    if(packageRoot=="")
+      return packageRoot;
+    return joinPath(packageRoot, "src");
+#endif
+  }
+
   std::string commonUtilities::getXmlPath(const std::string &package){
 #ifdef SCons
     std::string packageRoot = commonUtilities::getPackageRoot(package);
@@ -199,14 +220,16 @@ namespace facilities {
       transform(packageUpper.begin(), packageUpper.end(), packageUpper.begin(), (int(*)(int)) toupper);
       setEnvironment(packageUpper+"XMLPATH", getXmlPath(package));
       setEnvironment(packageUpper+"DATAPATH", getDataPath(package));
+#ifdef GlastRelease
+      setEnvironment(packageUpper+"JOBOPTIONSPATH", getJobOptionsPath(package));
+#endif
     }
 #ifndef HEADAS
     setEnvironment("EXTFILESSYS", joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles));
 #endif
 #ifdef ScienceTools
     std::string calDbData = getDataPath("caldb");
-    setEnvironment("CALDB", joinPath(joinPath(joinPath(calDbData, "data"), 
-                                              "glast"), "lat"));
+    setEnvironment("CALDB", calDbData);
     setEnvironment("CALDBCONFIG", 
                    joinPath(joinPath(joinPath(calDbData, "software"), 
                                      "tools"), "caldb.config"));
