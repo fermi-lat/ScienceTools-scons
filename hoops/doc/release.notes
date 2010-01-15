@@ -5,6 +5,7 @@
     @verbatim
     * EOH *
 
+ hoops-01-01-04 15-Jan-2010 peachey Import v1r1p4 from HEASARC. Include fixes to address handling of INDEF values.
  hoops-01-01-03 04-Jan-2010 peachey Import hoops version v1r1p3 from HEASARC. Fixes INDEF handling as well as includes some missing header files.
     v1r1p2   15-Jul-09  jrb   Update SConscript
     v1r1p1   21-nov-08   JP   Improve error reporting.
