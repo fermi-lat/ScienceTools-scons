@@ -153,6 +153,7 @@ namespace hoops {
       virtual const std::string & Prompt() const = 0;
       virtual const std::string & Comment() const = 0;
       virtual const IPrim * PrimValue() const = 0;
+      virtual int Status() const = 0;
 
       virtual IPar & SetName(const std::string & s) = 0;
       virtual IPar & SetType(const std::string & s) = 0;
@@ -296,6 +297,10 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.17  2010/01/06 20:00:10  peachey
+ * Add Status() method for getting status of parameter value.
+ * This is used to flag e.g. infinite and undefined values of numeric parameters.
+ *
  * Revision 1.16  2009/12/23 20:27:18  peachey
  * Add some needed missing header files.
  *

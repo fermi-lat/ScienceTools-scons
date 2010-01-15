@@ -40,13 +40,15 @@ namespace hoops {
 
   Par::Par(const Par & p): IPar(), mName(p.mName),
     mType(p.mType), mMode(p.mMode), mValue(0), mMin(), mMax(),
-    mPrompt(p.mPrompt), mComment(p.mComment), mValString(), mStatus(P_OK) {
+    mPrompt(p.mPrompt), mComment(p.mComment), mValString(p.mValString),
+    mStatus(p.mStatus) {
     if (p.mValue) mValue = p.mValue->Clone();
   }
 
   Par::Par(const IPar & p): IPar(), mName(p.Name()),
     mType(p.Type()), mMode(p.Mode()), mValue(0), mMin(), mMax(),
-    mPrompt(p.Prompt()), mComment(p.Comment()), mValString(), mStatus(P_OK) {
+    mPrompt(p.Prompt()), mComment(p.Comment()), mValString(p.Value()),
+    mStatus(p.Status()) {
     if (!p.Value().empty()) From(p.Value());
   }
 
@@ -79,6 +81,7 @@ namespace hoops {
       // are well defined parameter type.
       delete mValue;
       mValue = 0;
+      mValString.clear();
     } else {
       // At least one parameter is of undefined type. This is illegal.
       throw Hexception(PAR_ILLEGAL_CONVERSION, "", __FILE__, __LINE__);
@@ -223,9 +226,8 @@ namespace hoops {
     { ConvertTo<long double>(mValue, p); }
 
   void Par::To(std::string & p) const {
-    mValString.clear();
-    if (P_INFINITE == mStatus) p = "infinity";
-    else if (P_UNDEFINED == mStatus) p = "undefined";
+    if (P_INFINITE == mStatus) p = mValString;
+    else if (P_UNDEFINED == mStatus) p = mValString;
     // Call ConvertTo even if p was already assigned so that the proper
     // exception is thrown.
     ConvertTo<std::string>(mValue, p);
@@ -305,6 +307,14 @@ static int strcasecmp(const char *s1, const char *s2) {
 }
 
 /******************************************************************************
+ * Revision 1.13  2010/01/06 20:03:18  peachey
+ * 1. Add Status() method for flagging special values such as infinite and
+ * undefined numeric parameters.
+ * 2. Copy the status when copy constructing parameters.
+ * 3. Whenever assigning to a parameter, make exact duplicate of value
+ * in mValString. This is returned whenever INDEF or INF etc. are used
+ * to indicate special values.
+ *
  * Revision 1.12  2008/07/29 15:49:30  peachey
  * Add a status member variable and use it to track
  * whether the parameter was last assigned from an undefined or

@@ -55,7 +55,82 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   ApeException::ApeException(const int & code, const std::string & msg,
     const std::string & filename, int line):
-    Hexception(code, filename, line) { format(msg); }
+    Hexception(ape2Hoops(code), filename, line), mApeCode(code) {
+      std::ostringstream os;
+      os << msg << "; Ape exception code " << code;
+      format(os.str());
+    }
+
+  int ApeException::ApeCode() const { return mApeCode; }
+
+  int ApeException::ape2Hoops(int status) {
+    // Convert ape error codes into hoops error codes in the cases where
+    // there is a correspondence.
+    // Note these are placed in order of the Hoops exceptions rather than
+    // the order of Ape exceptions.
+    // Note also that Hoops has two different sets of codes. The ones that
+    // start with P_ are parameter-related, i.e. they are concerned with
+    // flagging conversion/parsing problems of interpreting parameter values.
+    // The ones that start with PAR_ are in a different numerical range, and
+    // are concerned with code problems such as null pointers and
+    // unsupported operations.
+    switch (status) {
+      // Begin P_ Hoops exception codes:
+      case eOK:
+        status = P_OK; break;
+      // The following has no Ape equivalent:
+      //  status = P_ILLEGAL; break;
+      case eOverflow:
+        status = P_OVERFLOW; break;
+      case eUnderflow:
+        status = P_UNDERFLOW; break;
+      // The following has no Ape equivalent:
+      //  status = P_BADSIZE; break;
+      case eTypeMismatch:
+        status = P_PRECISION; break;
+      // The following has no Ape equivalent:
+      //  status = P_SIGNEDNESS; break;
+      case eStringRemainder:
+        status = P_STR_OVERFLOW; break;
+      case eConversionError:
+        status = P_STR_INVALID; break;
+      // The following has no Ape equivalent:
+      //  status = P_STR_NULL; break;
+      case eNan:
+        status = P_INFINITE; break;
+      case eUndefinedValue:
+        status = P_UNDEFINED; break;
+      // DO NOT CONVERT ANYTHING TO P_UNEXPECTED, which is used just by test code.
+      //  status = P_UNEXPECTED; break;
+      // End P_ Hoops exception codes:
+
+      // Begin PAR_ Hoops exception codes:
+      // The following is redundant with P_OK:
+      //  status = PAR_NONE; break;
+      // The following has no Ape equivalent:
+      //  status = PAR_UNSUPPORTED; break;
+      case eUnknownType:
+        status = PAR_INVALID_TYPE; break;
+      // The following has no Ape equivalent:
+      //  status = PAR_ILLEGAL_CONVERSION; break;
+      case eParNotFound:
+        status = PAR_NOT_FOUND; break;
+      // The following has no Ape equivalent:
+      //  status = PAR_FILE_CORRUPT; break;
+      case eFileWriteError:
+        status = PAR_FILE_WRITE_ERROR; break;
+      case eNullPointer:
+        status = PAR_NULL_PTR; break;
+      // The following has no Ape equivalent:
+      //  status = PAR_COMP_UNDEF; break;
+      // End PAR_ Hoops exception codes:
+
+      default:
+        status = P_CODE_ERROR; break;
+    }
+    return status;
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   // End ApeException implementation.
   //////////////////////////////////////////////////////////////////////////////
@@ -134,7 +209,7 @@ namespace hoops {
       status = ape_trad_get_current(&current);
       if (eOK != status)
         throw ApeException(status,
-        "Could not get the current parameter file object for " + mComponent,
+        "Could not get parameter file object for " + mComponent,
         __FILE__, __LINE__);
 
       // Get container of parameters in file.
@@ -142,7 +217,7 @@ namespace hoops {
       status = ape_io_get_par_cont(current, &par_cont);
       if (eOK != status)
         throw ApeException(status,
-        "Could not get the parameter container object for " + mComponent,
+        "Could not get parameter container for " + mComponent,
         __FILE__, __LINE__);
 
       // At this point, no further problems _should_ happen, so go
@@ -160,19 +235,21 @@ namespace hoops {
           char * comment = 0;
           for (std::size_t ii = eName; eOK == status && eEndOfField != ii; ++ii) {
             status = ape_par_get_field(par, field_id[ii], field + ii);
-   
           }
           // Tolerate missing fields in the hopes that the parameter format is OK.
           if (eFieldNotFound == status) status = eOK;
           if (eOK == status) {
             status = ape_par_get_comment(par, &comment);
+
           }
+#define SAFE(A) (0!=A?A:"")
           if (eOK == status) {
             if ('\0' != *field[eName])
-              mGroup->Add(new Par(field[eName], field[eType], field[eMode],
-                field[eValue], field[eMin], field[eMax], field[ePrompt], comment));
+              mGroup->Add(new Par(SAFE(field[eName]), SAFE(field[eType]), SAFE(field[eMode]),
+                SAFE(field[eValue]), SAFE(field[eMin]), SAFE(field[eMax]), SAFE(field[ePrompt]), SAFE(comment)));
             else
-              mGroup->Add(new Par("", "", "", "", "", "", "", comment));
+              mGroup->Add(new Par("", "", "", "", "", "", "", SAFE(comment)));
+#undef SAFE
           }
           free(comment); comment = 0;
           for (std::size_t ii = eEndOfField; eName != ii; --ii) {
@@ -180,7 +257,7 @@ namespace hoops {
           }
         }
         if (eOK != status)
-          throw ApeException(status, "Problem getting parameter from ape for " + mComponent,
+          throw ApeException(status, "Problem loading parameters for " + mComponent,
           __FILE__, __LINE__);
       }
       
@@ -208,18 +285,26 @@ namespace hoops {
           par = *it;
           if (par->Name().empty()) continue;
           const std::string & type = par->Type();
-          if (std::string::npos != type.find("b")) {
+
+          if (P_INFINITE == par->Status() || P_UNDEFINED == par->Status()) {
+            status = ape_trad_set_string(par->Name().c_str(), par->Value().c_str());
+            if (eOK != status) {
+              err_stream << "Problem setting parameter " << par->Name() <<
+                  " for component " << mComponent;
+              throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
+            }
+          } else if (std::string::npos != type.find("b")) {
             bool p = *par;
             status = ape_trad_set_bool(par->Name().c_str(), p);
             if (eOK != status) {
-              err_stream << "Could not write boolean parameter " << par->Name() <<
+              err_stream << "Problem setting boolean parameter " << par->Name() <<
                 " for component " << mComponent;
               throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
             }
           } else if (std::string::npos != type.find("f")) {
             status = ape_trad_set_file_name(par->Name().c_str(), *par);
             if (eOK != status) {
-              err_stream << "Could not write file name parameter " << par->Name() <<
+              err_stream << "Problem setting file parameter " << par->Name() <<
                 " for component " << mComponent;
               throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
             }
@@ -227,33 +312,33 @@ namespace hoops {
             long p = *par;
             status = ape_trad_set_long(par->Name().c_str(), p);
             if (eOK != status) {
-              err_stream << "Could not write int parameter " << par->Name() <<
+              err_stream << "Problem setting int parameter " << par->Name() <<
                 " for component " << mComponent;
               throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
             }
           } else if (std::string::npos != type.find("r")) {
             status = ape_trad_set_double(par->Name().c_str(), *par);
             if (eOK != status) {
-              err_stream << "Could not write real parameter " << par->Name() <<
+              err_stream << "Problem setting real parameter " << par->Name() <<
                 " for component " << mComponent;
               throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
             }
           } else if (std::string::npos != type.find("s")) {
             status = ape_trad_set_string(par->Name().c_str(), *par);
             if (eOK != status) {
-              err_stream << "Could not write string parameter " << par->Name() <<
+              err_stream << "Problem setting string parameter " << par->Name() <<
                 " for component " << mComponent;
               throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
             }
           } else {
             status = PAR_INVALID_TYPE;
             err_stream << "Parameter " << par->Name() << " in component " << mComponent
-              << " has invalid type " << type;
-            throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
+              << " has invalid type \"" << type << "\"";
+            throw Hexception(status, err_stream.str(), __FILE__, __LINE__);
           }
         }
       } else {
-        throw ApeException(PAR_NULL_PTR, "Attempt to save a NULL group of parameters", __FILE__, __LINE__);
+        throw Hexception(PAR_NULL_PTR, "Attempt to save a NULL group of parameters", __FILE__, __LINE__);
       }
     } catch (...) {
       CloseParFile(-1);
@@ -285,7 +370,7 @@ namespace hoops {
       std::ostringstream s;
       s << "Attempt to find the beginning of a NULL group of parameters for " <<
         mComponent;
-      throw ApeException(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
+      throw Hexception(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
     }
     return mGroup->begin();
   }
@@ -295,7 +380,7 @@ namespace hoops {
       std::ostringstream s;
       s << "Attempt to find the beginning of a NULL group of parameters for " <<
         mComponent << " (const)";
-      throw ApeException(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
+      throw Hexception(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
     }
     return static_cast<const IParGroup *>(mGroup)->begin();
   }
@@ -305,7 +390,7 @@ namespace hoops {
       std::ostringstream s;
       s << "Attempt to find the end of a NULL group of parameters for " <<
         mComponent;
-      throw ApeException(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
+      throw Hexception(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
     }
     return mGroup->end();
   }
@@ -315,7 +400,7 @@ namespace hoops {
       std::ostringstream s;
       s << "Attempt to find the end of a NULL group of parameters for " <<
         mComponent << " (const)";
-      throw ApeException(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
+      throw Hexception(PAR_NULL_PTR, s.str(), __FILE__, __LINE__);
     }
     return static_cast<const IParGroup *>(mGroup)->end();
   }
@@ -346,7 +431,7 @@ namespace hoops {
 
     if (eOK != status) {
       std::ostringstream s;
-      s << "Could not open parameter file for " << mComponent;
+      s << "Cannot open parameter file for " << mComponent;
       throw ApeException(status, s.str(), __FILE__, __LINE__);
     }
 
@@ -440,43 +525,6 @@ namespace hoops {
     return Prompt(plist);
   }
 
-static int ape2hoops(int status) {
-  // Convert ape error codes into hoops error codes in the cases where
-  // there is a correspondence.
-  switch (status) {
-    case eOK:
-      status = P_OK; break;
-    // Don't know corresponding ape code for this:
-    //  status = P_ILLEGAL; break;
-    case eOverflow:
-      status = P_OVERFLOW; break;
-    case eUnderflow:
-      status = P_UNDERFLOW; break;
-    // Don't know corresponding ape code for this:
-    //  status = P_BADSIZE; break;
-    case eTypeMismatch:
-      status = P_PRECISION; break;
-    // Don't know corresponding ape code for this:
-    //  status = P_SIGNEDNESS; break;
-    case eStringRemainder:
-      status = P_STR_OVERFLOW; break;
-    case eConversionError:
-      status = P_STR_INVALID; break;
-    // Don't know corresponding ape code for this:
-    // May be a null pointer?
-    //  status = P_STR_NULL; break;
-    case eNan:
-      status = P_INFINITE; break;
-    case eUndefinedValue:
-      status = P_UNDEFINED; break;
-    // DO NOT CONVERT ANYTHING TO P_UNEXPECTED, which is used just by test code.
-    //  status = P_UNEXPECTED; break;
-    default:
-      status = P_CODE_ERROR; break;
-  }
-  return status;
-}
-
   HoopsApePrompt & HoopsApePrompt::Prompt(const std::vector<std::string> & pnames) {
     int status = eOK;
 
@@ -497,60 +545,71 @@ static int ape2hoops(int status) {
         type = par.Type();
 
         std::ostringstream err_stream;
-        if (std::string::npos != type.find("b")) {
-          char r = 0;
-          status = ape2hoops(ape_trad_query_bool(it->c_str(), &r));
-          if (P_OK != status) {
-            err_stream << "Cannot get boolean parameter " << *it <<
-              " for component " << mFile->Component();
-            throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
-          }
-          par = 0 != r;
-        } else if (std::string::npos != type.find("f")) {
-          char * r = 0;
-          status = ape2hoops(ape_trad_query_file_name(it->c_str(), &r));
-          if (P_OK != status) {
+        try {
+          if (std::string::npos != type.find("b")) {
+            char r = 0;
+            status = ape_trad_query_bool(it->c_str(), &r);
+            if (eOK != status) {
+              err_stream << "Exception while querying for boolean parameter " << *it <<
+                " for component " << mFile->Component();
+              throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
+            }
+            par = 0 != r;
+          } else if (std::string::npos != type.find("f")) {
+            char * r = 0;
+            status = ape_trad_query_file_name(it->c_str(), &r);
+            if (eOK != status) {
+              free(r); r = 0;
+              err_stream << "Exception while querying for file name parameter " << *it <<
+                " for component " << mFile->Component();
+              throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
+            }
+            par = r;
             free(r); r = 0;
-            err_stream << "Cannot get file name parameter " << *it <<
-              " for component " << mFile->Component();
-            throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
-          }
-          par = r;
-          free(r); r = 0;
-        } else if (std::string::npos != type.find("i")) {
-          long r = 0;
-          status = ape2hoops(ape_trad_query_long(it->c_str(), &r));
-          if (P_OK != status) {
-            err_stream << "Cannot get int parameter " << *it <<
-              " for component " << mFile->Component();
-            throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
-          }
-          par = r;
-        } else if (std::string::npos != type.find("r")) {
-          double r = 0.;
-          status = ape2hoops(ape_trad_query_double(it->c_str(), &r));
-          if (P_OK != status) {
-            err_stream << "Cannot get real parameter " << *it <<
-              " for component " << mFile->Component();
-            throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
-          }
-          par = r;
-        } else if (std::string::npos != type.find("s")) {
-          char * r = 0;
-          status = ape2hoops(ape_trad_query_string(it->c_str(), &r));
-          if (P_OK != status) {
+          } else if (std::string::npos != type.find("i")) {
+            long r = 0;
+            status = ape_trad_query_long(it->c_str(), &r);
+            if (eOK != status) {
+              err_stream << "Exception while querying for int parameter " << *it <<
+                " for component " << mFile->Component();
+              throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
+            }
+            par = r;
+          } else if (std::string::npos != type.find("r")) {
+            double r = 0.;
+            status = ape_trad_query_double(it->c_str(), &r);
+            if (eOK != status) {
+              err_stream << "Exception while querying for real parameter " << *it <<
+                " for component " << mFile->Component();
+              throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
+            }
+            par = r;
+          } else if (std::string::npos != type.find("s")) {
+            char * r = 0;
+            status = ape_trad_query_string(it->c_str(), &r);
+            if (eOK != status) {
+              free(r); r = 0;
+              err_stream << "Exception while querying for string parameter " << *it <<
+                " for component " << mFile->Component();
+              throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
+            }
+            par = r;
             free(r); r = 0;
-            err_stream << "Cannot get string parameter " << *it <<
-              " for component " << mFile->Component();
-            throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
+          } else {
+            status = PAR_INVALID_TYPE;
+            err_stream << "Unable to query for parameter of type \"" << type <<
+              "\" for component " << mFile->Component();
+            throw Hexception(status, err_stream.str(), __FILE__, __LINE__);
           }
-          par = r;
-          free(r); r = 0;
-        } else {
-          status = eUnknownType;
-          err_stream << "Cannot prompt for parameter of unknown type " << type <<
-            " for component " << mFile->Component();
-          throw ApeException(status, err_stream.str(), __FILE__, __LINE__);
+        } catch (const ApeException & x) {
+          if (P_INFINITE == x.Code() || P_UNDEFINED == x.Code()) {
+            char * r = 0;
+            status = ape_trad_get_string(it->c_str(), &r);
+            par = r;
+            free(r); r = 0;
+          } else {
+            throw;
+          }
         }
 
       }
@@ -565,7 +624,7 @@ static int ape2hoops(int status) {
 
     // This non-specific error message is just in case something didn't
     // get handled more specifically above.
-    if (eOK != status) throw ApeException(status, "", __FILE__, __LINE__);
+    if (eOK != status) throw ApeException(status, "Exception during prompting", __FILE__, __LINE__);
     return *this;
   }
 
@@ -646,6 +705,22 @@ static int ape2hoops(int status) {
 }
 
 /******************************************************************************
+ * Revision 1.8  2010/01/15 21:11:27  peachey
+ * Ensure that undefined and infinite values work when supplied in
+ * response to a prompt.
+ *
+ * Revision 1.7  2010/01/07 19:21:39  peachey
+ * Add ApeCode() method and mApeCode member for getting Ape's status.
+ * Be more careful about not passing null char ptrs to std::string constructor.
+ *
+ * Revision 1.6  2010/01/07 17:56:50  peachey
+ * Improve and make universal the conversion of ape error codes to hoops codes.
+ *
+ * Revision 1.5  2010/01/06 20:04:36  peachey
+ * When saving parameter file, handle special case of infinite or undefined
+ * parameters by writing them as a string regardless of the underlying
+ * parameter type.
+ *
  * Revision 1.4  2009/12/23 20:31:32  peachey
  * Convert ape error codes into proper hoops error codes.
  *

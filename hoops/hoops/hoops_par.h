@@ -158,6 +158,7 @@ namespace hoops {
       virtual const std::string & Prompt() const { return mPrompt; }
       virtual const std::string & Comment() const { return mComment; }
       virtual const IPrim * PrimValue() const { return mValue; }
+      virtual int Status() const { return mStatus; }
 
       virtual Par & SetName(const std::string & s)
         { mName = s; return *this; }
@@ -178,24 +179,38 @@ namespace hoops {
 
     protected:
       template <typename T>
-      static void ConvertFrom(T p, IPrim *& dest, const std::string & type) {
+      void ConvertFrom(T p, IPrim *& dest, const std::string & type) {
         PrimFactory Factory;
-        if (dest) dest->From(p);
-        // In general is find the best thing to be using here???
-        else if (std::string::npos != type.find("b")) {
-          dest = Factory.NewIPrim(bool()); dest->From(p);
-        } else if (std::string::npos != type.find("i")) {
-          dest = Factory.NewIPrim(long()); dest->From(p);
-        // Important to check for type "f" before "r", because "fr" is
-        // file readable. If we check first for "r", such a parameter
-        // is misclassified as a float (double) value.
-        } else if (std::string::npos != type.find("f") ||
-          std::string::npos != type.find("s")) {
-          dest = Factory.NewIPrim(std::string()); dest->From(p);
-        } else if (std::string::npos != type.find("r")) {
-          dest = Factory.NewIPrim(double()); dest->From(p);
-        } else throw Hexception(PAR_INVALID_TYPE,
-          std::string("Don't know how to handle parameters of type ") + type, __FILE__, __LINE__);
+        // Make a copy of the primitive as a string.
+        IPrim * prim_string = Factory.NewIPrim(std::string());
+        if (0 != prim_string) {
+          prim_string->From(p);
+          prim_string->To(mValString);
+        }
+
+        try {
+          if (dest) dest->From(p);
+          // In general is find the best thing to be using here???
+          else if (std::string::npos != type.find("b")) {
+            dest = Factory.NewIPrim(bool()); dest->From(p);
+          } else if (std::string::npos != type.find("i")) {
+            dest = Factory.NewIPrim(long()); dest->From(p);
+          // Important to check for type "f" before "r", because "fr" is
+          // file readable. If we check first for "r", such a parameter
+          // is misclassified as a float (double) value.
+          } else if (std::string::npos != type.find("f") ||
+            std::string::npos != type.find("s")) {
+            dest = Factory.NewIPrim(std::string()); dest->From(p);
+          } else if (std::string::npos != type.find("r")) {
+            dest = Factory.NewIPrim(double()); dest->From(p);
+          } else throw Hexception(PAR_INVALID_TYPE,
+            std::string("Don't know how to handle parameters of type ") + type, __FILE__, __LINE__);
+          mStatus = P_OK;
+        } catch (const Hexception & x) {
+          int status = x.Code();
+          if (P_INFINITE == status || P_UNDEFINED == status) mStatus = status;
+          throw;
+        }
       }
 
       template <typename T>
@@ -250,6 +265,17 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.16  2010/01/07 17:44:43  peachey
+ * Set mStatus following every assignment.
+ *
+ * Revision 1.15  2010/01/06 20:03:18  peachey
+ * 1. Add Status() method for flagging special values such as infinite and
+ * undefined numeric parameters.
+ * 2. Copy the status when copy constructing parameters.
+ * 3. Whenever assigning to a parameter, make exact duplicate of value
+ * in mValString. This is returned whenever INDEF or INF etc. are used
+ * to indicate special values.
+ *
  * Revision 1.14  2008/07/29 15:49:30  peachey
  * Add a status member variable and use it to track
  * whether the parameter was last assigned from an undefined or

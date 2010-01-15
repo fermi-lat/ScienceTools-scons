@@ -40,8 +40,13 @@ namespace hoops {
   //////////////////////////////////////////////////////////////////////////////
   class ApeException : public Hexception {
     public:
-      ApeException(const int & code, const std::string & msg = std::string(),
+      ApeException(const int & code, const std::string & msg,
                    const std::string & filename = std::string(), int line = 0);
+      int ApeCode() const;
+
+    protected:
+      static int ape2Hoops(int status);
+      int mApeCode;
   };
 
   class EXPSYM HoopsApeFile : public IParFile {
@@ -133,6 +138,12 @@ namespace hoops {
 #endif
 
 /******************************************************************************
+ * Revision 1.4  2010/01/07 19:21:10  peachey
+ * Add ApeCode() method and mApeCode member for getting Ape's status.
+ *
+ * Revision 1.3  2010/01/07 17:56:50  peachey
+ * Improve and make universal the conversion of ape error codes to hoops codes.
+ *
  * Revision 1.2  2009/12/23 20:27:19  peachey
  * Add some needed missing header files.
  *
