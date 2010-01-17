@@ -289,6 +289,9 @@ if baseEnv.GetOption('develRelease'):
     if baseEnv['PLATFORM'] != 'win32':
        baseEnv['TARFLAGS'] += ' -z'
        baseEnv['TARFLAGS'] += ' --exclude build'
+       gzs = ''
+       for x in glob.glob('*.tar.gz'): gzs += ' --exclude ' + str(x)
+       baseEnv['TARFLAGS'] +=  gzs
        baseEnv.Default(baseEnv.Tar(baseEnv.GetOption('develRelease'), glob.glob('*')))
     else:
         baseEnv['ZIPFLAGS'] += '-x build'
