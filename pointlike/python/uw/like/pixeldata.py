@@ -71,12 +71,14 @@ Optional keyword arguments:
         from skymaps import SkyDir
         dummy = SkyDir(0,0)
         bands = self.my_bins
-        
+
         for bin_center in (bands[:-1]*bands[1:])**0.5:
              ph_f = Photon(dummy,bin_center,2.5e8,0)
              ph_b = Photon(dummy,bin_center,2.5e8,1)
-             bpd.addPhoton(ph_f,0)
-             bpd.addPhoton(ph_b,0)
+             bpd.addBand(ph_f)
+             bpd.addBand(ph_b)
+             #bpd.addPhoton(ph_f,0)
+             #bpd.addPhoton(ph_b,0)
              
     def Data_setup(self):
 

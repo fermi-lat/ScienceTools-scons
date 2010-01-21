@@ -43,7 +43,7 @@ namespace{
         return (isfinite(val)!=0); // gcc call available in math.h 
 #endif
     }
-    bool apply_correction(true); // set true to apply correction. disabled now
+    bool apply_correction(false); // set true to apply correction. disabled now
 
 
 }// anon namespace
@@ -87,7 +87,6 @@ void AddPhoton::operator()(const Photon& gamma)
             //fixed=oldfix; // replace!!!
 
 #endif
-
 
             m_map.addPhoton(astro::Photon(fixed, gamma.energy(),gamma.time(),gamma.eventClass()));
         }else{
