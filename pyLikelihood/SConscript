@@ -2,7 +2,7 @@
 #
 # $Id$
 # Authors: James Chiang <jchiang@slac.stanford.edu>
-# Version: pyLikelihood-01-19-00
+# Version: pyLikelihood-01-20-00
 
 Import('baseEnv')
 Import('listFiles')
