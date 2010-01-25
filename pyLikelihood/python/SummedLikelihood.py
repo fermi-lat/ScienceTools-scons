@@ -212,6 +212,7 @@ class SummedLikelihood(AnalysisBase):
             comp.model = SourceModel(comp.logLike)
             for src in source_attributes:
                 comp.model[src].__dict__.update(source_attributes[src])
+        self.model = self.components[0].model
         return Ts_value
     def _renorm(self, factor=None):
         if factor is None:
