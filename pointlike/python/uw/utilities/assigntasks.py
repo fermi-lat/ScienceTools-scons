@@ -6,6 +6,7 @@
 """
 from IPython.kernel import client
 import time, os, pickle
+version = '$Revision 1.12$'.split()[1]
 
 
 def get_mec():
