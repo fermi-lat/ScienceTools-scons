@@ -8,7 +8,7 @@
 $Header$
 
 """
-version = '$Revision 1.12$'.split()[1]
+version = '$Revision$'.split()[1]
 
 import pylab
 import math
