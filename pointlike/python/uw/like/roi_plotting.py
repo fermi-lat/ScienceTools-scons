@@ -15,7 +15,7 @@ import numpy as N
 from skymaps import PySkyFunction,Background,Band,SkyDir,Hep3Vector,SkyIntegrator
 from roi_bands import ROIEnergyBand
 from pypsf import OldPsf
-from fitstools import get_fields
+from uw.utilities.fitstools import get_fields
 
 from collections import deque
 
@@ -23,8 +23,8 @@ from scipy.stats import poisson,norm
 from scipy.optimize import fmin,fsolve
 
 import pylab as P
-import colormaps
-from image import ZEA
+import uw.utilities.colormaps
+from uw.utilities.image import ZEA
 from matplotlib import rcParams,mpl,pyplot,ticker
 from matplotlib.patches import FancyArrow
 
