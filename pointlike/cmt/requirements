@@ -29,6 +29,13 @@ library pointlike \
  -s=../src $(source) \
  -s=../python $(source)
 
+macro swig_include "-I${pointlike_root}\
+ -I${astro_root}\
+ -I${skymaps_root}\
+ -I${healpix_root}\
+ -I${embed_python_root}\
+ -I${CLHEPBASE}/include"
+
 # this is a kluge to add skymaps to the shareable for python
 macro_append pointlike_shlibflags " $(skymaps_app_linkopts)" Win32 ""
 
