@@ -5,7 +5,7 @@ author: Eric Wallace <wallacee@uw.edu>
 $Header$
 
 """
-import sys
+import sys, os
 # normal CMT setup does not put ROOT.py in the python path
 try:
     import ROOT
