@@ -21,8 +21,7 @@ from cPickle import dump
 
 from scipy.optimize import fmin,fmin_powell
 from numpy.linalg import inv
-from minuit2 import Minuit2
-
+from uw.utilities.minuit import Minuit
 
 ###====================================================================================================###
 
@@ -169,7 +168,6 @@ class ROIAnalysis(object):
 
       if not self.quiet: print '.....performing likelihood maximization...',
       if method == 'minuit':
-         from uw.utilities.minuit import Minuit
          temp_params = self.parameters()
          npars = self.parameters().shape[0]
          param_names = ['p%i'%i for i in xrange(npars)]
