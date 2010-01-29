@@ -143,8 +143,8 @@ class AssignTasks(object):
                 self.result[index]=result
             except:
                 self.log("Engine %d raised exception executing task %d" %(id, index))
-                self.lost.append(index)
-                #raise #TODO: allow dropping the engine and continue? Probably a serious issue.
+                self.lost.add(index)
+                #raise #TODO: option to allow dropping the engine and continue? Probably a serious issue.
         else:
             self.result[index]=self.tasks[index]
 
