@@ -12,13 +12,13 @@ try:
 except:
     sys.path.append(os.path.join(os.environ['ROOTSYS'], 'bin'))
     import ROOT
-    
+
 from ROOT import TMinuit,gMinuit,Long,Double,Minuit2
 import numpy as np
 
 class FCN(object):
     """Wrap a python callable as an FCN object passable to Minuit.
-    
+
     __init__() params:
         fcn : A Python callable
         pars : A sequence of starting parameters for fcn
@@ -88,11 +88,11 @@ class Minuit(object):
         self.gradient = None
         self.__dict__.update(kwargs)
 
-        #fcn = fcn_factory(myFCN,len(params))
         self.fcn = FCN(myFCN,params,args=self.args,gradient=self.gradient)
         self.fval = self.fcn.fval
         gMinuit = TMinuit(self.npars)
         gMinuit.SetFCN(self.fcn)
+        gMinuit.SetPrintLevel(self.printMode)
 
         for i in xrange(self.npars):
             gMinuit.DefineParameter(i,self.param_names[i],params[i],self.steps[i],self.limits[i][0],self.limits[i][1])
