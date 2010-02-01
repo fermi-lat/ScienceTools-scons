@@ -14,6 +14,10 @@ except:
     import ROOT
 
 from ROOT import TMinuit,gMinuit,Long,Double,Minuit2
+
+if sys.platform == 'win32':
+    import pyreadline
+    pyreadline.parse_and_bind('set show-all-if-ambiguous on')
 import numpy as np
 
 class FCN(object):
