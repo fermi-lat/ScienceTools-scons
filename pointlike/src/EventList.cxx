@@ -55,7 +55,11 @@ void AddPhoton::operator()(const Photon& gamma)
         int sourceid = gamma.source();
 
         if( m_select>-1 && event_class!= m_select) return;
+      
+        // timing: either start/stop interval, or a Gti object
         if( m_start>0   && gamma.time()<m_start ||  m_stop>m_start && gamma.time()>m_stop) return;
+        if( m_use_gti && ! m_gti.accept(gamma.time()) ) return;
+
         if( m_source>-1 && sourceid != m_source)return;
 
         // theta cut: define FOV
