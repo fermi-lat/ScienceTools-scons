@@ -75,7 +75,7 @@ class AssignTasks(object):
         if self.local: return [-1]
         ids = set(self.mec.get_ids())-set(self.lost) # note ignoring "lost" ids
         ntasks = len(self.tasks)
-        return ids if ntasks>len(ids) else ids[:ntasks]
+        return ids if ntasks>len(ids) else list(ids)[:ntasks]
 
     def execute(self, string, id, block=True):
         """ execute the string on engine id  
