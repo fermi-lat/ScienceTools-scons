@@ -7,6 +7,7 @@ $Id$
  --------- -----   --- -----------------------------------------------------------------------
  * EOH *
 
+ pointlike-07-01-01 01-Feb-2010 burnett GTI mask capability - forgot pixeldata.py
  pointlike-07-01-00 01-Feb-2010 burnett GTI mask capability
  pointlike-07-00-00 26-Jan-2010 burnett new Swig scheme, using python packages
  pointlike-06-25-00 20-Nov-2009 burnett localization improvement
