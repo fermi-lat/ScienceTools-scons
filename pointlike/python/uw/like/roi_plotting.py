@@ -16,6 +16,8 @@ from skymaps import PySkyFunction,Background,Band,SkyDir,Hep3Vector,SkyIntegrato
 from roi_bands import ROIEnergyBand
 from pypsf import OldPsf
 from uw.utilities.fitstools import get_fields
+from uw.utilities import colormaps
+from uw.utilities.image import ZEA
 
 from collections import deque
 
@@ -23,8 +25,6 @@ from scipy.stats import poisson,norm
 from scipy.optimize import fmin,fsolve
 
 import pylab as P
-import uw.utilities.colormaps
-from uw.utilities.image import ZEA
 from matplotlib import rcParams,mpl,pyplot,ticker
 from matplotlib.patches import FancyArrow
 
@@ -491,7 +491,7 @@ class DataSkyFunction(object):
       if self.event_class >= 0:      base_cuts += ['EVENT_CLASS == %d'%(self.event_class)]
       if self.mc_src_id is not None: base_cuts += ['MC_SRC_ID == %d'%(self.mc_src_id)]
       cuts = base_cuts if self.cuts is None else self.cuts + base_cuts
-      event_files = self.sa_or_data if type(self.sa_or_data) == type([]) else self.sa_or_data.pixeldata.event_files
+      event_files = self.sa_or_data if type(self.sa_or_data) == type([]) else self.sa_or_data.pixeldata.ft1files
       
       data = get_fields(event_files,fields,cuts)
 
