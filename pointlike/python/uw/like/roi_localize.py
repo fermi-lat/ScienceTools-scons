@@ -12,7 +12,6 @@ from skymaps import SkyDir,Hep3Vector
 from pypsf import PsfOverlap
 
 ###====================================================================================================###
-
 class ROILocalizer(object):
 
    def init(self):
@@ -21,6 +20,7 @@ class ROILocalizer(object):
       self.update    = False
       self.max_iteration=10
       self.bandfits  = True  #default use bandfits
+      self.maxdist   = 1    #fail if try to move further than this
 
    def __init__(self,roi,which=0,**kwargs):
       self.init()
@@ -91,6 +91,9 @@ class ROILocalizer(object):
          delt = l.dir.difference(ps.skydir)*180/N.pi
          sigma = l.par[3]
          if not self.quiet: print ('\t'+7*'%10.4f')% (diff, delt, l.par[0],l.par[1],l.par[3],l.par[4], l.par[6])
+         if delt>self.maxdist:
+            if not self.quiet: print '\t -attempt to move beyond maxdist=%.1f' % self.maxdist
+            raise Exception('roi_localize failure: -attempt to move beyond maxdist=%.1f' % self.maxdist)
          if (diff < tolerance) and (abs(sigma-old_sigma) < tolerance):
             break
          ld = SkyDir(l.dir.ra(),l.dir.dec())
