@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ fitsGen-04-05-03 03-Feb-2010 jchiang change comments in ft2.tpl for DATA_QUAL and LAT_CONFIG columns
  fitsGen-04-05-02 03-Feb-2010 jchiang change comments in ft2.tpl for DATA_QUAL and LAT_CONFIG columns
    v4r5p1   15-Jul-09  jrb  Update SConscript
     v4r5   05-Jun-09   JC   enable users to set filename of temporary ROOT
