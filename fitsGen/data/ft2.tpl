@@ -149,9 +149,9 @@ TLMIN19      = -180.0                      / minimum value
 TLMAX19      = 180.0                       / maximum value
 TTYPE20      = 'LAT_MODE'                  / attitude mode of LAT
 TFORM20      = 'J'                         / data format of field: 4-byte signed INTEGER
-TTYPE21      = 'LAT_CONFIG'                / flag for config. of LAT (0=nominal sci. config)
+TTYPE21      = 'LAT_CONFIG'                / flag for config. of LAT (1=nominal sci. config)
 TFORM21      = 'B'                         / data format of field: byte 
-TTYPE22      = 'DATA_QUAL'                 / flag for quality of data (0=nominal)
+TTYPE22      = 'DATA_QUAL'                 / flag for quality of data (1=nominal)
 TFORM22      = 'B'                         / data format of field: byte 
 TTYPE23      = 'LIVETIME'                  / livetime
 TFORM23      = 'D'                         / data format of field: 8-byte DOUBLE
