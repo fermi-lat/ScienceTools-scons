@@ -175,7 +175,7 @@ def make_sed(r,which=0,axes=None,axis=None,plot_model=True):
     
     if axes is None: axes = P.gca()
     band_fluxes(r,which=which,axes=axes)
-    axes.set_xlabel('Energy (MeV')
+    axes.set_xlabel('Energy (MeV)')
     axes.set_ylabel('Energy Flux (MeV/cm2/s)')
     dom = N.logspace(2,5,100)
     cod = r.psm.models[which](dom)*dom**2
