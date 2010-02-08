@@ -5,6 +5,7 @@
    @verbatim
    * EOH *
 
+ likeGui-07-09-02 08-Feb-2010 jchiang comment out ds9 import warning
    v7r9p1   15-Jul-09   jrb    Update SConscript
    v7r9     12-Sep-08    JC    move readXml.py and cleanXml.py to sane
                                package; add PLSuperExpCutoff to ModelEditor
