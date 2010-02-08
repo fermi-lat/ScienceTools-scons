@@ -14,7 +14,7 @@ from SrcModel import SourceModel
 try:
     from SimpleDialog import SimpleDialog, map, Param
 except ImportError, message:
-    print "Caught ImportError: ", message
+#    print "Caught ImportError: ", message
     pass
 
 _plotter_package = 'root'
