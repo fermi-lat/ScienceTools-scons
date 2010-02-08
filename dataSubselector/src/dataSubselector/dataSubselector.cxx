@@ -42,7 +42,7 @@ class DataFilter : public st_app::StApp {
 public:
    DataFilter() : st_app::StApp(), 
                   m_pars(st_app::StApp::getParGroup("gtselect")),
-                  m_tstart(0), m_tstop(0) {
+                  m_tstart(0), m_tstop(0), m_tmin(-1), m_tmax(-1) {
       try {
          setVersion(s_cvs_id);
       } catch (std::exception & eObj) {
@@ -72,6 +72,7 @@ public:
 private:
 
    st_app::AppParGroup & m_pars;
+   float m_ra, m_dec, m_rad, m_tmin, m_tmax;
 
    std::vector<std::string> m_inputFiles;
    std::string m_outputFile;
@@ -102,15 +103,30 @@ void DataFilter::banner() const {
 void DataFilter::promptForParameters() {
    m_pars.Prompt("infile");
    m_pars.Prompt("outfile");
-   m_pars.Prompt("ra");
-   m_pars.Prompt("dec");
-   m_pars.Prompt("rad");
+   try {
+      m_pars.Prompt("ra");
+      m_pars.Prompt("dec");
+      m_pars.Prompt("rad");
+      m_ra = m_pars["ra"];
+      m_dec = m_pars["dec"];
+      m_rad = m_pars["rad"];
+   } catch (const hoops::Hexception &) {
+      // Assume INDEF is given as one of the parameter values, 
+      // so use default of applying no acceptance cone cut, rad=180.
+      m_ra = 0;
+      m_dec = 0;
+      m_rad = 180;
+   }
    try {
       m_pars.Prompt("tmin");
       m_pars.Prompt("tmax");
+      m_tmin = m_pars["tmin"];
+      m_tmax = m_pars["tmax"];
    } catch (const hoops::Hexception &) {
-      m_pars["tmin"] = static_cast<float>(0);
-      m_pars["tmax"] = static_cast<float>(0);
+      // Assume INDEF is given as one of the parameter values,
+      // so use default of applying no time range cut, tmin = tmax = 0.
+      m_tmin = 0;
+      m_tmax = 0;
    }
    m_pars.Prompt("emin");
    m_pars.Prompt("emax");
@@ -119,10 +135,10 @@ void DataFilter::promptForParameters() {
 }
 
 void DataFilter::run() {
-   m_pars.Prompt();
-   m_pars.Save();
+//    m_pars.Prompt();
+//    m_pars.Save();
 
-//    promptForParameters();
+   promptForParameters();
 
    std::string evtable = m_pars["evtable"];
 
@@ -146,16 +162,27 @@ void DataFilter::run() {
       tip::IFileSvc::instance().createFile(m_outputFile, m_inputFiles.front());
    }
 
+   st_app::AppParGroup pars(m_pars);
+   pars["ra"] = m_ra;
+   pars["dec"] = m_dec;
+   pars["rad"] = m_rad;
+   pars["tmin"] = m_tmin;
+   pars["tmax"] = m_tmax;
+
+//    CutController * cuts = 
+//       CutController::instance(m_pars, m_inputFiles, evtable);
    CutController * cuts = 
-      CutController::instance(m_pars, m_inputFiles, evtable);
+      CutController::instance(pars, m_inputFiles, evtable);
    copyTable(evtable, cuts);
    copyGtis();
    cuts->updateGti(m_outputFile);
    CutController::delete_instance();
 
    double tmin, tmax;
-   tmin = m_pars["tmin"];
-   tmax = m_pars["tmax"];
+//    tmin = m_pars["tmin"];
+//    tmax = m_pars["tmax"];
+   tmin = m_tmin;
+   tmax = m_tmax;
    if (tmin != 0 || tmax != 0 || m_inputFiles.size() > 1) {
       if (tmin != 0 || tmax != 0) {
          m_tstart = std::max(m_tstart, tmin);
