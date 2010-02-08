@@ -46,13 +46,14 @@ class RootWindow(Tk.Tk):
             except RuntimeError:
                 try:
                     version = ds9.xpaget("version")
-                    if version.find("3.0.3") == -1:
-                        showwarning("ds9 version", "using " + version.strip())
+#                    if version.find("3.0.3") == -1:
+#                        showwarning("ds9 version", "using " + version.strip())
                 except RuntimeError:
                     pass
         except ImportError:
-            showwarning(title="ds9 Access Warning",
-                        message="Import error for ds9 package.")
+#            showwarning(title="ds9 Access Warning",
+#                        message="Import error for ds9 package.")
+            pass
 
         menuBar = MenuBar(self)
         
