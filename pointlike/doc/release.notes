@@ -7,6 +7,7 @@ $Id$
  --------- -----   --- -----------------------------------------------------------------------
  * EOH *
 
+ pointlike-07-01-03 09-Feb-2010 burnett fix SConscript, python tweaks
  pointlike-07-01-02 01-Feb-2010 burnett GTI mask capability - forgot pixeldata.py
  pointlike-07-01-01 01-Feb-2010 burnett GTI mask capability - forgot pixeldata.py
  pointlike-07-01-00 01-Feb-2010 burnett GTI mask capability
