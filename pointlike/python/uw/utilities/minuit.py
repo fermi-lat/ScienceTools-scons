@@ -31,7 +31,7 @@ def rosenbrock(x):
 
 def rosengrad(x):
     """Gradient of Rosenbrock function, for testing."""
-    drdx = -2*((1-x[0])-400*x[0]*(x[1]-x[0]**2))
+    drdx = -2*((1-x[0])+200*x[0]*(x[1]-x[0]**2))
     drdy = 200*(x[1]-x[0]**2)
     return np.asarray([drdx,drdy])
 
