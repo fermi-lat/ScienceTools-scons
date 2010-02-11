@@ -654,7 +654,7 @@ class TSplot(object):
         #print 'after reset', axes.get_xlim(), axes.get_ylim()
         if self.size< 0.03:
             self.zea.scale_bar(1/120.,  '30"', color='w')
-        elif self.size<0.5:
+        elif self.size<0.6:
             self.zea.scale_bar(0.1, "$0.1^o$", color='w')
         elif self.size<1.1:
             self.zea.scale_bar(0.5, "$0.5^o$", color='w')
