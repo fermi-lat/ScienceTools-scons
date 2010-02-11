@@ -94,7 +94,7 @@ class Minuit(object):
     def __init__(self,myFCN,params,**kwargs):
 
         self.limits = np.zeros((len(params),2))
-        self.steps = .1*np.ones(len(params))
+        self.steps = 0.04 * np.ones(len(params)) # this is about 10% in log10-based parameter space
         self.tolerance = .001
         self.maxcalls = 10000
         self.printMode = 0
@@ -131,8 +131,10 @@ class Minuit(object):
         self.fval = self.fcn.fval
         return (self.params,self.fval)
 
+
     def errors(self,two_sided = False):
         mat = np.zeros(self.npars**2)
         self.minuit.mnhess()
         self.minuit.mnemat(mat,self.npars)
+        self.fval = self.fcn.fval
         return mat.reshape((self.npars,self.npars))
