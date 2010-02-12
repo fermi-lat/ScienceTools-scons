@@ -21,7 +21,7 @@ apply_tag have_python
 # allows python interactive access to ROOT (only to pick up ROOT.py)
 path_prepend PYTHONPATH "$(ROOT_DIR)/bin"
 
-use SwigModule *
+use SwigModule v1*
 apply_pattern python_module
 
 # note private now
