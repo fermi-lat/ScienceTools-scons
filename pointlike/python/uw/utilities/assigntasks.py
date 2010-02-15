@@ -187,7 +187,7 @@ class AssignTasks(object):
             self.execute(self.post, self.get_ids(), True)
 
         if self.lost:
-            self.log('possibly hung engines: %s' % self.lost)
+            self.log('possibly failed tasks: %s' % list(self.lost).sort() )
         self.log( 'Cycled through main loop %d times, slept %d times; elapsed, total times: %.1f, %.1f s'\
                 %( loop_iters, sleepcount, time.clock()-starttime, sum(self.time.values())-self.time[-1]) )
 
