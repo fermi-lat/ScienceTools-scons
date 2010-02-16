@@ -8,6 +8,8 @@ import os,platform,SCons,glob,re,atexit,sys,traceback,commands,subprocess
 #   Global Environment  #
 #########################
 
+print "\nThis build is running on: ", platform.node(), "\n"
+
 EnsureSConsVersion(1, 2, 0)
 baseEnv=Environment()
 baseEnv.Tool('generateScript')
