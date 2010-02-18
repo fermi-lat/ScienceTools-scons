@@ -227,8 +227,9 @@ Optional keyword arguments:
 
         self.ae          = analysis_environment
 
-        self.__dict__.update(**kwargs)
         self.__dict__.update(analysis_environment.__dict__)
+        self.__dict__.update(**kwargs)
+
 
          #TODO -- sanity check that BinnedPhotonData agrees with analysis parameters
         self.pixeldata = PixelData(self)
@@ -320,5 +321,13 @@ Optional keyword arguments:
         if no_roi: return ps_manager,bg_manager
 
         return ROIAnalysis(ps_manager,bg_manager,self,**kwargs)
+
+    def __str__(self):
+        s = '%s configuration:\n'% self.__class__.__name__
+        ignore = ('psf', 'exposure')
+        for key in sorted(self.__dict__.keys()):
+            if key in self.ae.__dict__ or key in ignore: continue # avoid duplication internal functions
+            s += '\t%-20s: %s\n' %(key, self.__dict__[key])
+        return s
 
 
