@@ -124,7 +124,7 @@ class ConsistentBackground(object):
       self.smodels = [ PowerLaw(p=[1,1],free=[True,True],index_offset=1),
                        Constant(free=[True]) ]
       self.names   = ['gll_iem_v02', 'Isotropic Diffuse']
-      self.cat     = join(self.catdir,r'gll_psc_v02.fit')
+      self.cat     = join(self.catdir,r'gll_psc_v03.fit')  # thb: this has one slight change from v02, involving a name
 
 
    def get_bgmodels(self, models = None, lat = None):
