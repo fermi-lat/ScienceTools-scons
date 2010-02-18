@@ -12,7 +12,6 @@ progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
 progEnv.Tool('healpixLib')
-libEnv.Tool('healpixLib', depsOnly = 1)
 
 healpixLib = libEnv.SharedLibrary('healpix', 
                                   listFiles(['src/*.cxx', 'src/base/*.cc',

@@ -7,7 +7,6 @@ Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-libEnv.Tool('hoopsLib', depsOnly = 1)
 hoopsLib = libEnv.StaticLibrary('hoops', listFiles(['src/*.cxx']))
 
 progEnv.Tool('hoopsLib')

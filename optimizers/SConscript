@@ -7,13 +7,12 @@ Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
-
-libEnv.Tool('optimizersLib', depsOnly = 1)
+libEnv.Append(CPPDEFINES = 'TRAP_FPE')
 optimizersLib = libEnv.SharedLibrary('optimizers',
                                      listFiles(['src/*.cxx', 'src/*.c']))
 
 progEnv.Tool('optimizersLib')
-
+progEnv.Append(CPPDEFINES = 'TRAP_FPE')
 test_optimizersBin = progEnv.Program('test_optimizers', 'src/test/main.cxx')
 
 progEnv.Tool('registerTargets', package='optimizers', 

@@ -9,3 +9,5 @@ setup.*
 *.mak*
 .*project*
 Makefile
+build
+*.pyc

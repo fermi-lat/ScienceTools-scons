@@ -8,8 +8,6 @@ progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 test2Env = baseEnv.Clone()
 
-libEnv.Tool('tipLib', depsOnly = 1)
-
 tipLib = libEnv.StaticLibrary('tip', listFiles(['src/*.cxx']))
 
 progEnv.Tool('tipLib')

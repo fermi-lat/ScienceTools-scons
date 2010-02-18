@@ -10,18 +10,17 @@ progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 #swigEnv = baseEnv.Clone()
 
-libEnv.Tool('pyExposureLib', depsOnly = 1)
-#pyExposureLib = libEnv.StaticLibrary('pyExposure', listFiles(['src/*.cxx']))
+libEnv.Append(CPPDEFINES = 'TRAP_FPE')
 pyExposureLib = libEnv.SharedLibrary('pyExposure', listFiles(['src/*.cxx']))
 
-#pyExposureSharedLib = libEnv.SharedLibrary('pyExposure', 
-#                                           listFiles(['src/*.cxx']))
 
 #swigEnv.Tool('pyExposureLib')
 #lib_pyExposureSharedLib = swigEnv.LoadableModule('_pyExposure', 
 #                                                 'src/pyExposure.i')
 
+
 progEnv.Tool('pyExposureLib')
+progEnv.Append(CPPDEFINES = 'TRAP_FPE')
 
 gtexposureBin = progEnv.Program('gtexposure', 
                                 listFiles(['src/gtexposure/*.cxx']))

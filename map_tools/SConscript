@@ -7,7 +7,6 @@ Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-libEnv.Tool('map_toolsLib', depsOnly = 1)
 map_toolsLib = libEnv.StaticLibrary('map_tools', listFiles(['src/*.cxx']))
 
 progEnv.Tool('map_toolsLib')

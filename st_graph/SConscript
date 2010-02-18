@@ -7,8 +7,8 @@ Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
+libEnv.Append(CPPDEFINES = 'TRAP_FPE')
 
-libEnv.Tool('st_graphLib', depsOnly = 1)
 st_graphRootcint = libEnv.Rootcint('st_graph/st_graph_rootcint',
                                    ['st_graph/RootFrame.h',
                                     'st_graph/LinkDef.h'],
@@ -16,6 +16,8 @@ st_graphRootcint = libEnv.Rootcint('st_graph/st_graph_rootcint',
 st_graphLib = libEnv.StaticLibrary('st_graph', listFiles(['src/*.cxx']) + ['st_graph/st_graph_rootcint.cxx'])
 
 progEnv.Tool('st_graphLib')
+progEnv.Append(CPPDEFINES = 'TRAP_FPE')
+
 test_st_graphBin = progEnv.Program('test_st_graph', listFiles(['src/test/*.cxx']))
 
 progEnv.Tool('registerTargets', package = 'st_graph',

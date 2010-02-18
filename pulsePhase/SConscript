@@ -8,7 +8,6 @@ Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-libEnv.Tool('pulsePhaseLib', depsOnly = 1)
 pulsePhaseLib = libEnv.StaticLibrary('pulsePhase', listFiles(['src/*.cxx']))
 
 progEnv.Tool('pulsePhaseLib')
