@@ -201,9 +201,10 @@ else:
     baseEnv.AppendUnique(CXXFLAGS = "-fpermissive")
 
 if baseEnv['PLATFORM'] == "posix":
-    if platform.machine() == "x86_64":
-        baseEnv.AppendUnique(CCFLAGS = "-fPIC")
-    baseEnv.AppendUnique(CPPDEFINES = ['TRAP_FPE'])
+    ##if platform.machine() == "x86_64":
+    baseEnv.AppendUnique(CCFLAGS = "-fPIC")
+    baseEnv.AppendUnique(SHLINKFLAGS = "-fPIC")
+    ##baseEnv.AppendUnique(CPPDEFINES = ['TRAP_FPE'])
 
 if baseEnv['PLATFORM'] == "darwin":
     baseEnv.AppendUnique(SHLINKFLAGS = ["-Wl,-install_name", "-Wl,${TARGET.file}"])
