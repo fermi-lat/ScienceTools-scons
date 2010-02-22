@@ -20,6 +20,9 @@ for package in packages:
 configfile.write('"\n')
 configfile.close()
 
+if baseEnv['PLATFORM'] == "win32":
+    libEnv.Tool('facilitiesLib', depsOnly = 1)
+
 facilitiesLib = libEnv.SharedLibrary('facilities', listFiles(['src/*.cxx']))
 
 swigEnv.Tool('facilitiesLib')

@@ -13,6 +13,9 @@ progEnv = baseEnv.Clone()
 if baseEnv['PLATFORM'] == "win32":
     libEnv.Append(CCFLAGS = "/wd4554") #  warning C4554: '<<' : check operator precedence
 
+if baseEnv['PLATFORM'] == "win32":
+    libEnv.Tool('astroLib', depsOnly = 1)
+    
 astroLib = libEnv.SharedLibrary('astro', listFiles(
 ['src/*.cxx', 
  'src/wcslib/*.c', 

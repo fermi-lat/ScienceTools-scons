@@ -7,6 +7,8 @@ Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
+if baseEnv['PLATFORM'] == "win32":
+    libEnv.Tool('xmlBaseLib', depsOnly = 1)
 
 xmlBaseLib = libEnv.SharedLibrary('xmlBase', [ 'src/Dom.cxx', 'src/IFile.cxx', 'src/XmlErrorHandler.cxx', 'src/XmlParser.cxx', 'src/EResolver.cxx', 'src/docMan/DocMan.cxx'])
 
