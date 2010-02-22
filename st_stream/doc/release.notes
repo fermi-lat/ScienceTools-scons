@@ -6,6 +6,7 @@
 --------------------------------------------------------------------------------
 * EOH *
 
+ st_stream-00-06-02 22-Feb-2010    jrb correct use of xxLib for libEnv
 15-Jul-2009 v0r6p1    jrb Update SConscript
 10-apr-2008 v0r5p2    JP  Change definition point of static variables to
                           improve stability.
