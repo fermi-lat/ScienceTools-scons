@@ -38,10 +38,10 @@ class AssignTasks(object):
         self.post = post
         if not local:
             try:
-                self.mec = mec or get_mec()
+                self.mec = mec if mec is not None else get_mec()
             except:
                 print 'No connection available: you must run ipcluster'
-                return
+                raise
             assert(len(self.mec.get_ids())>0)
         self.assigned = {}
         self.tasks = tasks
