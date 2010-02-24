@@ -9,8 +9,7 @@ progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 libEnv.Append(CPPDEFINES = 'TRAP_FPE')
 
-if baseEnv['PLATFORM'] == "win32":
-    libEnv.Tool('optimizersLib', depsOnly = 1)
+libEnv.Tool('addLinkDeps', package='optimizers', toBuild='shared')
 
 optimizersLib = libEnv.SharedLibrary('optimizers',
                                      listFiles(['src/*.cxx', 'src/*.c']))

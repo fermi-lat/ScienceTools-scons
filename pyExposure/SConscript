@@ -12,8 +12,7 @@ libEnv = baseEnv.Clone()
 
 libEnv.Append(CPPDEFINES = 'TRAP_FPE')
 
-if baseEnv['PLATFORM'] == "win32":
-    libEnv.Tool('pyExposureLib', depsOnly = 1)
+libEnv.Tool('addLinkDeps', package='pyExposure', toBuild='shared')
 
 pyExposureLib = libEnv.SharedLibrary('pyExposure', listFiles(['src/*.cxx']))
 

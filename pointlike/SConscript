@@ -18,8 +18,7 @@ Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-if baseEnv['PLATFORM'] == "win32":
-    libEnv.Tool(package+'Lib', depsOnly = 1)
+libEnv.Tool('addLinkDeps', package=package, toBuild='shared')
 
 progEnv.Tool(package+'Lib')
 
