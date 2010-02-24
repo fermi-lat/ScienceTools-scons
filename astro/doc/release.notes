@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-03-09-02 24-Feb-2010    jrb fix linking for mac
  astro-03-09-01 22-Feb-2010    jrb correct use of xxLib for libEnv
  astro-03-09-00 27-Nov-2009 burnett add dot and cross to SkyDir interface
  astro-03-08-09 26-Nov-2009 burnett final fix for JIRA OBS-14
