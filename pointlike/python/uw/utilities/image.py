@@ -787,16 +787,17 @@ class GaussKernel(object):
 class GaussSmoothZEA(object):
 
     def __init__(self,zea,scale):
+        """zea is an instance of ZEA.
+           scale is the smoothing scale in degrees."""
         gc = GaussKernel(zea.center,scale)
         im_backup = zea.image.copy()
         zea.fill(gc.pyskyfun())
-        print zea.image.sum()
         zea.image /= zea.image.sum()
         self.fft_kernel = fft2(zea.image)
         zea.image = im_backup
 
     def __call__(self,image):
-        """image must have same dimensions as ZEA used to create this object."""
+        """image is a 2d numpy array which must have same dimensions as ZEA used to create this object."""
         fft_image = fft2(image)
         return N.real(N.fft.fftshift(N.fft.ifft2(self.fft_kernel*fft_image)))
         
