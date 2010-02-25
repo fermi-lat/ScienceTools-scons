@@ -38,7 +38,7 @@ Optional keyword arguments:
    see docstring for SpectralAnalysis
 """
 
-        self.__dict__.update(spectral_analysis.__dict__)
+        self.__dict__.update(spectral_analysis)
 
         from numpy import arange,log10
         self.my_bins = 10**arange(log10(self.emin),log10(self.emax*1.01),1./self.binsperdec)
