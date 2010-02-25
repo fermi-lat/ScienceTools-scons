@@ -6,6 +6,7 @@ $Id$
 \verbatim
  * EOH *
 
+ st_graph-01-07-08 24-Feb-2010    jrb TRAP_FPE is for Linux only
  st_graph-01-07-07 22-Feb-2010    jrb correct use of xxLib for libEnv
  st_graph-01-07-06 08-Dec-2009    jrb Revert to building static library rather than shared
 12-nov-2009    v1r7p5 JV  Removed one extra header for the root-free builds.

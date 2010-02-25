@@ -6,6 +6,7 @@ $Id$
 \verbatim
 * EOH *
 
+ st_app-02-00-05 24-Feb-2010    jrb TRAP_FPE is for Linux only
  st_app-02-00-04 22-Feb-2010    jrb correct use of xxLib for libEnv
 15-Jul-2009    v2r0p3 jrb Update SConscript
 23-oct-2007    v2r0p1 JP  Call facilities::commonUtilities::setupEnvironment()
