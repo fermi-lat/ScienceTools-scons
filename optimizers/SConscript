@@ -7,7 +7,8 @@ Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
-libEnv.Append(CPPDEFINES = 'TRAP_FPE')
+if baseEnv['PLATFORM'] == "posix":
+    libEnv.Append(CPPDEFINES = 'TRAP_FPE')
 
 libEnv.Tool('addLinkDeps', package='optimizers', toBuild='shared')
 
@@ -15,7 +16,8 @@ optimizersLib = libEnv.SharedLibrary('optimizers',
                                      listFiles(['src/*.cxx', 'src/*.c']))
 
 progEnv.Tool('optimizersLib')
-progEnv.Append(CPPDEFINES = 'TRAP_FPE')
+if baseEnv['PLATFORM'] == "posix":
+    progEnv.Append(CPPDEFINES = 'TRAP_FPE')
 test_optimizersBin = progEnv.Program('test_optimizers', 'src/test/main.cxx')
 
 progEnv.Tool('registerTargets', package='optimizers', 

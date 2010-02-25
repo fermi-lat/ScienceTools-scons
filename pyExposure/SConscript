@@ -10,7 +10,8 @@ progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 #swigEnv = baseEnv.Clone()
 
-libEnv.Append(CPPDEFINES = 'TRAP_FPE')
+if baseEnv['PLATFORM'] == "posix":
+    libEnv.Append(CPPDEFINES = 'TRAP_FPE')
 
 libEnv.Tool('addLinkDeps', package='pyExposure', toBuild='shared')
 
@@ -23,7 +24,8 @@ pyExposureLib = libEnv.SharedLibrary('pyExposure', listFiles(['src/*.cxx']))
 
 
 progEnv.Tool('pyExposureLib')
-progEnv.Append(CPPDEFINES = 'TRAP_FPE')
+if baseEnv['PLATFORM'] == "posix":
+    progEnv.Append(CPPDEFINES = 'TRAP_FPE')
 
 gtexposureBin = progEnv.Program('gtexposure', 
                                 listFiles(['src/gtexposure/*.cxx']))
