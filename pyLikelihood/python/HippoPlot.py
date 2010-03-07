@@ -20,11 +20,15 @@ _symbols = {'line' : ('Line', 'Solid', 'filled_square', 1),
 class HippoPlot(object):
     def __init__(self, x, y, dx=None, dy=None, xlog=0, ylog=0,
                  xtitle='x', ytitle='y', symbol='plus', color='black',
-                 xrange=(), yrange=()):
+                 xrange=None, yrange=None):
         import hippoplotter as plot
         self.plot = plot
         self.nts = [self._fillArrays(x, y, dx, dy, xtitle, ytitle)]
         xerr, yerr = self._parseErrors(dx, dy)
+        if xrange is None:
+            xrange = ()
+        if yrange is None:
+            yrange = ()
         self.graphs = [plot.XYPlot(self.nts[0], xtitle, ytitle,
                                    xerr, yerr, xlog=xlog, ylog=ylog,
                                    xrange=xrange, yrange=yrange)]
