@@ -191,7 +191,8 @@ class ROIAnalysis(object):
                 self.__set_error_minuit(m,False)
             self.prev_logl = self.logl if self.logl is not None else -fval
             self.logl = -fval
-         self._minuit = m
+         #Saving this reference seems to cause a memory leak.
+         #self._minuit = m
          return -fval
       else:
          minimizer  = fmin_powell if method == 'powell' else fmin
