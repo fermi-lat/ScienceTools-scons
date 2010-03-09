@@ -52,6 +52,8 @@ class Parameter(object):
     def setAlwaysFixed(self, alwaysFixed):
         for par in self.pars:
             par.setAlwaysFixed(alwaysFixed)
+    def __getattr__(self, attrname):
+        return getattr(self.pars[0], attrname)
 
 class SummedLikelihood(AnalysisBase):
     def __init__(self, optimizer='Minuit'):
