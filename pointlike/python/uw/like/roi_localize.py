@@ -183,3 +183,4 @@ class ROILocalizer(object):
       if N.isnan(ll):
          raise Exception('ROIAnalysis.spatialLikelihood failure at %.3f,%.3f' %(skydir.ra(),skydir.dec()))
       return ll
+

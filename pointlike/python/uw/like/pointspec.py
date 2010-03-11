@@ -230,7 +230,6 @@ Optional keyword arguments:
         self.__dict__.update(analysis_environment.__dict__)
         self.__dict__.update(**kwargs)
 
-
          #TODO -- sanity check that BinnedPhotonData agrees with analysis parameters
         self.pixeldata = PixelData(self.__dict__)
         self.exposure  = ExposureManager(self)

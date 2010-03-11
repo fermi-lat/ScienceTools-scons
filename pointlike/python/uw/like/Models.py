@@ -319,7 +319,7 @@ Spectral parameters:
    def gradient(self,e):
       n0,gamma = 10**self.p
       f = (n0/self.flux_scale)*(self.e0/e)**(gamma-self.index_offset)
-      return N.asarray([f,f/n0,-gamma/e*f])
+      return N.asarray([f/n0,f*N.log(self.e0/e)])
 
 #===============================================================================================#
 
@@ -457,6 +457,11 @@ Spectral parameters:
       n0,gamma,cutoff=10**self.p
       return (n0/self.flux_scale)*(self.e0/e)**gamma*N.exp(-e/cutoff)
 
+   def gradient(self,e):
+      n0,gamma,cutoff = 10**self.p
+      f = (n0/self.flux_scale)*(self.e0/e)**gamma*N.exp(-e/cutoff)
+      return N.asarray([f/n0,f*N.log(self.e0/e),f*e/cutoff**2])
+
 #===============================================================================================#
 
 class ExpCutoffPlusPL(Model):
@@ -545,6 +550,9 @@ class Constant(Model):
    
    def fast_iflux(self,emin=100,emax=1e6):
       return (emax-emin)*10**self.p[0]
+
+   def gradient(self,e):
+      return N.ones_like(e)
 
 #===============================================================================================#
 

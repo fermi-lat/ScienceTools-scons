@@ -179,6 +179,22 @@ class CALDBPsf(Psf):
          u1 = 0.5 * (dmin / si)**2
          u2 = 0.5 * (dmax / si)**2
          return  (w*( (1+u1/gc)**(1-gc)  - (1+u2/gc)**(1-gc)  )).sum()
+
+   def inverse_integral(self,e,ct,percent=68):
+      """Return the radius at which the integral PSF reaches the required percentage.
+         Pretty primitive, zero error checking, caveat caller.
+         
+         NB -- returned value is in degrees.
+      """
+      percent /= 100.
+      def f(dmax):
+         if dmax <= 0: return -percent
+         return self.integral(e,ct,dmax) - percent
+      from scipy.optimize import fsolve
+      for seed in N.radians([1,0.5,0.1,0.05,0.01]):
+         trial = fsolve(f,N.radians(1))
+         if trial > 0: break
+      return N.degrees(trial)
              
    def band_psf(self,band,weightfunc=None): return BandCALDBPsf(self,band,weightfunc=weightfunc,newstyle=self.newstyle)
 
