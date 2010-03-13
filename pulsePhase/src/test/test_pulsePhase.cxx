@@ -8,6 +8,7 @@
 #include <iostream>
 #include <limits>
 #include <set>
+#include <stdexcept>
 #include <string>
 
 #include "OrbitalPhaseApp.h"
