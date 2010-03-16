@@ -7,6 +7,7 @@
     @verbatim
     * EOH *
 
+ pulsePhase-08-06-03 16-Mar-2010 hirayama Minor improvements only.
  pulsePhase-08-06-02 22-Feb-2010    jrb correct use of xxLib for libEnv
  pulsePhase-08-06-01 27-Oct-2009 hirayama Add an explanation of psrdbfile=NONE to mainpage.h.
  pulsePhase-08-06-00 23-Oct-2009 hirayama Improve errors and warnings in ephemeris sub-selection. Introduce psrdbfile=NONE. Change the order of doc/release.notes entries to macth the other pulsar tools packages.
