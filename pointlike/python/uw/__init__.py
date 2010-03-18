@@ -26,7 +26,7 @@ def factory(**kwargs):
         ==========   =============
     see uw.like.pointspec.SpectralAnalysis docstring for more keywords
     """
-    from thb_roi import myroi, data
+    from thb_roi import myroi
 
     defaults = {
         'dataset'     : None,
@@ -38,9 +38,5 @@ def factory(**kwargs):
         'use_gradient': True,
     }
     defaults.update(kwargs)
-    dataset = defaults.pop('dataset')    
-    if dataset is None:
-        dataset = data.all_data()
-    sa  = data.MyAnalysisEnvironment(dataset, **defaults)
-    return myroi.ROIfactory(sa, **defaults)
+    return myroi.ROIfactory( **defaults )
     

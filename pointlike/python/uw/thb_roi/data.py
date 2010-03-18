@@ -11,12 +11,6 @@ import skymaps
 
 if os.name=='posix':
     fermi_root = '/phys/groups/tev/scratch1/users/Fermi'
-# ssh connection does not seem to gurarantee this
-#    if 'HOSTNAME' in os.environ:
-#        if os.environ['HOSTNAME'][:3]=='tev':
-#            fermi_root = '/phys/groups/tev/scratch1/users/Fermi'
-#    else:
-#        raise Exception('unknown host %s' % os.environ['HOST'])
 elif os.environ['computername']=='GLAST-TS':
     fermi_root = 'f:\\glast'
 else: # all others
@@ -28,9 +22,9 @@ galprop_path = os.path.join(data_path, 'galprop')
 catalog_path = os.path.join(fermi_root, 'catalog')
 for t in (data_path, galprop_path, catalog_path):
     if not os.path.exists(t):
-        raise Exception('path does not exist %s' % t)
+        raise Exception('path does not exist: "%s"' % t)
 
-# if CALDB in in the environment (set by science tools) use it. Otherwise expect under fermi_root
+# if CALDB is in the environment (set by science tools) use it. Otherwise expect under fermi_root
 caldb_version = 'v1r1' # may have to set
 if 'CALDB' not in os.environ:
     os.environ['CALDB'] = os.path.join(fermi_root, 'CALDB',caldb_version,'CALDB','data','glast','lat')
