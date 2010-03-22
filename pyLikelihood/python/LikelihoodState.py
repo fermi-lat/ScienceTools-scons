@@ -37,12 +37,13 @@ class LikelihoodState(object):
         self.pars = [_Parameter(par) for par in like.params()]
     def restore(self, srcName=None):
         if srcName is None:
-            for par in self.pars:
-                par.setDataMembers()
+            for par, likePar in zip(self.pars, self.like.params()):
+                par.setDataMembers(likePar)
         else:
             parNames = pyLikelihood.StringVector()
             self.like[srcName].src.spectrum().getParamNames(parNames)
             for parName in parNames:
                 indx = self.like.par_index(srcName, parName)
-                self.pars[indx].setDataMembers()
+                likePar = self.like.params()[indx]
+                self.pars[indx].setDataMembers(likePar)
         self.like.syncSrcParams()
