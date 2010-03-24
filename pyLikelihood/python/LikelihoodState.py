@@ -31,8 +31,11 @@ class _Parameter(object):
 class LikelihoodState(object):
     """Save the parameter state of a pyLikelihood object and provide a
     method to restore everything or just a specific source."""
-    def __init__(self, like):
-        self.negLogLike = like()
+    def __init__(self, like, negLogLike=None):
+        if negLogLike is None:
+            self.negLogLike = like()
+        else:
+            self.negLogLike = negLogLike
         self.like = like
         self.pars = [_Parameter(par) for par in like.params()]
     def restore(self, srcName=None):
