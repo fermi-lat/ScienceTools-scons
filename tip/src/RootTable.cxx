@@ -31,6 +31,14 @@ TTree g_tip_windows_dynamic_loader_bug_4_02_00;
 
 namespace tip {
 
+  bool RootTable::init() {
+    bool success = resetSigHandlers();
+    // By default, Root will split files if a tree exceeds 1900000000 (1.9GB).
+    // Set maximum tree size to 1,000,000,000,000 (1TB) to prevent files from being split in practicality.
+    TTree::SetMaxTreeSize(1000000000000); // 12 zeroes.
+    return success;
+  }
+
   bool RootTable::resetSigHandlers() {
     if (0 == gSystem) return false;
     gSystem->ResetSignal(kSigBus);

@@ -34,6 +34,10 @@ namespace tip {
   */
   class RootTable : public Table {
     public:
+      /** \brief Perform global initializations needed for Root. This calls resetSigHandlers.
+      */
+      static bool init();
+
       /** \brief Reset Root's signale handlers so that Root wont interfere with debugging.
       */
       static bool resetSigHandlers();

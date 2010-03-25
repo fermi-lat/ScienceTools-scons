@@ -57,7 +57,7 @@ namespace tip {
   bool IFileSvc::globalInit() {
     bool init_success = true;
 #ifndef BUILD_WITHOUT_ROOT
-    init_success = RootTable::resetSigHandlers();
+    init_success = RootTable::init();
 #endif
     return init_success;
   }
