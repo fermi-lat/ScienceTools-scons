@@ -4,7 +4,8 @@
  $Header$
  author: T. Burnett <tburnett@uw.edu>
 """
-import catalog, makerec # local
+import catalog #local
+from uw.utilities import makerec
 import numpy as np
 from skymaps import SkyDir
 import pyfits, os, pickle, glob

@@ -253,8 +253,10 @@ class MyAnalysisEnvironment():
         if type(mydata)==type(''):
             if mydata=='all_data': 
                 args = all_data()()
+            elif mydata=='1FGL':
+                args = Catalog_noGRB()()
             else:
-                raise Exception('data set id %s not recognized' % mydata)
+                raise Exception('data set id "%s" not recognized' % mydata)
         else:
             args = mydata()
         event_files, history_files, datafile, livetimefile = args[:4]

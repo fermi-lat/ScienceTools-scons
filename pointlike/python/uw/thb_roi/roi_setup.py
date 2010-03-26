@@ -3,6 +3,8 @@ supplemental setup of ROI
 ----------------------------------
 $Header$
 
+These are near-duplicates of the classes with the same name in uw.like, but modifed for the interactive access
+
 """
 import numpy as np
 import os, pickle, math, glob, pyfits
