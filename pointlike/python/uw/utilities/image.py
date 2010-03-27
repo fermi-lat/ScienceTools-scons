@@ -538,12 +538,13 @@ class ZEA(object):
 
     def plot_source(self, name, source, symbol='+', fontsize=10, **kwargs):
         " plot symbols at points"
-        if self.galactic:   x,y = self.proj.sph2pix(source.l(),source.b())
-        else:  x,y = self.proj.sph2pix(source.ra(),source.dec())
+        x,y = self.pixel(source)
         if x<0 or x> self.nx or y<0 or y>self.ny: return False
         self.axes.plot([x],[y], symbol,  **kwargs)
-        self.axes.text(x,y, name, fontsize=fontsize, **kwargs)
+        #self.axes.text(x,y, name, fontsize=fontsize, **kwargs)
+        self.axes.text( x+self.nx/100., y+self.nx/100., name, fontsize=fontsize, **kwargs)
         return True
+
 
     def cross(self, sdir, size, text=None, **kwargs):
         """ draw a cross  
