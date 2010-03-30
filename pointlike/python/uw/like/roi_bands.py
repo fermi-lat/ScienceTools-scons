@@ -203,8 +203,12 @@ class ROIEnergyBand(object):
 
          flux_copy = self.m.p[0]
          zp        = self.bandLikelihood(N.asarray([-20]),self.m,which)
+
+         # NB -- the 95% upper limit is calculated by assuming the likelihood is peaked at
+         # 0 flux and finding the flux at which it has fallen by 1.35; this is a two-sided
+         # 90% limit, or a one-sided 95% limit -- that's how it works, right?
          def f95(parameters):
-            return abs(self.bandLikelihood(parameters,self.m,which) - zp - 1.92)
+            return abs(self.bandLikelihood(parameters,self.m,which) - zp - 1.35)
          
          # for some reason, can't get fsolve to work here.  good ol' fmin to the rescue
          self.uflux = 10**fmin(f95,N.asarray([-11.75]),disp=0)[0]
