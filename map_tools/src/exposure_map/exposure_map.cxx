@@ -33,6 +33,7 @@ $Header$
 #include <sstream>
 #include <iterator> // for ostream_iterator
 #include <algorithm>
+#include <iomanip>
 
 
 #include <stdexcept>
@@ -59,6 +60,7 @@ namespace {
 
       delete table;
    }
+   bool have_phi_dependence(false); // set below                  
 }
 
 using namespace map_tools;
@@ -77,6 +79,15 @@ public:
     IrfAeff(const irfInterface::IAeff* aeff, double energy, double cutoff=0.25)
         :m_aeff(aeff),m_energy(energy), m_cutoff(cutoff)
     {}
+
+    double operator()(double costh) const
+    {
+        if( m_aeff==0 ){
+            return costh<m_cutoff? 0 : (costh-m_cutoff)/(1.-m_cutoff);
+        }
+
+        return costh<m_cutoff? 0 : m_aeff->value(m_energy, acos(costh)*180/M_PI, 22.0); // note default
+    }
 
  
     double integral(double costh, double phi) const
@@ -109,7 +120,8 @@ public:
         , m_norm(norm)
     {}
     double operator()(const astro::SkyDir& s)const{
-        return m_norm*m_exp.integral(s, m_aeff);
+        if( have_phi_dependence)  return m_norm*m_exp.integral(s, m_aeff);
+        return m_norm*m_exp(s,m_aeff);
     }
 private:
     const Exposure& m_exp;
@@ -244,10 +256,15 @@ public:
         std::string in_file = m_pars["infile"];
         std::string table = m_pars["table"];
         Exposure ex(in_file, table);
-#if 0 //! todo: find out how this was broken
-        double total_elaspsed = ex.total();
-        m_f.info() << "\ttotal elapsed time: " << total_elaspsed << std::endl;
-#endif
+
+        const SkyBinner& bins = ex.data();
+        const healpix::CosineBinner& bin = bins[0];
+        int nbins = bin.size();
+        have_phi_dependence = nbins>40;
+        std::clog << "\t has " << (have_phi_dependence? "" : "no " ) << "phi dependence" << std::endl;
+
+
+
         irfInterface::IAeff* aeff = findAeff(m_pars["irfs"]);
 
         //Read in theta cuts from the event file
@@ -276,7 +293,7 @@ public:
         }
         double cutoff = cos(thetaCut.maxVal()*M_PI/180);
 
-        m_f.info() << "Cutoff used: " << cutoff << std::endl;
+        m_f.info() << "cos theta cutoff used: " << (abs(cutoff)< 1e-6? 0: cutoff) << std::endl;
 
 
         // create the image object, fill it from the exposure, write out
@@ -284,14 +301,17 @@ public:
         SkyImage image(m_pars); 
         std::vector<double> energy;
         image.getEnergies(energy);
+        std::clog << "Layer  energy   Aeff(0)   miniumum       mean           maximum" << std::endl;
+                     //   0   208.114   3735.29   5.76054e+009   7.03203e+009   8.10723e+009
         for ( std::vector<double>::size_type layer = 0; layer != energy.size(); ++layer){
             double norm = aeff!=0? aeff->value(energy[layer],0,0): 1.0; // for normalization
-            std::clog << "Generating layer " << layer
-                << " at energy " << energy[layer] << " MeV " 
-                << " Aeff(0): " << norm << " cm^2"<< std::endl;
+            std::clog << std::setw(3)<< layer << std::setw(10)<< energy[layer] << std::setw(10)<< norm  ;
 
             RequestExposure<IrfAeff> req(ex, IrfAeff(aeff, energy[layer],cutoff), 1.); 
             image.fill(req, layer);
+            std::clog << std::setw(15)<<image.minimum() 
+                    << std::setw(15)<< (image.count()>0? image.total()/image.count() : 0)
+                    << std::setw(15)<<  image.maximum() << std::endl;
         }
         ::writeEnergies(m_pars["outfile"], energy);
     }
