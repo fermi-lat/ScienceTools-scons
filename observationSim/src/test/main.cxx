@@ -100,12 +100,9 @@ int main(int iargc, char * argv[]) {
    irfInterface::IrfsFactory * myFactory 
       = irfInterface::IrfsFactory::instance();
    std::vector<irfInterface::Irfs *> respPtrs;
-   if (useCombined) {
-      respPtrs.push_back(myFactory->create("Glast25::Combined"));
-   } else { // use Front & Back
-      respPtrs.push_back(myFactory->create("Glast25::Front"));
-      respPtrs.push_back(myFactory->create("Glast25::Back"));
-   }
+
+   respPtrs.push_back(myFactory->create("DC1A::Front"));
+   respPtrs.push_back(myFactory->create("DC1A::Back"));
 
 // Generate the events and spacecraft data.
    observationSim::EventContainer events("test_events", "EVENTS");
