@@ -50,7 +50,7 @@ def rad_mask(ras,decs,cut_dir,radius,mask_only=False):
    if mask_only:
       return mask
    else:
-      return mask,N.degrees(N.arccos(cos_diffs))[mask]
+      return mask,N.arccos(cos_diffs)[mask]
 
 def rad_extract(eventfiles,center,radius_function,return_cols=['PULSE_PHASE'],cuts=None,apply_GTI=True):
    """Extract events with a radial cut.  Return specified columns and perform additional boolean cuts.
