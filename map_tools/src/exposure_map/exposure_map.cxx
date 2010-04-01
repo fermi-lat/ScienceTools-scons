@@ -31,6 +31,7 @@ $Header$
 #include "tip/Table.h"
 
 #include <sstream>
+#include <iomanip>
 #include <iterator> // for ostream_iterator
 #include <algorithm>
 #include <iomanip>
