@@ -252,7 +252,8 @@ if baseEnv.GetOption('userRelease'):
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['PFILESDIR'])
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['DATADIR'])
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['XMLDIR'])
-        baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['JODIR'])
+        if 'GlastRelease' in baseEnv['CPPDEFINES']:
+	        baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['JODIR'])
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['TOOLDIR'])
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['TESTDIR'])
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['TESTSCRIPTDIR'])
@@ -265,7 +266,8 @@ if baseEnv.GetOption('userRelease'):
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['PFILESDIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['DATADIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['XMLDIR'])
-        baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['JODIR'])
+        if 'GlastRelease' in baseEnv['CPPDEFINES']:
+	        baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['JODIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['TOOLDIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['TESTDIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['TESTSCRIPTDIR'])
