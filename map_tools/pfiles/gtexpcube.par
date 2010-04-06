@@ -30,6 +30,7 @@ enumbins,i,a,4,,,"Number of logarithmically uniform energy bins"
 #---------------------------------------------------------------------------------------
 # Hidden parameters.
 bincalc,s,a,"CENTER",CENTER|EDGE,,"How are energy layers computed from count map ebounds?"
+deltaphi,      r, h,  5, 1,45, "phi step to use for averaging, if livetime cube has no phi info."
 table,         s, h, "EXPOSURE",,,"Exposure cube extension"
 evtable,       s, h, "EVENTS",,,"FT1 events extension"
 chatter,       i, h, 2, 0, 4, "Chattiness of output"
