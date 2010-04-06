@@ -4,7 +4,6 @@
 @author Toby Burnett
 
 See the <a href="exposure_map_guide.html"> user's guide </a>.
-
 $Header$
 */
 
@@ -61,7 +60,8 @@ namespace {
 
       delete table;
    }
-   bool have_phi_dependence(false); // set below                  
+   bool have_phi_dependence(false); // set below   
+   double deltaphi(5.), phioffset(22.5);  // phi step for averaging
 }
 
 using namespace map_tools;
@@ -83,16 +83,25 @@ public:
 
     double operator()(double costh) const
     {
+        // callback if no phi dependence
+        if( costh<m_cutoff ) return 0;
         if( m_aeff==0 ){
-            return costh<m_cutoff? 0 : (costh-m_cutoff)/(1.-m_cutoff);
+            return (costh-m_cutoff)/(1.-m_cutoff);
         }
+        // make an average here
+        double sum(0); int n(0);
+        double theta(acos(costh)*180/M_PI);
+        for( double phi=0; phi<45+phioffset; phi+=deltaphi, n++){
+            sum+=  m_aeff->value(m_energy,theta , phi+phioffset);
+        }
+        return sum/n;
 
-        return costh<m_cutoff? 0 : m_aeff->value(m_energy, acos(costh)*180/M_PI, 22.0); // note default
     }
 
  
     double integral(double costh, double phi) const
     {
+        // callback if found phi dependence in the livetime cube
         if( m_aeff==0 ){
             return costh<m_cutoff? 0 : (costh-m_cutoff)/(1.-m_cutoff);
         }
@@ -262,8 +271,12 @@ public:
         const healpix::CosineBinner& bin = bins[0];
         int nbins = bin.size();
         have_phi_dependence = nbins>40;
-        std::clog << "\t has " << (have_phi_dependence? "" : "no " ) << "phi dependence" << std::endl;
-
+        if(! have_phi_dependence){
+            deltaphi = m_pars["deltaphi"];
+            std::clog << "\t ==> has no phi dependence, will average, using deltaphi="<<deltaphi << std::endl;
+        }else{
+            std::clog << "\t ==> has phi dependence" << std::endl;
+        }
 
 
         irfInterface::IAeff* aeff = findAeff(m_pars["irfs"]);
@@ -292,9 +305,9 @@ public:
             }
             delete cuts;
         }
-        double cutoff = cos(thetaCut.maxVal()*M_PI/180);
+        double ctcutoff = cos(thetaCut.maxVal()*M_PI/180);
 
-        m_f.info() << "cos theta cutoff used: " << (abs(cutoff)< 1e-6? 0: cutoff) << std::endl;
+        m_f.info() << "cos theta cutoff used: " << (abs(ctcutoff)< 1e-6? 0: ctcutoff) << std::endl;
 
 
         // create the image object, fill it from the exposure, write out
@@ -302,24 +315,28 @@ public:
         SkyImage image(m_pars); 
         std::vector<double> energy;
         image.getEnergies(energy);
-        std::clog << "Layer  energy   Aeff(0)   miniumum       mean           maximum" << std::endl;
-                     //   0   208.114   3735.29   5.76054e+009   7.03203e+009   8.10723e+009
+        std::clog << "Layer  energy    Aeff(0)  miniumum    mean        maximum" << std::endl;
+                  //    0    208.11      4032   5.63e+009   6.89e+009   7.93e+009
         for ( std::vector<double>::size_type layer = 0; layer != energy.size(); ++layer){
-            double norm = aeff!=0? aeff->value(energy[layer],0,0): 1.0; // for normalization
-            std::clog << std::setw(3)<< layer << std::setw(10)<< energy[layer] << std::setw(10)<< norm  ;
+            
+            IrfAeff a(IrfAeff(aeff, energy[layer],ctcutoff));
+            std::clog << std::setprecision(5) 
+                      << std::setw(3) << layer << std::setw(10)<< int(energy[layer]+0.5) 
+                      << std::setw(10)<< int(a(1.0)+0.5)  ;
 
-            RequestExposure<IrfAeff> req(ex, IrfAeff(aeff, energy[layer],cutoff), 1.); 
+            RequestExposure<IrfAeff> req(ex, a, 1.); 
             image.fill(req, layer);
-            std::clog << std::setw(15)<<image.minimum() 
-                    << std::setw(15)<< (image.count()>0? image.total()/image.count() : 0)
-                    << std::setw(15)<<  image.maximum() << std::endl;
+            std::clog << std::setprecision(3)
+                    << std::setw(12)<< image.minimum() 
+                    << std::setw(12)<< (image.count()>0? image.total()/image.count() : 0)
+                    << std::setw(12)<<  image.maximum() << std::endl;
         }
         ::writeEnergies(m_pars["outfile"], energy);
     }
 
     void prompt() {
         m_pars.Prompt("infile");
-				m_pars.Prompt("evfile");
+	m_pars.Prompt("evfile");
         m_pars.Prompt("cmfile");
         m_pars.Prompt("outfile");
         m_pars.Prompt("irfs");
@@ -343,6 +360,7 @@ public:
         }
     
         m_pars.Prompt("bincalc");
+        m_pars.Prompt("deltaphi");
         m_pars.Prompt("table");
 				m_pars.Prompt("evtable");
         m_pars.Prompt("chatter");
