@@ -61,7 +61,8 @@ namespace {
       delete table;
    }
    bool have_phi_dependence(false); // set below   
-   double deltaphi(5.), phioffset(22.5);  // phi step for averaging
+   double deltaphi(5.), // phi step for averaging
+       phioffset(15.);  // central phi value, will be used if step is 45.
 }
 
 using namespace map_tools;
@@ -111,6 +112,19 @@ public:
         int n(0);
         return m_aeff->value(m_energy, theta, phi);
         
+    }
+    /// calculate etendue: integral over solid angle
+    double etendue(double phi=-1) const
+    {
+        double dz(0.5);
+        double zmin(m_cutoff+dz/2), zmax(1.0),  sum(0);
+        int n(0);
+        for( double z= zmin; z<zmax; z+=dz, ++n){
+            if( phi<0) sum+= this->operator()(z);
+            else sum+= integral(z,phi);
+        }
+        return sum/n*(2*M_PI)*(1-m_cutoff)/2;
+
     }
     const irfInterface::IAeff* m_aeff;
     double m_energy;
@@ -270,10 +284,13 @@ public:
         const SkyBinner& bins = ex.data();
         const healpix::CosineBinner& bin = bins[0];
         int nbins = bin.size();
-        have_phi_dependence = nbins>40;
+        bool ignorephi = m_pars["ignorephi"];
+        have_phi_dependence = nbins>40 && ! ignorephi;
         if(! have_phi_dependence){
             deltaphi = m_pars["deltaphi"];
-            std::clog << "\t ==> has no phi dependence, will average, using deltaphi="<<deltaphi << std::endl;
+            std::clog << (ignorephi ? "\t ==> has phi dependence but ignoring it,"
+                                    : "\t ==> has no phi dependence,");
+            std::clog <<" will average Aeff, using deltaphi="<<deltaphi << std::endl;
         }else{
             std::clog << "\t ==> has phi dependence" << std::endl;
         }
@@ -315,14 +332,14 @@ public:
         SkyImage image(m_pars); 
         std::vector<double> energy;
         image.getEnergies(energy);
-        std::clog << "Layer  energy    Aeff(0)  miniumum    mean        maximum" << std::endl;
+        std::clog << "Layer  energy    etendue  miniumum    mean        maximum" << std::endl;
                   //    0    208.11      4032   5.63e+009   6.89e+009   7.93e+009
         for ( std::vector<double>::size_type layer = 0; layer != energy.size(); ++layer){
             
             IrfAeff a(IrfAeff(aeff, energy[layer],ctcutoff));
             std::clog << std::setprecision(5) 
                       << std::setw(3) << layer << std::setw(10)<< int(energy[layer]+0.5) 
-                      << std::setw(10)<< int(a(1.0)+0.5)  ;
+                      << std::setw(10)<< int(a.etendue()+0.5)  ;
 
             RequestExposure<IrfAeff> req(ex, a, 1.); 
             image.fill(req, layer);
@@ -361,6 +378,7 @@ public:
     
         m_pars.Prompt("bincalc");
         m_pars.Prompt("deltaphi");
+        m_pars.Prompt("ignorephi");
         m_pars.Prompt("table");
 				m_pars.Prompt("evtable");
         m_pars.Prompt("chatter");

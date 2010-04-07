@@ -1,7 +1,7 @@
 # $Header$
 #---------------------------------------------------------------------------------------
 # General parameters.
-infile,f,a,"",,,"Exposure cube input file name"
+infile,f,a,"",,,"Exposure, or Livetime cube input file name"
 evfile,f,a,"NONE",,,"FT1 events input file name"
 cmfile,f,a,"NONE",,,"Count map input file name (NONE for manual input of map geometry)"
 outfile,f,a,"expmap.fits",,,"Exposure map output file name"
@@ -31,6 +31,7 @@ enumbins,i,a,4,,,"Number of logarithmically uniform energy bins"
 # Hidden parameters.
 bincalc,s,a,"CENTER",CENTER|EDGE,,"How are energy layers computed from count map ebounds?"
 deltaphi,      r, h,  5, 1,45, "phi step to use for averaging, if livetime cube has no phi info."
+ignorephi,     b, h, "no", , , "Ignore phi information in Livetime cube"
 table,         s, h, "EXPOSURE",,,"Exposure cube extension"
 evtable,       s, h, "EVENTS",,,"FT1 events extension"
 chatter,       i, h, 2, 0, 4, "Chattiness of output"
