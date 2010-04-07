@@ -300,7 +300,7 @@ void SkyImage::fill(const astro::SkyFunction& req, unsigned int layer)
 {
     checkLayer(layer);
     m_total=m_count=m_sumsq=0;
-    m_min=1e10;m_max=-1e10;
+    m_min=1e20;m_max=-1e10;
     int offset = m_naxis1* m_naxis2 * layer;
     for( size_t k = 0; k< (unsigned int)(m_naxis1)*(m_naxis2); ++k){
         // determine the bin center (pixel coords start at (1,1) in center of lower left
