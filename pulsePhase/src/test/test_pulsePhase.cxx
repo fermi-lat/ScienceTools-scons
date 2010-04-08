@@ -319,7 +319,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
   test_name_cont.push_back("par13");
 
   // Prepare files to be used in the tests.
-  std::string ev_file = prependDataPath("my_pulsar_events_v3.fits");
+  std::string ev_file = prependDataPath("my_pulsar_events_v3r1.fits");
   std::string sc_file = prependDataPath("my_pulsar_spacecraft_data_v3r1.fits");
   std::string master_pulsardb = prependDataPath("master_pulsardb_v2.fits");
   std::string ev_file_2gti = prependDataPath("my_pulsar_events_2gti.fits");
@@ -627,7 +627,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
   test_name_cont.push_back("par7");
 
   // Prepare files to be used in the tests.
-  std::string ev_file = prependDataPath("my_pulsar_events_v3.fits");
+  std::string ev_file = prependDataPath("my_pulsar_events_v3r1.fits");
   std::string sc_file = prependDataPath("my_pulsar_spacecraft_data_v3r1.fits");
   std::string master_pulsardb = prependDataPath("master_pulsardb_v2.fits");
   std::string ev_file_2gti = prependDataPath("my_pulsar_events_2gti.fits");
