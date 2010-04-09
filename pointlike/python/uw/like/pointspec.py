@@ -82,7 +82,7 @@ class AnalysisEnvironment(object):
       try:
          f = open(self.ltcube)
          ltfile_exists = True
-      except IOError:
+      except (IOError, TypeError):
          ltfile_exists = False
 
       if self.ft2files is None and (self.ltcube is None or ltfile_exists == False):
