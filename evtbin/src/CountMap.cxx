@@ -70,6 +70,12 @@ namespace evtbin {
     // Collect any/all needed keywords from the primary extension.
     harvestKeywords(m_event_file_cont);
 
+    // Collect any/all needed keywords from the GTI extension.
+    // But do not fail if GTI isn't there. This is for GBM headers.
+    try {
+      harvestKeywords(m_event_file_cont, "GTI");
+    } catch (...){}
+
     // Collect any/all needed keywords from the events extension.
     harvestKeywords(m_event_file_cont, m_event_table);
 
@@ -159,6 +165,9 @@ namespace evtbin {
 
     // Write DSS keywords to preserve cut information.
     writeDssKeywords(header);
+
+    // Write the history that came from the events extension.
+    writeHistory(*output_image, "EVENTS");
 
     // Resize image dimensions to conform to the binner dimensions.
     for (DimCont_t::size_type index = 0; index != num_dims; ++index) {

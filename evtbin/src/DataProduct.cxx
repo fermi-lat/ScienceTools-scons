@@ -3,8 +3,11 @@
     \author James Peachey, HEASARC
 */
 #include <algorithm>
+#include <cctype>
 #include <cmath>
+#include <cstddef>
 #include <cstdlib>
+#include <cstring>
 #include <limits>
 #include <list>
 #include <memory>
@@ -90,7 +93,7 @@ namespace {
 namespace evtbin {
 
   DataProduct::DataProduct(const std::string & event_file, const std::string & event_table, const Gti & gti):
-    m_os("DataProduct", "DataProduct", 2), m_key_value_pairs(), m_known_keys(), m_dss_keys(), m_event_file_cont(),
+    m_os("DataProduct", "DataProduct", 2), m_key_value_pairs(), m_history(), m_known_keys(), m_dss_keys(), m_event_file_cont(),
     m_data_dir(), m_event_file(event_file), m_event_table(event_table), m_gti(gti), m_hist_ptr(0) {
     using namespace st_facilities;
 
@@ -99,7 +102,7 @@ namespace evtbin {
 
     // Make a list of known keywords. These can be harvested from the input events extension
     // and used to update the output file(s).
-    const char * keys[] = { "TELESCOP", "INSTRUME", "CHANTYPE", "DATE", 
+    static const char * keys[] = { "TELESCOP", "INSTRUME", "CHANTYPE", "DATE", 
 			    "DATE-OBS", "DATE-END", "OBJECT", "TIMESYS", 
 			    "MJDREFI", "MJDREFF", "EQUNINOX", "RADECSYS", 
 			    "EXPOSURE", "ONTIME", "TSTART", "TSTOP", 
@@ -183,6 +186,27 @@ namespace evtbin {
       (*table_itor)["START"].set(itor->first);
       (*table_itor)["STOP"].set(itor->second);
     }
+
+    // If input GTI extension contained any history, copy that to output.
+    writeHistory(*gti_table, "GTI");
+  }
+
+  void DataProduct::writeHistory(tip::Extension & output_ext, const std::string input_ext_name) const {
+    tip::Header & header(output_ext.getHeader());
+    try {
+      const KeyCont_t & history(m_history[input_ext_name]);
+      if (history.empty()) {
+        header.addHistory("No HISTORY copied from the input " + input_ext_name + " extension(s).");
+      } else {
+        header.addHistory("BEGIN HISTORY copied from the input " + input_ext_name + " extension(s).");
+        header.addHistory("------------------------------------------------------------------------");
+        for (KeyCont_t::const_iterator itor = history.begin(); itor != history.end(); ++itor) {
+          header.addHistory(*itor);
+        }
+        header.addHistory("------------------------------------------------------------------------");
+        header.addHistory("END HISTORY copied from the input " + input_ext_name + " extension(s).");
+      }
+    } catch (...) {}
   }
 
   const Gti & DataProduct::getGti() const { return m_gti; }
@@ -260,6 +284,7 @@ namespace evtbin {
   void DataProduct::harvestKeywords(const std::string & file_name, const std::string & ext_name) {
     std::auto_ptr<const tip::Extension> ext(tip::IFileSvc::instance().readExtension(file_name, ext_name));
     harvestKeywords(ext->getHeader());
+    harvestHistory(*ext);
   }
 
   void DataProduct::harvestKeywords(const tip::Header & header) {
@@ -303,6 +328,34 @@ namespace evtbin {
 
         // This record was found, so save it in the container of records.
         m_key_value_pairs[*itor] = record;
+      } catch (...) {
+        // Ignore errors. Keywords are obtained on a best effort basis, but missing them shouldn't
+        // cause the software to fail.
+      }
+    }
+  }
+
+  void DataProduct::harvestHistory(const tip::Extension & extension) {
+    const tip::Header & header(extension.getHeader());
+    std::string ext_name(extension.getName());
+    // Find all history keywords and copy them.
+    // Iterate over keywords which are known to be useful in this case.
+    for (tip::Header::ConstIterator itor = header.begin(); itor != header.end(); ++itor) {
+      try {
+        // Read each key record as a whole.
+        const tip::KeyRecord &record(*itor);
+
+        // Store history keywords, keyed on the name of the source extension.
+        std::string card(record.get());
+
+        // Only way to get history is to read the card and see if it starts with "HISTORY".
+        if ("HISTORY" == card.substr(0, std::strlen("HISTORY"))) {
+          // Skip leading white space.
+          std::size_t start = std::strlen("HISTORY");
+          while (0 != std::isspace(card[start])) ++start;
+          m_history[ext_name].push_back(card.substr(start));
+        }
+
       } catch (...) {
         // Ignore errors. Keywords are obtained on a best effort basis, but missing them shouldn't
         // cause the software to fail.
@@ -427,6 +480,7 @@ namespace evtbin {
           // If keyword is already present, update it with the value from the key-value pair.
           if (update_key) keyword.setRecord(key_itor->second);
         }
+
         delete ext;
       }
     } catch (...) {

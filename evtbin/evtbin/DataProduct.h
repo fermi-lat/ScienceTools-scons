@@ -36,6 +36,7 @@ namespace evtbin {
       typedef std::vector<std::string> FileNameCont_t;
       typedef std::vector<std::string> KeyCont_t;
       typedef std::map<std::string, tip::KeyRecord> KeyValuePairCont_t;
+      typedef std::map<std::string, KeyCont_t> StringKeyPairCont_t;
 
       /** \brief Construct data product object from the given event and spacecraft file.
       */
@@ -71,6 +72,13 @@ namespace evtbin {
           \param out_file The output file name.
       */
       virtual void writeGti(const std::string & out_file) const;
+
+      /** \brief Write history to an output file from an input extension.
+          exist.
+          \param output_ext The output extension to which to write the history.
+          \param input_ext_name Name of the input extension whose history to copy. (History read previously and cached).
+      */
+      virtual void writeHistory(tip::Extension & output_ext, const std::string input_ext_name) const;
 
       /** \brief Returns this object's current set of GTIs (read-only).
       */
@@ -118,6 +126,11 @@ namespace evtbin {
            \param header The input header to scan for keywords.
       */
       void harvestKeywords(const tip::Header & header);
+
+      /** \brief Read history keywords from the given header object.
+           \param extension The input extension to scan for history.
+      */
+      void harvestHistory(const tip::Extension & extension);
 
       /** \brief Adjust and/or compute time-related key-value pairs for this data product. This method does not
                  directly modify keywords in any file. However, the modified values will be written if/when
@@ -174,6 +187,7 @@ namespace evtbin {
 
       mutable st_stream::StreamFormatter m_os;
       mutable KeyValuePairCont_t m_key_value_pairs;
+      mutable StringKeyPairCont_t m_history;
       KeyCont_t m_known_keys;
       std::list<std::string> m_dss_keys;
       FileNameCont_t m_event_file_cont;

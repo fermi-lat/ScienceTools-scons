@@ -25,6 +25,12 @@ namespace evtbin {
     // Collect any/all needed keywords from the primary extension.
     harvestKeywords(m_event_file_cont);
 
+    // Collect any/all needed keywords from the GTI extension.
+    // But do not fail if GTI isn't there. This is for GBM headers.
+    try {
+      harvestKeywords(m_event_file_cont, "GTI");
+    } catch (...){}
+
     // Collect any/all needed keywords from the events extension.
     harvestKeywords(m_event_file_cont, m_event_table);
 
@@ -47,6 +53,9 @@ namespace evtbin {
 
     // Write DSS keywords to preserve cut information.
     writeDssKeywords(output_table->getHeader());
+
+    // Write the history that came from the events extension.
+    writeHistory(*output_table, "EVENTS");
 
     // The binner from the histogram will be used below.
     const Binner * binner = m_hist.getBinners().at(0);

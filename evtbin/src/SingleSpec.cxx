@@ -25,6 +25,12 @@ namespace evtbin {
     // Collect any/all needed keywords from the primary extension.
     harvestKeywords(m_event_file_cont);
 
+    // Collect any/all needed keywords from the GTI extension.
+    // But do not fail if GTI isn't there. This is for GBM headers.
+    try {
+      harvestKeywords(m_event_file_cont, "GTI");
+    } catch (...){}
+
     // Collect any/all needed keywords from the ebounds extension.
     // But do not fail if ebounds isn't there.  This is for GBM headers.
     try {
@@ -56,6 +62,9 @@ namespace evtbin {
 
     // Write DSS keywords to preserve cut information.
     writeDssKeywords(output_table->getHeader());
+
+    // Write the history that came from the events extension.
+    writeHistory(*output_table, "EVENTS");
 
     // Resize table: number of records in output file must == the number of bins in the binner.
     output_table->setNumRecords(binner->getNumBins());
