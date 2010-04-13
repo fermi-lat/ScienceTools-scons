@@ -15,6 +15,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <string>
+#include <utility>
 
 #include "evtbin/Binner.h"
 #include "evtbin/DataProduct.h"
@@ -94,7 +95,7 @@ namespace evtbin {
 
   DataProduct::DataProduct(const std::string & event_file, const std::string & event_table, const Gti & gti):
     m_os("DataProduct", "DataProduct", 2), m_key_value_pairs(), m_history(), m_known_keys(), m_dss_keys(), m_event_file_cont(),
-    m_data_dir(), m_event_file(event_file), m_event_table(event_table), m_gti(gti), m_hist_ptr(0) {
+    m_data_dir(), m_event_file(event_file), m_event_table(event_table), m_creator(), m_gti(gti), m_hist_ptr(0) {
     using namespace st_facilities;
 
     // Find the directory containing templates.
@@ -149,6 +150,9 @@ namespace evtbin {
     // Add CREATOR keyword to the hash of keywords.
     updateKeyValue("CREATOR", creator, "Software and version creating file");
 
+    // Store CREATOR information for use in history keywords.
+    m_creator = creator;
+
     // Update newly created file with keywords which were harvested from input data.
     updateKeywords(out_file);
 
@@ -193,20 +197,13 @@ namespace evtbin {
 
   void DataProduct::writeHistory(tip::Extension & output_ext, const std::string input_ext_name) const {
     tip::Header & header(output_ext.getHeader());
-    try {
-      const KeyCont_t & history(m_history[input_ext_name]);
-      if (history.empty()) {
-        header.addHistory("No HISTORY copied from the input " + input_ext_name + " extension(s).");
-      } else {
-        header.addHistory("BEGIN HISTORY copied from the input " + input_ext_name + " extension(s).");
-        header.addHistory("------------------------------------------------------------------------");
-        for (KeyCont_t::const_iterator itor = history.begin(); itor != history.end(); ++itor) {
-          header.addHistory(*itor);
-        }
-        header.addHistory("------------------------------------------------------------------------");
-        header.addHistory("END HISTORY copied from the input " + input_ext_name + " extension(s).");
-      }
-    } catch (...) {}
+    const KeyCont_t & history(m_history[input_ext_name]);
+    if (!history.empty() && !m_creator.empty()) {
+      header.addHistory("The following history was copied from input files by " + m_creator);
+    }
+    for (KeyCont_t::const_iterator itor = history.begin(); itor != history.end(); ++itor) {
+      header.addHistory(*itor);
+    }
   }
 
   const Gti & DataProduct::getGti() const { return m_gti; }
@@ -282,9 +279,15 @@ namespace evtbin {
   }
 
   void DataProduct::harvestKeywords(const std::string & file_name, const std::string & ext_name) {
-    std::auto_ptr<const tip::Extension> ext(tip::IFileSvc::instance().readExtension(file_name, ext_name));
-    harvestKeywords(ext->getHeader());
-    harvestHistory(*ext);
+    std::auto_ptr<const tip::Extension> ext(0);
+    try {
+      ext.reset(tip::IFileSvc::instance().readExtension(file_name, ext_name));
+      harvestKeywords(ext->getHeader());
+      harvestHistory(ext.get(), file_name, ext_name);
+    } catch (const std::exception &) {
+      harvestHistory(ext.get(), file_name, ext_name);
+      throw;
+    }
   }
 
   void DataProduct::harvestKeywords(const tip::Header & header) {
@@ -335,9 +338,20 @@ namespace evtbin {
     }
   }
 
-  void DataProduct::harvestHistory(const tip::Extension & extension) {
-    const tip::Header & header(extension.getHeader());
-    std::string ext_name(extension.getName());
+  void DataProduct::harvestHistory(const tip::Extension * ext, const std::string & file_name, const std::string & ext_name) {
+    // Make sure a valid open extension was passed, and flag it otherwise.
+    if (0 == ext) {
+      // Write a comment in the history in case the output extension is written
+      // despite the lack of input. For example, a GTI extension is always
+      // written even if the input file does not have a GTI extension.
+      m_history[ext_name].push_back("------------------------------------------------------------------------");
+      m_history[ext_name].push_back("Unable to find or open input extension \"" + ext_name + "\" in file " + file_name);
+      m_history[ext_name].push_back("------------------------------------------------------------------------");
+      return;
+    }
+
+    const tip::Header & header(ext->getHeader());
+    KeyCont_t history;
     // Find all history keywords and copy them.
     // Iterate over keywords which are known to be useful in this case.
     for (tip::Header::ConstIterator itor = header.begin(); itor != header.end(); ++itor) {
@@ -353,7 +367,7 @@ namespace evtbin {
           // Skip leading white space.
           std::size_t start = std::strlen("HISTORY");
           while (0 != std::isspace(card[start])) ++start;
-          m_history[ext_name].push_back(card.substr(start));
+          history.push_back(card.substr(start));
         }
 
       } catch (...) {
@@ -361,6 +375,24 @@ namespace evtbin {
         // cause the software to fail.
       }
     }
+
+    // Check whether any history was found and add appropriate description either way.
+    if (history.empty()) {
+      history.push_back("------------------------------------------------------------------------");
+      history.push_back("No history available in " + file_name + "[" + ext_name + "]");
+      history.push_back("------------------------------------------------------------------------");
+    } else {
+      history.push_front("------------------------------------------------------------------------");
+      history.push_front("BEGIN history copied from " + file_name + "[" + ext_name + "]");
+      history.push_front("------------------------------------------------------------------------");
+      history.push_back("------------------------------------------------------------------------");
+      history.push_back("END copied history");
+      history.push_back("------------------------------------------------------------------------");
+    }
+
+    // Add this history to the total history acquired from this extension from all input files.
+    KeyCont_t & all_history(m_history[ext_name]);
+    all_history.insert(all_history.end(), history.begin(), history.end());
   }
 
   void DataProduct::adjustTimeKeywords(const std::string & sc_file, const std::string & sc_table, const Binner * binner) {

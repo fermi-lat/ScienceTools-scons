@@ -6,6 +6,7 @@
 #define evtbin_DataProduct_h
 
 #include <ctime>
+#include <deque>
 #include <list>
 #include <map>
 #include <string>
@@ -19,6 +20,7 @@
 #include "tip/Table.h"
 
 namespace tip {
+  class Extension;
   class Header;
 }
 
@@ -34,7 +36,7 @@ namespace evtbin {
   class DataProduct {
     public:
       typedef std::vector<std::string> FileNameCont_t;
-      typedef std::vector<std::string> KeyCont_t;
+      typedef std::deque<std::string> KeyCont_t;
       typedef std::map<std::string, tip::KeyRecord> KeyValuePairCont_t;
       typedef std::map<std::string, KeyCont_t> StringKeyPairCont_t;
 
@@ -128,9 +130,11 @@ namespace evtbin {
       void harvestKeywords(const tip::Header & header);
 
       /** \brief Read history keywords from the given header object.
-           \param extension The input extension to scan for history.
+           \param ext The input extension to scan for history.
+           \param file_name The input file name.
+           \param ext_name The input file extension name.
       */
-      void harvestHistory(const tip::Extension & extension);
+      void harvestHistory(const tip::Extension * ext, const std::string & file_name, const std::string & ext_name);
 
       /** \brief Adjust and/or compute time-related key-value pairs for this data product. This method does not
                  directly modify keywords in any file. However, the modified values will be written if/when
@@ -194,6 +198,7 @@ namespace evtbin {
       std::string m_data_dir;
       std::string m_event_file;
       std::string m_event_table;
+      std::string m_creator;
       Gti m_gti;
       Hist * m_hist_ptr;
   };
