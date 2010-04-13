@@ -288,7 +288,7 @@ def sum_ltcubes(files,outputfile = 'summed_ltcube.fits'):
    handles = __get_handles__(files)
 
    exp_table = __merge_exposures__(handles)
-   gti = merge_gti(handles)
+   gti = merge_gti(files)
 
    exp_table.writeto(outputfile,clobber=True)
    gti.writeExtension(outputfile)
