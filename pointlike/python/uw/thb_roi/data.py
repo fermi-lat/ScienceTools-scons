@@ -29,7 +29,10 @@ caldb_version = 'v1r1' # may have to set
 if 'CALDB' not in os.environ:
     os.environ['CALDB'] = os.path.join(fermi_root, 'CALDB',caldb_version,'CALDB','data','glast','lat')
 if not os.path.exists(os.environ['CALDB']):
-    print 'bad CALDB: %s' %os.environ['CALDB']
+    raise Exception( 'bad CALDB: %s' %os.environ['CALDB'])
+# now update path if using new convention
+if os.path.split(os.environ['CALDB'])[-1] != 'lat':
+    os.environ['CALDB'] = os.path.join(caldb, 'data', 'glast', 'lat')
 
 #default_catalog ='gll_psc11month_v2.fit'   
 #default_catalog ='gll_psc11months_combined_v4.fit' # after 11/24
