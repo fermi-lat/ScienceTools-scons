@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.40  2009/03/26 14:15:05  jurgen
+Properly handle NULL error radii (by assuming an minimum 1D 1sigma error of 0.005 deg)
+
 Revision 1.39  2008/08/20 11:52:21  jurgen
 Correct probability computation and resolve STGEN-56
 
@@ -135,12 +138,13 @@ Replace header information with CVS typeset information.
 #define CATALOGUE_H
 
 /* Includes _________________________________________________________________ */
+#include <cfloat>
 #include "sourceIdentify.h"
 #include "Parameters.h"
 #include "catalogAccess/catalog.h"
 #include "catalogAccess/quantity.h"
 #include "fitsio.h"
-#include <cfloat>
+#include "GHealpix.h"
 
 /* Namespace definition _____________________________________________________ */
 namespace sourceIdentify {
@@ -531,6 +535,8 @@ private:
   // Input catalogues
   InCatalogue              m_src;            //!< Source catalogue
   InCatalogue              m_cpt;            //!< Counterpart catalogue
+  GHealpix                 m_density;        //!< Counterpart catalogue density
+  int                      m_has_density;    //!< Has counterpart density
   //
   // Catalogue building parameters
   fitsfile                *m_memFile;        //!< Memory catalogue FITS file pointer

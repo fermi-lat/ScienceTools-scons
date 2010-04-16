@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.49  2010/04/16 15:23:11  jurgen
+Move euler and modula in GSkyDir.cxx
+
 Revision 1.48  2009/03/26 14:15:05  jurgen
 Properly handle NULL error radii (by assuming an minimum 1D 1sigma error of 0.005 deg)
 
@@ -1028,6 +1031,9 @@ void Catalogue::init_memory(void) {
       // Initialise counterpart statistics
       m_num_Sel  = 0;
       m_cpt_stat = NULL;
+
+      // Initialise counterpart density flag
+      m_has_density = 0;
 
       // Catch-22
       m_prior     = c_prob_prior;
@@ -2474,6 +2480,20 @@ Status Catalogue::build(Parameters *par, Status status) {
           Log(Error_2, "%d : Unable to create FITS output catalogue '%s'.",
               (Status)status, par->m_outCatName.c_str());
         continue;
+      }
+
+      // Optionally read counterpart density catalogue
+      if (par->m_cptDensFile.length() > 0) {
+        try {
+          m_density     = GHealpix(par->m_cptDensFile);
+          m_has_density = 1;
+          std::cout << m_density << std::endl;
+        }
+        catch ( char *str ) {
+          Log(Warning_3, "Unable to read counterpart density file '%s'.",
+                          par->m_cptDensFile.c_str());
+          m_has_density = 0;
+        }
       }
 
       // Dump header
