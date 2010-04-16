@@ -823,7 +823,7 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 		data_number[i] = nids
 		
 		# Sort list
-		row.sort(compare_by('prob'), reverse=True)
+		#row.sort(compare_by('prob'), reverse=True)
 		
 		# Loop over all counterparts
 		for k, cpt in enumerate(row):

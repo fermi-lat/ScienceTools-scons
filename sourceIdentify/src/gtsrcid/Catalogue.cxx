@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.48  2009/03/26 14:15:05  jurgen
+Properly handle NULL error radii (by assuming an minimum 1D 1sigma error of 0.005 deg)
+
 Revision 1.47  2009/03/18 10:01:59  jurgen
 Avoid floating point exception in case of NULL position errors
 
@@ -269,63 +272,6 @@ std::string find(std::vector <std::string> &arg, std::string match) {
   // Return result
   return result;
 
-}
-
-
-/***********************************************************************//**
- * @brief Returns the remainder of the division \a v1/v2.
- *
- * @param[in] v1 Argument 1.
- * @param[in] v2 Argument 2.
- *
- * Returns the remainder of the division \a v1/v2.
- * The result is non-negative.
- * \a v1 can be positive or negative; \a v2 must be positive.
- ***************************************************************************/
-double modulo(double v1, double v2)
-{
-    // Return
-    return (v1 >= 0) ? ((v1 < v2) ? v1 : fmod(v1,v2)) : (fmod(v1,v2)+v2);
-}
-
-
-/***********************************************************************//**
- * @brief General coordinate transformation routine for J2000
- *
- * @param[in] type Conversion type (0=equ2gal, 1=gal2equ)
- * @param[in] xin Input longitude (RA or GLON) in radians.
- * @param[in] yin Input latitude (Dec or GLAT) in radians.
- * @param[out] xout Output longitude in radians.
- * @param[out] yout Output latitude in radians.
- ***************************************************************************/
-void euler(const int& type, const double& xin, const double &yin, 
-           double* xout, double *yout)
-{
-    // Set transformation constants
-    const double psi[]    = {0.57477043300,  4.9368292465};
-    const double stheta[] = {0.88998808748, -0.88998808748};
-    const double ctheta[] = {0.45598377618,  0.45598377618};
-    const double phi[]    = {4.9368292465,   0.57477043300};
-
-    // Perform transformation
-    double a    = xin - phi[type];
-    double b    = yin;
-    double sb   = sin(b);
-    double cb   = cos(b);
-    double cbsa = cb * sin(a);
-
-    //
-    a = atan2(ctheta[type] * cbsa + stheta[type] * sb, cb * cos(a));
-    b = -stheta[type] * cbsa + ctheta[type] * sb;
-    if (b > 1.0)
-        b = 1.0;
-
-    //
-    *yout = asin(b);
-    *xout = modulo((a+psi[type] + fourpi), twopi);
-
-    // Return
-    return;
 }
 
 
