@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.1  2010/04/16 16:16:19  jurgen
+Implement HEALPix interface to read counterpart density maps
+
 ------------------------------------------------------------------------------*/
 /**
  * @file GHealpix.cxx
@@ -70,7 +73,7 @@ GHealpix::GHealpix(int nside, std::string scheme, std::string coordsys,
     // Check nside parameter (power of 2 between 1 and 8192)
     int order = nside2order(nside);
     if (order == -1)
-      throw "GHealpix: invalid order (-1).";
+      throw std::string("GHealpix: invalid order (-1).");
 
     // Check scheme
     int i_scheme = -1;
@@ -79,7 +82,7 @@ GHealpix::GHealpix(int nside, std::string scheme, std::string coordsys,
     else if (scheme == "NESTED")
         i_scheme = 1;
     else
-      throw "GHealpix: invalid scheme (has to be either RING or NESTED).";
+      throw std::string("GHealpix: invalid scheme (has to be either RING or NESTED).");
 
     // Check coordinate system
     int i_coordsys;
@@ -88,7 +91,7 @@ GHealpix::GHealpix(int nside, std::string scheme, std::string coordsys,
     else if (coordsys == "GAL")
         i_coordsys = 1;
     else
-      throw "GHealpix: invalid coordinate system (has to be either EQU or GAL).";
+      throw std::string("GHealpix: invalid coordinate system (has to be either EQU or GAL).");
 
     // Check dimension
     if (dimension < 1) dimension = 1;
@@ -133,7 +136,7 @@ GHealpix::GHealpix(const std::string filename)
     // Open first table extension
     fstatus = fits_open_table(&fptr, (char*)filename.c_str(), 0, &fstatus);
     if (fstatus != 0)
-        throw "GHealpix: unable to open FITS file.";
+        throw std::string("GHealpix: unable to open FITS file.");
 
     // Read pixels from FITS HDU
     read(fptr);
@@ -206,7 +209,7 @@ double& GHealpix::operator() (int pixel, int element)
 {
     // Check pixel validity
     if (pixel < 0 || pixel >= m_num_pixels || element < 0 || element >= m_size_pixels)
-        throw "GHealpix: pixel index is out of range.";
+        throw std::string("GHealpix: pixel index is out of range.");
 
     // Return pixel
     return m_pixels[pixel*m_size_pixels+element];
@@ -223,7 +226,7 @@ const double& GHealpix::operator() (int pixel, int element) const
 {
     // Check pixel validity
     if (pixel < 0 || pixel >= m_num_pixels || element < 0 || element >= m_size_pixels)
-        throw "GHealpix: pixel index is out of range.";
+        throw std::string("GHealpix: pixel index is out of range.");
 
     // Return pixel
     return m_pixels[pixel*m_size_pixels+element];
@@ -276,7 +279,9 @@ void GHealpix::read(fitsfile *fptr)
     int      fstatus = 0;
     int      anynul;
     long     numRows;
+    long     elements;
     long int nside;
+    double   nulval = 0.0;
     char     ordering[80];
     char     coordsys[80];
 
@@ -287,13 +292,13 @@ void GHealpix::read(fitsfile *fptr)
     // Read NSIDE keyword
     fstatus = fits_read_key_lng(fptr, "NSIDE", &nside, NULL, &fstatus);
     if (fstatus != 0)
-        throw "GHealpix: Unable to read HEALPIX keyword NSIDE.";
+        throw std::string("GHealpix: Unable to read HEALPIX keyword NSIDE.");
     m_nside = (int)nside;
 
     // Read ORDERING keyword
     fstatus = fits_read_key_str(fptr, "ORDERING", ordering, NULL, &fstatus);
     if (fstatus != 0)
-        throw "GHealpix: Unable to read HEALPIX keyword ORDERING.";
+        throw std::string("GHealpix: Unable to read HEALPIX keyword ORDERING.");
 
     // Read COORDSYS or HIER_CRD keywords
     fstatus = fits_read_key_str(fptr, "COORDSYS", coordsys, NULL, &fstatus);
@@ -302,37 +307,40 @@ void GHealpix::read(fitsfile *fptr)
         fstatus = fits_read_key_str(fptr, "HIER_CRD", coordsys, NULL, &fstatus);
     }
     if (fstatus != 0)
-        throw "GHealpix: Unable to read HEALPIX keywords COORDSYS or HIER_CRD.";
-
-
-    // Check if we have a healpix representation
-//    if (hdu->card("PIXTYPE")->string() != "HEALPIX")
-//        throw GException::healpix(G_LOAD, "HDU does not contain Healpix data");
+        throw std::string("GHealpix: Unable to read HEALPIX keywords COORDSYS or HIER_CRD.");
 
     // Get Healpix resolution and determine number of pixels and solid angle
-    m_npface     = m_nside * m_nside;
-    m_ncap       = 2 * (m_npface - m_nside);
-    m_num_pixels = 12 * m_npface;
-    m_fact2      = 4.0 / m_num_pixels;
-    m_fact1      = 2 * m_nside * m_fact2;
-    m_omega      = fourpi / m_num_pixels;
-    m_order      = nside2order(m_nside);
+    m_npface      = m_nside * m_nside;
+    m_ncap        = 2 * (m_npface - m_nside);
+    m_num_pixels  = 12 * m_npface;
+    m_fact2       = 4.0 / m_num_pixels;
+    m_fact1       = 2 * m_nside * m_fact2;
+    m_omega       = fourpi / m_num_pixels;
+    m_order       = nside2order(m_nside);
+    m_size_pixels = 1;
 
     // Get ordering scheme
-    if (strcmp(ordering,"RING") != 0)
+    if (strcmp(ordering,"RING") == 0)
         m_scheme = 0;
-    else if (strcmp(ordering,"NESTED") != 0)
+    else if (strcmp(ordering,"NESTED") == 0)
         m_scheme = 1;
     else
-        throw "GHealpix: Invalid ordering scheme (should be either RING or NESTED).";
+        throw std::string("GHealpix: Invalid ordering scheme (should be either RING or NESTED).");
 
     // Decode coordinate system string
-    if (strcmp(coordsys,"EQU") != 0)
+    if (strcmp(coordsys,"EQU") == 0)
         m_coordsys = 0;
-    else if (strcmp(coordsys,"GAL") != 0)
+    else if (strcmp(coordsys,"CEL") == 0)
+        m_coordsys = 0;
+    else if (strcmp(coordsys,"GAL") == 0)
         m_coordsys = 1;
-    else
-        throw "GHealpix: Invalid coordinate system (should be either EQU or GAL).";
+    else if (strcmp(coordsys,"C") == 0)
+        m_coordsys = 0;
+    else if (strcmp(coordsys,"G") == 0)
+        m_coordsys = 1;
+    else {
+        throw std::string("GHealpix: Invalid coordinate system (should be either EQU or GAL).");
+    }
 
     // Continue only of we have pixels
     if (m_num_pixels > 0) {
@@ -340,19 +348,24 @@ void GHealpix::read(fitsfile *fptr)
         // Determine number of rows in table
         fstatus = fits_get_num_rows(fptr, &numRows, &fstatus);
         if (fstatus != 0)
-            throw "GHealpix: Unable to read number of rows in HEALPIX table.";
+            throw std::string("GHealpix: Unable to read number of rows in HEALPIX table.");
+
+        // Determine number of elements per column
+        fstatus = fits_get_coltype(fptr, 1, NULL, &elements, NULL, &fstatus);
+        if (fstatus != 0)
+            throw std::string("GHealpix: Unable to read number of rows in HEALPIX table.");
 
         // Check column consistency
-        if (numRows != m_num_pixels)
-            throw "GHealpix: NSIDE inconsistent with number of rows in HEALPIX table.";
+        if (numRows*elements != m_num_pixels)
+            throw std::string("GHealpix: NSIDE inconsistent with number of rows in HEALPIX table.");
 
         // Allocate pixels
         alloc_members();
 
         // Read pixels
-        fstatus = fits_read_col(fptr, TDOUBLE, 1, 1, 1, numRows, 0, m_pixels, &anynul, &fstatus);
+        fstatus = fits_read_col(fptr, TDOUBLE, 1, 1, 1, m_num_pixels, &nulval, m_pixels, &anynul, &fstatus);
         if (fstatus != 0)
-            throw "GHealpix: Unable to read HEALPIX table.";
+            throw std::string("GHealpix: Unable to read HEALPIX table.");
 
     } // endif: we had pixels
 
@@ -681,7 +694,7 @@ void GHealpix::pix2ang_ring(int ipix, double* theta, double* phi)
 {
     // Check if ipix is in range
     if (ipix < 0 || ipix >= m_num_pixels)
-        throw "GHealpix: pixel index is out of range.";
+        throw std::string("GHealpix: pixel index is out of range.");
 
     // Handle North Polar cap
     if (ipix < m_ncap) {
@@ -729,7 +742,7 @@ void GHealpix::pix2ang_nest(int ipix, double* theta, double* phi)
 {
     // Check if ipix is in range
     if (ipix < 0 || ipix >= m_num_pixels)
-        throw "GHealpix: pixel index is out of range.";
+        throw std::string("GHealpix: pixel index is out of range.");
 
     // Get face number and index in face
     int nl4      = 4 * m_nside;

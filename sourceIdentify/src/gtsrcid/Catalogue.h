@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.41  2010/04/16 16:16:19  jurgen
+Implement HEALPix interface to read counterpart density maps
+
 Revision 1.40  2009/03/26 14:15:05  jurgen
 Properly handle NULL error radii (by assuming an minimum 1D 1sigma error of 0.005 deg)
 
@@ -330,7 +333,8 @@ const double e_norm_95 = 1.0 / sqrt(2.9957230);  //!< 95.000%, 2 dof
 const double e_norm_99 = 1.0 / sqrt(4.6051713);  //!< 99.000%, 2 dof
 
 /* Search strings (need "stop" as last string !!!) __________________________ */
-const std::string search_id[] = {"NAME", "ID", "NICKNAME", "stop"};
+const std::string search_id[] = {"NAME", "ID", "NICKNAME", "SOURCE_NAME", \
+                                 "stop"};
 
 /* Special function strings (need "stop" as last string !!!) ________________ */
 const std::string fct_names[] = {"gammln", "erf",  "erfc",
@@ -489,6 +493,7 @@ private:
   Status      cid_prob(Parameters *par, SourceInfo *src, Status status);
   Status      cid_local_density(Parameters *par, SourceInfo *src, Status status);
   Status      cid_global_density(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_map_density(Parameters *par, SourceInfo *src, Status status);
   Status      cid_sort(Parameters *par, SourceInfo *src, int num, Status status);
   Status      cid_dump(Parameters *par, SourceInfo *src, Status status);
   std::string cid_assign_src_name(std::string name, int row);

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.38  2010/01/12 09:17:21  jurgen
+Update
+
 Revision 1.37  2010/01/12 08:57:23  jurgen
 Correct NULL entries for N_ID=1
 
@@ -630,8 +633,6 @@ Status Catalogue::cid_select(Parameters *par, SourceInfo *src, Status status) {
  * @param[in] src Pointer to source information.
  * @param[in] status Error status.
  *
- * @todo Develop other than local counterpart density methods.
- *
  * Calculates the counterpart probability, sorts all counterpart candidates
  * by decreasing probability and eliminates all candidtates with a too low
  * probability.
@@ -683,7 +684,10 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
 
       // Determine counterpart density (requires information computed in
       // cid_prob_pos)
-      status = cid_local_density(par, src, status);
+      if (m_has_density == 0)
+        status = cid_local_density(par, src, status);
+      else
+        status = cid_map_density(par, src, status);
 //      status = cid_global_density(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
@@ -748,10 +752,17 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
       }
 
       // Optionally dump counterpart refine statistics
-      if (par->logExplicit()) {
-        Log(Log_2, "  Refine step candidates ..........: %5d", src->numRefine);
-        Log(Log_2, "    Local density ring ............: %.3f - %.3f deg",
-            src->ring_rad_min, src->ring_rad_max);
+      if (m_has_density == 0) {
+        if (par->logExplicit()) {
+          Log(Log_2, "  Refine step candidates ..........: %5d", src->numRefine);
+          Log(Log_2, "    Local density ring ............: %.3f - %.3f deg",
+              src->ring_rad_min, src->ring_rad_max);
+        }
+      }
+      else {
+        if (par->logExplicit()) {
+          Log(Log_2, "  Refine step candidates ..........: %5d (density map)", src->numRefine);
+        }
       }
 
     } while (0); // End of main do-loop
@@ -1635,6 +1646,18 @@ Status Catalogue::cid_local_density(Parameters *par, SourceInfo *src,
 
       } // endelse: Case B
 
+      // Optionally dump information
+      if (par->logExplicit()) {
+        Log(Log_2, "  Density from map for candidates .: %5d (ring=%5.3f-%5.3f deg)",
+                   src->numSelect, src->ring_rad_min, src->ring_rad_max);
+        for (int iCC = 0; iCC < src->numSelect; ++iCC) {
+          Log(Log_2, "    Candidate %5.5d ...............: "
+                     "rho(%8.4f,%8.4f)=%10.4f deg^-2 (sep=%5.3f deg)",
+                     iCC+1, src->cc[iCC].pos_eq_ra, src->cc[iCC].pos_eq_dec,
+                     src->cc[iCC].rho, src->cc[iCC].angsep);
+        }
+      }
+
     } while (0); // End of main do-loop
 
     // Debug mode: Entry
@@ -1686,6 +1709,17 @@ Status Catalogue::cid_global_density(Parameters *par, SourceInfo *src,
       for (int iCC = 0; iCC < src->numSelect; ++iCC)
         src->cc[iCC].rho = rho;
 
+      // Optionally dump information
+      if (par->logExplicit()) {
+        Log(Log_2, "  Density from map for candidates .: %5d", src->numSelect);
+        for (int iCC = 0; iCC < src->numSelect; ++iCC) {
+          Log(Log_2, "    Candidate %5.5d ...............: "
+                     "rho(%8.4f,%8.4f)=%10.4f deg^-2  (sep=%5.3f deg)",
+                     iCC+1, src->cc[iCC].pos_eq_ra, src->cc[iCC].pos_eq_dec, 
+                     src->cc[iCC].rho, src->cc[iCC].angsep);
+        }
+      }
+
     } while (0); // End of main do-loop
 
     // Debug mode: Entry
@@ -1694,6 +1728,85 @@ Status Catalogue::cid_global_density(Parameters *par, SourceInfo *src,
           status);
     #if LOW_LEVEL_DEBUG
     printf(" <== EXIT: Catalogue::cid_global_density (status=%d)\n", status);
+    #endif
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Compute map counterpart density
+ *
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] src Pointer to source information.
+ * @param[in] status Error status.
+ *
+ * This method expects src->numSelect counterparts.
+ ******************************************************************************/
+Status Catalogue::cid_map_density(Parameters *par, SourceInfo *src,
+                                  Status status) {
+
+    // Debug mode: Entry
+    #if LOW_LEVEL_DEBUG
+    printf(" ==> ENTRY: Catalogue::cid_map_density (%d candidates)\n",
+           src->numSelect);
+    #endif
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_map_density (%d candidates)",
+          src->numSelect);
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // If we have no density map then return 0 density ...
+      if (m_has_density == 0) {
+        for (int iCC = 0; iCC < src->numSelect; ++iCC)
+          src->cc[iCC].rho = 0.0;
+      }
+
+      // ... otherwise return density from map
+      else {
+
+        // Optionally dump information
+        if (par->logExplicit()) {
+          Log(Log_2, "  Density from map for candidates .: %5d", src->numSelect);
+        }
+
+        // Loop over all candidates
+        for (int iCC = 0; iCC < src->numSelect; ++iCC) {
+
+          // Set sky direction
+          GSkyDir dir;
+          dir.radec_deg(src->cc[iCC].pos_eq_ra, src->cc[iCC].pos_eq_dec);
+
+          // Get density
+          int pixel        = m_density.ang2pix(dir);
+          src->cc[iCC].rho = m_density(pixel);
+
+          // Optionally dump information
+          if (par->logExplicit()) {
+            Log(Log_2, "    Candidate %5.5d ...............: "
+                       "rho(%8.4f,%8.4f)=%10.4f deg^-2 (pixel=%d, sep=%5.3f deg)",
+                       iCC+1, src->cc[iCC].pos_eq_ra, src->cc[iCC].pos_eq_dec,
+                       src->cc[iCC].rho, pixel, src->cc[iCC].angsep);
+          }
+        }
+      }
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cid_map_density (status=%d)",
+          status);
+    #if LOW_LEVEL_DEBUG
+    printf(" <== EXIT: Catalogue::cid_map_density (status=%d)\n", status);
     #endif
 
     // Return status

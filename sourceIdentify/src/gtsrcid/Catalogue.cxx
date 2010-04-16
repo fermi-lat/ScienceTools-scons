@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.50  2010/04/16 16:16:19  jurgen
+Implement HEALPix interface to read counterpart density maps
+
 Revision 1.49  2010/04/16 15:23:11  jurgen
 Move euler and modula in GSkyDir.cxx
 
@@ -165,6 +168,7 @@ Replace header information with CVS typeset information.
  */
 
 /* Includes _________________________________________________________________ */
+#include <exception>
 #include "sourceIdentify.h"
 #include "Catalogue.h"
 #include "Log.h"
@@ -2463,6 +2467,42 @@ Status Catalogue::build(Parameters *par, Status status) {
           continue;
       }
 
+      // Optionally read counterpart density map
+      if (par->m_cptDensFile.length() > 0) {
+        m_has_density = 0;
+        if (par->logNormal()) {
+          Log(Log_2, "");
+          Log(Log_2, "Read counterpart catalogue density map:");
+          Log(Log_2, "=======================================");
+        }
+        try {
+          m_density     = GHealpix(par->m_cptDensFile);
+          m_has_density = 1;
+          if (par->logNormal()) {
+            Log(Log_2, " Filename .........................: %s", par->m_cptDensFile.c_str());
+            Log(Log_2, " Nside (number of divisions) ......: %d", m_density.nside());
+          }
+        }
+        catch (std::exception &e) {
+          if (par->logTerse()) {
+            Log(Warning_3, "Error occured while loading file '%s' (standard exception)",
+                            par->m_cptDensFile.c_str());
+          }
+        }
+        catch (std::string str) {
+          if (par->logTerse()) {
+            Log(Warning_3, "Error occured while loading file '%s': %s.",
+                            par->m_cptDensFile.c_str(), str.c_str());
+          }
+        }
+        catch (...) {
+          if (par->logTerse()) {
+            Log(Warning_3, "Error occured while loading file '%s' (unknown exception)",
+                            par->m_cptDensFile.c_str());
+          }
+        }
+      }
+
       // Create FITS catalogue in memory
       status = cfits_create(&m_memFile, "mem://gtsrcid", par, status);
       if (status != STATUS_OK) {
@@ -2480,20 +2520,6 @@ Status Catalogue::build(Parameters *par, Status status) {
           Log(Error_2, "%d : Unable to create FITS output catalogue '%s'.",
               (Status)status, par->m_outCatName.c_str());
         continue;
-      }
-
-      // Optionally read counterpart density catalogue
-      if (par->m_cptDensFile.length() > 0) {
-        try {
-          m_density     = GHealpix(par->m_cptDensFile);
-          m_has_density = 1;
-          std::cout << m_density << std::endl;
-        }
-        catch ( char *str ) {
-          Log(Warning_3, "Unable to read counterpart density file '%s'.",
-                          par->m_cptDensFile.c_str());
-          m_has_density = 0;
-        }
       }
 
       // Dump header
