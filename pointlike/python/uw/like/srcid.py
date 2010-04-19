@@ -69,6 +69,7 @@ class SourceAssociation(object):
         if class_list is not None:
             if not hasattr(class_list,'__iter__'): 
                 try:
+                    import classes
                     class_list = eval('classes.%s'%class_list)
                 except AttributeError:
                     class_list = [class_list]
