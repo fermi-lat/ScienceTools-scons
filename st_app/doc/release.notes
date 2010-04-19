@@ -6,7 +6,7 @@ $Id$
 \verbatim
 * EOH *
 
- st_app-02-00-6  19-Apr-2010    hmk no changes - just tagging to force a 
+ st_app-02-00-06 19-Apr-2010    hmk no changes - just tagging to force a 
                                 new ST LATEST build
  st_app-02-00-05 24-Feb-2010    jrb TRAP_FPE is for Linux only
  st_app-02-00-04 22-Feb-2010    jrb correct use of xxLib for libEnv
