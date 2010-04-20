@@ -307,6 +307,20 @@ def merge_gti(files,table_name = 'GTI',interval = None):
 
     return new_gti
 
+def merge_bpd(bpd_files,outfile = None):
+    """Merge a set of BinnedPhotonData files.
+    
+    outfile: File to write the merged BinnedPhotonData to.  If None, don't save it."""
+    bpds = [BinnedPhotonData(bf] for bf in bpd_files]
+    bpds = [bpd for bpd in bpds if bpd.gti().computeOntime()>0] #Ignore entries with empty GTIs
+    new_bpd = bpds[0]
+    for b in bpds[1:]:
+        new_bpd.add(b)
+    if outfile:
+        new_bpd.write(outfile)
+
+    return new_bpd
+
 #EVERYTHING BELOW IS AN INTERNAL CALL.
 
 def __FITS_parse__(files):
