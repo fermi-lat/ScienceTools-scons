@@ -35,7 +35,7 @@ namespace tip {
     bool success = resetSigHandlers();
     // By default, Root will split files if a tree exceeds 1900000000 (1.9GB).
     // Set maximum tree size to 1,000,000,000,000 (1TB) to prevent files from being split in practicality.
-    TTree::SetMaxTreeSize(1000000000000); // 12 zeroes.
+    TTree::SetMaxTreeSize(1000000000000ll); // 12 zeroes, expressed as a long long.
     return success;
   }
 
