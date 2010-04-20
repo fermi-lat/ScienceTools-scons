@@ -6,6 +6,8 @@ $Id$
 \verbatim
 * EOH *
 
+ st_app-02-00-07 19-Apr-2010    hmk no changes - just tagging to force a 
+                                SCons build
  st_app-02-00-06 19-Apr-2010    hmk no changes - just tagging to force a 
                                 new ST LATEST build
  st_app-02-00-05 24-Feb-2010    jrb TRAP_FPE is for Linux only
