@@ -219,10 +219,11 @@ class MyROI(roi_analysis.ROIAnalysis):
         return roi_plotting.band_fluxes(self, which,axes, axis,outfile, **kwargs)
 
     def pickle(self, name, outdir, **kwargs):
-        """ name: name for source, used as filename
+        """ name: name for source, used as filename (unless fname in kwargs)
             outdir: ouput directory
         """
         name = name.strip()
+        fname = kwargs.pop('fname', name)
         output = dict()
         output['name'] = name
         output['ra']   = self.center.ra()
@@ -235,7 +236,7 @@ class MyROI(roi_analysis.ROIAnalysis):
 
         if not os.path.exists(outdir):
             os.mkdir(outdir)
-        f = file(os.path.join(outdir,name+'.pickle'),'wb')
+        f = file(os.path.join(outdir,fname+'.pickle'),'wb')
         pickle.dump(output,f)
         f.close()
 
