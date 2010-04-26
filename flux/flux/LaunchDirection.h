@@ -94,7 +94,7 @@ public:
     /// return the cosine of the angle between the incoming direction and the earth's zenith
     virtual double zenithCosine()const{
         if(m_skydir){
-            return -m_dir * (astro::GPS::instance()->zenithDir()());
+            return m_dir * (astro::GPS::instance()->zenithDir()());
         }
         //if the direction is local
         return 1.0;
