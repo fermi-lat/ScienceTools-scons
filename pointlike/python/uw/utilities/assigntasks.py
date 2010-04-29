@@ -159,7 +159,7 @@ class AssignTasks(object):
         """
 
         # loop through the tasks, assigning as engines are available
-        loop_iters = sleepcount=0
+        loop_iters = wait_iters =sleepcount=0
         starttime= time.clock()
 
         done=busy = False
@@ -185,8 +185,13 @@ class AssignTasks(object):
             if time.clock()-curtime>self.timelimit:
                 self.log('quitting, exceeded time limit: %f' %self.timelimit)
                 break
+            if wait_iters> 1000:
+                self.log('quitting, in apparent loop')
+                for t in still: self.lost.add(self.assigned[t])
+                break
             time.sleep(sleep_interval)
             still = [id for id in still if not self.check_result(id)]
+            wait_iters+=1
             
         if self.post is not None: 
             self.execute(self.post, self.get_ids(), True)
