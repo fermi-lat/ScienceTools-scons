@@ -240,6 +240,7 @@ Optional keyword arguments:
         self.verbose     = False
 
         self.use_daily_data = False
+        self.daily_data_path = '/phys/groups/tev/scratch1/users/Fermi/data/daily'
 
         self.ae          = analysis_environment
 
@@ -249,7 +250,7 @@ Optional keyword arguments:
         if self.use_daily_data:
             if not ((self.binfile and self.ltcube) and
                     (os.path.exists(self.binfile) and os.path.exists(self.ltcube))):
-                self.setup_daily_data(self.daily_data_path)
+                self.setup_daily_data()
 
          #TODO -- sanity check that BinnedPhotonData agrees with analysis parameters
         self.pixeldata = PixelData(self.__dict__)
@@ -259,7 +260,7 @@ Optional keyword arguments:
     def setup_daily_data(self):
         """Setup paths to use saved daily data and livetime files on our local cluster."""
 
-        data_dir = '/phys/groups/tev/scratch1/users/Fermi/data/daily'
+        data_dir = self.daily_data_path
         bpds = glob(os.path.join(data_dir,'bpd','*.fits'))
         lts = glob(os.path.join(data_dir,'lt','*.fits'))
         bpds.sort()
