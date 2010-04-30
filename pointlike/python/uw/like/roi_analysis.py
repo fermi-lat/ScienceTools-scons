@@ -410,6 +410,7 @@ class ROIAnalysis(object):
          sources = [s for s in self.psm.point_sources if N.any(s.model.free)]
       elif type(sources) != type([]):
          sources = [sources]
+      if sources == []: return # No point sources in ROI
       bad_sources = []
       for i,s in enumerate(sources):
          if type(s) == PointSource:
