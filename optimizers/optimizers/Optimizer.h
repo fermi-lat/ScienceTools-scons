@@ -55,6 +55,14 @@ public:
      return std::pair<double,double>(0., 0.);
    }
 
+   /// MINOS CONTOUR analysis for parameters #par1 et #par2.  Valid only for the
+   /// two flavors of Minuit.
+   virtual void MnContour(unsigned int, unsigned int, 
+			  double, unsigned int) {
+     throw Exception("MnContour function is not enabled for this optimizer");
+     return ;
+   }
+
    Statistic & stat() {
       return *m_stat;
    }

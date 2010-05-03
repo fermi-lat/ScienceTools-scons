@@ -75,8 +75,12 @@ namespace optimizers {
      virtual std::vector< std::vector<double> > covarianceMatrix() const;
 
      /// Run a MINOS error analysis
-     std::pair<double,double> Minos(unsigned int n);
+     std::pair<double,double> Minos(unsigned int n, double level=1.);
 
+    /// Run a MNCONTOUR dynamic CONTOUR analysis
+    void MnContour(unsigned int par1, unsigned int par2,
+		   double level=1., unsigned int npts=20);
+     
     virtual std::ostream& put (std::ostream& s) const;
 
     //! Symbolic form of the return codes for readability 

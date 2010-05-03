@@ -165,7 +165,7 @@ namespace optimizers {
     return getRetCode();
   } // End of minimize 
 
-  std::pair<double,double> Minuit::Minos(unsigned int n) {
+  std::pair<double,double> Minuit::Minos(unsigned int n, double level) {
     integer npar(m_stat->getNumFreeParams());
 //     if (n < 1 || n > npar) {
 //       throw Exception("Parameter number out of range in Minos", n);
@@ -178,6 +178,11 @@ namespace optimizers {
       throw Exception("Parameter number out of range in Minos", n);
     }
     n += 1;
+    if(level!=1){
+      std::ostringstream levelcmd;
+      levelcmd <<"SET ERR "<<level/2.;
+      doCmd(levelcmd.str());
+    }
     std::ostringstream mcmd;
     mcmd << "MINOS " << m_maxEval << " " << n;
     numPars = npar;
@@ -186,7 +191,39 @@ namespace optimizers {
     integer my_n = n;
     mnerrs_(&my_n, &eplus, &eminus, &eparab, &globcc);
     numPars = 0;
+    if(level!=1){
+      //Set internal error level back to 0.5=1sigma for -logLike optimizer
+      doCmd("SET ERR 0.5");
+    }
     return std::pair<double,double>(eminus,eplus);
+  }
+
+  void Minuit::MnContour(unsigned int par1, unsigned int par2,
+			    double level, unsigned int npts) {
+    integer npar(m_stat->getNumFreeParams());
+    if (par1 >= static_cast<unsigned int>(npar)) {
+      throw Exception("Parameter number out of range in MnContour", par1);
+    }
+    if (par2 >= static_cast<unsigned int>(npar)) {
+      throw Exception("Parameter number out of range in MnContour", par2);
+    }
+    par1 += 1;
+    par2 += 1;
+    if(level!=1.){
+      std::ostringstream levelcmd;
+      levelcmd <<"SET ERR "<<level/2.;
+      doCmd(levelcmd.str());
+    }
+    std::ostringstream mcmd;
+    mcmd << "MNC " << par1 << " " << par2<< " " << npts;
+    numPars = npar;
+    doCmd(mcmd.str());
+    numPars = 0;
+    if(level!=1.){
+      //Set internal error level back to 0.5=1sigma for -logLike optimizer
+      doCmd("SET ERR 0.5");
+    }
+    return;
   }
 
   int Minuit::doCmd(std::string command) {

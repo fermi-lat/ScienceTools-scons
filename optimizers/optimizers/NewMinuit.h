@@ -33,12 +33,14 @@ namespace optimizers {
   public:
     myFCN(Statistic &);
     virtual ~myFCN() {};
-    virtual double Up() const {return 0.5;}
+    virtual double Up() const {return m_level;}
     virtual double operator() (const std::vector<double> &) const;
     virtual std::vector<double> Gradient(const std::vector<double> &) const;
     virtual bool CheckGradient() const {return false;}
+    virtual void SetErrorDef(double level) {m_level=level;}
   private:
     Statistic * m_stat;
+    double m_level;
   };
 
   /**
@@ -71,7 +73,11 @@ namespace optimizers {
     virtual const std::vector<double> & getUncertainty(bool useBase = false);
     virtual std::vector<std::vector<double> > covarianceMatrix() const;
     virtual std::ostream& put (std::ostream& s) const;
-    std::pair<double,double> Minos(unsigned int n);
+    std::pair<double,double> Minos(unsigned int n, double level=1.);
+
+    /// Run a MNCONTOUR dynamic CONTOUR analysis
+    void MnContour(unsigned int par1, unsigned int par2,
+		   double level=1., unsigned int npts=20);
     int checkResults();
   private:
     myFCN m_FCN;

@@ -11,6 +11,9 @@
 #include "Minuit2/MnMigrad.h"
 #include "Minuit2/MnMinimize.h"
 #include "Minuit2/MnMinos.h"
+#include "Minuit2/MnContours.h"
+#include "Minuit2/ContoursError.h"
+#include "Minuit2/MnPlot.h"
 #include "Minuit2/FunctionMinimum.h"
 #include "Minuit2/MnHesse.h"
 #include "Minuit2/MnPrint.h"
@@ -110,17 +113,53 @@ namespace optimizers {
   }
 
   // Call MINOS
-  std::pair<double,double> NewMinuit::Minos(unsigned int n) {
+  std::pair<double,double> NewMinuit::Minos(unsigned int n, double level) {
     unsigned int npar = m_min->UserParameters().Params().size();
     if (n >= npar) {
       throw Exception("Parameter number out of range in Minos", n);
     }
+    if(level!=1.){
+      m_FCN.SetErrorDef(level/2.);
+      m_min->SetErrorDef(level/2.);
+    }
     ROOT::Minuit2::MnMinos mns(m_FCN, *m_min, m_strategy);
-    return mns(n);
+    std::pair<double,double> results=mns(n);
+    //Back to default
+    if(level!=1.){
+      m_FCN.SetErrorDef(0.5);
+      m_min->SetErrorDef(0.5);
+    }
+    return results;
   }
-
+  // Call MNCONTOUR
+  void NewMinuit::MnContour(unsigned int par1, unsigned int par2,
+			 double level, unsigned int npts) {
+    unsigned int npar = m_min->UserParameters().Params().size();
+    if (par1 >= npar) {
+      throw Exception("Parameter number out of range in MnContour", par1);
+    }
+    if (par2 >= npar) {
+      throw Exception("Parameter number out of range in MnContour", par2);
+    }
+    ROOT::Minuit2::MnContours mnc(m_FCN, *m_min, m_strategy);
+    if(level!=1.){
+      m_FCN.SetErrorDef(level/2.);
+      m_min->SetErrorDef(level/2.);
+    }
+    //std::vector<std::pair<double,double> > results = mnc(par1,par2,npts);
+    //ROOT::Minuit2::MnPlot mnp;
+    //mnp(results);
+    ROOT::Minuit2::ContoursError conterr=mnc.Contour(par1,par2,npts);
+    std::cout<<conterr<<std::endl;
+    //Back to default
+    if(level!=1.){
+      m_FCN.SetErrorDef(0.5);
+      m_min->SetErrorDef(0.5);
+    }
+    return;
+  }
   // Constructor for the function to be minimized
-  myFCN::myFCN(Statistic & stat): m_stat(&stat) {}
+  myFCN::myFCN(Statistic & stat): m_stat(&stat), m_level(0.5) {}
 
   // This is the function that Minuit minimizes
   double 
