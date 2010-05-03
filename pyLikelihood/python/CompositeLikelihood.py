@@ -43,7 +43,7 @@ class CompositeLikelihood(object):
         optFactory = pyLike.OptimizerFactory_instance()
         myOpt = optFactory.create(optimizer, self.composite)
         myOpt.find_min_only(verbosity, tol, self.tolType)
-    def minosError(self, component_name, srcname, parname):
+    def minosError(self, component_name, srcname, parname,level):
         freeParams = pyLike.ParameterVector()
         self.composite.getFreeParams(freeParams)
         saved_values = [par.getValue() for par in freeParams]
@@ -51,7 +51,7 @@ class CompositeLikelihood(object):
         if indx == -1:
             raise RuntimeError("Invalid parameter specification")
         try:
-            errors = self.optObject.Minos(indx)
+            errors = self.optObject.Minos(indx,level)
             self.composite.setFreeParamValues(saved_values)
             return errors
         except RuntimeError, message:
