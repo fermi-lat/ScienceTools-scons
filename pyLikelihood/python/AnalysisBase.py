@@ -116,7 +116,7 @@ class AnalysisBase(object):
                     return par_index
         raise RuntimeError("Parameter %s for source %s not found."
                            % (parName, srcName))
-    def _minosIndexError(self, par_index, level):
+    def _minosIndexError(self, par_index, level=1):
         if self.optObject is None:
             raise RuntimeError("To evaluate minos errors, a fit must first be "
                                + "performed using the Minuit or NewMinuit "
