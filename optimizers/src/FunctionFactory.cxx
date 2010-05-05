@@ -42,8 +42,9 @@ FunctionFactory::FunctionFactory() {
 
 FunctionFactory::~FunctionFactory() {
    std::map<std::string, Function *>::iterator it = m_prototypes.begin();
-   for (; it != m_prototypes.end(); it++)
+   for (; it != m_prototypes.end(); it++) {
       delete it->second;
+   }
 }
 
 void FunctionFactory::addFunc(const std::string &name, 
