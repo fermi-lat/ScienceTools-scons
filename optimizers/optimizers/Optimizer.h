@@ -50,7 +50,7 @@ public:
 
    /// MINOS error analysis for parameter #n.  Valid only for the
    /// two flavors of Minuit.
-   virtual std::pair<double,double> Minos(unsigned int) {
+   virtual std::pair<double,double> Minos(unsigned int, double) {
      throw Exception("Minos function is not enabled for this optimizer");
      return std::pair<double,double>(0., 0.);
    }
