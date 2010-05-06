@@ -43,7 +43,7 @@ class CompositeLikelihood(object):
         optFactory = pyLike.OptimizerFactory_instance()
         myOpt = optFactory.create(optimizer, self.composite)
         myOpt.find_min_only(verbosity, tol, self.tolType)
-    def minosError(self, component_name, srcname, parname,level):
+    def minosError(self, component_name, srcname, parname,level=1):
         freeParams = pyLike.ParameterVector()
         self.composite.getFreeParams(freeParams)
         saved_values = [par.getValue() for par in freeParams]
