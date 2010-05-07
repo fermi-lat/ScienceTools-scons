@@ -106,7 +106,7 @@ const astro::PointingInfo& PointingHistory::operator()(double time)const throw(T
         const PointingInfo & h1 =iter->second;
         double prop( (time-time1)/(time2-time1) );
 
-        m_currentPoint = h1.interpolate(h2, prop);
+        m_currentPoint = h1.interpolate(h2, prop, time);
 
     }
     return m_currentPoint;

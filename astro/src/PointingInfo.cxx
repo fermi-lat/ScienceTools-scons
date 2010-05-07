@@ -37,26 +37,9 @@ namespace {
         return (1-f)*a + f*b;
     }
 }
-astro::PointingInfo PointingInfo::interpolate(const astro::PointingInfo& next, double f)const
+astro::PointingInfo PointingInfo::interpolate(const astro::PointingInfo& next, double f, double time)const
 {
     using CLHEP::Hep3Vector;
-
-    // linear interpolation of earth location
-    double lat1( earthCoord().latitude() )
-         , lat2(next.earthCoord().latitude())
-         , lat( linear_interp(lat1, lat2, f) );
-    double lon1( earthCoord().longitude() )
-         , lon2(next.earthCoord().longitude())
-         , lon( linear_interp(lon1,lon2, f) );
-
-    //this piece of code should just handle the "wraparound" cases:
-    if(fabs(lon1-lon2) >= 330.){
-        //we have gone off one end of the longitude scale.
-        double lonlesser=std::max(lon1,lon2);
-        double longreater=std::min(lon1,lon2)+360.;
-        lon = lonlesser+((longreater-lonlesser)*f);
-        while(lon > 360.)lon -= 360.;
-    }
 
     // linear interpolation of position
     Hep3Vector pos1( position()), pos2(next.position());
@@ -66,7 +49,7 @@ astro::PointingInfo PointingInfo::interpolate(const astro::PointingInfo& next, d
     Hep3Vector position (linear_interp(pos1,pos2,f).unit() * alt );
 
     // note using the quaternion interpolation (SLERP)
-    return PointingInfo(position, m_q.interpolate(next.m_q, f), earthCoord());
+    return PointingInfo(position, m_q.interpolate(next.m_q, f), EarthCoordinate(position,time));
  
     return *this; // todo
 

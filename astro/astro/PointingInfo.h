@@ -38,7 +38,8 @@ public:
     ///! equivalent rotation
     CLHEP::HepRotation rotation()const{return m_q.rotation();}
 
-    PointingInfo interpolate(const astro::PointingInfo& next, double fraction)const;
+    ///! iterpolation
+    PointingInfo interpolate(const astro::PointingInfo& next, double fraction, double time)const;
 
 private:
     CLHEP::Hep3Vector m_position; ///< position (km)
