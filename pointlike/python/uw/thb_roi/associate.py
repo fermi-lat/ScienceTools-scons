@@ -32,6 +32,7 @@ class Association():
         self.id_cat= self.hdu[2].data
         self.sources=self.hdu[1].data
         self.n   = len(self.sources)
+        self.classes = 'gtsrcid list'
         # the valid keys for associations (todo)
         #keys = 'PSR pwn glc snr mqo xrb bzb bzq bzu rdg agn gal sbg sol'.split() 
         
@@ -57,7 +58,7 @@ class Association():
         return np.rec.fromarrays([name,cat,ang,prob,ra,dec], names=fields)
 
 
-    def __call__(self, name):
+    def __call__(self, name, sdir, ellipse): # dummy for compatibility
         """ return None or a dict
         """
         if name[0]=='J': name='1FGL '+name
@@ -210,8 +211,9 @@ class SrcId(srcid.SourceAssociation):
         """
         return super(SrcId,self).id(pos, error, self.classes)
         
-    def __call__(self, pos, error):
-        """ pos: a SkyDir object
+    def __call__(self, name, pos, error):
+        """ name: source name, ignored, for reference
+            pos: a SkyDir object
             error: a tuple (a,b,ang)
             returns None, or a dictionary consistent with Association above. (elements sorted by prob.)
         """
