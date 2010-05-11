@@ -162,6 +162,13 @@ class UnbinnedAnalysis(AnalysisBase):
                           'Optimizer: ' + str(self.optimizer)))
     def _Nobs(self):
         return num.array(self.observation.eventCont().nobs(self.energies))
+    def plotSourceFit(self, srcName, color='black'):
+        self._importPlotter()
+        source = self.logLike.getSource(srcName)
+        nobs = self.observation.eventCont().nobs(self.energies, source)
+        self.spectralPlot = self._plotData(nobs)
+        self._plotSource(srcName, color=color)
+        self._plotResiduals(self._srcCnts(srcName), nobs=nobs)
     def _srcCnts(self, srcName):
         source = self.logLike.getSource(srcName)
         cnts = []
