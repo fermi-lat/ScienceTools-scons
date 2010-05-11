@@ -39,7 +39,7 @@ class ROIBand(object):
       self.e   = (self.emin*self.emax)**0.5
       self.sa  = spectral_analysis
       self.sd  = skydir
-      self.ec  = self.ct = band.event_class()          # note change 
+      self.ec  = self.ct = band.event_class()  & 1        # note change and mask
       self.exp = self.sa.exposure.exposure[self.ct]
       self.psf = self.sa.psf.band_psf(self)
 
