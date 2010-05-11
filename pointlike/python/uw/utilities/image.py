@@ -697,9 +697,13 @@ class TSplot(object):
         self.zea= ZEA(center, size, pixelsize, axes=axes, nticks=nticks,fitsfile=fitsfile, **kwargs)
         print 'TSplot: filling %d pixels...'% (size/pixelsize)**2
         self.zea.fill(tsmap)
-        # create new image that is the significance in sigma
-        self.tsmaxpos=tsmaxpos = self.find_local_maximum() # get local maximum
-        tsmaxval = tsmap(tsmaxpos)
+        # create new image that is the significance in sigma with respect to local max
+        self.tsmaxpos=tsmaxpos = self.find_local_maximum() # get local maximum, then check that is in the image
+        x,y = self.zea.pixel(tsmaxpos)
+        if x>=0 and x < self.zea.nx and y>=0 and y<self.zea.ny:
+            tsmaxval = tsmap(tsmaxpos)
+        else: # not in image: use maximm actually in the image
+            tsmaxval = self.zea.image.max()
         tmap = tsmaxval-self.zea.image
         tmap[tmap<0] = 0
         self.image =np.sqrt(tmap)
