@@ -4,9 +4,8 @@ $Header$
 
 
 """
-import matplotlib
+import os, pyfits, pickle, matplotlib
 import numpy as np
-import pyfits
 
 def makefits(r, filename=None):
     """ convert a recarray to a pyfits object, write to filename if present
@@ -15,7 +14,7 @@ def makefits(r, filename=None):
         if dtype[:2]=='|S': return dtype[2:]+'A'
         try:
             return {'<f8':'D', '<f4':'E', '<i4':'J', '|b1':'L', '|O4':'|O4',}[dtype]
-        except:
+        except KeyError:
             print 'recarry type %s not recognized' %dtype
             raise
     def column(n,f):
@@ -90,4 +89,11 @@ class RecArray(object):
         """ return finished recarray"""
         return np.rec.fromarrays(self.fields, names=self.names)
 
-        
+      
+def load(filename):
+    ext = os.path.splitext(filename)[1]
+    if ext=='.txt':
+        return textrec(filename)
+    elif ext=='.pickle':
+        return pickle.load(open(filename))
+    raise Exception('extension %s not recognized: expect either txt or pickle' %ext)
