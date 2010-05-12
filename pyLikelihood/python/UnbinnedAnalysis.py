@@ -167,8 +167,10 @@ class UnbinnedAnalysis(AnalysisBase):
         source = self.logLike.getSource(srcName)
         nobs = self.observation.eventCont().nobs(self.energies, source)
         self.spectralPlot = self._plotData(nobs)
+        self.spectralPlot.setTitle(srcName)
         self._plotSource(srcName, color=color)
         self._plotResiduals(self._srcCnts(srcName), nobs=nobs)
+        self.residualPlot.setTitle(srcName)
     def _srcCnts(self, srcName):
         source = self.logLike.getSource(srcName)
         cnts = []

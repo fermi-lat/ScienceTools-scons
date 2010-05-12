@@ -75,6 +75,8 @@ class HippoPlot(object):
         self.graphs.append(self.plot.XYPlot(self.nts[-1], 'x', 'y', 
                                             xerr, yerr, oplot=1))
         self._setPointRep(self.graphs[-1], symbol, color)
+    def setTitle(self, title):
+        self.graphs[0].setTitle(title)
 
 if __name__ == '__main__':
     x = num.arange(1, 50)

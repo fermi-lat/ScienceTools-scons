@@ -420,8 +420,19 @@ class AnalysisBase(object):
     def _plotData(self, nobs=None):
         if nobs is None:
             nobs = self.nobs
+            errors = num.sqrt(nobs)
+        else:
+            errors = []
+            for ntilde, nsq in zip(nobs, num.sqrt(self.nobs)):
+                if nsq == 0:
+                    errors.append(0)
+                else:
+                    errors.append(ntilde/nsq)
         energies = self.e_vals
-        my_plot = self.plotter(energies, nobs, dy=num.sqrt(nobs),
+#        my_plot = self.plotter(energies, nobs, dy=num.sqrt(nobs),
+#                               xlog=1, ylog=1, xtitle='Energy (MeV)',
+#                               ytitle='counts / bin', xrange=self._xrange())
+        my_plot = self.plotter(energies, nobs, dy=errors,
                                xlog=1, ylog=1, xtitle='Energy (MeV)',
                                ytitle='counts / bin', xrange=self._xrange())
         return my_plot
