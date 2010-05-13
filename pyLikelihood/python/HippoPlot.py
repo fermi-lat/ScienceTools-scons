@@ -68,6 +68,8 @@ class HippoPlot(object):
             dys.append(dyy)
         return self.plot.newNTuple((xs, ys, dxs, dys),
                                    (xtitle, ytitle, 'xerr', 'yerr'))
+    def getRange(self, axis):
+        return self.graphs[0].getRange(axis)
     def overlay(self, x, y, dx=None, dy=None, symbol='Line', color='black'):
         self.plot.canvas.selectDisplay(self.graphs[0])
         self.nts.append(self._fillArrays(x, y, dx, dy, 'x', 'y'))
