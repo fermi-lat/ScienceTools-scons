@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-03-10-02 18-May-2010 burnett move static code into implementation file
  astro-03-10-01 08-May-2010 burnett refactor leapsecond code
  astro-03-10-00 07-May-2010 burnett fix to earth position interpolation
  astro-03-09-03 24-Feb-2010    jrb fix linking for mac
