@@ -6,7 +6,7 @@ $Header$
 author: Matthew Kerr
 """
 import numpy as N
-from kerrtools.convolution import BackgroundConvolution
+from uw.utilities.convolution import BackgroundConvolution
 from skymaps import SkyIntegrator,Background
 
 class SmallBand(object):
