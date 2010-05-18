@@ -1769,7 +1769,7 @@ int readTLE(const int Nl, char* CheckSatName, char ln[][100],
     tle->bstar = tle->bstar/10.0;
   }
   tle->xndd6o = tle->xndd6o*pow(10.0,tle->iexp);
-  tle->bstar = tle->bstar*pow(10,tle->ibexp);
+  tle->bstar = tle->bstar*pow(10.0,tle->ibexp);
 
   status = 1;
 
