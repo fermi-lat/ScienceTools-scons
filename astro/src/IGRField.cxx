@@ -1,11 +1,25 @@
+/*
+$Header$
+*/
 #include <cmath>
 #include "igrf_sub/igrf_sub.h"
 #include "astro/IGRField.h"
 
 
+namespace {
+	// static instance like singleton 
+	astro::IGRField*  model(0);
+}
 namespace astro {
 
-IGRField IGRField::m_model;
+
+IGRField& IGRField::Model() { 
+	if (model==0) {
+		model = new IGRField();
+	}
+	return *model; 
+	};   
+
 
 IGRField::IGRField() {
     IGRFf2c::initize_(); 
@@ -31,7 +45,7 @@ int IGRField::compute(const float latitude,const float longitude,const float alt
    float stps=0.05;
    float bdel=0.001; 
 
-   if(year>0) m_model.setYear(year);
+   if(year>0) Model().setYear(year);
    m_latitude=latitude;
    m_longitude=longitude;
    m_altitude=altitude;

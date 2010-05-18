@@ -1,5 +1,7 @@
 /** @file IGRField.h
 @brief declare class IGRField.h
+
+$Header$
 */
 
 #ifndef IGRFIELD_HH
@@ -22,7 +24,7 @@ class IGRField {
 
 // Class is singleton object. Multiple instances are not allowed to
 // prevent possible problems with the fortran based code of the model
-      static IGRField m_model;
+//   static IGRField m_model;
 
 // Year for which the magnetic field should be calculated       
       float m_year;
@@ -65,7 +67,7 @@ class IGRField {
    public: 
    
 // Get singleton object
-      static IGRField& Model() { return m_model; };   
+      static IGRField& Model();// { return m_model; };   
 
 // Compute field parameters for a given latitude, longitude and altitude 
       int compute(const float latitude,const float longitude,const float altitude,const float year=-1);
