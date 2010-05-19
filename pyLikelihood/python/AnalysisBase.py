@@ -429,9 +429,6 @@ class AnalysisBase(object):
                 else:
                     errors.append(ntilde/nsq)
         energies = self.e_vals
-#        my_plot = self.plotter(energies, nobs, dy=num.sqrt(nobs),
-#                               xlog=1, ylog=1, xtitle='Energy (MeV)',
-#                               ytitle='counts / bin', xrange=self._xrange())
         my_plot = self.plotter(energies, nobs, dy=errors,
                                xlog=1, ylog=1, xtitle='Energy (MeV)',
                                ytitle='counts / bin', xrange=self._xrange())
@@ -443,15 +440,19 @@ class AnalysisBase(object):
             return (emin, emax)
         else:
             return None
-    def _plotSource(self, srcName, color='black', symbol='line', show=True):
+    def _plotSource(self, srcName, color='black', symbol='line', show=True,
+                    display=None):
         energies = self.e_vals
 
         model_counts = self._srcCnts(srcName)
 
+        if display is None:
+            display = self.spectralPlot
+
         if show:
             try:
-                self.spectralPlot.overlay(energies, model_counts, color=color,
-                                          symbol=symbol)
+                display.overlay(energies, model_counts, color=color,
+                                symbol=symbol)
             except AttributeError:
                 self.spectralPlot = self.plotter(energies, model_counts, xlog=1,
                                                  ylog=1, xtitle='Energy (MeV)',
