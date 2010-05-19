@@ -30,7 +30,12 @@ class Psf(object):
       self.irf     = 'P6_v3_diff'
       self.psf_irf = None # a possible override to use an on-orbit PSF file
 
-   def __init__(self,CALDB=os.environ['CALDB'],**kwargs):
+   def __init__(self,CALDB=None,**kwargs):
+      if CALDB is None:
+         try: CALDB =os.environ['CALDB']
+         except:
+             print 'Environment variable CALDB was not set'
+             raise
       self.CALDB = join(CALDB,'bcf')
       self.init()
       self.__dict__.update(kwargs)
