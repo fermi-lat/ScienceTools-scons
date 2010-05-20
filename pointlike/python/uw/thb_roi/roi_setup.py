@@ -71,7 +71,7 @@ class CatalogManager(object):
             self.names[ibad] = good_name
             ras[ibad] =  120.616
             decs[ibad] = -56.369
-            print 'swapped source  %s to %s' % (bae_name, self.names[ibad])
+            print 'swapped source  %s to %s' % (bad_name, self.names[ibad])
         except ValueError:
             print 'did not move source'
         self.dirs   = map(SkyDir,ras,decs)
