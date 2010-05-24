@@ -90,8 +90,8 @@ class Grid(object):
             skydir = [skydir]
             #lon,lat = (skydir.l(),skydir.b()) if self.usegal else (skydir.ra(),skydir.dec())
         #else:
-        lon = N.asarray([sd.l() if self.usegal else skydir.ra() for sd in skydir])
-        lat = N.asarray([sd.b() if self.usegal else skydir.dec() for sd in skydir])
+        lon = N.asarray([sd.l() if self.usegal else sd.ra() for sd in skydir])
+        lat = N.asarray([sd.b() if self.usegal else sd.dec() for sd in skydir])
         if self.wrap:
             # adopt negative longitudes for the nonce; fine for calculating differences
             lon = N.where(lon > 180, lon - 360 , lon)
