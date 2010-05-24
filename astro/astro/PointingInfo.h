@@ -34,6 +34,8 @@ public:
     astro::SkyDir zenith()const;
     const CLHEP::Hep3Vector& position()const{return m_position;}
     const astro::EarthCoordinate& earthCoord()const{return m_earth;}
+    const  astro::Quaternion& quaternion() const {return m_q;}
+
 
     ///! equivalent rotation
     CLHEP::HepRotation rotation()const{return m_q.rotation();}
