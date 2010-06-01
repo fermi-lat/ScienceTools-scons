@@ -235,7 +235,7 @@ class ROIDiffuseModel_PC(ROIDiffuseModel_OTF):
         manages the exposure integral and model evaluation."""
 
     def init(self):
-        tolerance = 0.02
+        self.tolerance = 0.02
 
     def setup(self):
         SkyIntegrator.set_tolerance(self.tolerance)
