@@ -327,7 +327,8 @@ bool Data::addgti(const std::string& inputFile)
             ok = (m_start==0 || tmax > m_start)
                 && (m_stop==0 || tmin < m_stop ) ;
             if( ok ) {
-                skymaps::Gti timerange(tnew.applyTimeRangeCut(m_start, std::min(m_stop, tmax)));
+                double max(m_stop==0 ? tmax : std::min(m_stop,tmax));
+                skymaps::Gti timerange(tnew.applyTimeRangeCut(m_start, max));
                 m_data->addgti(timerange); 
                 log() << " found interval " 
                     << int(tmin)<<"-"<< int(tmax)<<  std::endl;
