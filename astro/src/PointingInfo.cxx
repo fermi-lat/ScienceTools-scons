@@ -5,7 +5,7 @@
 */
 
 #include "astro/PointingInfo.h"
-
+using CLHEP::Hep3Vector;
 using namespace astro;
 
 PointingInfo::PointingInfo(const CLHEP::Hep3Vector& position, 

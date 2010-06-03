@@ -16,6 +16,7 @@ using namespace astro;
 #include <sstream>
 #include <memory>
 #include <cmath>
+using CLHEP::Hep3Vector;
 
 namespace {
     static double time_tol(10); // seconds allow beyond the end

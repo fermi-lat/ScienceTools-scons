@@ -18,7 +18,8 @@ $Id$
 
 using namespace astro;
 using namespace CLHEP;
-
+using CLHEP::HepRotation;
+using CLHEP::Hep3Vector;
 namespace {
     const double D2R = M_PI/180.;
 }
