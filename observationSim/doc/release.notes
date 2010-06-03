@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ observationSim-08-04-08 03-Jun-2010 jchiang add CLHEP qualifiers in prep for CLHEP 2.0.4.6
  observationSim-08-04-07 31-Mar-2010 jchiang use DC1A irfs in test program
  observationSim-08-04-06 22-Feb-2010    jrb correct use of xxLib for libEnv
  observationSim-08-04-05 07-Feb-2010 jchiang fix xml file
