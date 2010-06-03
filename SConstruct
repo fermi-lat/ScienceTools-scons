@@ -10,6 +10,11 @@ import os,platform,SCons,glob,re,atexit,sys,traceback,commands,subprocess
 
 print "\nThis build is running on: ", platform.node(), "\n"
 
+print "Argument list (one per line):"
+for arg in sys.argv:
+    print "=> ",arg
+print "\n"
+
 if sys.platform == 'win32':
     EnsureSConsVersion(1, 3, 0)
 else:
