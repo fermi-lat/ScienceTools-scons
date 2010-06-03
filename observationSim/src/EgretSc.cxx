@@ -12,15 +12,15 @@
 
 namespace observationSim {
 
-HepRotation EgretSc::InstrumentToCelestial(double) {
+CLHEP::HepRotation EgretSc::InstrumentToCelestial(double) {
 
 // This implementation *should* ensure that an orthogonal set of axes
 // are fed to the HepRotation constructor.
-   Hep3Vector z_axis = m_zAxis();
-   Hep3Vector x_axis = m_xAxis();
-   Hep3Vector yAxis = z_axis.cross(x_axis);
+   CLHEP::Hep3Vector z_axis = m_zAxis();
+   CLHEP::Hep3Vector x_axis = m_xAxis();
+   CLHEP::Hep3Vector yAxis = z_axis.cross(x_axis);
 
-   return HepRotation(yAxis.cross(z_axis), yAxis, z_axis);
+   return CLHEP::HepRotation(yAxis.cross(z_axis), yAxis, z_axis);
 }
 
 } // namespace observationSim

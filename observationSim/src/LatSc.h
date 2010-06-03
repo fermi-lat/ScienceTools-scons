@@ -39,7 +39,7 @@ public:
    virtual double EarthLon(double time);
    virtual double EarthLat(double time);
 
-   virtual HepRotation InstrumentToCelestial(double time);
+   virtual CLHEP::HepRotation InstrumentToCelestial(double time);
 
    virtual bool inSaa(double time);
 

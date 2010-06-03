@@ -52,7 +52,7 @@ public:
    virtual double EarthLon(double) {return m_earthLon;}
    virtual double EarthLat(double) {return m_earthLat;}
 
-   virtual HepRotation InstrumentToCelestial(double);
+   virtual CLHEP::HepRotation InstrumentToCelestial(double);
 
    virtual bool inSaa(double) {return m_inSaa;}
 

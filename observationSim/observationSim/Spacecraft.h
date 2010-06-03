@@ -47,7 +47,7 @@ public:
    virtual double EarthLat(double time) = 0;
 
    /// Rotation matrix from instrument to J2000 coordinates
-   virtual HepRotation InstrumentToCelestial(double time) = 0;
+   virtual CLHEP::HepRotation InstrumentToCelestial(double time) = 0;
 
    /// true if in SAA
    virtual bool inSaa(double time) = 0;

@@ -79,7 +79,7 @@ public:
 
    /// Apparent inclination wrt spacecraft z-axis (degrees)
    double phi() const {
-      Hep3Vector yAxis = zAxis().dir().cross(xAxis().dir());
+      CLHEP::Hep3Vector yAxis = zAxis().dir().cross(xAxis().dir());
       double my_phi = atan2(appDir().dir().dot(yAxis),
                             appDir().dir().dot(xAxis().dir()))*180./M_PI;
       if (my_phi < 0) {

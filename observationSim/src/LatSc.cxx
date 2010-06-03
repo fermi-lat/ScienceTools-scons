@@ -37,14 +37,14 @@ LatSc::LatSc(const std::string & ft2file) : Spacecraft() {
 }
 
 astro::SkyDir LatSc::zAxis(double time) {
-   HepRotation rotationMatrix = InstrumentToCelestial(time);
-   return astro::SkyDir(rotationMatrix(Hep3Vector(0, 0, 1)),
+   CLHEP::HepRotation rotationMatrix = InstrumentToCelestial(time);
+   return astro::SkyDir(rotationMatrix(CLHEP::Hep3Vector(0, 0, 1)),
                         astro::SkyDir::EQUATORIAL);
 }
 
 astro::SkyDir LatSc::xAxis(double time) {
-   HepRotation rotationMatrix = InstrumentToCelestial(time);
-   return astro::SkyDir(rotationMatrix(Hep3Vector(1, 0, 0)),
+   CLHEP::HepRotation rotationMatrix = InstrumentToCelestial(time);
+   return astro::SkyDir(rotationMatrix(CLHEP::Hep3Vector(1, 0, 0)),
                         astro::SkyDir::EQUATORIAL);
 }
 
@@ -60,7 +60,7 @@ double LatSc::EarthLat(double time) {
    return gps->lat();
 }
 
-HepRotation LatSc::InstrumentToCelestial(double time) {
+CLHEP::HepRotation LatSc::InstrumentToCelestial(double time) {
    astro::GPS * gps(astro::GPS::instance());
    gps->time(time);
    astro::PointingTransform transform(gps->zAxisDir(), gps->xAxisDir());
@@ -76,7 +76,7 @@ bool LatSc::inSaa(double time) {
 }
 
 void LatSc::getScPosition(double time, std::vector<double> & position) {
-   Hep3Vector pos = astro::GPS::instance()->position(time);
+   CLHEP::Hep3Vector pos = astro::GPS::instance()->position(time);
    position.clear();
 // GPS returns the position in units of km, but FT2 wants meters so
 // we multiply by 10^3.

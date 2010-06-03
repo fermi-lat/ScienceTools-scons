@@ -163,7 +163,7 @@ void ObsSim::setRandomSeed() {
 // Set the random number seed in the CLHEP random number engine.
 // We only do this once per run, so we set it using the constructor.
 // See <a href="http://wwwasd.web.cern.ch/wwwasd/lhc++/clhep/doxygen/html/Random_8h-source.html">CLHEP/Random/Random.h</a>.
-   HepRandom hepRandom(m_pars["seed"]);
+   CLHEP::HepRandom hepRandom(m_pars["seed"]);
 }
 
 void ObsSim::createFactories() {
