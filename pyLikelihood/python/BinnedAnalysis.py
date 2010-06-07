@@ -46,6 +46,7 @@ class BinnedObs(object):
         self._roiCuts.readCuts(srcMaps, "", False)
         self._expCube = pyLike.ExposureCube()
         self._expCube.readExposureCube(expCube)
+        self._expCube.setEfficiencyFactor(self._respFuncs.efficiencyFactor())
         self._eventCont = pyLike.EventContainer(self._respFuncs,
                                                 self._roiCuts,
                                                 self._scData)
