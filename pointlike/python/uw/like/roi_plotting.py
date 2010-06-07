@@ -10,7 +10,7 @@ $Header$
 
 author: Matthew Kerr
 """
-
+import exceptions
 import numpy as N
 from skymaps import PySkyFunction,Background,Band,SkyDir,Hep3Vector,SkyIntegrator
 from roi_bands import ROIEnergyBand
@@ -174,16 +174,22 @@ def band_fluxes(r,which=0,axes=None,axis=None,outfile=None, **kwargs):
 #-----------------------------------------------------------------------------#
 
 def make_sed(r,which=0,axes=None,axis=None,plot_model=True, 
-    data_kwargs=None, fit_kwargs=None):
+        data_kwargs=None, fit_kwargs=None):
     if data_kwargs is None: data_kwargs={}
     if fit_kwargs is None: fit_kwargs={'color':'blue', 'linewidth':1}
     if axes is None: axes = P.gca()
     band_fluxes(r,which=which,axes=axes, **data_kwargs)
     axes.set_xlabel('Energy (MeV)')
     axes.set_ylabel('Energy Flux (MeV/cm2/s)')
-    dom = N.logspace(2,5,100)
-    cod = r.psm.models[which](dom)*dom**2
-    axes.plot(dom,cod, **fit_kwargs)
+    if plot_model:
+        try:
+            dom = N.logspace(N.log10(r.fit_emin[0]),N.log10(r.fit_emax[0]),51)
+            cod = r.psm.models[which](dom)*dom**2
+            axes.plot(dom,cod, **fit_kwargs)
+        except exceptions.OverflowError:
+            pass # failed, at least plot axes
+        except:
+            raise # anything else
     if axis is None:
         axes.axis([1e2,1e5,1e-10,1e-2])
     else: axes.axis(axis)
