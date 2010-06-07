@@ -21,8 +21,6 @@ namespace optimizers {
 
 enum TOLTYPE {RELATIVE, ABSOLUTE};
 
-// class Statistic;
-
 /** 
  * @class Optimizer
  *

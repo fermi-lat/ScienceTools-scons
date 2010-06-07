@@ -229,7 +229,9 @@ protected:
 
    void addParam(const Parameter &param);
 
-   void fetchParamValues(std::vector<double> &values, bool getFree) const;
+   virtual void fetchParamValues(std::vector<double> & values, 
+                                 bool getFree) const;
+
    void fetchParamNames(std::vector<std::string> &names, bool getFree) const;
 
    virtual void fetchDerivs(Arg &x ,std::vector<double> &derivs, 
