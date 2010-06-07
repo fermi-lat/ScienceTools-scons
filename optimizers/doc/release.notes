@@ -5,6 +5,7 @@
     @verbatim
     EOH
 
+ optimizers-02-19-00 07-Jun-2010 jchiang make Function::fetchParamValues virtual so that subclasses can override
  optimizers-02-18-00 04-May-2010 jchiang add access to delta chi-square for Minos and MnContour (from JCT)
  optimizers-02-17-06 24-Feb-2010    jrb TRAP_FPE is for Linux only
  optimizers-02-17-05 24-Feb-2010    jrb fix linking for mac
