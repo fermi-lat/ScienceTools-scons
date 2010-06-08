@@ -7,6 +7,7 @@ $Id$
  --------- -----   --- -----------------------------------------------------------------------
  * EOH *
 
+ pointlike-07-04-04 08-Jun-2010 burnett minor python improvements
  pointlike-07-04-03 04-Jun-2010 burnett pointfit module fix
  pointlike-07-04-02 23-Apr-2010 burnett fix to Eventlist; SrcId and pipeline mods
  pointlike-07-04-01 14-Apr-2010 burnett various python mods, including Band change
