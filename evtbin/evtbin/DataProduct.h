@@ -198,7 +198,7 @@ namespace evtbin {
       std::string m_data_dir;
       std::string m_event_file;
       std::string m_event_table;
-      std::string m_creator;
+      mutable std::string m_creator; // THB: made mutable since const method createFile modifies
       Gti m_gti;
       Hist * m_hist_ptr;
   };
