@@ -9,6 +9,7 @@
 #include "st_app/StApp.h"
 #include "st_stream/st_stream.h"
 #include "irfLoader/Loader.h"
+#include "irfInterface/IEfficiencyFactor.h"
 #include "irfInterface/IrfsFactory.h"
 #include "healpix/CosineBinner.h"
 #include "map_tools/Exposure.h"
@@ -142,6 +143,7 @@ using optimizers::Exception;
 %include optimizers/NewMinuit.h
 %include st_facilities/FitsImage.h
 %include st_facilities/Util.h
+%include irfInterface/IEfficiencyFactor.h
 %include Likelihood/EquinoxRotation.h
 %template (FuncPair) std::pair<std::string, optimizers::Function *>;
 %template (FuncMap) std::map<std::string, optimizers::Function *>;
