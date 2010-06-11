@@ -5,7 +5,7 @@ import os,platform
 ##   package
 ##   toolname  (one of package, toolname must be present)
 ##   toBuild   (recognized values include 'static', 'shared',
-##              'component', 'swig', 'rootLib', and 'program'.
+##              'component', 'swig', 'rootlib', and 'program'.
 ##              Defaults to 'program')
 ##   depsOnly   (only acknowledged if toBuild == 'swig')
 def generate(env, **kw):
