@@ -451,7 +451,7 @@ class ROIAnalysis(object):
       save_params = self.parameters().copy() # save free parameters
       self.zero_ps(which)
       ll_0 = self.fit(save_values = False,method=method)
-      if not self.quiet: print self
+      print self
       self.unzero_ps(which)
       self.set_parameters(save_params) # reset free parameters
       self.__pre_fit__() # restore caching
