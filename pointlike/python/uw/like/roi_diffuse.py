@@ -236,6 +236,7 @@ class ROIDiffuseModel_PC(ROIDiffuseModel_OTF):
 
     def init(self):
         self.tolerance = 0.02
+        self.nsimps    = 4
 
     def setup(self):
         SkyIntegrator.set_tolerance(self.tolerance)
