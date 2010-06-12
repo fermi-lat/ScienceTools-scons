@@ -270,6 +270,7 @@ namespace facilities {
 	      setEnvironment(env+"XMLPATH", getXmlPath(env));
 	      setEnvironment(env+"DATAPATH", getDataPath(env));
 	      setEnvironment(env+"PFILESPATH", getPfilesPath(env));
+              setEnvironment(env+"JOBOPTIONSPATH", getJobOptionsPath(env));
 	    }
 	  }
 	}
