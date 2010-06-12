@@ -33,8 +33,8 @@ apply_pattern ST_pfiles
 apply_pattern ST_app name=makeFT1
 apply_pattern ST_app name=makeFT1_kluge
 apply_pattern ST_app name=makeFT2
-apply_pattern ST_app name=gtlle
 application makeFT2a makeFT2a/makeFT2a.cxx
+#application xml_classifier xml_classifier/xml_classifier.cxx
 
 application egret2FT1 egret2FT1/*.cxx
 application convertFT1 convertFT1/convertFT1.cxx

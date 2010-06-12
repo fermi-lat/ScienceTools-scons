@@ -3,10 +3,11 @@
  * @brief Wrap EvtUtils code to read in xml event class definitions and
  * apply them to a merit file.
  *
+ * @author J. Chiang
+ *
  * $Header$
  */
 
-#include <iomanip>
 #include <iostream>
 #include <map>
 #include <stdexcept>
@@ -52,27 +53,42 @@ XmlEventClassifier::XmlEventClassifier(const std::string & xmlFile,
    }
 
    Long64_t nevents = meritTree->GetEntries();
-   std::cout << "number of events: " << nevents << std::endl;
+//   std::cout << "number of events: " << nevents << std::endl;
    for (Long64_t ievt(0); ievt < nevents; ievt++) {
       meritTree->LoadTree(ievt);
       if (!m_evtClass->fillShortCutMaps()) {
          throw std::runtime_error("error evaluating cuts");
-      };
+      }
       meritTree->GetEvent(ievt);
       unsigned int run = static_cast<unsigned int>(EvtRun);
       unsigned int event_id = static_cast<unsigned int>(EvtEventId);
-      m_eventClasses[std::make_pair(run, event_id)] = *photonMap;
+      m_bitMaps[std::make_pair(run, event_id)] = *photonMap;
    }
+}
+
+XmlEventClassifier::~XmlEventClassifier() throw() {
+   delete m_meritFile;
+   delete m_evtClass;
 }
 
 unsigned int XmlEventClassifier::operator()(unsigned int run, 
                                             unsigned int eventId) const {
    EventClassMap_t::const_iterator it =
-      m_eventClasses.find(std::make_pair(run, eventId));
-   if (it == m_eventClasses.end()) {
+      m_bitMaps.find(std::make_pair(run, eventId));
+   if (it == m_bitMaps.end()) {
       throw std::runtime_error("invalid run, eventId pair");
    }
    return it->second;
+}
+
+bool XmlEventClassifier::is_class_member(unsigned int run, 
+                                         unsigned int eventId,
+                                         unsigned int evtclass) const {
+   if (evtclass > 32) {
+      throw std::runtime_error("invalid event class identifier");
+   }
+   unsigned int mask = 1 << evtclass;
+   return (operator()(run, eventId) & mask) > 0;
 }
 
 } // namespace fitsGen
