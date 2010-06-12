@@ -221,11 +221,23 @@ namespace facilities {
       setEnvironment(packageUpper+"XMLPATH", getXmlPath(package));
       setEnvironment(packageUpper+"DATAPATH", getDataPath(package));
 #ifdef GlastRelease
-      setEnvironment(packageUpper+"JOBOPTIONSPATH", getJobOptionsPath(package));
+      setEnvironment(packageUpper+"JOBOPTIONSPATH",getJobOptionsPath(package));
 #endif
     }
+
 #ifndef HEADAS
     setEnvironment("EXTFILESSYS", joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles));
+#endif
+#ifdef GlastRelease
+  // Define environment variable PARAMFILESROOT used by Gaudi to find
+  // particleTable.txt.  This value will be overridden if it's set
+  // in job options
+  // PARMAFILESROOT should be $EXTFILESSYS/gaudi
+  std::string tmp = 
+    commonUtilities::joinPath(commonUtilities::getEnvironment("EXTFILESSYS"),
+                              "gaudi");
+    commonUtilities::setEnvironment("PARAMFILESROOT", tmp);
+
 #endif
 #ifdef ScienceTools
     std::string calDbData = getDataPath("caldb");
@@ -242,6 +254,7 @@ namespace facilities {
     setEnvironment("TIMING_DIR", joinPath(joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles), "jplephem"));
 #endif
 #endif
+    // Not HEADAS; not SCons
 #else
     if(environ!=NULL){
       int counter=0;
