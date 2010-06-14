@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<EventClass version="P7V3">
+  <EventMap mapName="FT1EventClass" altName="EVENT_CLASS">
+    <EventCategory name="NoTrks" bit="0">
+      <ShortCut>CTBClassLevel &gt; 0 &amp;&amp; CTBClassLevel &lt; 1 &amp;&amp; TkrNumTracks == 0</ShortCut>
+      <Comment>Used for GRB analsysis</Comment>
+    </EventCategory>
+    <EventCategory name="NoCal" bit="1">
+      <ShortCut>FswGamState==0 &amp;&amp; TkrNumTracks> 0 &amp;&amp; !(CalEnergyRaw &gt; 1000. &amp;&amp; CalTrackAngle &gt; 0.15 &amp;&amp; CTBCALPSFProb &gt; 0.5)</ShortCut>
+      <Comment>Events with no calorimeter data.</Comment>
+    </EventCategory>
+    <EventCategory name="CalOnly" bit="2">
+      <ShortCut>FswGamState==0 &amp;&amp; CalEnergyRaw &gt; 1000. &amp;&amp; CalTrackAngle &gt; 0.15 &amp;&amp; CTBCALPSFProb &gt; 0.5</ShortCut>
+      <Comment>Events where only calorimeter information was used in analysis.</Comment>
+    </EventCategory>
+    <EventCategory name="S3" bit="3">
+      <ShortCut>FswGamState==0 &amp;&amp; TkrNumTracks &gt; 0 &amp;&amp; AcdTileCount==0 &amp;&amp; VtxAngle &gt; 0 &amp;&amp; CTBTkrCoreCalDoca &lt; 150</ShortCut>
+      <Comment>Very loose cuts appropriate for GRB analysis</Comment>
+    </EventCategory>
+    <EventCategory name="Transient" bit="4">
+      <ShortCut>CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1</ShortCut>
+      <Comment>Loose cuts appropriate for transient source analysis</Comment>
+    </EventCategory>
+    <EventCategory name="Source" bit="5">
+      <ShortCut>CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 2</ShortCut>
+      <Comment>Cuts appropriate for point source analysis</Comment>
+    </EventCategory>
+  </EventMap>
+</EventClass>
+
+
+
+
+
+
+
+
