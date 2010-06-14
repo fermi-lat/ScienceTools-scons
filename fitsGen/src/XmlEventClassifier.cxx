@@ -1,6 +1,6 @@
 /**
  * @file XmlEventClassifier.cxx
- * @brief Wrap EvtUtils code to read in xml event class definitions and
+ * @brief Wrap evtUtils code to read in xml event class definitions and
  * apply them to a merit file.
  *
  * @author J. Chiang
@@ -16,7 +16,7 @@
 #include <TFile.h>
 #include <TTree.h>
 
-#include "EvtUtils/EventClass.h"
+#include "evtUtils/EventClass.h"
 
 #include "fitsGen/XmlEventClassifier.h"
 
@@ -24,7 +24,7 @@ namespace fitsGen {
 
 XmlEventClassifier::XmlEventClassifier(const std::string & xmlFile, 
                                        const std::string & meritFile) 
-   : m_evtClass(EvtUtils::EventClass::loadFromXml(xmlFile.c_str())),
+   : m_evtClass(evtUtils::EventClass::loadFromXml(xmlFile.c_str())),
      m_meritFile(TFile::Open(meritFile.c_str())) {
 
    if (m_evtClass == 0) {

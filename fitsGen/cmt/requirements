@@ -14,7 +14,7 @@ use dataSubselector v*
 use st_app v*
 use st_stream v*
 use embed_python v*
-use EvtUtils v*
+use evtUtils v*
 
 apply_pattern package_include
 apply_pattern package_linkopts
