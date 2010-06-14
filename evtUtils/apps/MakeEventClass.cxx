@@ -3,7 +3,7 @@
 
 #include<iostream>
 
-#include "EvtUtils/EventClass.h"
+#include "evtUtils/EventClass.h"
 
 
 int main(int argn, char** argc) {
@@ -14,7 +14,7 @@ int main(int argn, char** argc) {
   }
 
   std::string xmlFile(argc[1]);
-  EvtUtils::EventClass* evtClass = EvtUtils::EventClass::loadFromXml(xmlFile);
+  evtUtils::EventClass* evtClass = evtUtils::EventClass::loadFromXml(xmlFile);
   if ( evtClass == 0 ) {
     std::cerr << "Failed to load Event class definitions from " << xmlFile << std::endl;
     return 1;

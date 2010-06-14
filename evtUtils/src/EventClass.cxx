@@ -2,9 +2,9 @@
 
 
 // This Class's header
-#include "EvtUtils/EventClass.h"
+#include "evtUtils/EventClass.h"
 
-#include "EvtUtils/EventMap.h"
+#include "evtUtils/EventMap.h"
 
 #include <TTree.h>
 
@@ -18,9 +18,9 @@
 #include <TXMLEngine.h>
 #endif
 
-ClassImp(EvtUtils::EventClass);
+ClassImp(evtUtils::EventClass);
 
-namespace EvtUtils {
+namespace evtUtils {
 
   EventClass::~EventClass() {
     for ( std::map<std::string,EventMap*>::iterator itr = m_evtMap.begin(); 
@@ -174,7 +174,7 @@ namespace EvtUtils {
       return 0;    
     }
     
-    EvtUtils::EventClass* evtClass = new EvtUtils::EventClass(version);
+    evtUtils::EventClass* evtClass = new evtUtils::EventClass(version);
   
     std::vector<DOMElement*> eventMaps;
     xmlBase::Dom::getChildrenByTagName(top,EventMap,eventMaps);
@@ -183,7 +183,7 @@ namespace EvtUtils {
       DOMElement* elemMap = *itrMap;
       std::string mapName = xmlBase::Dom::getAttribute(elemMap,"mapName");
       std::string altName = xmlBase::Dom::getAttribute(elemMap,"altName");
-      EvtUtils::EventMap* evtMap = evtClass->addEventMap(mapName,altName);
+      evtUtils::EventMap* evtMap = evtClass->addEventMap(mapName,altName);
       if ( evtMap == 0 ) {
 	delete doc;
 	delete evtClass;
@@ -217,7 +217,7 @@ namespace EvtUtils {
 	if ( elemComment ) {
 	  comment = xmlBase::Dom::getTextContent(elemComment); 
 	}
-	EvtUtils::EventCategory* evtCat = evtMap->addCateogry(catName,bitVal,shortCut,fullCut,comment);
+	evtUtils::EventCategory* evtCat = evtMap->addCateogry(catName,bitVal,shortCut,fullCut,comment);
 	if ( evtCat == 0 ) {
 	  delete doc;
 	  delete evtClass;
@@ -256,13 +256,13 @@ namespace EvtUtils {
       return 0;    
     }
     
-    EvtUtils::EventClass* evtClass = new EvtUtils::EventClass(version);
+    evtUtils::EventClass* evtClass = new evtUtils::EventClass(version);
   
     XMLNodePointer_t elemMap = theEngine.GetChild(top);
     while ( elemMap != 0 ) {
       const char* mapName = theEngine.GetAttr(elemMap,"mapName");
       const char* altName = theEngine.GetAttr(elemMap,"altName");
-      EvtUtils::EventMap* evtMap = evtClass->addEventMap(mapName,altName);
+      evtUtils::EventMap* evtMap = evtClass->addEventMap(mapName,altName);
       if ( evtMap == 0 ) {
 	delete evtClass;
 	return 0;        
@@ -291,7 +291,7 @@ namespace EvtUtils {
 	  }
 	  child = theEngine.GetNext(child);	  
 	}
-	EvtUtils::EventCategory* evtCat = evtMap->addCateogry(catName,bitVal,shortCut,fullCut,comment);
+	evtUtils::EventCategory* evtCat = evtMap->addCateogry(catName,bitVal,shortCut,fullCut,comment);
 	if ( evtCat == 0 ) {
 	  delete evtClass;
 	  return 0;        			

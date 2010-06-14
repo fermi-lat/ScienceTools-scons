@@ -2,15 +2,15 @@
 
 
 // This Class's header
-#include "EvtUtils/EventMap.h"
+#include "evtUtils/EventMap.h"
 
-#include "EvtUtils/EventCategory.h"
+#include "evtUtils/EventCategory.h"
 
 #include <TTree.h>
 
-ClassImp(EvtUtils::EventMap);
+ClassImp(evtUtils::EventMap);
 
-namespace EvtUtils {
+namespace evtUtils {
 
   EventMap::~EventMap() {
     for ( std::map<unsigned,EventCategory*>::iterator itr = m_indexMap.begin(); 

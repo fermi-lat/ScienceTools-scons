@@ -2,16 +2,16 @@
 
 
 // This Class's header
-#include "EvtUtils/EventCategory.h"
+#include "evtUtils/EventCategory.h"
 
 #include <TTree.h>
 #include <TTreeFormula.h>
 
 #include<iostream>
 
-ClassImp(EvtUtils::EventCategory);
+ClassImp(evtUtils::EventCategory);
 
-namespace EvtUtils {
+namespace evtUtils {
 
   EventCategory::~EventCategory(){
     delete m_shortFormula;
