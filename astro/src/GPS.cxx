@@ -435,7 +435,7 @@ int GPS::test()
         }    
     }
     // test reading and interpolating an ascii file
-    const char * package_root(::getenv("ASTROROOT") );
+    //    const char * package_root(::getenv("ASTROROOT") );
    // std::string history(std::string(package_root)+"/src/test/history_test.txt");
     std::string history(facilities::commonUtilities::joinPath(facilities::commonUtilities::getDataPath("astro"), "history_test.txt"));
 
