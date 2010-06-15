@@ -57,23 +57,18 @@ class CatalogManager(object):
         cdata = pyfits.open(catalog_file)[1].data
         ras  = np.asarray(cdata.field('RA'),float)
         decs = np.asarray(cdata.field('DEC'),float)
-        pens = cdata.field('PIVOT_ENERGY')
+        try:
+            pens = cdata.field('PIVOT_ENERGY')
+        except KeyError:
+            pens = np.array(len(cdata)*[1000.])
         n0s  = cdata.field('FLUX_DENSITY')
         inds = cdata.field('SPECTRAL_INDEX')
         inds = np.where(inds > 0, inds, -inds)
-
-        self.names  = np.asarray(cdata.field('Source_Name'))
-        # the fix
         try:
-            bad_name, good_name = '1FGL J0801.3-5626 ','1FGL J0802.4-5622 ' 
-            print self.names[433]
-            ibad =list(self.names).index(bad_name)
-            self.names[ibad] = good_name
-            ras[ibad] =  120.616
-            decs[ibad] = -56.369
-            print 'swapped source  %s to %s' % (bad_name, self.names[ibad])
-        except ValueError:
-            print 'did not move source'
+            self.names  = np.asarray(cdata.field('Source_Name'))
+        except KeyError:
+            self.names  = np.asarray(cdata.field('NickName'))
+
         self.dirs   = map(SkyDir,ras,decs)
         self.models = np.asarray([Models.PowerLaw(p=[n0,ind],e0=pen) for n0,ind,pen in zip(n0s,inds,pens)])
 
