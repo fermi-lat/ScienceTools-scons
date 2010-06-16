@@ -26,7 +26,4 @@ progEnv.Tool('registerTargets',
              package = 'evtUtils',
              rootcintSharedCxts = [[evtUtils, libEnv]], 
              testAppsCxts = [evtUtilsApp_MakeEventClass,progEnv],
-             includes = listFiles(['evtUtils/*.h'])
-             
-
-
+             includes = listFiles(['evtUtils/*.h']))
