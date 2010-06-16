@@ -7,6 +7,7 @@
  * $Header$
  */
 
+#include <cstdlib>
 #include <sstream>
 
 int main(int iargc, char * argv[]) {

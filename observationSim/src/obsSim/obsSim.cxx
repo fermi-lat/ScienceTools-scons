@@ -10,6 +10,7 @@
 #include <fenv.h>
 #endif
 
+#include <cstdlib>
 #include <stdexcept>
 
 #include "CLHEP/Random/Random.h"

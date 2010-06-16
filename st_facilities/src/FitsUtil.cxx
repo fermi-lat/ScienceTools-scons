@@ -8,6 +8,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <cstdio>
 
 #include <algorithm>
 #include <iostream>

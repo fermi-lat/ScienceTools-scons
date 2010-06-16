@@ -4,6 +4,7 @@
 
 #include "pgwave/MyImage.h"
 
+#include <cstring>
 #include <fstream>
 #define FNAN 1e-40F
 

@@ -10,6 +10,7 @@ def generate(env, **kw):
     env.Tool('st_appLib')
     env.Tool('st_streamLib')
     env.Tool('embed_pythonLib')
+    env.Tool('evtUtilsLib')
 
 def exists(env):
     return 1
