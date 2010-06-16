@@ -84,7 +84,7 @@ class ROIExtendedModel(ROIDiffuseModel_OTF):
     def init(self,*args,**kwargs):
         self.pixelsize = 0.05
         self.npix      = 512
-        self.nsimps    = 0
+        self.nsimps    = 16 # for consistency with point sources.
 
     def setup(self):
         """ Use the Normalized convolution object and always do the
@@ -267,6 +267,7 @@ Optional keyword arguments:
                 if N.any(pn=='Dec'): p=N.append(new_dir.dec(),p)
                 if N.any(pn=='RA'): p=N.append(new_dir.ra(),p)
 
+            # Do the convolution here.
             sm.set_parameters(p=p,absolute=False)
             self.initialize_counts(roi.bands)
 
