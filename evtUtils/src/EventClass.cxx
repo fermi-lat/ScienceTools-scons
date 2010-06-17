@@ -5,8 +5,10 @@
 #include "evtUtils/EventClass.h"
 
 #include "evtUtils/EventMap.h"
+#include "evtUtils/EventCategory.h"
 
 #include <TTree.h>
+#include <iostream>
 
 //#define USE_ROOT_XML 1
 
@@ -305,4 +307,48 @@ namespace evtUtils {
 
 #endif
 
+  bool EventClass::writeToHtml(EventClass& evtClass,
+			       std::ostream& os) {
+    
+    os << "    <table width=\"100%\" border=1>" << std::endl;
+    os << "      <tbody>" << std::endl;
+    std::list<std::string> evtMapNames;
+    evtClass.getEvtMapNames(evtMapNames);
+    for ( std::list<std::string>::const_iterator itrMap = evtMapNames.begin(); itrMap != evtMapNames.end(); itrMap++ ) {
+      evtUtils::EventMap* evtMap = evtClass.getEventMapByName(*itrMap);
+      if ( evtMap == 0 ) {
+	return false;
+      }
+      os << "        <tr>" << std::endl;
+      os << "          <td colspan=\"5\" bgcolor=\"lightblue\" align=\"center\">" << std::endl;
+      os << "            <strong>" << evtMap->getMapName() << "</strong>" << std::endl;      
+      os << "          </td>" << std::endl;
+      os << "        </tr>" << std::endl;      
+      os << "        <tr>" << std::endl;
+      os << "          <td width=\"5%\">Bit</td>" << std::endl;
+      os << "          <td width=\"10%\">Name</td>" << std::endl;
+      os << "          <td width=\"25%\">Comment</td>" << std::endl;
+      os << "          <td width=\"25%\">Short Version of Cut</td>" << std::endl;
+      os << "          <td width=\"35%\">Full Version of Cut</td>" << std::endl;
+      os << "        </tr>" << std::endl;
+      for ( unsigned i(0); i < 32; i++ ) {
+	evtUtils::EventCategory* evtCat = evtMap->getCutByIndex(i);
+	if ( evtCat == 0 ) continue;
+	os << "        <tr>" << std::endl;
+	os << "          <td>" << i << "</td>" << std::endl;
+	os << "          <td>" << evtCat->getName() << "</td>" << std::endl;
+	os << "          <td>" << evtCat->getComment() << "</td>" << std::endl;
+	os << "          <td>" << evtCat->getShortCut() << "</td>" << std::endl;
+	os << "          <td>" << evtCat->getFullCut() << "</td>" << std::endl;
+	os << "        </tr>" << std::endl;
+      }
+      os << "        </tr>" << std::endl;  
+      os << "        <tr>" << std::endl;  
+      os << "        </tr>" << std::endl;        
+    }  
+  
+    os << "      </tbody>" << std::endl;
+    os << "    </table>" << std::endl;
+    return true;
+  }
 }

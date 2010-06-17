@@ -35,6 +35,9 @@ namespace evtUtils {
     
     static EventClass* loadFromXml(const std::string& fileName);
     
+    static bool writeToHtml(EventClass& evtClass, 
+			    std::ostream& os);
+
   public:
     
     EventClass()

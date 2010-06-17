@@ -23,3 +23,4 @@ apply_pattern root_package headers="\
 apply_pattern use_facilities_symbols
 
 application MakeEventClass ../apps/MakeEventClass.cxx
+application MakeEventClassHtml ../apps/MakeEventClassHtml.cxx

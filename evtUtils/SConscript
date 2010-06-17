@@ -21,6 +21,7 @@ evtUtils = libEnv.SharedLibrary('evtUtils', listFiles(['src/*.cxx'])+['evtUtils/
 progEnv.Tool('evtUtilsLib')
 
 evtUtilsApp_MakeEventClass = progEnv.Program('MakeEventClass', ['apps/MakeEventClass.cxx'])
+evtUtilsApp_MakeEventClassHtml = progEnv.Program('MakeEventClassHtml', ['apps/MakeEventClassHtml.cxx'])
 
 progEnv.Tool('registerTargets',
              package = 'evtUtils',
