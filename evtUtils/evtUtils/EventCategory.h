@@ -69,6 +69,9 @@ namespace evtUtils {
     }
     
     // Access functions
+    inline const TTreeFormula* getShortFormula() const { return m_shortFormula; }
+    inline const TTreeFormula* getFullFormula() const { return m_fullFormula; }    
+
     inline const std::string& getName() const { return m_name; }
     inline const std::string& getShortCut() const { return m_shortCut; }
     inline const std::string& getFullCut() const { return m_fullCut; }
