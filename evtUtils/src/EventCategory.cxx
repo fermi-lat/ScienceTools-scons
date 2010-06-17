@@ -61,7 +61,10 @@ namespace evtUtils {
   EventCategory::EventReturnCode EventCategory::evaluateFormula(TTreeFormula* form) const {
     if ( form == 0 ) return EventCategory::NoCut;
     if ( form->GetTree() == 0 ) return EventCategory::Error;
-    if ( form->GetTree()->GetReadEntry() < 0 ) return EventCategory::Error;
+    if ( form->GetTree()->GetReadEntry() < 0 ) { 
+      // This is actually ok when writing the file.
+      ;
+    }
     // Eval instance return a double, for bool the values are 0. and 1.
     return form->EvalInstance() > 0.5 ? EventCategory::PassedCut : EventCategory::FailedCut;
   }
