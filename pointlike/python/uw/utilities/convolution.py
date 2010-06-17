@@ -2,7 +2,7 @@
 
 $Header$
 
-author : M. Kerr
+authors: M. Kerr, J. Lande
 
 """
 from skymaps import SkyDir,WeightedSkyDirList,Hep3Vector,SkyIntegrator,PySkyFunction
