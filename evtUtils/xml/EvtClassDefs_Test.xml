@@ -6,7 +6,7 @@
       <Comment>Used for GRB analsysis</Comment>
     </EventCategory>
     <EventCategory name="NoCal" bit="1">
-      <ShortCut>FswGamState==0 &amp;&amp; TkrNumTracks> 0 &amp;&amp; !(CalEnergyRaw &gt; 1000. &amp;&amp; CalTrackAngle &gt; 0.15 &amp;&amp; CTBCALPSFProb &gt; 0.5)</ShortCut>
+      <ShortCut>FswGamState==0 &amp;&amp; TkrNumTracks &gt; 0 &amp;&amp; !(CalEnergyRaw &gt; 1000. &amp;&amp; CalTrackAngle &gt; 0.15 &amp;&amp; CTBCALPSFProb &gt; 0.5)</ShortCut>
       <Comment>Events with no calorimeter data.</Comment>
     </EventCategory>
     <EventCategory name="CalOnly" bit="2">
