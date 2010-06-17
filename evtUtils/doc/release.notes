@@ -5,3 +5,4 @@
  @endverbatim
 */
  evtUtils-00-00-01 16-Jun-2010 jchiang add evtUtilsLib.py for SCons builds
+ evtUtils-00-00-02 16-Jun-2010 echarles Fix check on GetReadEntry(), which is not appropriate when writing tree for first time
