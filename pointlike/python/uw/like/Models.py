@@ -333,6 +333,14 @@ Spectral parameters:
       if C[1,1]==0:
          raise Exception('PowerLaw fit required before calculating pivot energy')
       return self.e0*N.exp( C[0,1]/(A*C[1,1]) )
+      
+   def set_e0(self, e0p):
+      """ set a new reference energy, adjusting the norm parameter """
+      # TODO: move this upstream
+      gamma = 10** self.p[1]
+      self.p[0] += gamma * N.log10(self.e0/e0p)
+      self.e0 = e0p
+      
 
 #===============================================================================================#
 
