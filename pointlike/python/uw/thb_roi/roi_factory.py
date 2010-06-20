@@ -132,7 +132,7 @@ class ROIfactory(pointspec.SpectralAnalysis):
         ps_manager = roi_managers.ROIPointSourceManager(ps, skydir,quiet=self.quiet)
         bg_manager = roi_managers.ROIBackgroundManager(self, self.bgmodels(skydir), self.roi_dir,quiet=self.quiet)
 
-        emin,emax = self.emin, self.emax
+        emin,emax = self.fit_emin, self.fit_emax
         r = myroi.MyROI(skydir, ps_manager, bg_manager, self, 
                         point_sources = ps,
                         fit_emin=[emin,emin], fit_emax=[emax,emax],
