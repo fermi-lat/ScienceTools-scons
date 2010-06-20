@@ -133,7 +133,8 @@ class Collection(object):
         out.write('\n<FacetCategories>' )
         for facet in self.facets:
             #IsFilterVisible="%(filter)s"
-            out.write('\n  <FacetCategory Name="%(name)s" Type="%(type)s" Format="%(format)s" d1p1:IsFilterVisible="%(filter)s"/>' %(facet.__dict__))
+            out.write('\n  <FacetCategory Name="%(name)s" Type="%(type)s" Format="%(format)s" d1p1:IsFilterVisible="%(filter)s"/>'\
+                %(facet.__dict__))
         out.write('\n</FacetCategories>')
     
     def writeAllItems(self, out,last_id):

@@ -90,7 +90,7 @@ class Pivot(object):
         col.add_facet('qual', 'Number', 'F1', uwc.qual)
         col.add_facet('pivot_energy', 'Number', 'F1', uwc.pivot_energy)
         pnorm = uwc.pnorm
-        pnorm[np.isinf(pnorm) * ( pnorm< 1e-20)] = 1e-20
+        pnorm[np.isinf(pnorm) + ( pnorm< 1e-20)] = 1e-20
         col.add_facet('lognorm', 'Number', 'F3', np.log10(pnorm) )
         col.add_facet('pindex',  'Number', 'F3', uwc.pindex) 
 

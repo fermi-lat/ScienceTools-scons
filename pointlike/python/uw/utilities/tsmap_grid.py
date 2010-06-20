@@ -100,15 +100,15 @@ def make_map(images, names=None,
     if html_page: out.write(html_trailer)
     out.close()
 
-def main(image_dir='tsmap', title='1FGL TS maps from 11 month data set', **kwargs):
+def main(image_dir='tsmap', title='1FGL TS maps from 11 month data set', html_file='tsmap_grid.htm', **kwargs):
     """create a grid of thumbnails from the files in image_dir, in alphabetical order
     """
     assert(os.path.exists(image_dir))
     images = glob.glob(os.path.join(image_dir,'*.png'))
     assert(len(images)>0)
     images.sort()
-    names = ['%d: %s' %(i+1,(os.path.split(img)[1][:-10]).replace('p','+')) for (i,img) in enumerate(images)]
-    make_map(images, names,title=title, **kwargs)
+    names = ['%d: %s' %(i+1,(os.path.split(img)[1][:-3]).replace('p','+')) for (i,img) in enumerate(images)]
+    make_map(images, names,title=title, html_file=html_file, **kwargs)
     
 if __name__=='__main__':
     main()
