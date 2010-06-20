@@ -6,15 +6,14 @@
 import sys, os, math
 from skymaps import SkyDir, SpectralFunction
 import numpy as np
-import data
 from uw.utilities import makerec
-
-catalog_root = os.path.join(data.fermi_root,'catalog')
+import config
+catalog_root = os.path.join(config.fermi_root,'catalog')
 default_assoc =  'gll_psc11month_v4r4_flags_v4r3p8.fit' #'gll_psc11month_v1r2.fit'
 default_assoc =  'gll_psc11month_v4r4_flags_v4r3p1_v4.fit' # after 14 Jan
 default_assoc =  'gll_psc11month_v4r4_flags_v4r4p1.fit'  # final 1FGL
 
-default_catalog = data.default_catalog # use the same one analyhsis
+default_catalog = config.site_config['catalog'] # use the same one analyhsis
 
 def parse_coords(coords):
     """

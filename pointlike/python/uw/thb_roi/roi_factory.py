@@ -8,7 +8,7 @@ import numpy as np
 from uw.like import pointspec, Models, pointspec_helpers, roi_managers
 from skymaps import SkyDir
 # in this package
-import data, roi_setup, catalog, myroi, config
+import roi_setup, catalog, myroi, config
 
 ## this should go to Models 
 def make_model( name='PowerLaw', pars=(1e-12/1.53, 2.3), quiet=True):
