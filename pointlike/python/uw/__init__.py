@@ -9,7 +9,7 @@ Authors:  T. Burnett, M. Kerr, E. Wallace, M. Roth
 
 def factory(**kwargs):
 
-    from thb_roi import roi_factory, config
+    from thb_roi import roi_factory
     import os
 
 #    f = roi_factory.ROIfactory(config.AE(**kwargs))
