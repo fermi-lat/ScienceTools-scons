@@ -4,12 +4,12 @@
  $Header$
  author: T. Burnett <tburnett@uw.edu>
 """
-import catalog, data #local
-from uw.utilities import makerec
-from uw.like import srcid  # gtsrcid work-alike from Eric
+import pyfits, os, pickle, glob
 import numpy as np
 from skymaps import SkyDir
-import pyfits, os, pickle, glob
+from uw.utilities import makerec
+from uw.like import srcid  # gtsrcid work-alike from Eric
+import catalog   #local
 
 def delta(ra1,dec1,ra2,dec2):
     """ return r and theta (assume close)
