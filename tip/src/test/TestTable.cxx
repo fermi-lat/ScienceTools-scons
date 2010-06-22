@@ -850,7 +850,7 @@ namespace tip {
       // Add scaled int column.
       table->appendField("SCALED", "1I");
       table->getHeader()["TSCAL6"].set(1.01);
-      table->getHeader()["TZERO6"].set(1<<16);
+      table->getHeader()["TZERO6"].set(1u<<16u);
 
       // Make room for a record.
       table->setNumRecords(1);
