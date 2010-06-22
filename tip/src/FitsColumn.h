@@ -294,7 +294,43 @@ namespace tip {
           &FitsPrimProps<char *>::undefined(), &dest, &any_null, &status);
         delete [] dest; dest = 0;
         if (0 != status) throw TipException(status, "FitsColumn::isNull failed to read scalar cell value");
-        return any_null;
+        return 0 != any_null;
+      }
+
+      virtual bool getNull(Index_t record_index, bool & null_value) const {
+        return null_value = isNull(record_index);
+      }
+
+      virtual bool getNull(Index_t record_index, std::vector<bool> & null_value) const {
+        if (m_scalar) throw TipException("FitsColumn::getNull(Index_t, std::vector<bool> &) called but field is not a vector");
+        int status = 0;
+        int any_null = 0;
+        Index_t num_els = getNumElements(record_index);
+        null_value = std::vector<bool>(num_els, false);
+        // Array to hold null values in a form native to cfitsio.
+        char * null_value_cp = new char[num_els];
+        // For strings, make a buffer to hold the values.
+        char * buf = new char[num_els * (m_display_width + 1)];
+        // Make an destination array of pointers to the individual sub-buffers.
+        char ** dest = new char *[num_els];
+        // Set pointers in destination array.
+        for (Index_t ii = 0; ii != num_els; ++ii) dest[ii] = buf + ii * (m_display_width + 1);
+
+        // Read the column value, looking for nulls.
+        fits_read_colnull(m_ext->getFp(), FitsPrimProps<char *>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
+          dest, null_value_cp, &any_null, &status);
+
+        // Copy any nulls found to the output array.
+        //if (any_null) for (Index_t ii = 0; ii != num_els; ++ii) null_value[ii] = 0 != null_value_cp[ii];
+        for (Index_t ii = 0; ii != num_els; ++ii) null_value[ii] = 0 != null_value_cp[ii];
+
+        // Clean up.
+        delete [] dest; dest = 0;
+        delete [] buf; buf = 0;
+        delete [] null_value_cp; null_value_cp = 0;
+
+        if (0 != status) throw TipException(status, "FitsColumn::getNull failed to read vector cell value");
+        return 0 != any_null;
       }
 
       /** \brief Copy a cell from another column to this column.

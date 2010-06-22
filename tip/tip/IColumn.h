@@ -95,7 +95,10 @@ namespace tip {
       virtual void set(Index_t, const std::vector<std::string> &)
         { unsupported("set(Index_t, const std::vector<std::string> &)"); }
 
-      virtual bool isNull(Index_t) const { unsupported("isNull()"); return true; }
+      virtual bool isNull(Index_t) const { unsupported("isNull() const"); return true; }
+      virtual bool getNull(Index_t, bool &) const { unsupported("getNull(Index_t, bool &) const"); return true; }
+      virtual bool getNull(Index_t, std::vector<bool> &) const
+        { unsupported("getNull(Index_t, std::vector<bool> &) const"); return true; }
 
       /** \brief Copy a cell from another column to this column. An implementation which just throws an exception is
           provided in the base class to simplify derived classes which need only a small number of the methods to function.
