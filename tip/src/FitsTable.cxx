@@ -118,10 +118,11 @@ namespace tip {
 
     // Get the address of the TNULL value for the correct primitive type.
     void * value = 0;
-    int bool_value = FitsPrimProps<char>::undefined();
+//    int bool_value = FitsPrimProps<char>::undefined();
     switch (type_code) {
-      case TSTRING: value = FitsPrimProps<char *>::undefined(); break;
-      case TLOGICAL: type_code = TBYTE; value = &bool_value; break; // Fitsio expects a 4 byte int, but value needs to be correct for bool undef.
+// Fermi LAT Team JIRA issue STGEN-88: only integer columns use TNULL, according to the FITS standard.
+//      case TSTRING: value = FitsPrimProps<char *>::undefined(); break;
+//      case TLOGICAL: type_code = TBYTE; value = &bool_value; break; // Fitsio expects a 4 byte int, but value needs to be correct for bool undef.
       case TBYTE: value = &FitsPrimProps<char>::undefined(); break;
       case TSHORT: value = &FitsPrimProps<short>::undefined(); break;
       case TINT: value = &FitsPrimProps<int>::undefined(); break;
@@ -129,8 +130,9 @@ namespace tip {
       case TUSHORT: value = &FitsPrimProps<unsigned short>::undefined(); break;
       case TUINT: value = &FitsPrimProps<unsigned int>::undefined(); break;
       case TULONG: value = &FitsPrimProps<unsigned long>::undefined(); break;
-      case TFLOAT: value = &FitsPrimProps<float>::undefined(); break;
-      case TDOUBLE: value = &FitsPrimProps<double>::undefined(); break;
+// Fermi LAT Team JIRA issue STGEN-88: only integer columns use TNULL, according to the FITS standard.
+//      case TFLOAT: value = &FitsPrimProps<float>::undefined(); break;
+//      case TDOUBLE: value = &FitsPrimProps<double>::undefined(); break;
       case TLONGLONG: value = &FitsPrimProps<long long>::undefined(); break;
       default: break;
     }
