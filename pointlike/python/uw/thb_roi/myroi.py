@@ -115,8 +115,7 @@ class MyROI(roi_analysis.ROIAnalysis):
                 super(MyROI, self).fit(**kwargs)
                 if not self.quiet: 
                     print m
-            if not self.quiet:
-                print '---- predicted pivot_energy: %.0f'  % self.psm.models[0].pivot_energy()
+                    print '---- predicted pivot_energy: %.0f'  % self.psm.models[0].pivot_energy()
         except Exception, msg:
             if not self.quiet: print 'Fit failed: %s' % msg
             if not ignore_exception: raise
