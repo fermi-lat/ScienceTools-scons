@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ fitsGen-04-06-01 23-Jun-2010 jchiang tag to include updated fitsGenLib.py
  fitsGen-04-06-00 14-Jun-2010 jchiang XmlEventClassifier added; using evtUtils package
  fitsGen-04-05-06 07-Apr-2010 jchiang change comments for RA_SCZ, etc in ft2.tpl
  fitsGen-04-05-05 24-Feb-2010    jrb TRAP_FPE is for Linux only
