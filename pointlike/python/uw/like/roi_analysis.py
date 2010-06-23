@@ -85,7 +85,7 @@ class ROIAnalysis(object):
       for band in self.sa.pixeldata.dmap:
          evcl = band.event_class() & 1 # protect high bits
 
-         if band.emin() >= self.fit_emin[evcl] and band.emax() < self.fit_emax[evcl]:
+         if (band.emin() + 1) >= self.fit_emin[evcl] and band.emax() < self.fit_emax[evcl]:
             self.bands.append(ROIBand(band,self.sa,self.roi_dir,catalog_aperture=self.catalog_aperture))
 
       self.bands = N.asarray(self.bands)
