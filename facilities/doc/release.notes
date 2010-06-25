@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+ facilities-02-19-06 25-Jun-2010    jrb let pathFound( ) always return true on Windows since existence test fails when it shouldn't
  facilities-02-19-05 12-Jun-2010    jrb bug fix in commonUtilities::setupEnvironment
  facilities-02-19-04 11-Jun-2010    jrb Make ParticleTable.txt accessible to SCons builds of GR
  facilities-02-19-03 24-Feb-2010    jrb fix linking for mac
