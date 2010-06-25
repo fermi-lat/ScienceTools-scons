@@ -196,6 +196,11 @@ namespace facilities {
   }
 #ifdef SCons
   bool commonUtilities::pathFound(const std::string& path) {
+    // For the time being, don't even try for Windows since
+    // it fails even when it shouldn't
+#ifdef WIN32
+    return true;
+#endif
     // Check to see if rel path exists first for INST_DIR
     // if that fails, try BASE_DIR
 
