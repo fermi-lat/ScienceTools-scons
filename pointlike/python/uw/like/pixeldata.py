@@ -128,7 +128,7 @@ Optional keyword arguments:
 
         # check emin and bpd for consistency with CALDB
         c1 = N.abs(self.my_bins - 100).min() > 1
-        c2 = (self.bindsperdec % 4) > 0
+        c2 = (self.binsperdec % 4) > 0
         if c1 or c2:
             print """
             ###################WARNING!!!##########################
