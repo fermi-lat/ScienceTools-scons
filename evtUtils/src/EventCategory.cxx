@@ -9,7 +9,7 @@
 
 #include<iostream>
 
-ClassImp(evtUtils::EventCategory);
+//ClassImp(evtUtils::EventCategory);
 
 namespace evtUtils {
 

@@ -20,7 +20,7 @@
 #include <TXMLEngine.h>
 #endif
 
-ClassImp(evtUtils::EventClass);
+//ClassImp(evtUtils::EventClass);
 
 namespace evtUtils {
 

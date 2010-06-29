@@ -8,7 +8,7 @@
 
 #include <TTree.h>
 
-ClassImp(evtUtils::EventMap);
+//ClassImp(evtUtils::EventMap);
 
 namespace evtUtils {
 

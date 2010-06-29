@@ -78,8 +78,8 @@ namespace evtUtils {
     
     std::map<std::string,EventCategory*>    m_nameMap;   //!
     std::map<unsigned,EventCategory*>       m_indexMap;  //!
-
-    ClassDef(EventMap,0) // Maps a set of cuts defined in xml to a bit field
+    
+    //ClassDef(EventMap,0) // Maps a set of cuts defined in xml to a bit field
     
   };
 

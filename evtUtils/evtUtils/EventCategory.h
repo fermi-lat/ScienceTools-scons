@@ -91,7 +91,7 @@ namespace evtUtils {
     TTreeFormula* m_shortFormula;   //!
     TTreeFormula* m_fullFormula;    //!
     
-    ClassDef(EventCategory,0) // Implements a single cut defined in xml
+    //ClassDef(EventCategory,0) // Implements a single cut defined in xml
 
   };
 

@@ -1,5 +1,5 @@
 package evtUtils
-version evtUtils-00-00-01
+version evtUtils-00-01-02
 
 author E. Charles <echarles@slac.stanford.edu>
 
@@ -14,15 +14,15 @@ apply_pattern use_facilities_symbols
 macro_append ROOT_libs " -lTreePlayer"\
                  WIN32 " libTreePlayer.lib"
 
-apply_pattern root_package headers="\
- ../evtUtils/EventCategory.h\
- ../evtUtils/EventMap.h\
- ../evtUtils/EventClass.h"\
- includes="-I${EVTUTILSROOT}"
+apply_pattern  package_include
+apply_pattern  shared_library
 
 private
 
-apply_pattern package_Cshlibflags
+apply_pattern  package_headers
+apply_pattern  package_linkopts
+
+library evtUtils *.cxx ${evtUtils_headers}
 
 application MakeEventClass ../apps/MakeEventClass.cxx
 application MakeEventClassHtml ../apps/MakeEventClassHtml.cxx

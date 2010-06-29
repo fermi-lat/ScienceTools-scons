@@ -86,7 +86,7 @@ namespace evtUtils {
     std::map<std::string,EventMap*>        m_evtMap;     //!
     TTree*                                 m_cachedTree; //!
 
-    ClassDef(EventClass,0) // Keeps track of a set of maps of cuts
+    //ClassDef(EventClass,0) // Keeps track of a set of maps of cuts
     
   };
 
