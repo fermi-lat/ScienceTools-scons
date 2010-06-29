@@ -9,18 +9,27 @@ use RootcintPolicy v* GlastPolicy
 use facilities v*
 use xmlBase v*
 
-macro_append cppflags "-Wno-unused-parameter " WIN32 ""
+apply_pattern packageShr
+apply_pattern package_include
+apply_pattern use_facilities_symbols
 
 macro_append ROOT_libs " -lTreePlayer"\
                  WIN32 " libTreePlayer.lib"
 
-apply_pattern root_package headers="\
- ../evtUtils/EventCategory.h\
- ../evtUtils/EventMap.h\
- ../evtUtils/EventClass.h"\
- includes="-I${EVTUTILSROOT}"
+#apply_pattern root_package headers="\
+# ../evtUtils/EventCategory.h\
+# ../evtUtils/EventMap.h\
+# ../evtUtils/EventClass.h"\
+# includes="-I${EVTUTILSROOT}"
 
-apply_pattern use_facilities_symbols
+private
 
-application MakeEventClass ../apps/MakeEventClass.cxx
-application MakeEventClassHtml ../apps/MakeEventClassHtml.cxx
+apply_pattern package_headers
+
+library evtUtils *.cxx ${evtUtils_headers}
+
+apply_pattern package_Cshlibflags
+
+
+#application MakeEventClass ../apps/MakeEventClass.cxx
+#application MakeEventClassHtml ../apps/MakeEventClassHtml.cxx
