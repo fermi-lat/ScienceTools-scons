@@ -10,19 +10,19 @@
       <Comment>Cuts appropriate for point source analysis</Comment>
     </EventCategory>
     <EventCategory name="NoTrks" bit="8">
-      <ShortCut>CTBExtendedClassBits &amp; 1 != 0</ShortCut>
+      <ShortCut>TMath::Nint(CTBExtPhotonClassBit) &amp; 1 != 0</ShortCut>
       <Comment>Events with no tracks, used for Low Energy GRB analsysis</Comment>
     </EventCategory>
     <EventCategory name="NoCal" bit="9">
-      <ShortCut>CTBExtendedClassBits &amp; 2 != 0</ShortCut>
+      <ShortCut>TMath::Nint(CTBExtPhotonClassBit) &amp; 2 != 0</ShortCut>
       <Comment>Events with no calorimeter data.</Comment>
     </EventCategory>
     <EventCategory name="S3" bit="10">
-      <ShortCut>CTBExtendedClassBits &amp; 4 != 0</ShortCut>
+      <ShortCut>TMath::Nint(CTBExtPhotonClassBit) &amp; 4 != 0</ShortCut>
       <Comment>Very loose cuts appropriate for GRB analysis</Comment>
     </EventCategory>
     <EventCategory name="CalOnly" bit="11">
-      <ShortCut>CTBExtendedClassBits &amp; 8 != 0</ShortCut>
+      <ShortCut>TMath::Nint(CTBExtPhotonClassBit) &amp; 8 != 0</ShortCut>
       <Comment>Events where only calorimeter information was used in analysis.</Comment>
     </EventCategory>
   </EventMap>
