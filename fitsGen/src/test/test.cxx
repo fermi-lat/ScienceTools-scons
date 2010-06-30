@@ -32,7 +32,7 @@ void run(fitsGen::EventClassifier & eventClass,
    std::cout << eventClass(my_row) << std::endl;
 }
 
-void xml_classifier() {
+int xml_classifier() {
    std::string merit_file(datapath("xml_test_merit.root"));
    std::string xml_file(datapath("EvtClassDefs_Test.xml"));
    
