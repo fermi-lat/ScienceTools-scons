@@ -106,8 +106,8 @@ class ROIDiffuseModel_OTF(ROIDiffuseModel):
         and _pix_value."""
 
     def init(self):
-        self.pixelsize = 0.5
-        self.npix      = 51
+        self.pixelsize = 0.25
+        self.npix      = 101
         self.nsimps    = 4   # consider making a function?
 
     def setup(self):
