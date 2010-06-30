@@ -22,7 +22,12 @@ from facilities import py_facilities
 py_facilities.commonUtilities_setupEnvironment()
 os_environ = py_facilities.commonUtilities_getEnvironment
 
-sys.path.insert(0, os.path.join(os.environ['LIKEGUIROOT'], 'python'))
+getXmlPath = py_facilities.commonUtilities_getXmlPath
+
+try:
+    sys.path.insert(0, os.path.join(os.environ['LIKEGUIROOT'], 'python'))
+except:
+    pass
 
 from SourceLibrary import SourceLibrary
 from ParamDialog import ParamDialog
@@ -34,13 +39,13 @@ from create_library import makeSrcLib
 
 
 # @todo replace these with GtApp objects
-obsSim = os.path.join(os.environ["OBSERVATIONSIMROOT"],
-                      os.environ["BINDIR"], 'gtobssim.exe')
-orbSim = os.path.join(os.environ["OBSERVATIONSIMROOT"],
-                      os.environ["BINDIR"], 'gtorbsim.exe')
-if not os.path.exists(obsSim):
+try:
+    obsSim = os.path.join(os.environ["OBSERVATIONSIMROOT"],
+                          os.environ["BINDIR"], 'gtobssim.exe')
+    orbSim = os.path.join(os.environ["OBSERVATIONSIMROOT"],
+                          os.environ["BINDIR"], 'gtorbsim.exe')
+except KeyError:
     obsSim = "gtobssim"
-if not os.path.exists(orbSim):
     orbSim = "gtorbsim"
 
 class RootWindow(Tk.Tk):
@@ -66,15 +71,19 @@ class RootWindow(Tk.Tk):
             try:
                 defaultFiles = open('xmlFiles.txt')
             except:
-                xmlFiles = os.path.join(os.environ['OBSERVATIONSIMROOT'],
-                                        'xml', 'xmlFiles.txt')
+#                xmlFiles = os.path.join(os_environ('OBSERVATIONSIMROOT'),
+#                                        'xml', 'xmlFiles.txt')
+                xmlFiles = os.path.join(getXmlPath('observationSim'),
+                                        'xmlFiles.txt')
                 defaultFiles = open(xmlFiles, 'r')
             for file in defaultFiles:
                 if file.strip() != '':
                     self.srcLibs.addLibs(expandEnvVar(file).strip())
     def loadDefaultXmlFiles(self):
-        xmlFiles = os.path.join(os.environ['OBSERVATIONSIMROOT'],
-                                'xml', 'xmlFiles.txt')
+#        xmlFiles = os.path.join(os_environ('OBSERVATIONSIMROOT'),
+#                                'xml', 'xmlFiles.txt')
+        xmlFiles = os.path.join(getXmlPath('observationSim'),
+                                'xmlFiles.txt')
         defaultFiles = open(xmlFiles, 'r')
         for file in defaultFiles:
             if file.strip() != '' and file.find('#') != 0:
