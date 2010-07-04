@@ -600,7 +600,7 @@ class MyROI(roi_analysis.ROIAnalysis):
         
         # and the model, perhaps with a butterfly
         dom = np.logspace(np.log10(self.fit_emin[0]), np.log10(self.fit_emax[0]), 101)
-        bf.plot_model(axes, self.psm.models[0], dom, butterfly, **fit_kwargs)
+        bf.plot_model(axes, self.psm.models[which], dom, butterfly, **fit_kwargs)
         plt.rcParams['axes.linewidth'] = oldlw
 
         # the axis labels
