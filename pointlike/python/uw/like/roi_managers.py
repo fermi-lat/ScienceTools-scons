@@ -64,6 +64,7 @@ class ROIPointSourceManager(ROIModelManager):
    def __init__(self,point_sources,roi_dir, quiet=False):
       self.roi_dir = roi_dir
       self.point_sources = N.asarray(point_sources)
+      self.names = N.asarray([point_source.name for point_source in point_sources])
       self.models = N.asarray([point_source.model for point_source in point_sources])
       self.mask   = N.asarray([True]*len(self.models),bool)
       self.quiet = quiet
@@ -247,6 +248,7 @@ class ROIDiffuseManager(ROIModelManager):
         self.__dict__.update(**kwargs)
 
         self.bgmodels = models
+        self.names = N.asarray([bgm.name for bgm in self.bgmodels])
         self.models   = N.asarray([bgm.smodel for bgm in self.bgmodels])
         self.diffuse_sources = N.asarray([bgm.diffuse_source for bgm in self.bgmodels])
 
