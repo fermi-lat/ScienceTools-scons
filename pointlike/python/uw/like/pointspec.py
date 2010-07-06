@@ -18,6 +18,7 @@ from pointspec_helpers import *
 from roi_managers import ROIPointSourceManager,ROIBackgroundManager,ROIDiffuseManager
 from roi_analysis import ROIAnalysis
 from roi_diffuse import ROIDiffuseModel_OTF
+from roi_extended import ExtendedSource,ROIExtendedModel
 from uw.utilities.fitstools import merge_bpd,sum_ltcubes
 from uw.utilities.fermitime import MET,utc_to_met
 from uw.utilities.utils import get_data
@@ -524,16 +525,14 @@ Optional keyword arguments:
         self.set_psf_weights(roi_dir)
 
         # process point sources
-        if len(point_sources) == 0: point_sources = None
         if catalog_mapper is None:
             catalog_mapper = lambda x: FermiCatalog(x)
         for cat in catalogs:
             if not isinstance(cat,PointSourceCatalog):
                 cat = catalog_mapper(cat)
-            point_sources = cat.merge_lists(roi_dir,self.maxROI+5,point_sources)
-        if point_sources is None:
+            point_sources,diffuse_sources = cat.merge_lists(roi_dir,self.maxROI+5,point_sources,diffuse_sources)
+        if point_sources == []:
             print 'WARNING!  No point sources are included in the model.'
-            point_sources = []
 
         # process diffuse models
         if len(diffuse_sources) == 0:
@@ -542,7 +541,11 @@ Optional keyword arguments:
             if len(diffuse_sources) == 0:
                 print 'WARNING!  No diffuse sources are included in the model.'
         if diffuse_mapper is None:
-            diffuse_mapper = lambda x: ROIDiffuseModel_OTF(self,x,roi_dir)
+            diffuse_mapper = lambda x: ROIExtendedModel.factory(self,x,roi_dir) \
+                    if isinstance(x,ExtendedSource) \
+                    else ROIDiffuseModel_OTF(self,x,roi_dir)
+
+
         diffuse_models = [diffuse_mapper(ds) for ds in diffuse_sources]
 
         # instantiate and return ROIAnalysis object
