@@ -10,6 +10,7 @@ import numpy as np
 class SpectralModelFitter(object):
    """A host class for the spectral fitting methods.  All called statically."""
 
+   ### DEPRECATED -- very old
    @staticmethod
    def least_squares(pslw,model,quiet=False):
       """Perform a least squares fit of the spectral parameters.  Appropriate for very bright sources
@@ -48,6 +49,7 @@ class SpectralModelFitter(object):
             print str(model)+'\n'
       return model
 
+   ### DEPRECATED -- very old
    @staticmethod
    def poisson(pslw,model,prefit=True):
       """Fit a spectral model using Poisson statistics."""
