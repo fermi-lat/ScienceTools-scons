@@ -5,7 +5,7 @@ author E. Charles <echarles@slac.stanford.edu>
 
 branches evtUtils cmt doc src
 
-use RootcintPolicy v* GlastPolicy
+use ROOT * IExternal
 use facilities v*
 use xmlBase v*
 
