@@ -550,7 +550,8 @@ Optional keyword arguments:
         dsm = ROIDiffuseManager(diffuse_models,roi_dir,quiet=self.quiet)           
         return ROIAnalysis(roi_dir,psm,dsm,self,**kwargs)
 
-    def roi_from_xml(self,roi_dir,xmlfile,diffuse_mapper=None,*args,**kwargs):
+    def roi_from_xml(self,roi_dir,xmlfile,diffuse_mapper=None,
+                          diffdir=None,*args,**kwargs):
         """
         return an ROIAnalysis object with a source model specified by
         a gtlike-style XML file.
@@ -568,11 +569,14 @@ Optional keyword arguments:
                          ROIDiffuseModel interface.  If None, the system uses
                          the default, an on-the-fly numerical convolution.
 
-        Optional Keyword Arguments:
+        diffdir          [None] An optional path if the files necessary for 
+                         diffuse sources are specified relative to this path.
+
+        Optional Arguments and Keyword Arguments:
             see docstring for SpectralAnalysis.roi
         """
         from uw.utilities.xml_parsers import parse_sources
-        ps,ds = parse_sources(xmlfile)
+        ps,ds = parse_sources(xmlfile,diffdir=diffdir)
         return self.roi(roi_dir=roi_dir,point_sources=ps,diffuse_sources=ds,
                         diffuse_mapper=diffuse_mapper,*args,**kwargs)
                 
