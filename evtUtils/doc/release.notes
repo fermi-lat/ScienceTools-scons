@@ -11,3 +11,4 @@
  evtUtils-00-01-02 28-Jun-2010 echarles Fix up EvtClassDefs_P7V3 to cast to Int before checking bit mask, also fix cmt/requirements
  evtUtils-00-01-03 29-Jun-2010 echarles Switch to building non-root library
  evtUtils-00-01-04 06-Jul-2010 echarles Added S2 extended photon class, updated SConscipt
+ evtUtils-00-01-05 07-Jul-2010 echarles fix SConscript
