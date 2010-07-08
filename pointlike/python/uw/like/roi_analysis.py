@@ -326,7 +326,7 @@ class ROIAnalysis(object):
                 use_gradient = False, gtol = 1e-1):
       """Maximize likelihood and estimate errors.
 
-         method    -- ['powell'] fitter; 'powell' or 'simplex'
+         method    -- ['simplex'] fitter; 'powell' or 'simplex' or 'minuit'
          tolerance -- (approximate) absolute tolerance of log likelihood value
       """
 
