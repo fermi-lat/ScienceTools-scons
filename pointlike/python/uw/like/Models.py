@@ -211,7 +211,11 @@ Optional keyword arguments:
          for i in xrange(len(pnames)):
             n=pnames[i][:m]
             t_n=n+(m-len(n))*' '
-            l+=[t_n+': %.3g'%(p[i])]
+            if i < len(self.p):
+               frozen = '' if self.free[i] else '(FROZEN)'
+            else:
+               frozen = '(DERIVED)'
+            l+=[t_n+': %.3g %s'%(p[i],frozen)]
          return '\n'.join(l)
 
    def i_flux(self,emin=100,emax=N.inf,e_weight=0,cgs=False,error=False,two_sided=False):
