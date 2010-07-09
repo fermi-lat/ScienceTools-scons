@@ -24,7 +24,9 @@ class Composite2(object):
         self.composite.addComponent(like.logLike)
         self.components.append(like)
     def tieParameters(self, pars):
-        self.composite.tieParameters(pars)
+        my_pars = tuple([(x[0].logLike, x[0].par_index(x[1], x[2])) 
+                         for x in pars])
+        self.composite.tieParameters(my_pars)
     def __call__(self):
         return -self.composite.value()
     def fit(self, verbosity=3, tol=None, optimizer=None,
