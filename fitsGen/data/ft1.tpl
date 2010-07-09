@@ -27,6 +27,7 @@ FILENAME    =                                / name of this file
 ORIGIN      = 'LISOC'                        / name of organization making file
 CREATOR     =                                / software and version creating file
 VERSION     = 1                              / release version of the file
+PROC_VER    = 1                              / processing version of this file 
 END
 
 XTENSION    = 'BINTABLE'                                / binary table extension
@@ -63,6 +64,7 @@ TIMEREF     = 'LOCAL'                                   / reference frame used f
 CLOCKAPP    = F                                         / whether a clock drift correction has been applied
 GPS_OUT     = F                                         / whether GPS time was unavailable at any time during this interval
 #EVCLSVER    = 1                                         / version of event class definition for IRF handling
+PASS_VER    = 'NONE'                                   / IRF pass version corresponding to a specific set of event class definitions
 NDIFRSP     = 5                                         / Number of diffuse response labels
 DIFRSP0    = 'NONE'                                    / Diffuse response label for component 0
 DIFRSP1    = 'NONE'                                    / Diffuse response label for component 1

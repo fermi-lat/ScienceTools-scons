@@ -34,22 +34,29 @@ class EventClassifier {
 
 public:
 
+   EventClassifier() : m_module(0), m_classifier(0), m_meritDict(0) {}
+
    /// @param classifierScript Module name of a Python script that 
    /// takes TCuts for defining event classes.
    EventClassifier(const std::string & classifierScript);
 
-   ~EventClassifier() throw();
+   virtual ~EventClassifier() throw();
 
    /// @return The event class id number.  This is -1 if the
    /// event does not fit into any class.
    /// @param row A row from a merit file, typically
-   long operator()(tip::ConstTableRecord & row);
+   virtual unsigned int operator()(tip::ConstTableRecord & row) const;
 
    /// @return The event class id number.  This is -1 if the
    /// event does not fit into any class.
    /// @param row A map containing the same relevant information as a
    /// merit file row.
-   long operator()(const std::map<std::string, double> & row);
+   virtual unsigned int operator()(const std::map<std::string, 
+                                   double> & row) const;
+
+   virtual std::string passVersion() const {
+      return "NONE";
+   }
 
 private:
 
@@ -97,7 +104,7 @@ private:
 
    } * m_meritDict;
 
-   long value() const;
+   unsigned int value() const;
 
    std::string pythonPath() const;
 

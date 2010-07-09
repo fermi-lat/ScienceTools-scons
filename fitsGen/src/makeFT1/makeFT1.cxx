@@ -41,6 +41,7 @@
 #include "fitsGen/Ft1File.h"
 #include "fitsGen/MeritFile.h"
 #include "fitsGen/EventClassifier.h"
+#include "fitsGen/XmlEventClassifier.h"
 
 using namespace fitsGen;
 
@@ -140,7 +141,8 @@ namespace {
 class MakeFt1 : public st_app::StApp {
 public:
    MakeFt1() : st_app::StApp(),
-               m_pars(st_app::StApp::getParGroup("makeFT1")) {
+               m_pars(st_app::StApp::getParGroup("makeFT1")),
+               m_classifier(0) {
       try {
          setVersion(s_cvs_id);
       } catch (std::exception & eObj) {
@@ -154,6 +156,7 @@ public:
    }
    virtual ~MakeFt1() throw() {
       try {
+         delete m_classifier;
       } catch (std::exception &eObj) {
          std::cerr << eObj.what() << std::endl;
       } catch (...) {
@@ -161,9 +164,14 @@ public:
    }
    virtual void run();
    virtual void banner() const;
+
 private:
    st_app::AppParGroup & m_pars;
    static std::string s_cvs_id;
+
+   EventClassifier * m_classifier;
+   void setClassifier();
+   unsigned int eventClass(tip::ConstTableRecord & row) const;
 };
 
 std::string MakeFt1::s_cvs_id("$Name$");
@@ -183,8 +191,8 @@ void MakeFt1::run() {
    std::string rootFile = m_pars["rootFile"];
    std::string tempRootFile = m_pars["tempRootFile"];
    std::string fitsFile = m_pars["fitsFile"];
-   std::string eventClassifier = m_pars["event_classifier"];
    std::string defaultFilter = m_pars["TCuts"];
+   setClassifier();
 
    double tstart = m_pars["tstart"];
    double tstop = m_pars["tstop"];
@@ -237,8 +245,6 @@ void MakeFt1::run() {
       ft1.header().addHistory("Input merit file: " + rootFile);
       ft1.header().addHistory("Filter string: " + filter);
 
-      EventClassifier eventClass(eventClassifier);
-   
       int ncount(0);
       for ( ; merit.itor() != merit.end(); merit.next(), ft1.next()) {
          if (merit.gti().accept(merit["EvtElapsedTime"])) {
@@ -290,4 +296,19 @@ void MakeFt1::run() {
    if (st_facilities::Util::fileExists("dummy.root")) {
       std::remove("dummy.root");
    }
+}
+
+void MakeFt1::setClassifier() {
+   std::string xmlClassifier = m_pars["xml_classifier"];
+   if (xmlClassifier != "none") {
+      std::string meritFile = m_pars["rootFile"];
+      m_classifier = new XmlEventClassifier(xmlClassifier, meritFile);
+   } else {
+      std::string eventClassifier = m_pars["event_classifier"];
+      m_classifier = new EventClassifier(eventClassifier);
+   }
+}
+
+unsigned int MakeFt1::eventClass(tip::ConstTableRecord & row) const {
+   return m_classifier->operator()(row);
 }

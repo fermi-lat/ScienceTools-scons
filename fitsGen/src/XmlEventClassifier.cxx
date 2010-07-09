@@ -16,6 +16,8 @@
 #include <TFile.h>
 #include <TTree.h>
 
+#include "tip/Table.h"
+
 #include "evtUtils/EventClass.h"
 
 #include "fitsGen/XmlEventClassifier.h"
@@ -24,7 +26,8 @@ namespace fitsGen {
 
 XmlEventClassifier::XmlEventClassifier(const std::string & xmlFile, 
                                        const std::string & meritFile) 
-   : m_evtClass(evtUtils::EventClass::loadFromXml(xmlFile.c_str())),
+   : EventClassifier(),
+     m_evtClass(evtUtils::EventClass::loadFromXml(xmlFile.c_str())),
      m_meritFile(TFile::Open(meritFile.c_str())) {
 
    if (m_evtClass == 0) {
@@ -81,6 +84,30 @@ unsigned int XmlEventClassifier::operator()(unsigned int run,
    return it->second;
 }
 
+unsigned int XmlEventClassifier::
+operator()(tip::ConstTableRecord & row) const {
+   unsigned int run = static_cast<unsigned int>(row["EvtRun"].get());
+   unsigned int eventId = static_cast<unsigned int>(row["EvtEventId"].get());
+   return operator()(run, eventId);
+}
+
+unsigned int XmlEventClassifier::
+operator()(const std::map<std::string, double> & row) const {
+   std::map<std::string, double>::const_iterator it = row.find("EvtRun");
+   if (it == row.end()) {
+      throw std::runtime_error("EvtRun not found in merit tuple.");
+   }
+   unsigned int run = static_cast<unsigned int>(it->second);
+
+   it = row.find("EvtEventId");
+   if (it == row.end()) {
+      throw std::runtime_error("EvtEventId not found in merit tuple.");
+   }
+   unsigned int eventId = static_cast<unsigned int>(it->second);
+
+   return operator()(run, eventId);
+}
+
 bool XmlEventClassifier::is_class_member(unsigned int run, 
                                          unsigned int eventId,
                                          unsigned int evtclass) const {
@@ -89,6 +116,10 @@ bool XmlEventClassifier::is_class_member(unsigned int run,
    }
    unsigned int mask = 1 << evtclass;
    return (operator()(run, eventId) & mask) > 0;
+}
+
+std::string XmlEventClassifier::passVersion() const {
+   return m_evtClass->getVersion();
 }
 
 } // namespace fitsGen

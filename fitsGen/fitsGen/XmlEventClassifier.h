@@ -21,6 +21,8 @@ namespace evtUtils {
    class EventClass;
 }
 
+#include "fitsGen/EventClassifier.h"
+
 namespace fitsGen {
 
 /**
@@ -28,14 +30,19 @@ namespace fitsGen {
  *
  */
 
-class XmlEventClassifier {
+class XmlEventClassifier : public EventClassifier {
 
 public:
 
    XmlEventClassifier(const std::string & xmlFile,
                       const std::string & meritFile);
 
-   ~XmlEventClassifier() throw();
+   virtual ~XmlEventClassifier() throw();
+
+   virtual unsigned int operator()(tip::ConstTableRecord & row) const;
+
+   virtual unsigned int 
+   operator()(const std::map<std::string, double> & row) const;
 
    unsigned int operator()(unsigned int run,
                            unsigned int eventId) const;
@@ -44,15 +51,21 @@ public:
                         unsigned int eventId, 
                         unsigned int evtclass) const;
 
+   virtual std::string passVersion() const;
+
 private:
 
    evtUtils::EventClass * m_evtClass;
+
    TFile * m_meritFile;
 
    typedef std::map<std::pair<unsigned int, unsigned int>,
                     unsigned int> EventClassMap_t;
    
    EventClassMap_t m_bitMaps;
+
+   std::string m_passVersion;
+
 };
 
 } // namespace fitsGen

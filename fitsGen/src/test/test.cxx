@@ -41,6 +41,8 @@ int xml_classifier() {
    unsigned int run[3] = {239559565, 239559565, 239572736};
    unsigned int event_id[3] = {4851437, 10436210, 76017};
 
+   std::cout << foo.passVersion() << std::endl;
+
    for (size_t i(0); i < 3; i++) {
       unsigned int evtclass = foo(run[i], event_id[i]);
       std::cout << run[i] << "  "
