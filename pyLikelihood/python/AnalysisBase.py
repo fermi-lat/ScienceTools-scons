@@ -57,14 +57,20 @@ class AnalysisBase(object):
         errors = self._errors(optimizer, verbosity, tol, covar=covar,
                               optObject=optObject)
         return -self.logLike.value()
-    def optimize(self, verbosity=3, tol=None, optimizer=None):
+    def optimize(self, verbosity=3, tol=None, optimizer=None,
+                 optObject=None):
         self.logLike.syncParams()
         if optimizer is None:
             optimizer = self.optimizer
         if tol is None:
             tol = self.tol
         optFactory = pyLike.OptimizerFactory_instance()
-        myOpt = optFactory.create(optimizer, self.logLike)
+        if optObject is None:
+            optFactory = pyLike.OptimizerFactory_instance()
+            myOpt = optFactory.create(optimizer, self.logLike)
+        else:
+            myOpt = optObject
+        self.optObject = myOpt
         myOpt.find_min_only(verbosity, tol, self.tolType)
     def _errors(self, optimizer=None, verbosity=0, tol=None,
                 useBase=False, covar=False, optObject=None):
