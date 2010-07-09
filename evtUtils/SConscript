@@ -18,6 +18,6 @@ evtUtilsApp_MakeEventClassHtml = progEnv.Program('MakeEventClassHtml', ['apps/Ma
 
 progEnv.Tool('registerTargets',
              package = 'evtUtils',
-             libraries = [evtUtilsLib],
+             libraryCxts = [[evtUtilsLib, libEnv]],
              testAppsCxts = [evtUtilsApp_MakeEventClass,progEnv],
              includes = listFiles(['evtUtils/*.h']))
