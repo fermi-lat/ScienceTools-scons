@@ -23,6 +23,8 @@ class Composite2(object):
     def addComponent(self, like):
         self.composite.addComponent(like.logLike)
         self.components.append(like)
+    def tieParameters(self, pars):
+        self.composite.tieParameters(pars)
     def __call__(self):
         return -self.composite.value()
     def fit(self, verbosity=3, tol=None, optimizer=None,
@@ -41,7 +43,7 @@ class Composite2(object):
         optFactory = pyLike.OptimizerFactory_instance()
         myOpt = optFactory.create(optimizer, self.composite)
         myOpt.find_min_only(verbosity, tol, self.tolType)
-    def minosError(self, component_name, srcname, parname,level=1):
+    def minosError(self, component_name, srcname, parname, level=1):
         freeParams = pyLike.ParameterVector()
         self.composite.getFreeParams(freeParams)
         saved_values = [par.getValue() for par in freeParams]
@@ -123,14 +125,14 @@ class Composite2(object):
             self.covar_is_current = True
         else:
             self.covar_is_current = False
-        self._set_errors(errors)
+#        self._set_errors(errors)
         return errors
     def _set_errors(self, errors):
         my_errors = list(errors)
         #
         # Set errors for untied sources
         #
-        for tiedName, component in zip(self.srcNames, self.components):
+        for component in self.components:
             srcNames = component.sourceNames()
             for src in srcNames:
                 if src != tiedName:
