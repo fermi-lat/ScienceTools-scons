@@ -260,6 +260,7 @@ void MakeFt1::run() {
       formatter.info() << "number of rows processed: " << ncount << std::endl;
       
       ft1.setNumRows(ncount);
+      ft1.header()["PASS_VER"].set(m_classifier->passVersion());
       my_cuts.addGtiCut(merit.gti());
       my_cuts.writeDssKeywords(ft1.header());
    } catch (tip::TipException & eObj) {
