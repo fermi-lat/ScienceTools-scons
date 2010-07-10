@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ fitsGen-05-00-01 09-Jul-2010 jchiang set pass version in ft1 header
  fitsGen-05-00-00 09-Jul-2010 jchiang add XmlEventClassifier to makeFT1; refactor EventClassifier interface and make it the base class
  fitsGen-04-06-02 30-Jun-2010 jchiang bug-fix for test_classifier application
  fitsGen-04-06-01 23-Jun-2010 jchiang tag to include updated fitsGenLib.py
