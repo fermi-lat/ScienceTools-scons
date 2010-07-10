@@ -18,17 +18,12 @@
 #include "pulsarDb/EphStatus.h"
 
 #include "timeSystem/AbsoluteTime.h"
-#include "timeSystem/EventTimeHandler.h"
-#include "timeSystem/GlastTimeHandler.h"
 
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
 #include "st_stream/Stream.h"
-
-using namespace pulsarDb;
-using namespace timeSystem;
 
 const std::string s_cvs_id("$Name$");
 
@@ -89,8 +84,8 @@ void OrbitalPhaseApp::runApp() {
   initTimeCorrection(par_group, vary_ra_dec, guess_pdot, m_os.info(3), "START");
 
   // Report ephemeris status.
-  std::set<EphStatusCodeType> code_to_report;
-  code_to_report.insert(Remarked);
+  std::set<pulsarDb::EphStatusCodeType> code_to_report;
+  code_to_report.insert(pulsarDb::Remarked);
   reportEphStatus(m_os.warn(), code_to_report);
 
   // Reserve output column for creation if not existing in the event file(s).
@@ -98,7 +93,7 @@ void OrbitalPhaseApp::runApp() {
   reserveOutputField(phase_field, "1D");
 
   // Get EphComputer for orbital phase computation.
-  EphComputer & computer(getEphComputer());
+  pulsarDb::EphComputer & computer(getEphComputer());
 
   // Read global phase offset.
   double phase_offset = par_group["ophaseoffset"];
@@ -106,7 +101,7 @@ void OrbitalPhaseApp::runApp() {
   // Iterate over events.
   for (setFirstEvent(); !isEndOfEventList(); setNextEvent()) {
     // Get event time as AbsoluteTime.
-    AbsoluteTime abs_evt_time(getEventTime());
+    timeSystem::AbsoluteTime abs_evt_time(getEventTime());
 
     // Compute phase.
     double phase = computer.calcOrbitalPhase(abs_evt_time, phase_offset);
