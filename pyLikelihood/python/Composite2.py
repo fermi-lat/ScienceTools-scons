@@ -9,6 +9,7 @@ more natural symantics for use in python alongside other analysis classes.
 #
 
 import pyLikelihood as pyLike
+from SrcModel import SourceModel
 
 class Composite2(object):
     def __init__(self, optimizer='Minuit'):
@@ -127,49 +128,13 @@ class Composite2(object):
             self.covar_is_current = True
         else:
             self.covar_is_current = False
-#        self._set_errors(errors)
+        self._set_errors(errors)
         return errors
     def _set_errors(self, errors):
         my_errors = list(errors)
-        #
-        # Set errors for untied sources
-        #
+        self.composite.setErrors(my_errors)
         for component in self.components:
-            srcNames = component.sourceNames()
-            for src in srcNames:
-                if src != tiedName:
-                    spec = component.model[src].funcs['Spectrum']
-                    parnames = pyLike.StringVector()
-                    spec.getFreeParamNames(parnames)
-                    for parname in parnames:
-                        par_index = component.par_index(src, parname)
-                        component.model[par_index].setError(my_errors.pop(0))
-        #
-        # Set errors for tied parameters for common sources
-        #
-        spec = self.components[0].model[self.srcNames[0]].funcs['Spectrum']
-        numTiedPars = spec.getNumFreeParams()
-        if spec.normPar().isFree():
-            numTiedPars -= 1
-        for src, component in zip(self.srcNames, self.components):
-            tied_errors = my_errors[:numTiedPars]
-            spec = component.model[src].funcs['Spectrum']
-            parnames = pyLike.StringVector()
-            spec.getFreeParamNames(parnames)
-            for parname in parnames:
-                if parname != spec.normPar().getName():
-                    par_index = component.par_index(src, parname)
-                    component.model[par_index].setError(tied_errors.pop(0))
-        #
-        # Set errors for normalization parameters
-        #
-        norm_errors = my_errors[numTiedPars:]
-        for src, component in zip(self.srcNames, self.components):
-            spec = component.model[src].funcs['Spectrum']
-            if spec.normPar().isFree():
-                parname = spec.normPar().getName()
-                par_index = component.par_index(src, parname)
-                component.model[par_index].setError(norm_errors.pop(0))
+            component.model = SourceModel(component.logLike)
     def __getattr__(self, attrname):
         return getattr(self.composite, attrname)
     def __repr__(self):
