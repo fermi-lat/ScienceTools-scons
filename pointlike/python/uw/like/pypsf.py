@@ -217,15 +217,18 @@ class CALDBPsf(Psf):
 class BandPsf(object):
 
    def init(self):
-      self.newstyle = False
+      self.newstyle    = False
+      self.override_en = None
+      self.adjust_mean = False
+      self.weightfunc  = None
 
-   def __init__(self,psf,band,weightfunc=None,adjust_mean=False,**kwargs):
+   def __init__(self,psf,band,**kwargs):
       self.init()
       self.newstyle = psf.newstyle
       self.__dict__.update(kwargs)
-      self.par     = psf.get_p(band.e,band.ct).copy()
+      self.par     = psf.get_p(self.override_en or band.e,band.ct).copy()
       
-      if adjust_mean:
+      if self.adjust_mean:
          # calculate the correct energy to let us take the PSF out
          # of the rate integral according to the Mean Value Theorem
          # this implementation relies explictly on the form of the
@@ -240,7 +243,8 @@ class BandPsf(object):
          self.eopt  = 100*N.exp(N.log(((i1/i2)**2 - p3**2)**0.5/p1)/p2)
          self.scale = psf.scale_func[band.ct](self.eopt)
 
-      elif weightfunc is not None:
+      elif self.weightfunc is not None:
+         weightfunc = self.weightfunc
          dom   = N.logspace(N.log10(band.emin),N.log10(band.emax),9)
          wvals = [weightfunc(x) for x in dom]
          svals = psf.scale_func[band.ct](dom)
