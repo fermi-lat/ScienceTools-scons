@@ -187,13 +187,13 @@ class SpatialModel(object):
             if absolute:
                 return self.param_names
             else:
-                return ["log(%s)" % n if log else n \
+                return ["log10(%s)" % n if log else n \
                         for n,log in zip(self.param_names,self.log)]
         else:
             if absolute:
                 return self.param_names[self.free] 
             else:
-                return ["log(%s)" % n if log else n \
+                return ["log10(%s)" % n if log else n \
                         for n,log in zip(self.param_names[self.free],self.log[self.free])]
 
     def get_limits(self,absolute=False,all=False):
