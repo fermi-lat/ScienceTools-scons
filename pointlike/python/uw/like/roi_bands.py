@@ -49,7 +49,7 @@ class ROIBand(object):
       self.__setup_data__()
       self.__setup_sp_simps__()
 
-      self.psf = self.sa.psf.band_psf(self,adjust_mean=True)
+      self.psf = self.sa.psf.band_psf(self,adjust_mean=False)
 
    def __setup_data__(self):
       """Get all pixels within the ROI in this band."""
