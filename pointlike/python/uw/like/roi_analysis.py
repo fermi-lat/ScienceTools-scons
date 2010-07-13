@@ -11,7 +11,6 @@ import numpy as N
 import math
 from roi_managers import *
 from roi_bands import *
-from roi_plotting import *
 from roi_localize import *
 from pointspec_helpers import PointSource
 from roi_diffuse import DiffuseSource
