@@ -172,7 +172,7 @@ Optional keyword arguments:
         from uw.utilities.minuit import Minuit
 
         if fitpsf:
-            if verbose: print 'Changing to fitpsf accuracy for localization step.'
+            if verbose: print 'Changing to fitpsf for localization step.'
             self.nsimps,old_nsimps=0,self.nsimps
             self.fitpsf,old_fitpsf=True,self.fitpsf
 
