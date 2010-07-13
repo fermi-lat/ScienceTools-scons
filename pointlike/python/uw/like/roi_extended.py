@@ -8,7 +8,6 @@
 """
 
 from SpatialModels import RadiallySymmetricModel,Gaussian,SpatialModel
-from uw.utilities.minuit import Minuit
 from uw.utilities.convolution import BackgroundConvolution,BackgroundConvolutionNorm,AnalyticConvolution
 from roi_diffuse import DiffuseSource,ROIDiffuseModel_OTF
 from textwrap import dedent
@@ -169,6 +168,8 @@ Optional keyword arguments:
         the method robust anywhere in the sky. This gets bad because you
         may not be directly fitting the spatail parameters (by fixing the
         spatial parameters), so the code has to intellegently """
+
+        from uw.utilities.minuit import Minuit
 
         if fitpsf:
             if verbose: print 'Changing to fitpsf accuracy for localization step.'
