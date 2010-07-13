@@ -16,6 +16,12 @@
 #include <numeric> // for accumulate
 #include <stdexcept>
 
+// anonymous namespace for helper functions
+namespace {
+    inline double radians(double x){return x*M_PI/180.;}
+    inline double degrees(double x){return x*180./M_PI;}
+}
+
 using namespace healpix;
 
 
@@ -41,19 +47,19 @@ void Healpix::ang2pix(double theta, double phi, long &index)const
 {
     Healpix_Base hp(m_nside,static_cast<Healpix_Ordering_Scheme>(m_ord),SET_NSIDE); 
     index = hp.ang2pix(pointing(theta,phi));
-}        
+}
 
 Healpix::Pixel::Pixel(const astro::SkyDir &dir, const Healpix& hp)
 : m_healpix(&hp)
 {
     // get theta, phi (radians) in appropriate coordinate system
-    double theta, phi;
+	double theta(M_PI/2), phi(M_PI/180);
     if( hp.coordsys()==astro::SkyDir::EQUATORIAL){
-        theta = M_PI/2- dir.dec()*M_PI/180.;
-        phi = dir.ra()*M_PI/180;
-    }else{  // galactic
-        theta = M_PI/2- dir.b()*M_PI/180.;
-        phi = dir.l()*M_PI/180;
+        theta -= radians(dir.dec());
+        phi   *= dir.ra();
+    }else{  // Galactic
+        theta -= radians(dir.b());
+        phi   *= dir.l();
     }
     // and look up the pixel number
     m_healpix->ang2pix(theta, phi,m_index);
@@ -64,7 +70,7 @@ Healpix::Pixel::operator astro::SkyDir ()const
     double theta,phi;
     m_healpix->pix2ang( m_index,theta,phi);
     // convert to ra, dec (or l,b)
-    return astro::SkyDir( phi*180/M_PI, (M_PI/2-theta)*180/M_PI, m_healpix->coordsys() );
+    return astro::SkyDir( degrees(phi), degrees(M_PI/2-theta), m_healpix->coordsys() );
 }
 
 void Healpix::Pixel::neighbors(std::vector<Healpix::Pixel> & p) const
@@ -139,11 +145,14 @@ bool Healpix::nested()const{return ord()==NESTED;}
 void Healpix::query_disc (const astro::SkyDir dir, double radius, std::vector<int> & v) const
 {
     v.clear();
-	double theta, phi;
-	Healpix::Pixel px(dir, *this);
-	pix2ang(px.index(), theta, phi);
-
+	double theta(M_PI/2), phi(M_PI/180);
+    if( m_coordsys==astro::SkyDir::EQUATORIAL){
+        theta -= radians(dir.dec());
+        phi   *= dir.ra();
+    }else{  // Galactic
+        theta -= radians(dir.b());
+        phi   *= dir.l();
+    }
     Healpix_Base hpb(this->nside(),static_cast<Healpix_Ordering_Scheme>(this->ord()),SET_NSIDE); 
 	hpb.query_disc(pointing(theta, phi), radius, v);
 }
-

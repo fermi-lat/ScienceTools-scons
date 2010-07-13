@@ -159,7 +159,7 @@ public:
     // direct access to NASA healpix routines
     void pix2ang(long index, double &theta, double &phi)const;
     void ang2pix(double theta, double phi, long &index)const;
-    
+  
 
 private:
     astro::SkyDir::CoordSystem m_coordsys;///< how to define SkyDir
