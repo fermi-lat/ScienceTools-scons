@@ -94,8 +94,8 @@ class Composite2(object):
         return getattr(self.composite, attrname)
     def __repr__(self):
         my_string = []
-        for name, component in zip(self.srcNames, self.components):
+        for i, component in enumerate(self.components):
             my_string.append("\n")
-            my_string.append("Component %s:\n" % name)
+            my_string.append("Component %i:\n" % i)
             my_string.append(str(component.model))
         return "\n".join(my_string)
