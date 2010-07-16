@@ -561,8 +561,8 @@ class Template(SpatialModel):
         self.skyfun=SkyImage(self.template,extension,interpolate)
 
         self.projection = self.skyfun.projector()
-        naxis1=img.naxis1()
-        naxis2=img.naxis2()
+        naxis1=self.projection.naxis1()
+        naxis2=self.projection.naxis2()
 
         def dir(x,y):
             coordsystem=SkyDir.GALACTIC if self.projection.isGalactic() else SkyDir.EQUATORIAL
