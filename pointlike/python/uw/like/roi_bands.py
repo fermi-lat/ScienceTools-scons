@@ -253,23 +253,13 @@ class ROIEnergyBand(object):
          try:
             #self.m.set_cov_matrix([[self.normUncertainty,0],[0,0]])
             err = self.normUncertainty(which=which)
-         #try:
-         #   hessian = SpectralModelFitter.hessian(self.m,self.bandLikelihood,which)[0] #does Hessian for free parameters
-         #   self.m.set_cov_matrix(inv(hessian))
          except:
             bad_fit = True
+            err = 0 
 
-         #e = self.m.statistical(absolute=True,two_sided=True)
-         #self.flux  = e[0][0]
-         #self.uflux = self.flux + e[1][0]
-         #self.lflux = self.flux - e[2][0]
          self.flux  = 10**self.m.p[0] 
          self.uflux = self.flux*(1 + err)
          self.lflux = max(self.flux*(1 - err),1e-30)
-
-
-         #if self.uflux / self.lflux > 1e3:
-         #   upper_limit()
 
       if saveto is not None:
          for b in self.bands: b.__dict__[saveto] = (b.expected(self.m) if not bad_fit else -1)
