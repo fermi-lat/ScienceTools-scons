@@ -214,8 +214,7 @@ Optional keyword arguments:
          return '\n'.join(l)
       else: #if no errors are present
          for i in xrange(len(pnames)):
-            n=pnames[i][:m]
-            t_n=n+(m-len(n))*' '
+            t_n = '%-10s' % pnames[i]
             if i < len(self.p):
                frozen = '' if self.free[i] else '(FROZEN)'
             else:
