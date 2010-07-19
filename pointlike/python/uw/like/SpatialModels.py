@@ -450,7 +450,7 @@ class PseudoDisk(Disk):
 
 #===============================================================================================#
 
-class NFW(Disk):
+class NFW(RadiallySymmetricModel):
     """ Ping's parameterization of the NFW Source is 
         P(x,y)=2/(pi*r*s*(1+r/s)^5) """
 
