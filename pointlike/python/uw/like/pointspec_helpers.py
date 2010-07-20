@@ -259,7 +259,7 @@ class FermiCatalog(PointSourceCatalog):
       user_extended_list = [i for i in user_diffuse_list if isinstance(i,ExtendedSource)]
 
       cat_list = self.get_sources(skydir,radius)
-      if user_point_list==[] and user_extended_list==[]: return cat_list
+      if user_point_list==[] and user_extended_list==[]: return cat_list,[]
 
       from collections import deque
       merged_list = deque(user_point_list)
