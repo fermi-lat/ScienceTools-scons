@@ -287,6 +287,12 @@ dec [double]
 (ophaseoffset = 0.) [double]
     Global offset applied to all assigned orbital phases.
 
+(leapsecfile = DEFAULT) [file name]
+    Name of the file containing the name of the leap second table, in
+    OGIP-compliant leap second table format. If leapsecfile is the
+    string DEFAULT, the default leap-second file (leapsec.fits), which
+    is distributed with the extFiles package, will be used.
+
 (reportephstatus = yes) [bool]
     If reportephstatus is yes, the application will examine the input
     pulsar ephemeris database, and report findings which may affect
