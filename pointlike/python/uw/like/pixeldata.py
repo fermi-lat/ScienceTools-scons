@@ -47,7 +47,7 @@ essentially unbinned in position for E > a few GeV.
         nsm = NsideMapper
         mns = nsm.maxnside[ct]
         t = nsm.norms[ct]*(en)**nsm.slopes[ct]*N.exp(-(en/nsm.cuts[ct])**2)
-        return N.round(float(mns)/(1+mns*t)).astype(int)
+        return N.round(float(mns)/(1+mns*t)).astype(int).tolist()
 
 
 class PixelData(object):
