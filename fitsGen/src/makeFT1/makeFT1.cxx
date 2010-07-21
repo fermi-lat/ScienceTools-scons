@@ -230,8 +230,10 @@ void MakeFt1::run() {
    try {
       tip::IFileSvc::instance().setTmpFileName(tempRootFile);
       fitsGen::MeritFile merit(rootFile, "MeritTuple", filter);
+      dataSubselector::Gti gti();
       if (tstart != 0 || tstop != 0) {
-         merit.setStartStop(tstart, tstop);
+//          merit.setStartStop(tstart, tstop);
+         gti.insertInterval(tstart, tstop);
          ft1.setObsTimes(tstart, tstop);
       } else {
          const dataSubselector::Gti & gti = merit.gti();

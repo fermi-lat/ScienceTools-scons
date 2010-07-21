@@ -10,7 +10,6 @@
 #define fitsGen_MeritFile_h
 
 namespace dataSubselector {
-   class Cuts;
    class Gti;
 }
 

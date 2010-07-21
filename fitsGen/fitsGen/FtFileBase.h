@@ -91,6 +91,27 @@ public:
       return m_outfile;
    }
 
+   /// @brief Write the TSTART, TSTOP, DATE-OBS, DATE-END, ONTIME, TELAPSE
+   /// keywords in the desired FITS extension.
+   /// @param table FITS extension to be modified
+   /// @param start_time observation start time in MET seconds
+   /// @param stop_time observation stop time in MET seconds
+   /// @param extension set to true if this is not the primary FITS HDU,
+   ///        otherwise the TSTART, TSTOP, ONTIME, TELAPSE keywords will
+   ///        be written
+   /// @param mission_start The mission start time, with official date as
+   ///        the default value
+   static void writeDateKeywords(tip::Extension * table, double start_time,
+                                 double stop_time, bool extension=true,
+                                 const astro::JulianDate & mission_start
+                                 =astro::JulianDate(2001, 1, 1, 0));
+
+#ifndef SWIG   
+   /// @return The current time ascertained using the <ctime> standard
+   /// library. This is also copied from st_facilities.
+   static astro::JulianDate currentTime();
+#endif
+
 protected:
 
    std::string m_outfile;

@@ -13,9 +13,6 @@
 
 #include "astro/JulianDate.h"
 
-#include "st_facilities/Env.h"
-#include "st_facilities/Util.h"
-
 #include "facilities/commonUtilities.h"
 
 #include "fitsGen/FtFileBase.h"
@@ -57,14 +54,14 @@ FtFileBase::~FtFileBase() {
 
 void FtFileBase::close() {
    if (m_table) {
-      st_facilities::Util::writeDateKeywords(m_table, m_startTime, m_stopTime,
-                                             true, s_missionStart);
+      writeDateKeywords(m_table, m_startTime, m_stopTime,
+                        true, s_missionStart);
       delete m_table;
       m_table = 0;
 
       tip::Image * phdu(tip::IFileSvc::instance().editImage(m_outfile, ""));
-      st_facilities::Util::writeDateKeywords(phdu, m_startTime, m_stopTime, 
-                                             false, s_missionStart);
+      writeDateKeywords(phdu, m_startTime, m_stopTime, 
+                        false, s_missionStart);
       delete phdu;
    }
 }
@@ -121,6 +118,53 @@ tip::Header & FtFileBase::header() {
 void FtFileBase::setObsTimes(double start, double stop) {
    m_startTime = start;
    m_stopTime = stop;
+}
+
+/// Copied from st_facilities::Util in order to make fitsGen part of
+/// GlastRelease without dragging in other dependencies.
+void FtFileBase::writeDateKeywords(tip::Extension * table, double start_time, 
+                                   double stop_time, bool extension,
+                                   const astro::JulianDate & mission_start) {
+   (void)(extension);
+   static double secsPerDay(8.64e4);
+   tip::Header & header = table->getHeader();
+   astro::JulianDate current_time = currentTime();
+   try {
+      header["DATE"].set(current_time.getGregorianDate());
+   } catch (...) {
+   }
+// The official mission start time is Jan 1 2001:
+   astro::JulianDate date_start(mission_start + start_time/secsPerDay);
+   astro::JulianDate date_stop(mission_start + stop_time/secsPerDay);
+   try {
+      header["DATE-OBS"].set(date_start.getGregorianDate());
+      header["DATE-END"].set(date_stop.getGregorianDate());
+   } catch (...) {
+   }
+   try {
+      header["TSTART"].set(start_time);
+      header["TSTOP"].set(stop_time);
+   } catch (...) {
+   }
+// Update TELAPSE keyword if it exists
+   if (table->getHeader().find("TELAPSE") != table->getHeader().end()) {
+      header["TELAPSE"].set(stop_time - start_time);
+   }
+}
+
+astro::JulianDate FtFileBase::currentTime() {
+   std::time_t my_time = std::time(0);
+   std::tm * now = std::gmtime(&my_time);
+   if (now != 0) {
+      double hours = now->tm_hour + now->tm_min/60. + now->tm_sec/3600.;
+      astro::JulianDate current_time(now->tm_year + 1900, now->tm_mon + 1,
+                                     now->tm_mday, hours);
+      return current_time;
+   } else {
+      throw std::runtime_error("currentTime:\n"
+                               + std::string("cannot be ascertained, ")
+                               + "std::time returns a null value.");
+   }
 }
 
 } // namespace fitsGen
