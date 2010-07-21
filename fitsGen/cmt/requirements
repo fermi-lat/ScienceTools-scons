@@ -9,10 +9,6 @@ use GlastPolicy v*
 use facilities v*
 use tip v*
 use astro v*
-use st_facilities v*
-use dataSubselector v*
-use st_app v*
-use st_stream v*
 use embed_python v*
 use evtUtils v*
 
@@ -27,17 +23,5 @@ macro_append cppflags "" Linux " -I../src -DTRAP_FPE "
 macro source *.cxx WIN32 "*.h *.cxx"
 
 library fitsGen -no_share $(source)
-
-apply_pattern ST_pfiles
-
-apply_pattern ST_app name=makeFT1
-apply_pattern ST_app name=makeFT1_kluge
-apply_pattern ST_app name=makeFT2
-application makeFT2a makeFT2a/makeFT2a.cxx
-
-application egret2FT1 egret2FT1/*.cxx
-application convertFT1 convertFT1/convertFT1.cxx
-application partition partition/partition.cxx
-application irfTuple irfTuple/*.cxx
 
 application test_classifier test/*.cxx

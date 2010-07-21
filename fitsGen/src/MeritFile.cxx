@@ -10,9 +10,6 @@
 
 #include "tip/IFileSvc.h"
 
-//#include "dataSubselector/Cuts.h"
-#include "dataSubselector/Gti.h"
-
 #include "fitsGen/MeritFile.h"
 
 namespace fitsGen {
@@ -24,24 +21,21 @@ MeritFile::MeritFile(const std::string & meritfile,
      m_it(m_table->begin()),
      m_row(*m_it),
      m_nrows(m_table->getNumRecords()),
-     m_haveTime(true),
-     m_gti(new dataSubselector::Gti()) {
+     m_haveTime(true) {
    const std::vector<std::string> & validFields(m_table->getValidFields());
    if (std::find(validFields.begin(), validFields.end(), "EvtElapsedTime") 
        == validFields.end()) {
       m_haveTime = false;
    } else {
-      double start(m_row["EvtElapsedTime"].get());
+      m_tstart = m_row["EvtElapsedTime"].get();
       m_it = end();
       --m_it;
-      double stop(m_row["EvtElapsedTime"].get());
-      m_gti->insertInterval(start, stop);
+      m_tstop = m_row["EvtElapsedTime"].get();
       m_it = begin();
    }
 }
 
 MeritFile::~MeritFile() {
-   delete m_gti;
    delete m_table;
 }
 
@@ -72,14 +66,9 @@ tip::Table::ConstIterator & MeritFile::itor() {
    return m_it;
 }
 
-const dataSubselector::Gti & MeritFile::gti() const {
-   return *m_gti;
-}
-
 void MeritFile::setStartStop(double tstart, double tstop) {
-   delete m_gti;
-   m_gti = new dataSubselector::Gti();
-   m_gti->insertInterval(tstart, tstop);
+   m_tstart = tstart;
+   m_tstop = tstop;
 }
 
 short int MeritFile::conversionType() const {
