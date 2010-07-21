@@ -26,6 +26,6 @@ progEnv.Tool('registerTargets', package = 'fitsGen',
              staticLibraryCxts = [[fitsGenLib, libEnv]], 
              binaryCxts = [[test_classifierBin,progEnv]],
              includes = listFiles(['fitsGen/*.h']), 
-             pfiles = listFiles(['pfiles/*.par']), recursive = True,
+             recursive = True,
              data = dataFiles)
 
