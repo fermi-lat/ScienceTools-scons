@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ fitsGen-06-00-00 20-Jul-2010 jchiang move applications to separate fitsGenApps package so that fitsGen is independent of various other ST packages and externals (st_app, st_graph, hoops, ape, etc.) and fitsGen can then be added to GR
  fitsGen-05-00-02 10-Jul-2010 jchiang install ft[12].tpl in data dir
  fitsGen-05-00-01 09-Jul-2010 jchiang set pass version in ft1 header
  fitsGen-05-00-00 09-Jul-2010 jchiang add XmlEventClassifier to makeFT1; refactor EventClassifier interface and make it the base class
