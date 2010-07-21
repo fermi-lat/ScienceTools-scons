@@ -61,11 +61,17 @@ private:
    st_app::AppParGroup & m_pars;
    Cuts m_cuts;
 
+   std::string m_passVer;
+   unsigned int m_mask;
+   std::string m_evclsFilter;
+
    static CutController * s_instance;
 
    void addRangeCut(const std::string & colname, const std::string & unit,
                     double minVal, double maxVal, unsigned int indx=0,
                     bool force=false);
+
+   void checkPassVersion(const std::vector<std::string> & evfiles);
 
 };
 

@@ -135,9 +135,6 @@ void DataFilter::promptForParameters() {
 }
 
 void DataFilter::run() {
-//    m_pars.Prompt();
-//    m_pars.Save();
-
    promptForParameters();
 
    std::string evtable = m_pars["evtable"];
@@ -169,8 +166,6 @@ void DataFilter::run() {
    pars["tmin"] = m_tmin;
    pars["tmax"] = m_tmax;
 
-//    CutController * cuts = 
-//       CutController::instance(m_pars, m_inputFiles, evtable);
    CutController * cuts = 
       CutController::instance(pars, m_inputFiles, evtable);
    copyTable(evtable, cuts);
@@ -179,8 +174,6 @@ void DataFilter::run() {
    CutController::delete_instance();
 
    double tmin, tmax;
-//    tmin = m_pars["tmin"];
-//    tmax = m_pars["tmax"];
    tmin = m_tmin;
    tmax = m_tmax;
    if (tmin != 0 || tmax != 0 || m_inputFiles.size() > 1) {

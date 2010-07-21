@@ -4,11 +4,16 @@
  * $Header$
  */
 
+#include <sstream>
 #include <stdexcept>
 
 #include "facilities/Util.h"
 #include "st_app/AppParGroup.h"
+
+#include "tip/Header.h"
+#include "tip/IFileSvc.h"
 #include "tip/Table.h"
+
 #include "astro/SkyDir.h"
 
 #include "dataSubselector/CutController.h"
@@ -36,7 +41,9 @@ void CutController::delete_instance() {
 CutController::CutController(st_app::AppParGroup & pars, 
                              const std::vector<std::string> & eventFiles,
                              const std::string & evtable) 
-   : m_pars(pars), m_cuts(eventFiles, evtable, true, true) {
+   : m_pars(pars), m_cuts(eventFiles, evtable, true, true), 
+     m_passVer(""), m_mask(0), m_evclsFilter("") {
+   checkPassVersion(eventFiles);
    double ra = pars["ra"];
    double dec = pars["dec"];
    double radius = pars["rad"];
@@ -46,10 +53,19 @@ CutController::CutController(st_app::AppParGroup & pars,
    }
    addRangeCut("TIME", "s", pars["tmin"], pars["tmax"]);
    addRangeCut("ENERGY", "MeV", pars["emin"], pars["emax"]);
-   int evclsmin = pars["evclsmin"];
-   int evclsmax = pars["evclsmax"];
-   if (evclsmin !=0 || evclsmax != 10) {
-      addRangeCut("EVENT_CLASS", "dimensionless", evclsmin, evclsmax);
+   if (m_passVer == "NONE") {
+      int evclsmin = pars["evclsmin"];
+      int evclsmax = pars["evclsmax"];
+      if (evclsmin !=0 || evclsmax != 10) {
+         addRangeCut("EVENT_CLASS", "dimensionless", evclsmin, evclsmax);
+      }
+   } else {
+      int evclass = pars["evclass"];
+      m_mask = 1 << evclass;
+      std::ostringstream filter;
+// Equivalent bit-mask from Seth:
+      filter << "((EVENT_CLASS/" << m_mask << ")%2 == 1)";
+      m_evclsFilter = filter.str();
    }
    double zmax = pars["zmax"];
    if (zmax < 180.) {
@@ -68,8 +84,36 @@ CutController::CutController(st_app::AppParGroup & pars,
    m_cuts.mergeRangeCuts();
 }
 
+void CutController::
+checkPassVersion(const std::vector<std::string> & evfiles) {
+   for (size_t i(0); i < evfiles.size(); i++) {
+      const tip::Table * table = 
+         tip::IFileSvc::instance().readTable(evfiles.at(i), "EVENTS");
+      const tip::Header & header(table->getHeader());
+      std::string passVer("NONE");
+      try {
+         header["PASS_VER"].get(passVer);
+      } catch (tip::TipException &) {
+      }
+      if (m_passVer == "") {
+         m_passVer = passVer;
+      } else if (passVer != m_passVer) {
+         delete table;
+         throw std::runtime_error("PASS_VER is not consistent across "
+                                  "input FT1 files");
+      }
+      delete table;
+   }
+}
+
 bool CutController::accept(tip::ConstTableRecord & row) const {
-   return m_cuts.accept(row);
+   if (m_passVer == "NONE") {
+      return m_cuts.accept(row);
+   }
+   unsigned int evclass;
+   row["EVENT_CLASS"].get(evclass);
+   bool value = (evclass & m_mask) != 0 && m_cuts.accept(row);
+   return value;
 }
 
 void CutController::addRangeCut(const std::string & colname,
@@ -119,6 +163,9 @@ std::string CutController::filterString() const {
       filter += " && ";
    }
    filter += "gtifilter()";
+   if (m_evclsFilter != "") {
+      filter = m_evclsFilter + " && " + filter;
+   }
    return filter;
 }
 
