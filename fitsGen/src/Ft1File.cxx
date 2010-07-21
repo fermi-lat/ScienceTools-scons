@@ -13,8 +13,6 @@
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
 
-#include "st_facilities/Util.h"
-
 #include "fitsGen/Ft1File.h"
 
 namespace fitsGen {
