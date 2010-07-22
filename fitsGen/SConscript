@@ -15,7 +15,7 @@ fitsGenLib = libEnv.StaticLibrary('fitsGen', listFiles(['src/*.cxx']))
 progEnv.Tool('fitsGenLib')
 if baseEnv['PLATFORM'] == "posix":
     progEnv.Append(CPPDEFINES = 'TRAP_FPE')
-test_classifierBin = progEnv.Program('test_classifier', 
+test_classifierBin = progEnv.Program('test_fitsGen', 
                                      listFiles(['src/test/*.cxx']))
 
 dataFiles = [os.path.join("data", x) for x in ("xml_test_merit.root",
