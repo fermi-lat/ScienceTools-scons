@@ -497,7 +497,7 @@ class ZEA(object):
         self.axes.set_xlim((0.0,self.nx))
         self.axes.set_ylim((0.0,self.ny))
         self.axes.set_autoscale_on(False) 
-        r =Rescale(self,self.nticks)
+        r =Rescale(self,self.nticks, galactic = self.galactic)
         r.apply(self.axes)
 
         labels = ['l','b'] if self.galactic else ['RA','Dec'] 
