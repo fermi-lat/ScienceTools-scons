@@ -10,19 +10,19 @@
       <Comment>Cuts appropriate for point source analysis</Comment>
     </EventCategory>
     <EventCategory name="S2" bit="8">
-      <ShortCut>(TMath::Nint(CTBExtPhotonClassBit) &amp; 1) != 0</ShortCut>
+      <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 1) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
       <Comment>Extremely loose cuts appropriate for GRB analysis.</Comment>
     </EventCategory>
     <EventCategory name="NoCal" bit="9">
-      <ShortCut>(TMath::Nint(CTBExtPhotonClassBit) &amp; 2) != 0</ShortCut>
+      <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 2) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
       <Comment>Events with no calorimeter data.</Comment>
     </EventCategory>
     <EventCategory name="S3" bit="10">
-      <ShortCut>(TMath::Nint(CTBExtPhotonClassBit) &amp; 4) != 0</ShortCut>
+      <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 4) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
       <Comment>Very loose cuts appropriate for GRB analysis</Comment>
     </EventCategory>
     <EventCategory name="CalOnly" bit="11">
-      <ShortCut>(TMath::Nint(CTBExtPhotonClassBit) &amp; 8) != 0</ShortCut>
+      <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 8) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
       <Comment>Events where only calorimeter information was used in analysis.</Comment>
     </EventCategory>
   </EventMap>
