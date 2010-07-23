@@ -13,3 +13,4 @@
  evtUtils-00-01-04 06-Jul-2010 echarles Added S2 extended photon class, updated SConscipt
  evtUtils-00-01-05 07-Jul-2010 echarles fix SConscript
  evtUtils-00-01-06 09-Jul-2010 echarles Fixing a bug in SConscript
+ evtUtils-00-01-07 23-Jul-2010 echarles OR Transient class into all the extended classes
