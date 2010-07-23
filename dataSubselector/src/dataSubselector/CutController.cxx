@@ -60,12 +60,17 @@ CutController::CutController(st_app::AppParGroup & pars,
          addRangeCut("EVENT_CLASS", "dimensionless", evclsmin, evclsmax);
       }
    } else {
-      int evclass = pars["evclass"];
-      m_mask = 1 << evclass;
-      std::ostringstream filter;
+      try {
+         int evclass = pars["evclass"];
+         m_mask = 1 << evclass;
+         std::ostringstream filter;
 // Equivalent bit-mask from Seth:
-      filter << "((EVENT_CLASS/" << m_mask << ")%2 == 1)";
-      m_evclsFilter = filter.str();
+         filter << "((EVENT_CLASS/" << m_mask << ")%2 == 1)";
+         m_evclsFilter = filter.str();
+      } catch (const hoops::Hexception &) {
+         // Assume INDEF is given as the parameter value for evclass,
+         // so use default of applying no EVENT_CLASS cut.
+      }
    }
    double zmax = pars["zmax"];
    if (zmax < 180.) {
