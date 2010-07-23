@@ -5,6 +5,7 @@
     @verbatim
     * EOH *
 
+ dataSubselector-08-01-00 23-Jul-2010 jchiang implement evclass=INDEF for gtselect (as default)
  dataSubselector-08-00-00 21-Jul-2010 jchiang gtselect updated to perform bitmask filtering on EVENT_CLASS
  dataSubselector-07-01-00 07-Apr-2010 jchiang use recommended filter value as default in gtmktime.par
  dataSubselector-07-00-02 25-Mar-2010 jchiang need to use double for data members in gtselect internal class that contain ROI parameter values
