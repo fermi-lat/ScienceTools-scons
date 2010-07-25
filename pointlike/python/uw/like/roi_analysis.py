@@ -78,6 +78,8 @@ class ROIAnalysis(object):
         else:
             self.gradient = self.gradient_old
 
+        self.logLikelihood(self.get_parameters()) # make sure everything initialized
+
     def __setup_bands__(self):
 
         self.bands = deque()
@@ -94,11 +96,11 @@ class ROIAnalysis(object):
 
         for band in self.bands: band.phase_factor = self.phase_factor
 
-    def setup_energy_bands(self):
+    def setup_energy_bands(self,emin=[0,0]):
 
         groupings = dict()
         for bc in self.bin_centers:
-            groupings[bc] = [band for band in self.bands if band.e==bc]
+            groupings[bc] = [band for band in self.bands if (band.e==bc and (band.emin>=emin[band.ct]))]
 
         self.energy_bands = [ROIEnergyBand(groupings[bc]) for bc in self.bin_centers]
 
