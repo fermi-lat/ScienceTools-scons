@@ -25,12 +25,12 @@
       <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 8) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
       <Comment>Events where only calorimeter information was used in analysis.</Comment>
     </EventCategory>
-    <EventCategory name="S3extra" bit="12">
-      <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 4) != 0) || ((TMath::Nint(CTBExtPhotonClassBit) &amp; 2) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
+    <EventCategory name="S3NoCal" bit="12">
+      <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 6) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
       <Comment>Events in either S3 or NoCal.</Comment>
     </EventCategory>
-    <EventCategory name="Loose" bit="13">
-      <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 4) != 0) || ((TMath::Nint(CTBExtPhotonClassBit) &amp; 2) != 0) || ((TMath::Nint(CTBExtPhotonClassBit) &amp; 1) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
+    <EventCategory name="S2NoCal" bit="13">
+      <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 7) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
       <Comment>Events in either S3, S2 or NoCal.</Comment>
     </EventCategory>
   </EventMap>
