@@ -14,3 +14,4 @@
  evtUtils-00-01-05 07-Jul-2010 echarles fix SConscript
  evtUtils-00-01-06 09-Jul-2010 echarles Fixing a bug in SConscript
  evtUtils-00-01-07 23-Jul-2010 echarles OR Transient class into all the extended classes
+ evtUtils-00-01-08 26-Jul-2010 echarles updated EvtClassDefs_P7V3 to make S2 = oldS2 || transient, etc
