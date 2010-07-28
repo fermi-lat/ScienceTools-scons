@@ -174,9 +174,9 @@ class ROIAnalysis(object):
         #print ll,parameters
         return 1e6 if N.isnan(ll) else ll
 
-    def bandFit(which):
+    def bandFit(self,which):
         """ Perform a spectral independendent fit."""
-        manager,index=self.mapper(index)
+        manager,index=self.mapper(which)
 
         self.bgm.update_counts(bands)
         self.psm.update_counts(bands)
