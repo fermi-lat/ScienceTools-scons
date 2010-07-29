@@ -122,7 +122,7 @@ EventList::EventList(const std::string infile, bool selectid, bool use_mc_energy
             // (*m_itbegin)["DIFRSP1"].get(dif);
             (*m_itbegin)["CTBCLASSLEVEL"].get(dif);
             m_pass7=false;
-        } catch (const std::exception& e){}
+        } catch (const std::exception& ){}
     }
 
 }

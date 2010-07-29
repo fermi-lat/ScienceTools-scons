@@ -115,6 +115,13 @@ public:
     // make it a container by implementing a forward iterator
     class Iterator {
     public:
+  	// these traits needed  for STL functions like accumulate
+		typedef const Photon& reference;
+		typedef const Photon* pointer;
+		typedef Photon value_type;
+		typedef std::forward_iterator_tag iterator_category;
+		typedef int difference_type; //??? needed, hope this kluge does not break anythin
+
         Iterator(tip::Table::ConstIterator it, bool fits, bool selectid=false, bool use_mc_energy=false, bool pass7=false)
             : m_it(it)
             , m_fits(fits)
