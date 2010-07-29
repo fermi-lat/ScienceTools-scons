@@ -86,6 +86,13 @@ EarthCoordinate::EarthCoordinate( CLHEP::Hep3Vector pos, double met)
         msg <<"astro::EarthCoordinate: invalid altitude, expect near 550 km, got: " << m_altitude;
         throw std::invalid_argument(msg.str());
     }
+    if (m_haveMagCoords==false){
+        m_L=0;
+        m_B=0;
+        m_lambda=0;
+        m_geolat=0;
+        m_R=0;
+    }
 }
    
 void EarthCoordinate::computeMagCoords() const {
