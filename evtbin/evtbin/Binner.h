@@ -1,5 +1,6 @@
 /** \file Binner.h
     \brief Base class for all binners.
+	$Header$
 */
 #ifndef evtbin_Binner_h
 #define evtbin_Binner_h
@@ -78,6 +79,12 @@ namespace evtbin {
 
   inline bool operator < (const Binner::Interval & interval, const double & value) { return interval.end() < value; }
 
+  // this case is not well defined, but seems to be needed: arbitrary compare centers
+  // however, only vc90 complains
+#ifdef WIN32  
+  inline bool operator < (const Binner::Interval & left_interval,const  Binner::Interval & right_interval) {
+	  return left_interval.midpoint() < right_interval.midpoint(); }
+#endif
 }
 
 #endif
