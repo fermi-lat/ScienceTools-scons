@@ -51,6 +51,13 @@ public:
     typedef enum { RING=0,
         NESTED=1, NEST=1} Ordering;
 
+		// these traits needed  for STL functions like accumulate
+		typedef const Healpix& reference;
+		typedef const Healpix* pointer;
+		typedef Healpix value_type;
+		typedef std::forward_iterator_tag iterator_category;
+		typedef int difference_type;
+
     /**@brief specify configuration
     @param nside Number of divisions of the side of 
     each of the 12 base pixels.Indicates resolution.  Min = 1.  Max = ?? 
