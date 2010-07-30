@@ -35,7 +35,10 @@ class XmlEventClassifier : public EventClassifier {
 public:
 
    XmlEventClassifier(const std::string & xmlFile,
-                      const std::string & meritFile);
+                      const std::string & meritFile,
+                      const std::string & filter,
+                      const std::string & evtClassMap="FT1EventClass",
+                      const std::string & tempfile="xmlClassifier_temp.root");
 
    virtual ~XmlEventClassifier() throw();
 
