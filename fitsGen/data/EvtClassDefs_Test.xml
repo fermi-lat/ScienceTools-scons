@@ -18,4 +18,22 @@
       <Comment>Cuts appropriate for point source analysis</Comment>
     </EventCategory>
   </EventMap>
+  <EventMap mapName="FT1EventClass2" altName="EVENT_CLASS2">
+    <EventCategory name="Transient0" bit="2">
+      <ShortCut>CTBParticleType==0 &amp;&amp; CTBClassLevel == 2</ShortCut>
+      <Comment>Loose cuts appropriate for transient source analysis</Comment>
+    </EventCategory>
+    <EventCategory name="Transient1" bit="3">
+      <ShortCut>CTBParticleType==0 &amp;&amp; CTBClassLevel == 3</ShortCut>
+      <Comment>Loose cuts appropriate for transient source analysis</Comment>
+    </EventCategory>
+    <EventCategory name="Transient" bit="4">
+      <ShortCut>CTBParticleType==0 &amp;&amp; CTBClassLevel == 4</ShortCut>
+      <Comment>Loose cuts appropriate for transient source analysis</Comment>
+    </EventCategory>
+    <EventCategory name="Source" bit="5">
+      <ShortCut>CTBParticleType==0 &amp;&amp; CTBClassLevel == 5</ShortCut>
+      <Comment>Cuts appropriate for point source analysis</Comment>
+    </EventCategory>
+  </EventMap>
 </EventClass>
