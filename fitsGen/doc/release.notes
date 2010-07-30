@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ fitsGen-06-01-01 30-Jul-2010 jchiang bug-fix for test program
  fitsGen-06-01-00 30-Jul-2010 jchiang apply filter to data read in by XmlClassifier to speed up implementation
  fitsGen-06-00-01 21-Jul-2010 jchiang change test app name so that it runs in RM[II]
  fitsGen-06-00-00 20-Jul-2010 jchiang move applications to separate fitsGenApps package so that fitsGen is independent of various other ST packages and externals (st_app, st_graph, hoops, ape, etc.) and fitsGen can then be added to GR
