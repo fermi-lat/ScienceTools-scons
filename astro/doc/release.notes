@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-03-11-05 31-Jul-2010 burnett fix SWIG warning in IGRField
  astro-03-11-04 29-Jul-2010 tstephen Tagging to get updated EarthCoordinate.cxx for 64-bit builds into production
  astro-03-11-03 16-Jun-2010    jrb updates for SCons builds
  astro-03-11-02 03-Jun-2010 burnett CLHEP mods
