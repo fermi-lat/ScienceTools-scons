@@ -342,8 +342,8 @@ Optional keyword arguments:
 
   =========    KEYWORDS CONTROLLING SPECTRAL ANALYSIS
   background   ['1FGL'] - a choice of global model specifying a diffuse background; see ConsistentBackground for options
-  maxROI       [25] maximum ROI for analysis; note ROI aperture is energy-dependent = max(maxROI,r95(e,conversion_type))
-  minROI       [0] minimum ROI analysis
+  maxROI       [10] maximum ROI for analysis; note ROI aperture is energy-dependent = max(maxROI,r95(e,conversion_type))
+  minROI       [5] minimum ROI analysis
 
   ***N.B.***
   ROI radius is energy-dependent: minROI < r95(e,conversion_type) < maxROI
