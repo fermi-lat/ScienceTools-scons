@@ -94,8 +94,8 @@ class IGRField {
       float invariantLatitude() const { return m_invariantLat;};
 // Get R
       float R() const  { return m_R;};
-// Get lambda 
-#ifndef SWIG lambda is a python keyword
+// Get lambda (but it is a python keyword, hence the following SWIG stuff
+#ifndef SWIG 
       float lambda() const { return m_lambda;};
 #else
       float _lambda() const { return m_lambda;};
