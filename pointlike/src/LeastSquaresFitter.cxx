@@ -350,7 +350,7 @@ int LeastSquaresFitter::test() {
     fit(test_vec,1/3.);
     double tol(1e-5);
     double ac(0.);
-    for(int i(0);i<m_fitparams.size()-1;++i) {
+    for(unsigned int i(0);i<m_fitparams.size()-1;++i) {
         ac+=fabs(1.-m_fitparams[i]);
     }
     if(ac<tol) {

@@ -287,7 +287,7 @@ void AlignProc::loadfits(const std::string& file ) {
         double dif;
         (*m_it)["DIFRSP1"].get(dif);
         pass7=true;
-    }catch (const std::exception& e) {}
+    }catch (const std::exception& ) {}
     int entries = m_table->getNumRecords();
     int i(0);
     for(;m_it!=m_table->end()&&(flag||m_start<0);++m_it,++i){
@@ -386,7 +386,7 @@ int AlignProc::add(pointlike::AlignProc::Photona& p){
 
         int source=-1;
         //figure out the associated source
-        for(int it(0);it<m_skydir.size();++it) {
+        for(unsigned int it(0);it<m_skydir.size();++it) {
             double dot = p.difference(m_skydir[it]);
             if(dot<diff) {
                 diff=dot;
