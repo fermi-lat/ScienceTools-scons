@@ -180,7 +180,7 @@ class XML_to_SpatialModel(object):
             coordsystem="SkyDir.EQUATORIAL"
             self.spatialdict[spatialname]=['RA','DEC']+self.spatialdict[spatialname]
         elif d.has_key('L') and d.has_key('B') and not (d.has_key('RA') or d.has_key('DEC')):
-            coordsystem="SkyDir.EQUATORIAL"
+            coordsystem="SkyDir.GALACTIC"
             self.spatialdict[spatialname]=['L','B']+self.spatialdict[spatialname]
         else: raise Exception("Unable to parse spatial model %s. Either RA and Dec or L and B must be parameters." % spatialname)
 
