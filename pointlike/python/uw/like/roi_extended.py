@@ -294,7 +294,7 @@ Optional keyword arguments:
         # convert tolerance from Minuit's definition .001*up*tolerance (up=.5 for log likelihood).
         m = Minuit(f,start_spatial,
                    up=0.5,
-                   maxcalls=20000,
+                   maxcalls=500,
                    tolerance=tolerance/0.0005,
                    printMode = verbose,
                    param_names=relative_names,
