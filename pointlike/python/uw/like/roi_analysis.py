@@ -354,6 +354,9 @@ class ROIAnalysis(object):
             tolerance -- (approximate) absolute tolerance of log likelihood value
         """
 
+        if method not in ['simplex','powell','minuit']:
+            raise Exception('Unknown fitting method for roi.fit(): "%s"' % method)
+
         if fit_bg_first:
             self.fit_background()
 
