@@ -225,7 +225,7 @@ class FermiCatalog(PointSourceCatalog):
       self.dirs   = map(SkyDir,N.asarray(ras).astype(float),N.asarray(decs).astype(float))
       self.models = N.asarray([PowerLaw(p=[n0,ind],e0=pen) for n0,ind,pen in zip(n0s,inds,pens)])
       #self.fluxes = N.asarray(f[1].data.field('FLUX100'))
-      self.names  = N.asarray(f[1].data.field(sname))
+      self.names  = N.char.strip(f[1].data.field(sname))
       #self.ts     = N.asarray(ts)
 
       f.close()
