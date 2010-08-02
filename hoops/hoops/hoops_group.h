@@ -21,7 +21,13 @@
 
 #ifndef EXPSYM
 #ifdef WIN32
+
+#ifndef SCons
 #define EXPSYM __declspec(dllexport)
+#else
+#define EXPSYM
+#endif
+
 #else
 #define EXPSYM
 #endif
