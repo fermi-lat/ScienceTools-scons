@@ -11,7 +11,6 @@ from math import sqrt, atan2, sin, cos, atan, pi, degrees, radians
 import os
 from skymaps import SkyDir
 import numpy as np
-import pylab 
 
 
 def quadfun(r, p):
@@ -136,6 +135,7 @@ class Ellipse(object):
         return x,y      
 
     def draw(self, data=None, scale=2):
+        import pylab 
         x,y = self.circuit()
         pylab.plot(x,y, '-')
         pylab.plot([x0],[y0], '+') 
