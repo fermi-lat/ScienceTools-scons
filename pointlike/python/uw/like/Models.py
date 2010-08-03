@@ -317,6 +317,14 @@ Optional keyword arguments:
       
    def full_name(self):
       return self.pretty_name if self.pretty_name != 'PowerLaw' else 'PowerLaw, e0=%.0f'% self.e0
+   
+   def set_e0(self, e0p):
+      """ set a new reference energy, adjusting the norm parameter """
+      # TODO: protect this
+      gamma = 10** self.p[1]
+      self.p[0] += gamma * N.log10(self.e0/e0p)
+      self.e0 = e0p
+      
 
 #===============================================================================================#
 
