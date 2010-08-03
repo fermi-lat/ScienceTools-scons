@@ -45,7 +45,9 @@ def image_list(item_names, full_dzc):
     try:
         return [ids[n+'.xml'] for n in names]
     except:
-        print 'Source %s not found in list of images %s' %  full_dzc
+        for n in names:
+            if n+'.xml' not in ids:
+                print 'Item %s not found in list of images %s' %  ( n, full_dzc)
         raise
 
 
