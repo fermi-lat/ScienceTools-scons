@@ -340,21 +340,23 @@ class Model_to_XML(object):
            when there is ambiguity (i.e. for ConstantValue vs.
            FileFunction). """
 
+        my_xml_name = xml_name # fix scope issue
         if model.name == 'ExpCutoff':
             model = convert_exp_cutoff(model)
 
         # map the Model instance onto an xml-style model
-        elif xml_name == None:
-            if model.name == 'Constant': xml_name='ConstantValue'
+        if xml_name == None:
+            if model.name == 'Constant': my_xml_name='ConstantValue'
             else:
-                for xml_name,v in self.x2m.modict.iteritems():
-                    if v == model.name: break
+                for l_xml_name,v in self.x2m.modict.iteritems():
+                    if v == model.name:
+                        my_xml_name = l_xml_name;break
                 if v != model.name:
                     raise Exception,'Unable to find an XML model for %s'%(model.name)
-        self.update(xml_name,scaling=scaling)
+        self.update(my_xml_name,scaling=scaling)
 
         # replace spectral parameters
-        specparams = self.x2m.specdict[xml_name]
+        specparams = self.x2m.specdict[my_xml_name]
         vals,errs  = model.statistical(absolute=True)
         for iparam,param in enumerate(specparams):
             if self.debug: print 'Processing %s'%(param)
@@ -376,7 +378,7 @@ class Model_to_XML(object):
                 self.pval[index] = self.pmax[index]
 
         # replace non-variable parameters
-        kwargparams = self.x2m.kwargdict[xml_name]
+        kwargparams = self.x2m.kwargdict[my_xml_name]
         for xml_key,mod_key in kwargparams:
             if self.debug: print 'Processing %s'%(xml_key)
             index = self.find_param(xml_key)
