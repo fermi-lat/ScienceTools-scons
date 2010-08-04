@@ -201,16 +201,16 @@ class XML_to_SpatialModel(object):
             if spatial_model.log[ip]:
                 spatial_model.p[ip] = N.log10(value*scale) 
                 if pdict.has_key('min'):
-                    spatial_model.limits[ip,0] = N.log10(pdict['min']*scale) 
+                    spatial_model.limits[ip,0] = N.log10(float(pdict['min'])*scale) 
                 if pdict.has_key('max'):
-                    spatial_model.limits[ip,1] = N.log10(pdict['max']*scale) 
+                    spatial_model.limits[ip,1] = N.log10(float(pdict['max'])*scale) 
 
             else:
                 spatial_model.p[ip] = value*scale
                 if pdict.has_key('min'):
-                    spatial_model.limits[ip,0] = pdict['min']*scale
+                    spatial_model.limits[ip,0] = float(pdict['min'])*scale
                 if pdict.has_key('max'):
-                    spatial_model.limits[ip,1] = pdict['max']*scale
+                    spatial_model.limits[ip,1] = float(pdict['max'])*scale
 
             spatial_model.free[ip] = (pdict['free'] == '1')
 
