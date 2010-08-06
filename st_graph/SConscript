@@ -10,10 +10,14 @@ libEnv = baseEnv.Clone()
 if baseEnv['PLATFORM'] == "posix":
     libEnv.Append(CPPDEFINES = 'TRAP_FPE')
 
+includeFiles = listFiles(["st_graph/*"], recursive=True)
+
 st_graphRootcint = libEnv.Rootcint('st_graph/st_graph_rootcint',
                                    ['st_graph/RootFrame.h',
                                     'st_graph/LinkDef.h'],
-                                   includes = ['.', 'src'])
+                                   includes = ['.', 'src'],
+                                   localIncludes=includeFiles,
+                                   packageName='st_graph')
 st_graphLib = libEnv.StaticLibrary('st_graph', listFiles(['src/*.cxx']) + ['st_graph/st_graph_rootcint.cxx'])
 
 progEnv.Tool('st_graphLib')
