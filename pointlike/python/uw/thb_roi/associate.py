@@ -9,7 +9,7 @@ import numpy as np
 from skymaps import SkyDir
 from uw.utilities import makerec
 from uw.like import srcid  # gtsrcid work-alike from Eric
-import config, catalog   #local
+from uw.thb_roi import config  #local
 
 def delta(ra1,dec1,ra2,dec2):
     """ return r and theta (assume close)
@@ -27,8 +27,8 @@ class Association():
         """ acat: [None] catalog FITS file with associations
                   get default catalog association
         """
-        self.acat = acat or catalog.default_assoc
-        self.hdu  = pyfits.open(os.path.join(catalog.catalog_root, catalog.default_assoc))
+        self.acat = acat or config.default_assoc
+        self.hdu  = pyfits.open(os.path.join(config.catalog_path, config.default_assoc))
         self.id_cat= self.hdu[2].data
         self.sources=self.hdu[1].data
         self.n   = len(self.sources)
