@@ -224,7 +224,7 @@ class HealpixTSMap(object):
                 ts_vals[1].append(tsc(d,repeat_diffuse=True))
                 ts_vals[2].append(tsc(d,repeat_diffuse=True,bright_source_mask=bsm))
         else:
-            self.ts_vals = [deque(),deque()]
+            self.ts_vals = ts_vals = [deque(),deque()]
             for d in dirs:
                 ts_vals[0].append(tsc(d))
                 ts_vals[1].append(tsc(d,repeat_diffuse=True))
