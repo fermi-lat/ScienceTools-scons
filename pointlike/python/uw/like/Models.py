@@ -174,8 +174,10 @@ Optional keyword arguments:
       except:
          return p,N.zeros_like(p)
 
-   def __str__(self,absolute=False):
-      """Return a pretty print version of parameter values and errors."""
+   def __str__(self,absolute=False, indent=''):
+      """Return a pretty print version of parameter values and errors.
+        indent: string to prepend to each line (must be called explicitly)
+      """
       #p,avg       = self.statistical(absolute=absolute,two_sided=False)
       p,hi_p,lo_p = self.statistical(absolute=absolute,two_sided=True)
       if not self.background:
@@ -223,7 +225,7 @@ Optional keyword arguments:
             else:
                frozen = '(DERIVED)'
             l+=[t_n+': %.3g %s'%(p[i],frozen)]
-         return '\n'.join(l)
+         return ('\n'+offset).join(l)
 
    def i_flux(self,emin=100,emax=N.inf,e_weight=0,cgs=False,error=False,two_sided=False):
       """Return the integral flux.         
