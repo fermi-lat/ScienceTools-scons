@@ -414,10 +414,15 @@ if not baseEnv.GetOption('help'):
 
     Export('packages')
 
+    if sys.platform == 'win32':        dup = 0
+    else: dup = 1                          # using sym links 
+    
     for pkg in packages:
+        #print "Processing package ", str(pkg)
         try:
 	    baseEnv.SConscript(os.path.join(pkg,"SConscript"),
-                               build_dir = os.path.join(pkg, 'build', variant))
+                               variant_dir = os.path.join(pkg, 'build', variant),
+                               duplicate=dup)
 	except Exception, inst:
 	    print "scons: Skipped "+pkg.lstrip(override+os.sep)+" because of exceptions: "+str(inst)
 	    traceback.print_tb(sys.exc_info()[2])
