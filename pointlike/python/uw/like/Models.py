@@ -225,7 +225,7 @@ Optional keyword arguments:
                 else:
                     frozen = '(DERIVED)'
                 l+=[t_n+': %.3g %s'%(p[i],frozen)]
-            return ('\n'+offset).join(l)
+            return ('\n'+indent).join(l)
 
     def i_flux(self,emin=100,emax=N.inf,e_weight=0,cgs=False,error=False,two_sided=False):
         """Return the integral flux.            
