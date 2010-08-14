@@ -67,7 +67,7 @@ class ROIAnalysis(object):
         self.psm.cache(self.bands)
         #self.psm.update_counts(self.bands)
 
-        self.logLikelihood(self.get_parameters()) # make sure everything initialized
+        self.logl = self.prev_logl = self.logLikelihood(self.get_parameters()) # make sure everything initialized
 
     def __setup_bands__(self):
 
@@ -156,7 +156,7 @@ class ROIAnalysis(object):
 
         self.update_counts(parameters)
 
-        ll = sum([band.logLikelihood(phase_factor=self.phase_factor) for band in self.bands])
+        ll = sum(band.logLikelihood(phase_factor=self.phase_factor) for band in self.bands)
         return 1e6 if N.isnan(ll) else ll
 
     def bandFit(self,which):
