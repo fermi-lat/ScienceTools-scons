@@ -246,11 +246,6 @@ class BackgroundConvolutionNorm(BackgroundConvolution):
         super(BackgroundConvolutionNorm,self).convolve(*args,**kwargs)
         self.cvals /= self.cvals.sum()*N.radians(self.pixelsize)**2
 
-    def ap_average(self,center,radius):
-        # This function needs to be fixed to really integrate for when the extended source isn't all in.
-        solid_angle=2*N.pi*(1-N.cos(radius))
-        return 1/solid_angle
-
 #===============================================================================================#
 
 class AnalyticConvolution(object):
