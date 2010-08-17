@@ -145,7 +145,8 @@ class ROIExtendedModel(ROIDiffuseModel):
             myband.es_counts = band.expected(sm)*myband.er
 
             band.bg_counts[mi] = myband.overlaps*myband.es_counts
-            band.bg_pix_counts[:,mi] = myband.pix_counts * myband.es_counts
+            if band.has_pixels:
+                band.bg_pix_counts[:,mi] = myband.pix_counts * myband.es_counts
 
     def _pix_value(self,pixlist):
         return self.active_bgc(pixlist,self.active_bgc.cvals)
