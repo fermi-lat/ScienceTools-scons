@@ -297,7 +297,7 @@ Optional keyword arguments:
 
             # Do the convolution here.
             sm.set_parameters(p=p,absolute=False)
-            self.initialize_counts(roi.bands,which)
+            self.initialize_counts(roi.bands)
 
             if bandfits:
                 ll=roi.bandFit(self.extended_source)
