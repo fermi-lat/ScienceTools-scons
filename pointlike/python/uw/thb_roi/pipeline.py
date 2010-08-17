@@ -641,7 +641,7 @@ def load_rec_from_pickles(outdir, other_keys=None, **kwargs):
         except Exception, arg:
             
             print 'Failed to load file  %s: %s' % (fname, arg)
-            if not ignore_exception: raisef
+            if not ignore_exception: raise
             failed +=1
     print 'read %d entries from %s (%d failed)' % (len(filelist),outdir,failed)
     return rec()
