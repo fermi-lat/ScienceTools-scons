@@ -216,7 +216,7 @@ Optional keyword arguments:
                     l+=[t_n+': (1 + %.3f - %.3f) (avg = %.3f) %-10.3g %s'% (tuple(q) + (p[i],frozen))]
                 else:
                     l+=[t_n+': %.3g + %.3g - %.3g (avg = %.3g) %s'%(p[i],hi_p[i],lo_p[i],(hi_p[i]*lo_p[i])**0.5,frozen)]
-            return '\n'.join(l)
+            return ('\n'+indent).join(l)
         else: #if no errors are present
             for i in xrange(len(pnames)):
                 t_n = '%-10s' % pnames[i]
@@ -511,6 +511,12 @@ Spectral parameters:
     def __call__(self,e):
         n0,alpha,beta,e_break=10**self.p
         return (n0/self.flux_scale)*(e_break/e)**(alpha - beta*N.log(e_break/e))
+
+    def gradient(self,e):
+        n0,alpha,beta,e_break=10**self.p
+        f  = (n0/self.flux_scale)*(e_break/e)**(alpha - beta*N.log(e_break/e))
+        log_term = N.log(e_break/e)
+        return N.asarray([f/n0,f*log_term,-f*log_term**2,f*alpha/e_break])
 
 #===============================================================================================#
 
