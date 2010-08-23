@@ -251,8 +251,8 @@ def plot_sed(roi, which=0, fignum=5, axes=None,
     
     if outdir is not None: 
         if os.path.isdir(outdir):
-            name = name.replace(' ','_').replace('+','p')
-            plt.savefig(os.path.join(outdir,'%s_sed.png'%name))
+            fname = name.replace(' ','_').replace('+','p')
+            plt.savefig(os.path.join(outdir,'%s_sed.png'%fname))
         else :
             plt.savefig(outdir)
 
