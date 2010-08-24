@@ -388,7 +388,6 @@ Spectral parameters:
         """
     def __call__(self,e):
         flux,gamma=10**self.p
-        #return (flux/self.flux_scale)*(gamma-1)*(self.e0/e)**(gamma-1)/e
         return ((flux/self.flux_scale)*(1-gamma)/(self.emax**(1-gamma)-self.emin**(1-gamma)))*e**(-gamma)
 
     def fast_iflux(self,emin=100,emax=N.inf):
@@ -632,6 +631,7 @@ class InterpConstants(Model):
 
 
 def convert_exp_cutoff(model):
+    # this function need for XML parsing
     if model.name != 'ExpCutoff':
         raise Exception,'Cannot process %s into PLSuperExpCutoff'%(model.name)
     nm = PLSuperExpCutoff()
