@@ -874,7 +874,6 @@ def convert_spatial_map(spatial,filename):
         filename is the filename for the saved template
         
         The return is a SpatialMap object with the same PDF. """
-    filename = 'template_%s_%s.fits' % spatial.pretty_name
     spatial.save_template(filename)
     nm = SpatialMap(file=filename)
     return nm
