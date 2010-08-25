@@ -456,9 +456,8 @@ class AnalyticConvolution(object):
             area). Also, it is different in that it takes in a skydir or WSDL 
             instead of a radial distance. """
         if type(skydir) == WeightedSkyDirList:
-            dv = DoubleVector()
-            skydir.arclength(self.spatial_model.center,dv)
-            difference = N.fromiter(dv,dtype=float)
+            difference = N.empty(len(skydir),dtype=float)
+            PythonUtilities.arclength(difference,skydir,self.spatial_model.center)
             return self.val(difference)
 
         elif type(skydir)==list and len(skydir)==3:
