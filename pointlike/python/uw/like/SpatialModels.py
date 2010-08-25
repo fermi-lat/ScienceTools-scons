@@ -730,12 +730,19 @@ class PseudoEllipticalGaussian(PseudoSpatialModel,EllipticalGaussian):
     def extension(self):
         return N.radians(1e-10),N.radians(1e-10),0
 
+    def pretty_spatial_string(self):
+        return "[ %.3f' ]" % (60*N.degrees(self.sigma_x))
+
 #===============================================================================================#
 
 class RadiallySymmetricEllipticalGaussian(EllipticalGaussian):
+
     def extension(self):
         sigma=self.get_parameters(absolute=True)[2]
         return sigma,sigma,0
+
+    def pretty_spatial_string(self):
+        return "[ %.3f' ]" % (60*N.degrees(self.sigma_x))
 
 #===============================================================================================#
 
