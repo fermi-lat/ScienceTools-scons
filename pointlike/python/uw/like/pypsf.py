@@ -391,7 +391,7 @@ class PsfOverlap(object):
         return pdf.sum()*band.b.pixelArea()
 
 
-    def __call__(self,band,roi_dir,ps_dir,radius_in_rad=None,ragged_edge=0.06
+    def __call__(self,band,roi_dir,ps_dir,radius_in_rad=None,ragged_edge=0.06,
                  override_pdf=None,override_integral=None):
         """Return an array of fractional overlap for a point source at location skydir.
             Note radius arguments are in radians."""
