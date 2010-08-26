@@ -84,6 +84,7 @@ system_config = dict(
     use_gradient = True,
     verbose      = False,
     pulsar_dict  = None,
+    point_source = None,
     )
 
 class AE(object):

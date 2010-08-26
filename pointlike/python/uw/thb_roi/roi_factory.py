@@ -48,6 +48,7 @@ class ROIfactory(pointspec.SpectralAnalysis):
                 pulsar_dict = ae.__dict__.pop('pulsar_dict', None),
                 free_radius = ae.__dict__.pop('free_radius'),
                 prune_radius= ae.__dict__.pop('prune_radius'),
+                point_source= ae.__dict__.pop('point_source', pointspec_helpers.PointSource),
                 quiet = ae.quiet,
                 verbose = ae.verbose,
                 )
