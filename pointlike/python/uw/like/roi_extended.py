@@ -108,7 +108,7 @@ class ROIExtendedModel(ROIDiffuseModel):
     def init(self):
         self.pixelsize = 0.025
         self.npix      = 101
-        self.r_multi   = 1.0 # multiple of r95 to set max dimension of grid
+        self.r_multi   = 2.0 # multiple of r95 to set max dimension of grid
         self.r_max     = 20  # an absolute maximum (half)-size of grid (deg)
 
     def setup(self):
