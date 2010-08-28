@@ -11,3 +11,4 @@
 */
 
  pgwave-01-02-01 22-Feb-2010    jrb correct use of xxLib for libEnv
+ pgwave-01-02-02 28-Aug-2010 jchiang remove ^Ms from DOS-infected files
