@@ -129,7 +129,7 @@ class ROIfactory(pointspec.SpectralAnalysis):
         if max_roi: self.maxROI=max_roi 
         
         # pass on default values for optional args
-        passon_list = ('free_radius', 'prune_radius', 'fit_bg_first', 'use_gradient', 'bgfree')
+        passon_list = ('free_radius', 'prune_radius', 'fit_bg_first', 'use_gradient', 'bgfree', 'bgpars',)
         for x in passon_list:
                 if x not in kwargs: kwargs[x] = self.__dict__[x]
 
@@ -147,16 +147,18 @@ class ROIfactory(pointspec.SpectralAnalysis):
         
         ps_manager = roi_managers.ROIPointSourceManager(ps, skydir,quiet=self.quiet)
         
+        # diffuse sources setup
         diffuse_mapper = lambda x: roi_diffuse.ROIDiffuseModel_OTF(self, x, skydir)
         diffuse_sources = pointspec_helpers.get_default_diffuse( *self.diffuse)
-
         diffuse_models = [diffuse_mapper(ds) for ds in diffuse_sources]
         bg_manager = roi_managers.ROIDiffuseManager(diffuse_models,skydir,quiet=self.quiet)
 
         emin,emax = self.fit_emin, self.fit_emax
+        def iterable_check(x):
+            return x if hasattr(x,'__iter__') else (x,x)
         r = myroi.MyROI(skydir, ps_manager, bg_manager, self, 
                         point_sources = ps,
-                        fit_emin=[emin,emin], fit_emax=[emax,emax],
+                        fit_emin=iterable_check(emin), fit_emax=iterable_check(emax),
                         quiet=self.quiet, **kwargs)
 
         # if a different direction, we need to disable the original, most likely the nearest
