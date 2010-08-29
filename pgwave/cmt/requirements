@@ -1,5 +1,5 @@
 package pgwave
-version v1r2p2
+version v1r2p3
 
 use STpolicy *
 use cfitsio * IExternal
