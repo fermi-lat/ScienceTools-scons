@@ -385,7 +385,7 @@ class PsfOverlap(object):
         roi_rad  = radius_in_rad or band.radius_in_rad
         if self.cache_hash != hash(band): self.set_dir_cache(band,roi_dir,roi_rad) # fragile due to radius dep.
         if override_pdf is None:
-            band.cpsf.wsdl_val(self.cache_diffs,ps_dir,self.cache_wsdl)
+            band.psf.cpsf.wsdl_val(self.cache_diffs,ps_dir,self.cache_wsdl)
         else:
             difference = N.empty(len(self.cache_wsdl))
             PythonUtilities.arclength(difference,self.cache_wsdl,roi_dir)
