@@ -431,8 +431,8 @@ class PsfOverlap(object):
 
         if ((band.b.pixelArea()**0.5/band.radius_in_rad) > ragged_edge) and (band.b.nside() < 200):
             n_overlap = self.num_overlap(band,roi_dir,ps_dir,roi_rad,override_pdf)
-            print overlap,n_overlap
-            print 'Using numerical overlap, difference is %.6f'%(n_overlap-overlap)
+            #print overlap,n_overlap
+            #print 'Using numerical overlap, difference is %.6f'%(n_overlap-overlap)
             return n_overlap
 
         return overlap
