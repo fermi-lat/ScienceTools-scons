@@ -291,15 +291,17 @@ if baseEnv.GetOption('sourceRelease'):
     #if baseEnv['PLATFORM'] != 'win32':
     if sys.platform != 'win32':
         baseEnv['TARFLAGS']+=' -z'
-        for exclude in (baseEnv['BINDIR'].path, baseEnv['SCRIPTDIR'].path, baseEnv['INCDIR'].path, baseEnv['PFILESDIR'].path, baseEnv['JODIR'].path,
-                        baseEnv['DATADIR'].path, baseEnv['XMLDIR'].path, baseEnv['TOOLDIR'].path, baseEnv['TESTDIR'].path,
-                        baseEnv['TESTSCRIPTDIR'].path, baseEnv['PYTHONDIR'].path, baseEnv['LIBDIR'].path, 'build'):
+        for exclude in (baseEnv['BINDIR'].path, baseEnv['SCRIPTDIR'].path,
+                        baseEnv['TOOLDIR'].path, baseEnv['TESTDIR'].path,
+                        baseEnv['TESTSCRIPTDIR'].path,
+                        baseEnv['LIBDIR'].path, 'build','"*.tar.gz"'):
             baseEnv['TARFLAGS']+='--exclude '+exclude
         baseEnv.Default(baseEnv.Tar(baseEnv.GetOption('sourceRelease'), glob.glob('*')))
     else:
-        for exclude in (baseEnv['BINDIR'].path, baseEnv['SCRIPTDIR'].path, baseEnv['INCDIR'].path, baseEnv['PFILESDIR'].path, baseEnv['JODIR'].path,
-                                                baseEnv['DATADIR'].path, baseEnv['XMLDIR'].path, baseEnv['TOOLDIR'].path, baseEnv['TESTDIR'].path,
-                        baseEnv['TESTSCRIPTDIR'].path, baseEnv['PYTHONDIR'].path, baseEnv['LIBDIR'].path, 'build'):
+        for exclude in (baseEnv['BINDIR'].path, baseEnv['SCRIPTDIR'].path,
+                        baseEnv['TOOLDIR'].path, baseEnv['TESTDIR'].path,
+                        baseEnv['TESTSCRIPTDIR'].path, baseEnv['LIBDIR'].path,
+                        'build', '"*.zip"'):
             baseEnv['ZIPFLAGS']+='-x '+exclude
         baseEnv.Default(baseEnv.Zip(baseEnv.GetOption('sourceRelease'), glob.glob('*')))
     Return()
