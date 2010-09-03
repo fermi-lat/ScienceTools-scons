@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+ facilities-02-19-07 03-Sep-2010    jrb set env variables properly in case package directory has suffix
  facilities-02-19-06 25-Jun-2010    jrb let pathFound( ) always return true on Windows since existence test fails when it shouldn't
  facilities-02-19-05 12-Jun-2010    jrb bug fix in commonUtilities::setupEnvironment
  facilities-02-19-04 11-Jun-2010    jrb Make ParticleTable.txt accessible to SCons builds of GR
