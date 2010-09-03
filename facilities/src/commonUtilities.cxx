@@ -221,12 +221,25 @@ namespace facilities {
     while(!packages.eof()){
       std::string package, packageUpper;
       packages>>std::ws>>package>>std::ws;
-      packageUpper = package;
+      // 'package' may be of form myPkg-xx-yy-zz, in which case
+      // must strip off suffix
+      std::string nameOnly = package;
+      // If there is a suffix it will be 9 characters long
+      int dashPos = package.size() - 9;
+      if (dashPos > 0) {
+        if (package[dashPos] == '-') {
+          if (std::string("0123456789").find(package[dashPos + 1])
+              != std::string::npos) {
+            nameOnly = std::string(package, 0, dashPos);
+          }
+        }
+      }
+      packageUpper = nameOnly;
       transform(packageUpper.begin(), packageUpper.end(), packageUpper.begin(), (int(*)(int)) toupper);
-      setEnvironment(packageUpper+"XMLPATH", getXmlPath(package));
-      setEnvironment(packageUpper+"DATAPATH", getDataPath(package));
+      setEnvironment(packageUpper+"XMLPATH", getXmlPath(nameOnly));
+      setEnvironment(packageUpper+"DATAPATH", getDataPath(nameOnly));
 #ifdef GlastRelease
-      setEnvironment(packageUpper+"JOBOPTIONSPATH",getJobOptionsPath(package));
+      setEnvironment(packageUpper+"JOBOPTIONSPATH",getJobOptionsPath(nameOnly));
 #endif
     }
 
