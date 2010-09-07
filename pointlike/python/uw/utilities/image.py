@@ -402,7 +402,6 @@ class AIT(object):
 
     def skydir(self, x, y):
         " from pixel coordinates to sky "
-        from pointlike import SkyDir
         xpixel = (180-x)*float(self.nx)/360.
         ypixel = (y+90)*float(self.ny)/180.
         if self.proj.testpix2sph(xpixel,ypixel) !=0: return None #outside valid region
