@@ -536,7 +536,6 @@ def parse_diffuse_sources(handler,diffdir=None):
                 mo = xtm.get_model(spectral)
             elif spectral['type'] == 'PowerLaw':
                 mo = xtm.get_model(spectral,index_offset=1)
-                print mo.index_offset
             else:
                 raise Exception,'Non-isotropic model not implemented'
             ds.append(gds('MapCubeFunction',fname,mo,None,name,diffdir=diffdir))
