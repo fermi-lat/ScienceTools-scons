@@ -243,6 +243,15 @@ namespace facilities {
 #endif
     }
 
+
+#if defined(SCons)
+#ifdef REL_OBFLDPATH
+    std::string obfldPath(REL_OBFLDPATH);
+    setEnvironment("OBFLDPATH", 
+                   joinPath(getEnvironment("GLAST_EXT"), obfldPath));
+#endif
+#endif
+
 #ifndef HEADAS
     setEnvironment("EXTFILESSYS", joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles));
 #endif

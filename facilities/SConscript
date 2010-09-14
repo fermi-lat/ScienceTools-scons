@@ -18,6 +18,14 @@ for package in packages:
     configfile.write(os.path.basename(package))
     configfile.write(' ')
 configfile.write('"\n')
+
+if 'obfLdPath' in libEnv:
+    configfile.write('#define REL_OBFLDPATH "')
+    rpathNode = Dir(str(libEnv['GLASTEXTvalue'])).rel_path(Dir(str(libEnv['obfLdPath'])))
+    configfile.write(str(rpathNode))
+    configfile.write('"\n')
+                 
+
 configfile.close()
 
 libEnv.Tool('addLinkDeps', package = 'facilities',
