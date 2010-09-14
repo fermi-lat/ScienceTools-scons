@@ -253,7 +253,9 @@ namespace facilities {
 #endif
 
 #ifndef HEADAS
+#ifdef extFiles
     setEnvironment("EXTFILESSYS", joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles));
+#endif
 #endif
 #ifdef GlastRelease
   // Define environment variable PARAMFILESROOT used by Gaudi to find
