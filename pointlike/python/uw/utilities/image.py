@@ -471,7 +471,7 @@ class ZEA(object):
         ('pixelsize',0.1,   'size, in degrees, of pixels'), 
         ('galactic', False, 'galactic or equatorial coordinates'), 
         ('fitsfile', '',    'set non-empty to write out as a FITS file'), 
-        ('axes',     None,  'Axes object to use: \n if None, ...'), 
+        ('axes',     None,  'Axes object to use: \nif None, ...'), 
         ('nticks',   5,     'number of tick marks to attempt'), 
         50*'-',
         ('proj',     'ZEA', 'projection name: can change if desired'),
