@@ -32,12 +32,13 @@ class Optimizer {
     
 public:
     
-   Optimizer(Statistic & stat) : m_stat(&stat), m_maxEval(100*m_stat->getNumParams()) {}
+   Optimizer(Statistic & stat) : m_stat(&stat), 
+                                 m_maxEval(100*m_stat->getNumParams()) {}
 
    virtual ~Optimizer() {}
 
-   virtual int find_min(int verbose, double tol, int tolType = ABSOLUTE) = 0;
-   virtual int find_min_only(int verbose, double tol, int tolType = ABSOLUTE) = 0;
+   virtual int find_min(int verbose, double tol, int tolType=ABSOLUTE) = 0;
+   virtual int find_min_only(int verbose, double tol, int tolType=ABSOLUTE) = 0;
 
    /// Returns the one-sigma confidence regions based on the Hessian,
    /// assuming that the statistic is a log-likelihood.
@@ -48,17 +49,19 @@ public:
 
    /// MINOS error analysis for parameter #n.  Valid only for the
    /// two flavors of Minuit.
-   virtual std::pair<double,double> Minos(unsigned int, double) {
-     throw Exception("Minos function is not enabled for this optimizer");
-     return std::pair<double,double>(0., 0.);
+   virtual std::pair<double,double> Minos(unsigned int n, double level=1.) {
+      throw Exception("Minos function is not enabled for this optimizer");
+      return std::pair<double,double>(0., 0.);
    }
 
-   /// MINOS CONTOUR analysis for parameters #par1 et #par2.  Valid only for the
-   /// two flavors of Minuit.
-   virtual void MnContour(unsigned int, unsigned int, 
-			  double, unsigned int) {
-     throw Exception("MnContour function is not enabled for this optimizer");
-     return ;
+   /// MINOS CONTOUR analysis for parameters #par1 et #par2.  Valid
+   /// only for the two flavors of Minuit. Defaults must be set here
+   /// in order for them to be propagated to the subclasses
+   /// polymorphically.
+   virtual void MnContour(unsigned int par1, unsigned int par2, 
+                          double level=1., unsigned int npts=20) {
+      throw Exception("MnContour function is not enabled for this optimizer");
+      return ;
    }
 
    Statistic & stat() {
@@ -70,11 +73,11 @@ public:
    }
 
    void setMaxEval(const int maxEval) {m_maxEval = maxEval;}
-   int  getMaxEval() const {return m_maxEval;}
+   int getMaxEval() const {return m_maxEval;}
    int getRetCode() const {return m_retCode;}
-
+   
    virtual std::ostream& put (std::ostream& s) const = 0;
-
+   
 protected:
 
    Statistic * m_stat;
@@ -85,9 +88,6 @@ protected:
    /// A vector to contain the estimated uncertainties of the free 
    /// parameters.
    std::vector<double> m_uncertainty;
-
-//    /// A matrix to contain the covariance matrix of the free parameters
-//    std::vector<std::vector<double> > m_covariancematrix;
 
    /// @param hess The Hessian matrix for the free parameters.
    /// @param eps The fractional step size used for computing the
@@ -111,15 +111,15 @@ std::ostream& operator<<(std::ostream& s, const Optimizer& t);
 /// Fortran routines
 extern "C" {
   void drmngb_(const double * bounds, double * scale, double * funcval,
-      	 double * grad, int * iv, const int * liv, const int *lv, 
-      	 const int * n, double * v, double *x);
+         double * grad, int * iv, const int * liv, const int *lv, 
+         const int * n, double * v, double *x);
   void drmnfb_(const double * bounds, double * scale, double * funcval,
-      	 int * iv, const int * liv, const int *lv, 
-      	 const int * n, double * v, double *x);
+         int * iv, const int * liv, const int *lv, 
+         const int * n, double * v, double *x);
   void divset_(const int * kind, int * iv, const int * liv, const int * lv, 
-      	double * v);
+        double * v);
   int dpptri_(const char * uplo, const int * n, double * array,
-      	 int * info, int strlen);
+         int * info, int strlen);
 }
 
 } // namespace optimizers

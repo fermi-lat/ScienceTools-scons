@@ -66,10 +66,10 @@ public:
         m_free(isFree), m_scale(1.), m_error(0), m_alwaysFixed(false),
         m_par_ref(0) {}
 
-   ~Parameter() throw() {}
+   virtual ~Parameter() throw() {}
 
    /// name access
-   void setName(const std::string & paramName) {
+   virtual void setName(const std::string & paramName) {
       m_name = paramName;
       if (m_par_ref) {
          m_par_ref->setName(paramName);
@@ -81,14 +81,14 @@ public:
    }
    
    /// value access
-   void setValue(double value);
+   virtual void setValue(double value);
 
    double getValue() const {
       return m_value;
    }
    
    /// scale access
-   void setScale(double scale) {
+   virtual void setScale(double scale) {
       m_scale = scale;
       if (m_par_ref) {
          m_par_ref->setScale(scale);
@@ -99,20 +99,20 @@ public:
    }
 
    /// "true" value access
-   void setTrueValue(double trueValue);
+   virtual void setTrueValue(double trueValue);
    double getTrueValue() const {
       return m_value*m_scale;
    }
 
    /// bounds access
-   void setBounds(double minValue, double maxValue);
-   void setBounds(const std::pair<double, double> &boundValues) {
+   virtual void setBounds(double minValue, double maxValue);
+   virtual void setBounds(const std::pair<double, double> &boundValues) {
       setBounds(boundValues.first, boundValues.second);
    }
    std::pair<double, double> getBounds() const;
 
    /// free flag access
-   void setFree(bool free) {
+   virtual void setFree(bool free) {
       if (m_alwaysFixed) {
          m_free = false;
       } else {
@@ -126,7 +126,7 @@ public:
       return m_free;
    }
 
-   void setAlwaysFixed(bool flag) {
+   virtual void setAlwaysFixed(bool flag) {
       m_alwaysFixed = flag;
       if (m_par_ref) {
          m_par_ref->setAlwaysFixed(flag);
@@ -137,7 +137,7 @@ public:
    }
 
    /// error access
-   void setError(double error) {
+   virtual void setError(double error) {
       m_error = error;
       if (m_par_ref) {
          m_par_ref->setError(error);
@@ -169,7 +169,7 @@ public:
       m_alwaysFixed = par->m_alwaysFixed;
    }
 
-private:
+protected:
 
    std::string m_name;
    double m_value;
