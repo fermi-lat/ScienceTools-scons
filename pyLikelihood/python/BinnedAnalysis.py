@@ -114,7 +114,7 @@ class BinnedAnalysis(AnalysisBase):
                           'Source model file: ' + str(self.srcModel),
                           'Optimizer: ' + str(self.optimizer)))
     def _srcCnts(self, srcName):
-        srcMap = self.logLike.sourceMap(srcName)
+        srcMap = self.logLike.getSourceMap(srcName, False)
         npreds = srcMap.npreds()
         src = self.logLike.getSource(srcName)
         cnts = []
