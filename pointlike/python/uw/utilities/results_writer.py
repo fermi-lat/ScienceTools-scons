@@ -79,3 +79,6 @@ def writeResults(roi,filename,**kwargs):
     file=open(filename,'w')
     file.write(pformat(source_dict))
     file.close()
+
+    if not roi.quiet:
+        print "\nDone Saving ROI to results file %s" % filename
