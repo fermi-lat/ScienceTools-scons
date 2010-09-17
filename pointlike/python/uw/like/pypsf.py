@@ -12,7 +12,7 @@ import numpy as N
 from os.path import join
 import os
 from cPickle import load
-from skymaps import ExposureWeighter,SkyDir,PySkyFunction,Hep3Vector,WeightedSkyDirList,PythonUtilities
+from skymaps import ExposureWeighter,SkyDir,PySkyFunction,Hep3Vector,WeightedSkyDirList,PythonUtilities,svd
 from scipy.integrate import quad,simps
 from math import cos,sin
 
@@ -471,7 +471,8 @@ class PsfOverlapHealpix(object):
 
             wsdl = WeightedSkyDirList(band.b,nside,index,True)
             from pointlike import DoubleVector
-            dv = DoubleVector()
+            #dv = DoubleVector()
+            dv = svd()
             wsdl.arclength(ps_dir,dv)
             diffs = N.fromiter(dv,dtype=float)
             vals = band.psf(diffs,density=True)
