@@ -7,6 +7,7 @@
 #ifndef tip_FitsImage_h
 #define tip_FitsImage_h
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
@@ -179,7 +180,8 @@ namespace tip {
   inline void FitsTypedImage<T>::setImageDimensions(const ImageBase::PixelCoordinate & dims) {
     // Make C primitive copy of array to pass to Cfitsio.
     ImageBase::PixelCoordinate::size_type naxis = dims.size();
-    ImageBase::PixelCoordinate naxes(dims.begin(), dims.end());
+    PixOrd_t * naxes = new PixOrd_t[dims.size()];
+    for (std::size_t ii = 0; ii != dims.size(); ++ii) naxes[ii] = dims[ii];
 
     int status = 0;
     int bitpix = 0;
@@ -189,7 +191,9 @@ namespace tip {
     if (0 != status) throw TipException(status, formatWhat("setImageDimensions cannot determine image type"));
 
     // Resize the image.
-    fits_resize_img(m_header.getFp(), bitpix, naxis, &*naxes.begin(), &status);
+    fits_resize_img(m_header.getFp(), bitpix, naxis, naxes, &status);
+    delete [] naxes;
+
     if (0 != status) throw TipException(status, formatWhat("setImageDimensions cannot change image dimensions"));
 
     // Save the dimensions in the dimension member.
@@ -200,15 +204,17 @@ namespace tip {
   T FitsTypedImage<T>::get(const ImageBase::PixelCoordinate & coord) const {
     int status = 0;
     // Make a copy of coordinates for cfitsio to use.
-    ImageBase::PixelCoordinate cf_coord(coord.size());
+    PixOrd_t * cf_coord = new PixOrd_t[coord.size()];
 
     // Cfitsio starts numbering at 1 not 0.
-    for (ImageBase::PixelCoordinate::size_type index = 0; index != cf_coord.size(); ++index) cf_coord[index] = coord[index] + 1;
+    for (ImageBase::PixelCoordinate::size_type index = 0; index != coord.size(); ++index) cf_coord[index] = coord[index] + 1;
 
     T array[2] = { 0, 0 };
 
     // Read the given pixel:
-    fits_read_pix(m_header.getFp(), FitsPrimProps<T>::dataTypeCode(), &*cf_coord.begin(), 1, 0, array, 0, &status);
+    fits_read_pix(m_header.getFp(), FitsPrimProps<T>::dataTypeCode(), cf_coord, 1, 0, array, 0, &status);
+    delete [] cf_coord;
+
     if (0 != status) throw TipException(status, formatWhat("get(coordinate) could not read pixel"));
 
     return array[0];
@@ -219,16 +225,18 @@ namespace tip {
     if (m_header.readOnly()) throw TipException(formatWhat("set(coordinate, pixel) called for read-only image"));
     int status = 0;
     // Make a copy of coordinates for cfitsio to use.
-    ImageBase::PixelCoordinate cf_coord(coord.size());
+    PixOrd_t * cf_coord = new PixOrd_t[coord.size()];
 
     // Cfitsio starts numbering at 1 not 0.
-    for (ImageBase::PixelCoordinate::size_type index = 0; index != cf_coord.size(); ++index) cf_coord[index] = coord[index] + 1;
+    for (ImageBase::PixelCoordinate::size_type index = 0; index != coord.size(); ++index) cf_coord[index] = coord[index] + 1;
 
     // Copy pixel into temporary array:
     T array[2] = { pixel, 0 };
 
     // Write the copy to the output file:
-    fits_write_pix(m_header.getFp(), FitsPrimProps<T>::dataTypeCode(), &*cf_coord.begin(), 1, array, &status);
+    fits_write_pix(m_header.getFp(), FitsPrimProps<T>::dataTypeCode(), cf_coord, 1, array, &status);
+    delete [] cf_coord;
+
     if (0 != status) throw TipException(status, formatWhat("set(coordinate, pixel) could not write a pixel"));
   }
 
@@ -236,15 +244,17 @@ namespace tip {
   inline void FitsTypedImage<T>::getPixel(const ImageBase::PixelCoordinate & coord, double & pixel) const {
     int status = 0;
     // Make a copy of coordinates for cfitsio to use.
-    ImageBase::PixelCoordinate cf_coord(coord.size());
+    PixOrd_t * cf_coord = new PixOrd_t[coord.size()];
 
     // Cfitsio starts numbering at 1 not 0.
-    for (ImageBase::PixelCoordinate::size_type index = 0; index != cf_coord.size(); ++index) cf_coord[index] = coord[index] + 1;
+    for (ImageBase::PixelCoordinate::size_type index = 0; index != coord.size(); ++index) cf_coord[index] = coord[index] + 1;
 
     double array[2] = { 0., 0. };
 
     // Read the given pixel:
-    fits_read_pix(m_header.getFp(), TDOUBLE, &*cf_coord.begin(), 1, 0, array, 0, &status);
+    fits_read_pix(m_header.getFp(), TDOUBLE, cf_coord, 1, 0, array, 0, &status);
+    delete [] cf_coord;
+
     if (0 != status) throw TipException(status, formatWhat("getPixel could not read pixel as a double"));
 
     // Copy the value just read:
@@ -256,16 +266,18 @@ namespace tip {
     if (m_header.readOnly()) throw TipException(formatWhat("setPixel called for read-only image"));
     int status = 0;
     // Make a copy of coordinates for cfitsio to use.
-    ImageBase::PixelCoordinate cf_coord(coord.size());
+    PixOrd_t * cf_coord = new PixOrd_t[coord.size()];
 
     // Cfitsio starts numbering at 1 not 0.
-    for (ImageBase::PixelCoordinate::size_type index = 0; index != cf_coord.size(); ++index) cf_coord[index] = coord[index] + 1;
+    for (ImageBase::PixelCoordinate::size_type index = 0; index != coord.size(); ++index) cf_coord[index] = coord[index] + 1;
 
     // Copy pixel into temporary array:
     double array[2] = { pixel, 0. };
 
     // Write the copy to the output file:
-    fits_write_pix(m_header.getFp(), TDOUBLE, &*cf_coord.begin(), 1, array, &status);
+    fits_write_pix(m_header.getFp(), TDOUBLE, cf_coord, 1, array, &status);
+    delete [] cf_coord;
+
     if (0 != status) throw TipException(status, formatWhat("setPixel could not write a double to a pixel"));
   }
 
@@ -287,13 +299,15 @@ namespace tip {
     m_image_dimensions.clear();
 
     // Get naxes:
-    ImageBase::PixelCoordinate naxes(naxis);
-    fits_get_img_size(m_header.getFp(), naxis, &*naxes.begin(), &status);
+    PixOrd_t * naxes(new PixOrd_t[naxis]);
+    fits_get_img_size(m_header.getFp(), naxis, naxes, &status);
     if (0 != status) {
+      delete [] naxes;
       throw TipException(status, formatWhat("Cannot get dimensions of each degree of freedom of image"));
     }
 
-    m_image_dimensions.assign(naxes.begin(), naxes.end());
+    m_image_dimensions.assign(naxes, naxes + naxis);
+    delete [] naxes;
   }
 
   template <typename T>
@@ -316,13 +330,22 @@ namespace tip {
       image_size *= *itor;
 
     // Make sure image is large enough to accomodate the image.
-    image.resize(image_size);
+    T * image_tmp(new T[image_size]);
 
     // Starting coordinate is the first pixel in each dimension.
-    ImageBase::PixelCoordinate coord(m_image_dimensions.size(), 1);
+    PixOrd_t * coord(new PixOrd_t[m_image_dimensions.size()]);
+    for (std::size_t ii = 0; ii != m_image_dimensions.size(); ++ii) coord[ii] = 1;
 
     // Get the image itself.
-    fits_read_pix(m_header.getFp(), FitsPrimProps<T>::dataTypeCode(), &*coord.begin(), image_size, 0, &*image.begin(), 0, &status);
+    fits_read_pix(m_header.getFp(), FitsPrimProps<T>::dataTypeCode(), coord, image_size, 0, image_tmp, 0, &status);
+    if (0 != status) {
+      delete [] coord;
+      delete [] image_tmp;
+      throw TipException(status, formatWhat("Cannot read image of type " + FitsPrimProps<T>::dataTypeCode()));
+    }
+    image.assign(image_tmp, image_tmp + image_size);
+    delete [] coord;
+    delete [] image_tmp;
   }
 
   template <typename T>

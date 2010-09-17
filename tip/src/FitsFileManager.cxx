@@ -5,6 +5,7 @@
     \author James Peachey, HEASARC
 */
 
+#include <cstddef>
 #include <cstdio>
 #include <cstring>
 
@@ -164,8 +165,16 @@ namespace tip {
     const ImageBase::PixelCoordinate & dims) {
     int status = 0;
 
+    // Copy the coordinates to a C-passable form.
+    PixOrd_t * dims_tmp = new PixOrd_t[dims.size()];
+    for (std::size_t ii = 0; ii != dims.size(); ++ii) dims_tmp[ii] = dims[ii];
+
     // Create new image extension at end of file.
-    fits_create_img(fp, FLOAT_IMG, dims.size(), const_cast<PixOrd_t *>(&*dims.begin()), &status);
+    fits_create_img(fp, FLOAT_IMG, dims.size(), dims_tmp, &status);
+
+    // Clean up temporary C array.
+    delete [] dims_tmp;
+
     if (0 != status) {
       closeFile(fp, false, status);
       throw TipException(status, std::string("Unable to create image named \"") + image_name + "\" in file \"" + file_name + "\"");

@@ -6,6 +6,7 @@
 #define tip_FitsColumn_h
 
 #include <cassert>
+#include <cstddef>
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
@@ -180,7 +181,7 @@ namespace tip {
               // to pass to cfitsio.
               std::vector<const char *> buf(src.size());
               for (std::vector<std::string>::size_type idx = 0; idx != src.size(); ++idx) {
-                buf[idx] = &src[idx][0];
+                buf[idx] = src[idx].c_str();
               }
               setVector(record_index, buf);
               break;
@@ -422,12 +423,20 @@ namespace tip {
         if (m_scalar) throw TipException("FitsColumn::getVector was called but field is not a vector");
         int status = 0;
         Index_t num_els = getNumElements(record_index);
-        dest.resize(num_els);
-        U * dest_begin = &dest.front();
+
+        U * dest_tmp(new U[num_els]);
+
         int any_null = 0;
         fits_read_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
-          &FitsPrimProps<U>::undefined(), dest_begin, &any_null, &status);
-        if (0 != status) throw TipException(status, "FitsColumn::getVector failed to read vector cell value");
+          &FitsPrimProps<U>::undefined(), dest_tmp, &any_null, &status);
+
+        if (0 != status) {
+          delete [] dest_tmp;
+          throw TipException(status, "FitsColumn::getVector failed to read vector cell value");
+        }
+        dest.assign(dest_tmp, dest_tmp + num_els);
+        delete [] dest_tmp;
+
       }
 
       template <typename U>
@@ -457,9 +466,12 @@ namespace tip {
           throw TipException(os.str());
         }
 
-        const U * src_begin = &src.front();
+        U * src_tmp(new U[src.size()]);
+        for (std::size_t ii = 0; ii != src.size(); ++ii) src_tmp[ii] = src[ii];
+
         fits_write_colnull(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
-          const_cast<void *>(static_cast<const void *>(src_begin)), &FitsPrimProps<U>::undefined(), &status);
+          src_tmp, &FitsPrimProps<U>::undefined(), &status);
+        delete [] src_tmp;
         if (0 != status) throw TipException(status, "FitsColumn::setVector failed to write vector cell value");
       }
 
