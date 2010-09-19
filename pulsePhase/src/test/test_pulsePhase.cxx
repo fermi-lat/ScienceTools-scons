@@ -389,7 +389,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["scfile"] = sc_file;
       pars["psrname"] = "PSR B0540-69";
       pars["ephstyle"] = "FREQ";
-      pars["psrdbfile"] = master_pulsardb;
+      pars["psrdbfile"] = "NONE";
       pars["tcorrect"] = "BARY";
       pars["ra"] = 85.0482;
       pars["dec"] = -69.3319;
@@ -423,7 +423,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["scfile"] = sc_file;
       pars["psrname"] = "PSR J1959+2048";
       pars["ephstyle"] = "FREQ";
-      pars["psrdbfile"] = master_pulsardb;
+      pars["psrdbfile"] = master_pulsardb; // Needed for binary demodulation.
       pars["ra"] = 85.0482;
       pars["dec"] = -69.3319;
       pars["ephepoch"] = 212380785.922;
