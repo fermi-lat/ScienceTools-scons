@@ -4,7 +4,7 @@ THe UW system for performing spectral analysis
 at this top level define a simple "factory" function giving a simple user access to the system
 
 $Header$
-Authors:  T. Burnett, M. Kerr, E. Wallace, M. Roth
+Authors:  T. Burnett, M. Kerr, E. Wallace, M. Roth, J. Lande
 """
 
 def factory(**kwargs):
