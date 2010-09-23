@@ -335,6 +335,10 @@ Optional keyword arguments:
         self.p[0] += gamma * N.log10(self.e0/e0p)
         self.e0 = e0p
         
+    def pivot_energy(self):
+        """ default to indicate no such """
+        return None 
+        
 
 #===============================================================================================#
 
