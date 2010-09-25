@@ -321,7 +321,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
   // Prepare files to be used in the tests.
   std::string ev_file = prependDataPath("my_pulsar_events_v3r1.fits");
   std::string sc_file = prependDataPath("my_pulsar_spacecraft_data_v3r1.fits");
-  std::string master_pulsardb = prependDataPath("master_pulsardb_v2.fits");
+  std::string test_pulsardb = prependDataPath("testpsrdb_ephcomp.fits");
   std::string ev_file_2gti = prependDataPath("my_pulsar_events_2gti.fits");
 
   // Loop over parameter sets.
@@ -377,7 +377,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["scfile"] = sc_file;
       pars["psrname"] = "PSR B0540-69";
       pars["ephstyle"] = "DB";
-      pars["psrdbfile"] = master_pulsardb;
+      pars["psrdbfile"] = test_pulsardb;
       pars["matchsolareph"] = "NONE";
       log_file.erase();
       log_file_ref.erase();
@@ -411,7 +411,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["scfile"] = sc_file;
       pars["psrname"] = "PSR J1959+2048";
       pars["ephstyle"] = "DB";
-      pars["psrdbfile"] = master_pulsardb;
+      pars["psrdbfile"] = test_pulsardb;
       pars["matchsolareph"] = "NONE";
       log_file.erase();
       log_file_ref.erase();
@@ -423,7 +423,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["scfile"] = sc_file;
       pars["psrname"] = "PSR J1959+2048";
       pars["ephstyle"] = "FREQ";
-      pars["psrdbfile"] = master_pulsardb; // Needed for binary demodulation.
+      pars["psrdbfile"] = test_pulsardb; // Needed for binary demodulation.
       pars["ra"] = 85.0482;
       pars["dec"] = -69.3319;
       pars["ephepoch"] = 212380785.922;
@@ -563,7 +563,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["scfile"] = sc_file;
       pars["psrname"] = "No Such Pulsar";
       pars["ephstyle"] = "DB";
-      pars["psrdbfile"] = master_pulsardb;
+      pars["psrdbfile"] = test_pulsardb;
       pars["matchsolareph"] = "NONE";
 
       remove(log_file_ref.c_str());
@@ -583,7 +583,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["scfile"] = sc_file;
       pars["psrname"] = "PSR B0540-69";
       pars["ephstyle"] = "DB";
-      pars["psrdbfile"] = master_pulsardb;
+      pars["psrdbfile"] = test_pulsardb;
       pars["solareph"] = "JPL DE405";
       pars["matchsolareph"] = "ALL";
 
@@ -629,7 +629,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
   // Prepare files to be used in the tests.
   std::string ev_file = prependDataPath("my_pulsar_events_v3r1.fits");
   std::string sc_file = prependDataPath("my_pulsar_spacecraft_data_v3r1.fits");
-  std::string master_pulsardb = prependDataPath("master_pulsardb_v2.fits");
+  std::string test_pulsardb = prependDataPath("testpsrdb_ephcomp.fits");
   std::string ev_file_2gti = prependDataPath("my_pulsar_events_2gti.fits");
 
   // Loop over parameter sets.
@@ -672,7 +672,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
       pars["psrname"] = "PSR J1834-0010";
-      pars["psrdbfile"] = master_pulsardb;
+      pars["psrdbfile"] = test_pulsardb;
       pars["ra"] = 85.0482; // Note: Need to use those wrong RA & Dec to match the reference output.
       pars["dec"] = -69.3319;
       pars["matchsolareph"] = "NONE";
@@ -772,7 +772,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
       pars["psrname"] = "No Such Pulsar";
-      pars["psrdbfile"] = master_pulsardb;
+      pars["psrdbfile"] = test_pulsardb;
       pars["ra"] = 278.571942;
       pars["dec"] = -0.180347;
       pars["matchsolareph"] = "NONE";
@@ -793,7 +793,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
       pars["psrname"] = "PSR J1834-0010";
-      pars["psrdbfile"] = master_pulsardb;
+      pars["psrdbfile"] = test_pulsardb;
       pars["ra"] = 278.571942;
       pars["dec"] = -0.180347;
       pars["solareph"] = "JPL DE405";
