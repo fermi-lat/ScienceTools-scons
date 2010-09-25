@@ -547,7 +547,7 @@ def parse_diffuse_sources(handler,diffdir=None):
 
                 spatial_model=xtsm.get_spatial_model(spatial)
                 spectral_model=xtm.get_model(spectral)
-                ds.append(ExtendedSource(name=name,
+                ds.append(ExtendedSource(name=str(name),
                                          model=spectral_model,
                                          spatial_model=spatial_model,
                                          leave_parameters=True))
