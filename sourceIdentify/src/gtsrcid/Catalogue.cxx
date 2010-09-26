@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.51  2010/04/16 21:53:16  jurgen
+Fully implement HEALPix counterpart density maps
+
 Revision 1.50  2010/04/16 16:16:19  jurgen
 Implement HEALPix interface to read counterpart density maps
 
@@ -647,9 +650,9 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
 
         // Search for LAT catalogue names (95%)
         col_e_maj    = find(qtyNames, "Conf_95_SemiMajor");
-        col_e_min    = find(qtyNames, "Conf_95_SemiMajor");
-        col_e_posang = find(qtyNames, "Conf_95_SemiMajor");
-        if ((col_e_maj.length() > 0) && (col_e_min.length() > 0) && 
+        col_e_min    = find(qtyNames, "Conf_95_SemiMinor");
+        col_e_posang = find(qtyNames, "Conf_95_PosAng");
+        if ((col_e_maj.length() > 0) && (col_e_min.length() > 0) &&
             (col_e_posang.length() > 0)) {
           in->col_e_maj    = col_e_maj;
           in->col_e_min    = col_e_min;
@@ -662,9 +665,9 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
 
         // Search for LAT catalogue names (68%)
         col_e_maj    = find(qtyNames, "Conf_68_SemiMajor");
-        col_e_min    = find(qtyNames, "Conf_68_SemiMajor");
-        col_e_posang = find(qtyNames, "Conf_68_SemiMajor");
-        if ((col_e_maj.length() > 0) && (col_e_min.length() > 0) && 
+        col_e_min    = find(qtyNames, "Conf_68_SemiMinor");
+        col_e_posang = find(qtyNames, "Conf_68_PosAng");
+        if ((col_e_maj.length() > 0) && (col_e_min.length() > 0) &&
             (col_e_posang.length() > 0)) {
           in->col_e_maj    = col_e_maj;
           in->col_e_min    = col_e_min;
@@ -679,7 +682,7 @@ Status get_pos_error_info(Parameters *par, InCatalogue *in,
         col_e_maj    = find(qtyNames, OUTCAT_COL_MAJERR_NAME);
         col_e_min    = find(qtyNames, OUTCAT_COL_MINERR_NAME);
         col_e_posang = find(qtyNames, OUTCAT_COL_POSANGLE_NAME);
-        if ((col_e_maj.length() > 0) && (col_e_min.length() > 0) && 
+        if ((col_e_maj.length() > 0) && (col_e_min.length() > 0) &&
             (col_e_posang.length() > 0)) {
           in->col_e_maj    = col_e_maj;
           in->col_e_min    = col_e_min;

@@ -169,9 +169,13 @@ def set_pars(module, chatter=False):
 	       'debug': "no", \
 	       'mode': "ql"}
 	
-	# Extract catalogue name (mandatory parameter)
+	# Extract catalogue name (mandatory parameter). Prepend only path if catalogue
+	# name does not exist as a file.
 	if hasattr(module, 'catname'):
-		par['cptCatName'] = get_cat_path() + '/' + module.catname
+		catname = module.catname
+		if not os.path.isfile(catname):
+			catname = get_cat_path() + '/' + module.catname
+		par['cptCatName'] = catname
 	else:
 		print "ERROR: no 'catname' specified."
 		sys.exit(0)
