@@ -4,7 +4,6 @@
 
 @verbatim
  * EOH *
-
 26-Sep-2010  v2r3p0  JK  Correctly read error ellipse
  1-Dec-2009  v2r2p3  JK  Correct floating point exception on 64Bit machines
                          Correctly implement FoM for 1FGL
