@@ -62,7 +62,7 @@ class ROIAnalysis(object):
         self.psm.cache(self.bands)
         #self.psm.update_counts(self.bands)
 
-        self.logl = self.prev_logl = self.logLikelihood(self.get_parameters()) # make sure everything initialized
+        self.logl = -self.logLikelihood(self.get_parameters()) # make sure everything initialized
 
     def __setup_bands__(self):
 
