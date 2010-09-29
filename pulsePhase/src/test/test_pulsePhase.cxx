@@ -445,6 +445,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       std::ofstream ofs_summary(summary_file.c_str());
       ofs_summary << prependDataPath("psrdb_spin1.txt") << std::endl;
       ofs_summary << prependDataPath("psrdb_remark.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_glitch.txt") << std::endl;
       ofs_summary.close();
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
@@ -464,6 +465,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       std::ofstream ofs_summary(summary_file.c_str());
       ofs_summary << prependDataPath("psrdb_spin1.txt") << std::endl;
       ofs_summary << prependDataPath("psrdb_remark.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_glitch.txt") << std::endl;
       ofs_summary.close();
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
@@ -688,6 +690,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       ofs_summary << prependDataPath("psrdb_spin1.txt") << std::endl;
       ofs_summary << prependDataPath("psrdb_binary.txt") << std::endl;
       ofs_summary << prependDataPath("psrdb_remark.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_glitch.txt") << std::endl;
       ofs_summary.close();
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
@@ -709,6 +712,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       ofs_summary << prependDataPath("psrdb_spin1.txt") << std::endl;
       ofs_summary << prependDataPath("psrdb_binary.txt") << std::endl;
       ofs_summary << prependDataPath("psrdb_remark.txt") << std::endl;
+      ofs_summary << prependDataPath("psrdb_glitch.txt") << std::endl;
       ofs_summary.close();
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file;
