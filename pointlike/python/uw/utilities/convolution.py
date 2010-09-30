@@ -333,7 +333,7 @@ class AnalyticConvolution(object):
         the intgral includes at term which is the PDF, the integral
         will presumably contribute very littel further away then this.
         """
-        int_max = 0.5*(self.spatial_model.effective_edge(energy)/s)**2
+        int_max = 0.5*(N.radians(self.spatial_model.effective_edge(energy))/s)**2
 
         # u value corresponding to the given r.
         ulist=0.5*(self.rlist/s)**2
