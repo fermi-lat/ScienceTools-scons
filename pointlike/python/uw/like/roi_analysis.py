@@ -451,7 +451,7 @@ class ROIAnalysis(object):
             bandfits  -- if True, use a band-by-band (model independent) spectral fit; otherwise, use broadband fit
             seedpos    -- if set, use this position instead of the source position
 
-            return fit position
+            return fit position, number of iterations, distance moved, delta TS
         """
         manager,index=self.mapper(which)
 

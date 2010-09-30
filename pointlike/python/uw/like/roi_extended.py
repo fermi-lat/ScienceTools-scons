@@ -409,7 +409,11 @@ Arguments:
         roi.quiet = old_quiet
 
         # return log likelihood from fitting extension.
-        return -fval
+        final_dir=sm.get_parameters()
+        final_dir=SkyDir(final_dir[0],final_dir[1],cs)
+        delt = final_dir.difference(init_dir)*180/N.pi
+        return final_dir,0, delt,-2*(ll_0+fval)
+
 
     def modify_loc(self,bands,center):
         self.extended_source.spatial_model.modify_loc(center)
@@ -504,12 +508,13 @@ class ROIExtendedModelAnalytic(ROIExtendedModel):
             if verbose: print 'Changing to fitpsf for localization step.'
             self.fitpsf,old_fitpsf=True,self.fitpsf
 
-        super(ROIExtendedModelAnalytic,self).localize(*args,**kwargs)
+        stuff = super(ROIExtendedModelAnalytic,self).localize(*args,**kwargs)
 
         if fitpsf:
             if verbose: print 'Setting back to original PDF accuracy.'
             self.fitpsf=old_fitpsf
             self.initialize_counts(roi.bands)
+        return stuff
 
 class BandFitter(object):
     """ This class has a somewhat weird purpose. Basically the PSF is
