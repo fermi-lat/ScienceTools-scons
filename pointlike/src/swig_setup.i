@@ -1,5 +1,6 @@
 %module(docstring="Interface to pointlike") pointlike
 // $Header$
+#define PySwigIterator pointlike_PySwigIterator
 %{
 #include <stdexcept>
 #include <vector>
