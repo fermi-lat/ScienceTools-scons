@@ -251,7 +251,7 @@ class ROIEnergyBand(object):
             self.ts = 0
         else:
             null_ll = sum( (b.bandLikelihood([0],which) for b in self.bands) )
-            alt_ll  = sum( (b.bandLikelihood([b.expected(self.m)],which) for b in self.bands) )
+            alt_ll  = sum( (b.bandLikelihood([b.expected(self.m)*b.er[which]],which) for b in self.bands) )
             self.ts = 2*(null_ll - alt_ll)
             
         return self.ts
