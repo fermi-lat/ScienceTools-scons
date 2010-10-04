@@ -11,6 +11,7 @@ int main(int argn, char** argc) {
  
   if (argn != 4) {
     std::cerr << "Usage: MakeEventClass.exe <xmlFile> <inputFile> <outputFile>" << std::endl;
+    return 1;
   }
 
   std::string xmlFile(argc[1]);
