@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ fitsGen-06-01-02 04-Oct-2010 jchiang use TEventList (and TTree::Draw) to avoid temporary root file when filtering input data
  fitsGen-06-01-01 30-Jul-2010 jchiang bug-fix for test program
  fitsGen-06-01-00 30-Jul-2010 jchiang apply filter to data read in by XmlClassifier to speed up implementation
  fitsGen-06-00-01 21-Jul-2010 jchiang change test app name so that it runs in RM[II]
