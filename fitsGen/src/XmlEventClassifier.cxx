@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <utility>
 
+#include <TEventList.h>
 #include <TFile.h>
 #include <TTree.h>
 
@@ -28,8 +29,7 @@ namespace fitsGen {
 XmlEventClassifier::XmlEventClassifier(const std::string & xmlFile, 
                                        const std::string & meritFile,
                                        const std::string & filter,
-                                       const std::string & evtClassMap,
-                                       const std::string & tempfile)
+                                       const std::string & evtClassMap)
    : EventClassifier(),
      m_evtClass(evtUtils::EventClass::loadFromXml(xmlFile.c_str())),
      m_meritFile(TFile::Open(meritFile.c_str())) {
@@ -42,10 +42,7 @@ XmlEventClassifier::XmlEventClassifier(const std::string & xmlFile,
       throw std::runtime_error("Failed to load " + meritFile);
    }
 
-//   TTree * meritTree = dynamic_cast<TTree *>(m_meritFile->Get("MeritTuple"));
-   TTree * fullTree = dynamic_cast<TTree *>(m_meritFile->Get("MeritTuple"));
-   TFile * dummyFile = new TFile(tempfile.c_str(), "recreate");
-   TTree * meritTree = fullTree->CopyTree(filter.c_str());
+   TTree * meritTree = dynamic_cast<TTree *>(m_meritFile->Get("MeritTuple"));
 
    if (!m_evtClass->initializeShortCuts(*meritTree)) {
       throw std::runtime_error("error initializing cuts");
@@ -59,16 +56,21 @@ XmlEventClassifier::XmlEventClassifier(const std::string & xmlFile,
 
    UInt_t * photonMap = m_evtClass->getShortMapPtr(evtClassMap);
    if (photonMap == 0) {
-      std::remove(tempfile.c_str());
       throw std::runtime_error("ShortMapPtr to " + evtClassMap + " not found.");
    }
 
-   Long64_t nevents = meritTree->GetEntries();
+// Use draw method to get a TEventList
+   int first(0);
+   int nmax(INT_MAX);
+   meritTree->Draw(">>my_event_list", filter.c_str(), "", nmax, first);
+   TEventList * eventList = (TEventList *)gDirectory->Get("my_event_list");
+
+   Long64_t nevents = eventList->GetN();
 //   std::cout << "number of events: " << nevents << std::endl;
-   for (Long64_t ievt(0); ievt < nevents; ievt++) {
+   for (Long64_t j(0); j < nevents; j++) {
+      Long64_t ievt = eventList->GetEntry(j);
       meritTree->LoadTree(ievt);
       if (!m_evtClass->fillShortCutMaps()) {
-         std::remove(tempfile.c_str());
          throw std::runtime_error("error evaluating cuts");
       }
       meritTree->GetEvent(ievt);
@@ -76,10 +78,7 @@ XmlEventClassifier::XmlEventClassifier(const std::string & xmlFile,
       unsigned int event_id = static_cast<unsigned int>(EvtEventId);
       m_bitMaps[std::make_pair(run, event_id)] = *photonMap;
    }
-   delete fullTree;
    delete meritTree;
-   delete dummyFile;
-   std::remove(tempfile.c_str());
 }
 
 XmlEventClassifier::~XmlEventClassifier() throw() {
