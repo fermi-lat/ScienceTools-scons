@@ -145,6 +145,16 @@ namespace evtUtils {
     return itrFind->second->getFullMapPtr();
   }
 
+
+  void EventClass::StripLineBreaks(std::string& fromString) {
+    size_t find = fromString.find('\n');
+    while ( find != fromString.npos ) {
+      fromString.replace(find,1," ");
+      find = fromString.find('\n');
+    }
+  }
+
+
 #ifndef USE_ROOT_XML
 
   EventClass* EventClass::loadFromXml(const std::string& fileName) {
@@ -208,13 +218,15 @@ namespace evtUtils {
 	  delete evtClass;
 	  return 0;        		
 	}
-	std::string shortCut = xmlBase::Dom::getTextContent(elemShortCut);      
+	std::string shortCut = xmlBase::Dom::getTextContent(elemShortCut);  
+	StripLineBreaks(shortCut);
 	std::string fullCut;
 	std::string comment;
 	DOMElement* elemFullCut = xmlBase::Dom::findFirstChildByName(elemCat,FullCut); 
 	DOMElement* elemComment = xmlBase::Dom::findFirstChildByName(elemCat,Comment); 
 	if ( elemFullCut ) {
 	  fullCut = xmlBase::Dom::getTextContent(elemFullCut); 
+	  StripLineBreaks(fullCut);
 	}
 	if ( elemComment ) {
 	  comment = xmlBase::Dom::getTextContent(elemComment); 

@@ -38,6 +38,8 @@ namespace evtUtils {
     static bool writeToHtml(EventClass& evtClass, 
 			    std::ostream& os);
 
+    static void StripLineBreaks(std::string& fromString);
+
   public:
     
     EventClass()
