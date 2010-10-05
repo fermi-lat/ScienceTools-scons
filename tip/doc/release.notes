@@ -5,6 +5,7 @@
 @verbatim
  * EOH *
 
+ tip-02-15-10 05-Oct-2010 jpeachey Correct portability problem with NaN.
  tip-02-15-09 17-Sep-2010 jpeachey Correct unportable dereferencing of iterators.
  tip-02-15-08 20-Apr-2010 peachey Add ll to a very large constant to make it palatable to some compilers.
  tip-02-15-07 25-Mar-2010 peachey Address STARCH-15, increase maximum size of TTree to prevent Root from splitting files.
