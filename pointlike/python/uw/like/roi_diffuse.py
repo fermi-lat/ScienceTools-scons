@@ -237,6 +237,8 @@ class ROIDiffuseModel_OTF(ROIDiffuseModel):
                 apterm = phase_factor*(myband.ap_evals * pts[j,:]).sum()
                 if band.has_pixels:
                     pixterm = (band.pix_weights*(myband.pi_evals * pts[j,:]).sum(axis=1)).sum()
+                else:
+                    pixterm = 0
                 gradient[cp] += apterm - pixterm
                 cp += 1
         return gradient
