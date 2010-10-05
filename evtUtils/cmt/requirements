@@ -27,3 +27,4 @@ private
 
 application MakeEventClass ../apps/MakeEventClass.cxx
 application MakeEventClassHtml ../apps/MakeEventClassHtml.cxx
+application MakeEventClassPyDict ../apps/MakeEventClassPyDict.cxx
