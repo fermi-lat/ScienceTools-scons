@@ -409,7 +409,7 @@ Arguments:
         roi.quiet = old_quiet
 
         # return log likelihood from fitting extension.
-        final_dir=sm.center()
+        final_dir=sm.center
         delt = N.degrees(final_dir.difference(init_dir))
         return final_dir,0,delt,-2*(ll_0+fval)
 
