@@ -68,6 +68,8 @@ namespace evtUtils {
     UInt_t* getShortMapPtr() { return &m_shortMap; }
     UInt_t* getFullMapPtr() { return &m_fullMap; }
 
+    void writePythonDict(std::ostream& os, const std::string& indent, bool firstMap = false);
+
   private:
     
     std::string                             m_mapName;   //!

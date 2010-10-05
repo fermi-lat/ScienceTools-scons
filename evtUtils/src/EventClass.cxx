@@ -6,6 +6,7 @@
 
 #include "evtUtils/EventMap.h"
 #include "evtUtils/EventCategory.h"
+#include "evtUtils/AliasDict.h"
 
 #include <TTree.h>
 #include <iostream>
@@ -30,6 +31,7 @@ namespace evtUtils {
       delete itr->second;
       itr->second = 0;
     }  
+    delete m_aliasDict;
   }
   
   EventMap* EventClass::addEventMap(const std::string& mapName, const std::string& altName) {
@@ -41,7 +43,17 @@ namespace evtUtils {
     return evtMap;
   }
   
+  void EventClass::addAlias(const std::string& aliasName, const std::string& aliasVal) {
+    if ( m_aliasDict == 0 ) {
+      m_aliasDict = new AliasDict();
+    }
+    m_aliasDict->addAlias(aliasName,aliasVal);
+  }
+
   bool EventClass::addAliasesToTTree(TTree& tree) {
+    if ( m_aliasDict ){
+      m_aliasDict->addAliasesToTTree(tree);
+    }
     for ( std::map<std::string,EventMap*>::iterator itr = m_evtMap.begin(); 
 	  itr != m_evtMap.end(); itr++ ) {
       if ( itr->second == 0 ) return false;
@@ -80,6 +92,7 @@ namespace evtUtils {
   bool EventClass::initializeShortCuts(TTree& tree) {
     if ( &tree == m_cachedTree ) return true;
     m_cachedTree = 0;
+    addAliasesToTTree(tree);
     for ( std::map<std::string,EventMap*>::iterator itr = m_evtMap.begin(); 
 	  itr != m_evtMap.end(); itr++ ) {
       if ( itr->second == 0 ) return false;
@@ -92,6 +105,7 @@ namespace evtUtils {
   bool EventClass::initializeFullCuts(TTree& tree){
     if ( &tree == m_cachedTree ) return true;
     m_cachedTree = 0;
+    addAliasesToTTree(tree);
     for ( std::map<std::string,EventMap*>::iterator itr = m_evtMap.begin(); 
 	  itr != m_evtMap.end(); itr++ ) {
       if ( itr->second == 0 ) return false;
@@ -101,6 +115,22 @@ namespace evtUtils {
     return true;  
   }
   
+  bool EventClass::initializeBoth(TTree& tree){
+    if ( &tree == m_cachedTree ) return true;
+    m_cachedTree = 0;
+    addAliasesToTTree(tree);
+    for ( std::map<std::string,EventMap*>::iterator itr = m_evtMap.begin(); 
+	  itr != m_evtMap.end(); itr++ ) {
+      if ( itr->second == 0 ) return false;
+      if ( ! itr->second->initializeShortCuts(tree) ) return false;
+      if ( ! itr->second->initializeFullCuts(tree) ) return false;      
+    }
+    m_cachedTree = &tree;  
+    return true;  
+  }
+  
+  
+
   bool EventClass::fillShortCutMaps( ){
     for ( std::map<std::string,EventMap*>::iterator itr = m_evtMap.begin(); 
 	  itr != m_evtMap.end(); itr++ ) {
@@ -152,6 +182,30 @@ namespace evtUtils {
       fromString.replace(find,1," ");
       find = fromString.find('\n');
     }
+    find = fromString.find("  ");
+    while ( find != fromString.npos ) {
+      fromString.replace(find,2," ");
+      find = fromString.find("  ");
+    }    
+  }
+
+  
+  void EventClass::writePythonDict(std::ostream& os) {
+    bool first = true;
+    std::string varDef = "AliasDict_";
+    varDef += m_version;
+    varDef += " = {";
+    std::string indent(varDef.size(),' ');
+    os << varDef;
+    if ( m_aliasDict ) {
+      m_aliasDict->writePythonDict(os,indent);
+      first = false;
+    }
+    for ( std::map<std::string,EventMap*>::const_iterator itr = m_evtMap.begin(); itr != m_evtMap.end(); itr++ ) {
+      itr->second->writePythonDict(os,indent,first);
+      first = false;
+    }
+    os << '}' << std::endl << std::endl;
   }
 
 
@@ -160,6 +214,8 @@ namespace evtUtils {
   EventClass* EventClass::loadFromXml(const std::string& fileName) {
     
     static const std::string EventClass("EventClass");
+    static const std::string AliasDict("AliasDict");  
+    static const std::string Alias("Alias");  
     static const std::string EventMap("EventMap");  
     static const std::string EventCategory("EventCategory");
     static const std::string ShortCut("ShortCut");
@@ -187,7 +243,27 @@ namespace evtUtils {
     }
     
     evtUtils::EventClass* evtClass = new evtUtils::EventClass(version);
-  
+
+    std::vector<DOMElement*> aliasDicts;
+    xmlBase::Dom::getChildrenByTagName(top,AliasDict,aliasDicts);
+    if ( aliasDicts.size() > 1 ) {
+      delete doc;
+      return 0;
+    }
+    
+    DOMElement* aliasDict = aliasDicts.size() == 1 ? aliasDicts[0] : 0;
+    if ( aliasDict ) {
+      std::vector<DOMElement*> aliases;
+      xmlBase::Dom::getChildrenByTagName(aliasDict,Alias,aliases);
+      for ( std::vector<DOMElement*>::iterator itrAlias = aliases.begin(); itrAlias != aliases.end(); itrAlias++ ) {
+	DOMElement* elemAlias = *itrAlias;
+	std::string aliasName = xmlBase::Dom::getAttribute(elemAlias,"name");
+	std::string aliasVal = xmlBase::Dom::getTextContent(elemAlias); 
+	StripLineBreaks(aliasVal);
+	evtClass->addAlias(aliasName,aliasVal);
+      }
+    }
+    
     std::vector<DOMElement*> eventMaps;
     xmlBase::Dom::getChildrenByTagName(top,EventMap,eventMaps);
     

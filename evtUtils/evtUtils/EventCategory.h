@@ -77,7 +77,10 @@ namespace evtUtils {
     inline const std::string& getFullCut() const { return m_fullCut; }
     inline const std::string& getComment() const { return m_comment; }
     inline unsigned getBit() const { return m_bit; }
-    
+        
+    void writePythonDict(std::ostream& os);
+
+
   private:
     
     EventReturnCode evaluateFormula(TTreeFormula*) const;

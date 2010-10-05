@@ -28,6 +28,7 @@ class TTree;
 namespace evtUtils {
 
   class EventMap;
+  class AliasDict;
 
   class EventClass {
     
@@ -43,12 +44,14 @@ namespace evtUtils {
   public:
     
     EventClass()
-      :m_cachedTree(0){
+      :m_cachedTree(0),
+       m_aliasDict(0){
     }
     
     EventClass(const std::string& version)
       :m_version(version),
-       m_cachedTree(0){
+       m_cachedTree(0),
+       m_aliasDict(0){
     }
   
     virtual ~EventClass();
@@ -56,6 +59,8 @@ namespace evtUtils {
     // Utility methods  
     EventMap* addEventMap(const std::string& mapName, const std::string& altName);
     
+    void addAlias(const std::string& aliasName, const std::string& aliasVal);
+
     bool addAliasesToTTree(TTree& tree);
     
     bool addShortBranchesToTTree(TTree& tree);
@@ -66,6 +71,8 @@ namespace evtUtils {
     
     bool initializeFullCuts(TTree& tree);
     
+    bool initializeBoth(TTree& tree);
+
     bool fillShortCutMaps( );
     
     bool fillFullCutMaps( );
@@ -81,12 +88,17 @@ namespace evtUtils {
     // accesss
     const std::string& getVersion() const { return m_version; }
     const TTree* getCachedTree() const { return m_cachedTree; }
-    
+    inline const AliasDict* getAliasDict() const { return m_aliasDict; }
+    inline AliasDict* getAliasDict() { return m_aliasDict; }    
+
+    void writePythonDict(std::ostream& os);    
+
   private:
     
     std::string                            m_version;    //!
     std::map<std::string,EventMap*>        m_evtMap;     //!
     TTree*                                 m_cachedTree; //!
+    AliasDict*                             m_aliasDict;  //!
 
     //ClassDef(EventClass,0) // Keeps track of a set of maps of cuts
     

@@ -112,5 +112,19 @@ namespace evtUtils {
     if ( itrFind == m_indexMap.end() ) return 0;
     return itrFind->second;
   }
+  
+
+  void EventMap::writePythonDict(std::ostream& os, const std::string& indent, bool firstMap) {
+    bool first = firstMap;
+    for ( std::map<unsigned,EventCategory*>::const_iterator itr = m_indexMap.begin(); itr != m_indexMap.end(); itr++ ) {
+      if ( first ) {
+	first = false;
+      } else {
+	// terminate previous line and index
+	os << ",\\" << std::endl << indent;
+      }
+      itr->second->writePythonDict(os);
+    }
+  }
 
 }

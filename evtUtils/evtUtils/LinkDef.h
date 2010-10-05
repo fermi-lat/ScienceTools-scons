@@ -13,6 +13,7 @@
 
 // in TMine/util
 #pragma link C++ namespace evtUtils;
+#pragma link C++ class evtUtils::AliasDict;
 #pragma link C++ class evtUtils::EventCategory;
 #pragma link C++ class evtUtils::EventMap;
 #pragma link C++ class evtUtils::EventClass;

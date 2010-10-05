@@ -69,4 +69,9 @@ namespace evtUtils {
     return form->EvalInstance() > 0.5 ? EventCategory::PassedCut : EventCategory::FailedCut;
   }
 
+  void EventCategory::writePythonDict(std::ostream& os) {
+    os << '"' << m_name << "\":\"" << m_shortCut << '"';
+  }
+  
+
 }
