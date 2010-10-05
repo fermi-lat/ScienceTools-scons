@@ -3,6 +3,7 @@
     \author James Peachey, HEASARC
 */
 #include <cstdlib>
+#include <limits>
 #include <memory>
 
 #include "fitsio.h"
@@ -14,9 +15,31 @@
 
 #include "tip/IFileSvc.h"
 
+#ifndef WIN32
+#include <math.h>
+#endif
+
 namespace {
-    static unsigned long s_lnan[2] = { 0xffffffff, 0x7fffffff };
-    static double & s_dnan = *(double *) s_lnan;
+  double s_tip_nan() {
+    double my_nan = 0.;
+    if (std::numeric_limits<double>::has_quiet_NaN) {
+      my_nan = std::numeric_limits<double>::quiet_NaN();
+    } else {
+#if defined(WIN32) && !defined(NAN)
+      unsigned long s_lnan[2] = { 0xffffffff, 0x7fffffff };
+      my_nan = *(double *) s_lnan;
+#elif !defined(WIN32)
+      // Seems to be in math.h in Linux and OSX implementations.
+      my_nan = nan("NAN");
+#else
+      // Try this and hope it works. If this is not compiling, it is necessary to determine
+      // how to create a quiet NAN value on this platform.
+      my_nan = NAN;
+#endif
+    }
+    return my_nan;
+  }
+  static double s_dnan(s_tip_nan());
 }
 
 namespace tip {
