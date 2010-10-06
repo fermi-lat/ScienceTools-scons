@@ -9,6 +9,7 @@
  */
 
 #include <cstdio>
+
 #include <iostream>
 #include <map>
 #include <stdexcept>
@@ -60,8 +61,8 @@ XmlEventClassifier::XmlEventClassifier(const std::string & xmlFile,
    }
 
 // Use draw method to get a TEventList
-   int first(0);
-   int nmax(INT_MAX);
+   Long64_t first(0);
+   Long64_t nmax(meritTree->GetEntries());
    meritTree->Draw(">>my_event_list", filter.c_str(), "", nmax, first);
    TEventList * eventList = (TEventList *)gDirectory->Get("my_event_list");
 
