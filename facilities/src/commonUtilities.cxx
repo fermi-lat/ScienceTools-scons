@@ -214,6 +214,15 @@ namespace facilities {
   }
 #endif
 
+  // Several things are accomplished here.  Only the first is required
+  // for CMT builds.  All others are for one or both of SCons, HEADAS
+  // 1. set up package-specific environment variables like MYPKGXMLPATH
+  // 2. obf load path used by OnboardFilter
+  //        SCons, only if obf external is used
+  // 3. extFiles stuff EXTFILESSYS, TIMING_DIR ScienceTools & GlastRelease
+  //                   PARAMFILESROOT          GlastRelease
+  // 4. caldb    Used for SCons and HEADAS builds of ScienceTools
+
   void commonUtilities::setupEnvironment(){
 #if defined(SCons) || defined(HEADAS)
     std::stringstream packages;
@@ -240,51 +249,9 @@ namespace facilities {
       setEnvironment(packageUpper+"DATAPATH", getDataPath(nameOnly));
 #ifdef GlastRelease
       setEnvironment(packageUpper+"JOBOPTIONSPATH",getJobOptionsPath(nameOnly));
-#endif
     }
-
-
-#if defined(SCons)
-#ifdef REL_OBFLDPATH
-    std::string obfldPath(REL_OBFLDPATH);
-    setEnvironment("OBFLDPATH", 
-                   joinPath(getEnvironment("GLAST_EXT"), obfldPath));
 #endif
-#endif
-
-#ifndef HEADAS
-#ifdef extFiles
-    setEnvironment("EXTFILESSYS", joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles));
-#endif
-#endif
-#ifdef GlastRelease
-  // Define environment variable PARAMFILESROOT used by Gaudi to find
-  // particleTable.txt.  This value will be overridden if it's set
-  // in job options
-  // PARMAFILESROOT should be $EXTFILESSYS/gaudi
-  std::string tmp = 
-    commonUtilities::joinPath(commonUtilities::getEnvironment("EXTFILESSYS"),
-                              "gaudi");
-    commonUtilities::setEnvironment("PARAMFILESROOT", tmp);
-
-#endif
-#ifdef ScienceTools
-    std::string calDbData = getDataPath("caldb");
-    setEnvironment("CALDB", calDbData);
-    setEnvironment("CALDBCONFIG", 
-                   joinPath(joinPath(joinPath(calDbData, "software"), 
-                                     "tools"), "caldb.config"));
-    setEnvironment("CALDBALIAS", 
-                   joinPath(joinPath(joinPath(calDbData, "software"), 
-                                     "tools"), "alias_config.fits"));
-#ifdef HEADAS
-    setEnvironment("TIMING_DIR", joinPath(getPackageRoot("timeSystem"), "refData"));
-#else
-    setEnvironment("TIMING_DIR", joinPath(joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles), "jplephem"));
-#endif
-#endif
-    // Not HEADAS; not SCons
-#else
+#else  // Not HEADAS; not SCons
     if(environ!=NULL){
       int counter=0;
       while(environ[counter]!=NULL){
@@ -306,6 +273,50 @@ namespace facilities {
 	counter++;
       }
     }
+    return;    // all done for CMT builds
+#endif
+
+    //  If obf external and SCons build, set OBFLDPATH
+#if defined(SCons)
+#ifdef REL_OBFLDPATH
+    std::string obfldPath(REL_OBFLDPATH);
+    setEnvironment("OBFLDPATH", 
+                   joinPath(getEnvironment("GLAST_EXT"), obfldPath));
+#endif
+#endif
+
+    // EXTFILES and related environment variaables
+#ifndef HEADAS
+#ifdef extFiles
+    setEnvironment("EXTFILESSYS", joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles));
+    setEnvironment("TIMING_DIR", joinPath(joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles), "jplephem"));
+#endif
+#ifdef GlastRelease
+  // Define environment variable PARAMFILESROOT used by Gaudi to find
+  // particleTable.txt.  This value will be overridden if it's set
+  // in job options
+  // PARMAFILESROOT should be $EXTFILESSYS/gaudi
+  std::string tmp = 
+    commonUtilities::joinPath(commonUtilities::getEnvironment("EXTFILESSYS"),
+                              "gaudi");
+    commonUtilities::setEnvironment("PARAMFILESROOT", tmp);
+#endif
+
+#else   // HEADAS defined
+    setEnvironment("TIMING_DIR", joinPath(getPackageRoot("timeSystem"), "refData"));
+#endif
+
+
+    // caldb. 
+#ifdef ScienceTools
+    std::string calDbData = getDataPath("caldb");
+    setEnvironment("CALDB", calDbData);
+    setEnvironment("CALDBCONFIG", 
+                   joinPath(joinPath(joinPath(calDbData, "software"), 
+                                     "tools"), "caldb.config"));
+    setEnvironment("CALDBALIAS", 
+                   joinPath(joinPath(joinPath(calDbData, "software"), 
+                                     "tools"), "alias_config.fits"));
 #endif
   }
 }
