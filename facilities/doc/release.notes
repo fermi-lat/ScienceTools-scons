@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+ facilities-02-19-11 12-Oct-2010    jrb swap a couple lines to get compile for ST as well as GR
  facilities-02-19-10 11-Oct-2010    jrb Bug fix, general straightening up of setupEnvironment routine
  facilities-02-19-09 15-Sep-2010    jrb Don't require all containers to use extFiles
  facilities-02-19-08 14-Sep-2010    jrb Export env variable for obf load path
