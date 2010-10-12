@@ -249,8 +249,8 @@ namespace facilities {
       setEnvironment(packageUpper+"DATAPATH", getDataPath(nameOnly));
 #ifdef GlastRelease
       setEnvironment(packageUpper+"JOBOPTIONSPATH",getJobOptionsPath(nameOnly));
-    }
 #endif
+    }
 #else  // Not HEADAS; not SCons
     if(environ!=NULL){
       int counter=0;
