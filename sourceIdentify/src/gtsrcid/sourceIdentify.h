@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.34  2010/04/16 15:23:11  jurgen
+Move euler and modula in GSkyDir.cxx
+
 Revision 1.33  2010/01/12 09:17:21  jurgen
 Update
 
@@ -115,9 +118,9 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v2r3p0"
+#define TOOL_VERSION  "v2r3p1"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "16-Apr-2010"
+#define TOOL_DATE     "13-Oct-2010"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"

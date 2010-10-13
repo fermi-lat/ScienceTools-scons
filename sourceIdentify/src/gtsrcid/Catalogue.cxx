@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.52  2010/09/26 19:01:11  jurgen
+Correctly read error ellipse information.
+
 Revision 1.51  2010/04/16 21:53:16  jurgen
 Fully implement HEALPix counterpart density maps
 
@@ -2298,7 +2301,7 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
         strcat(select, add);
 
         // Dump information
-        Log(Log_2, " Source %5d %18s ..: %s %s",
+        Log(Log_2, " Source %5d %20s : %s %s",
             iSrc+1, src->name.c_str(), select, m_cpt_names[iSrc].c_str());
 
         // Collect number of associated sources

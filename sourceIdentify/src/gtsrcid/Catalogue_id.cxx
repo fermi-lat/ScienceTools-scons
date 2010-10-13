@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.39  2010/04/16 21:53:16  jurgen
+Fully implement HEALPix counterpart density maps
+
 Revision 1.38  2010/01/12 09:17:21  jurgen
 Update
 
@@ -735,6 +738,24 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
         continue;
       }
 
+      // Optionally dump counterpart candidates
+      if (par->logVerbose()) {
+        for (int iCC = 0; iCC < src->numSelect; ++iCC) {
+          int         iCpt = src->cc[iCC].index;
+          ObjectInfo *cpt  = &(m_cpt.object[iCpt]);
+          Log(Log_2, "    Cpt%5d P=%9.2e Lratio=%9.2e pdf_pos=%9.2e pdf_chance=%9.2e S=%5.1f' PA=%4.0f %20s  RA=%8.4f  DE=%8.4f",
+              iCC+1,
+              src->cc[iCC].prob_post_single,
+              src->cc[iCC].likrat,
+              src->cc[iCC].pdf_pos,
+              src->cc[iCC].pdf_chance,
+              src->cc[iCC].angsep*60.0,
+              src->cc[iCC].posang,
+              cpt->name.c_str(),
+              cpt->pos_eq_ra, cpt->pos_eq_dec);
+        }
+      }
+
       // Neglect counterparts with too low probability
       double prob_thres = (par->m_probThres < c_prob_min) ? par->m_probThres : c_prob_min;
       src->numRefine = 0;
@@ -987,10 +1008,10 @@ Status Catalogue::cid_prob_pos(Parameters *par, SourceInfo *src, Status status) 
         double sin_angle    = sin(angle);
         double pos_err_maj2 = src->info->pos_err_maj * src->info->pos_err_maj;
         double pos_err_min2 = src->info->pos_err_min * src->info->pos_err_min;
-        double a         = (pos_err_maj2 > 0.0) ? (cos_angle*cos_angle) / pos_err_maj2 : 0.0;
-        double b         = (pos_err_min2 > 0.0) ? (sin_angle*sin_angle) / pos_err_min2 : 0.0;
-        arg              = a + b;
-        double psi2      = (arg > 0.0) ? 1.0/arg : 0.0;
+        double a            = (pos_err_maj2 > 0.0) ? (cos_angle*cos_angle) / pos_err_maj2 : 0.0;
+        double b            = (pos_err_min2 > 0.0) ? (sin_angle*sin_angle) / pos_err_min2 : 0.0;
+        arg                 = a + b;
+        double psi2         = (arg > 0.0) ? 1.0/arg : 0.0;
 
         // Calculate counterpart probability from angular separation
         if (psi2 > 0.0) {
@@ -1379,8 +1400,9 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
           double log_arg = src->cc[iCC].likrat + log_eta;
           if (log_arg < 100.0) {
             double arg = exp(log_arg);
+            // for small arg, 1/(1+1/arg) ~ arg
             src->cc[iCC].prob_post_single = (arg > 1.0e-100) ? // avoids floating point exception
-                         1.0 / (1.0 + 1.0 / arg) : 0.0;
+                         1.0 / (1.0 + 1.0 / arg) : arg;
           }
           else
             src->cc[iCC].prob_post_single = 1.0;
