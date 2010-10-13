@@ -56,7 +56,7 @@ def get_class(adict):
                 vcs galaxies pulsar_lat snr snr_ext pulsar_high pulsar_low pulsar_fom
                 msp pwn hmxb lmxb globular tev ibis lbv dwarfs
                '''.split()
-    others = ['ostar']
+    others = ['ostar', 'starbursts', 'ocl']
     ass_class = ['bzb','bzcat']+['bzq']*3+['agn']*6+['LAT psr']+\
                 ['snr']*2 + ['psr']*4 + ['pwn'] + ['hmxb'] + ['lmxb']+ ['glc'] +['tev'] + 3*['None']
     cls = None

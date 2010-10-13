@@ -453,7 +453,10 @@ class UWsourceFits(Pipeline):
             # assume filename
             ft = os.path.splitext(sourcelist)[-1]
             if ft=='.txt':
-                self.sources=makerec.textrec(sourcelist)
+                t=makerec.textrec(sourcelist)
+                if 'name' not in t.dtype.names:
+                    self.sources = plt.mlab.rec_append_fields(t, 'name', t.source_name)
+                else: self.sources=t    
             elif ft=='.fit' or ft=='.fits':
                 t=makerec.fitsrec(sourcelist)
                 self.sources = plt.mlab.rec_append_fields(t, 'name', t.source_name)
@@ -523,7 +526,7 @@ def getg(setup_string):
             
 
 def main( setup_string, outdir, mec=None, startat=0, n=0, local=False,
-        machines='tev1 tev2 tev3 tev4'.split(), 
+        machines='tev1 tev2 tev3 tev4'.split(), engines=None,
         seeds_only=False,
         ignore_exception=True, 
         logpath='log'):
@@ -563,7 +566,7 @@ def main( setup_string, outdir, mec=None, startat=0, n=0, local=False,
             print 'got exception writing %s' % name
             raise
             
-    if not local: setup_mec(machines=machines)
+    if not local: setup_mec(machines=machines, engines=engines)
     time.sleep(10)
     lc= AssignTasks(setup_string, tasks[startat:endat], mec=mec, timelimit=1000, local=local, callback=callback, 
     ignore_exception=ignore_exception)
