@@ -155,6 +155,10 @@ class ROIExtendedModel(ROIDiffuseModel):
         self.current_exposure = self.exp[conversion_type].value(self.extended_source.spatial_model.center,energy)
 
     def initialize_counts(self,bands,roi_dir=None):
+        # Need to recreate the BackgroundConvolutionNorm object before reconvolving
+        # (to update the center object.)
+        self.setup() 
+
         rd = self.roi_dir if roi_dir is None else roi_dir
         self.bands = [SmallBand() for i in xrange(len(bands))]
 
