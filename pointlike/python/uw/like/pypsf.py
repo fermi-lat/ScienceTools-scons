@@ -213,7 +213,7 @@ class CALDBPsf(Psf):
         seeds = N.asarray([5,4,3,2.5,2,1.5,1,0.5,0.25])*self.scale_func[ct](e)
         seedvals = N.asarray([self.integral(e,ct,x) for x in seeds])
         seed = seeds[N.argmin(N.abs(seedvals-percent))]
-        trial = fmin(f,seed,disp=0,ftol=0.01,xtol=0.01)
+        trial = fmin(f,seed,disp=0,ftol=0.000001,xtol=0.01)
         if trial > 0:
             return trial[0]*RAD2DEG
         print 'Warning: could not invert integral; return best grid value.'
