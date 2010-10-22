@@ -16,6 +16,8 @@ default_catalog = 'gll_psc_v03.fit' # 1FGL release
 default_catalog = 'gll_psc18month_uw11b.fits' # later
 default_diffuse = ('ring_21month_v1.fits','isotrop_21month_uw03.txt',)#'isotrop_21month_v1b.txt',)
                         #'gll_iem_v02.fit','isotropic_iem_v02.txt')
+
+default_extended_archive = 'Extended_archive_v01'
  
 
 def setup():
@@ -188,6 +190,7 @@ class AE(object):
         return dict(
             catdir      = catalog_path,      # where to find catalog files
             catalog     = default_catalog,   # the current catalog
+            extended_catalog = None, # the extended catalog directory
             cat_update  = None,              # something that may update the catalog
             diffuse     = (galprop_path, )+default_diffuse,
             aux_cat     = None,              # auxiallary catalog
