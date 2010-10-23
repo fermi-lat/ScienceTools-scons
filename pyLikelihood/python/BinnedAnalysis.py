@@ -109,7 +109,7 @@ class BinnedAnalysis(AnalysisBase):
         self.model = SourceModel(self.logLike, srcModel)
         self.energies = num.array(self.logLike.energies())
         self.e_vals = num.sqrt(self.energies[:-1]*self.energies[1:])
-        self.nobs = self.logLike.countsSpectrum();
+        self.nobs = self.logLike.countsSpectrum()
     def _inputs(self):
         return '\n'.join((str(self.binnedData),
                           'Source model file: ' + str(self.srcModel),
@@ -149,16 +149,19 @@ class BinnedAnalysis(AnalysisBase):
         self.logLike.set_klims(kmin, kmax)
     def plot(self, oplot=0, color=None, omit=(), symbol='line'):
         AnalysisBase.plot(self, oplot, color, omit, symbol)
-        yrange = self.spectralPlot.getRange('y')
-        self.spectralPlot.overlay([self.emin, self.emin], yrange,
-                                  symbol='dotted')
-        self.spectralPlot.overlay([self.emax, self.emax], yrange,
-                                  symbol='dotted')
-        yrange = self.residualPlot.getRange('y')
-        self.residualPlot.overlay([self.emin, self.emin], yrange,
-                                  symbol='dotted')
-        self.residualPlot.overlay([self.emax, self.emax], yrange,
-                                  symbol='dotted')
+        try:
+            yrange = self.spectralPlot.getRange('y')
+            self.spectralPlot.overlay([self.emin, self.emin], yrange,
+                                      symbol='dotted')
+            self.spectralPlot.overlay([self.emax, self.emax], yrange,
+                                      symbol='dotted')
+            yrange = self.residualPlot.getRange('y')
+            self.residualPlot.overlay([self.emin, self.emin], yrange,
+                                      symbol='dotted')
+            self.residualPlot.overlay([self.emax, self.emax], yrange,
+                                      symbol='dotted')
+        except AttributeError:
+            pass
 
 def binnedAnalysis(mode='ql', ftol=None, **pars):
     """Return a BinnedAnalysis object using the data in gtlike.par."""
