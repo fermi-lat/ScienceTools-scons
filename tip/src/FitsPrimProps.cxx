@@ -22,7 +22,8 @@ namespace {
   signed char s_signed_char_undef = std::numeric_limits<signed char>::min();
   signed short s_signed_short_undef = std::numeric_limits<signed short>::min();
   signed int s_signed_int_undef = std::numeric_limits<signed int>::min();
-  signed long s_signed_long_undef = std::numeric_limits<signed long>::min();
+  // Note: this is not a typo: use int limits for long's indef, for 32/4 bit compatibiliy.
+  signed long s_signed_long_undef = std::numeric_limits<signed int>::min();
   unsigned char s_unsigned_char_undef = std::numeric_limits<unsigned char>::min();
   unsigned short s_unsigned_short_undef = std::numeric_limits<unsigned short>::min();
   unsigned int s_unsigned_int_undef = std::numeric_limits<unsigned int>::min();
