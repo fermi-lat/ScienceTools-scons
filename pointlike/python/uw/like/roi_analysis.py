@@ -13,7 +13,7 @@ import math, pickle, collections
 from uw.like import roi_bands, roi_localize , specfitter
 
 from pointspec_helpers import PointSource
-from roi_diffuse import DiffuseSource
+from roi_diffuse import ROIDiffuseModel,DiffuseSource
 from roi_extended import ExtendedSource,BandFitExtended
 from uw.utilities import keyword_options
 
@@ -668,7 +668,7 @@ class ROIAnalysis(object):
             sources, add ROIDiffuseModel object."""
          if isinstance(ps,PointSource):
               manager=self.psm
-         elif isinstance(ps,DiffuseSource):
+         elif isinstance(ps,ROIDiffuseModel):
               manager=self.dsm
          manager.add_source(ps,self.bands)
 
