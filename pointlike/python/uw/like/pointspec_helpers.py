@@ -121,11 +121,11 @@ class FermiCatalog(PointSourceCatalog):
     def init(self):
         self.prune_radius  = 0.10 #deg; in a merge, consider sources closer than this duplicates
         self.free_radius    = 2 #deg; sources within this distance have free spectral parameters
-        self.min_flux        = 2e-9 #ph/cm2/s; minimum flux for sources beyond a certain proximity
-        self.max_distance  = 5 #deg; distance inside which sources are returned regardless of flux
-        self.min_ts          = 25
+        # self.min_flux        = 2e-9 #ph/cm2/s; minimum flux for sources beyond a certain proximity
+        # self.max_distance  = 5 #deg; distance inside which sources are returned regardless of flux
+        # self.min_ts          = 25
 
-    def __init__(self,catalog_file,*args,**kwargs):
+    def __init__(self,catalog_file,**kwargs):
         self.init()
         self.__dict__.update(kwargs)
         self.__open_catalog__(catalog_file)
