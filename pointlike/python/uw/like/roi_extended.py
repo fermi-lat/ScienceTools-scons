@@ -151,8 +151,8 @@ class ROIExtendedModel(ROIDiffuseModel):
 
             self.set_state(en,band.ct,band)
 
-            exp=band.exp.value
-            myband.er = exp(es.spatial_model.center,en)/exp(rd,en)
+            exposure=band.exp.value
+            myband.er = exposure(es.spatial_model.center,en)/exposure(rd,en)
 
             myband.pix_counts = self._pix_value(band.wsdl)
             myband.pix_counts *= band.b.pixelArea()
