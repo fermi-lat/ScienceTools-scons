@@ -6,6 +6,7 @@
 See the <a href="exposure_map_guide.html"> user's guide </a>.
 $Header$
 */
+#define CAN_IGNORE_PHI // as of version 1.6 of irfInterface::IAeff an undocumented entry was added avoid phi dependence
 
 #include "map_tools/SkyImage.h"
 #include "map_tools/Exposure.h"
@@ -90,13 +91,17 @@ public:
             return (costh-m_cutoff)/(1.-m_cutoff);
         }
         // make an average here
-        double sum(0); int n(0);
         double theta(acos(costh)*180/M_PI);
-        for( double phi=0; phi<45+phioffset; phi+=deltaphi, n++){
+#ifdef CAN_IGNORE_PHI // new use of changed interface to avoid need to explicitly average
+        const_cast<irfInterface::IAeff*>(m_aeff)->setPhiDependence(false);
+        return m_aeff->value(m_energy,theta , phioffset);
+#else // old explicit average code
+        double sum(0); int n(0);
+        for( double phi=offset; phi<45+phioffset; phi+=deltaphi, n++){
             sum+=  m_aeff->value(m_energy,theta , phi+phioffset);
         }
         return sum/n;
-
+#endif 
     }
 
  
@@ -267,6 +272,7 @@ public:
 
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     void run() {
 
         m_f.setMethod("run()");
@@ -290,7 +296,11 @@ public:
             deltaphi = m_pars["deltaphi"];
             std::clog << (ignorephi ? "\t ==> has phi dependence but ignoring it,"
                                     : "\t ==> has no phi dependence,");
+#ifdef CAN_IGNORE_PHI
+            std::clog << "using special flag to effective area to ignore phi"<<std::endl;
+#else
             std::clog <<" will average Aeff, using deltaphi="<<deltaphi << std::endl;
+#endif
         }else{
             std::clog << "\t ==> has phi dependence" << std::endl;
         }
