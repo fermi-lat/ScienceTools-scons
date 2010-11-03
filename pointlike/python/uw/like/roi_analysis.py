@@ -691,7 +691,7 @@ class ROIAnalysis(object):
         """Move point source given by which to new location given by skydir."""
         manager,index=self.mapper(which)
         if manager==self.psm:
-            rl = ROILocalizer(self,which=index,update=True)
+            rl = roi_localize.ROILocalizer(self,which=index,update=True,bandfits=False)
             rl.spatialLikelihood(skydir,update=True)
             self.psm.point_sources[index].skydir = skydir
         elif manager==self.dsm:
