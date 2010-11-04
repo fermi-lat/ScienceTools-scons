@@ -698,7 +698,6 @@ class ROIAnalysis(object):
         if manager==self.psm:
             rl = roi_localize.ROILocalizer(self,which=index,update=True,bandfits=False)
             rl.spatialLikelihood(skydir,update=True)
-            self.psm.point_sources[index].skydir = skydir
         elif manager==self.dsm:
             if isinstance(self.dsm.diffuse_sources[index],ExtendedSource):
                 self.dsm.bgmodels[index].modify_loc(self.bands,skydir)
