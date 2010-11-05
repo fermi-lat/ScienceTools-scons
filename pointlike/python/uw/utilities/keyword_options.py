@@ -65,7 +65,7 @@ def process(self, kwargs):
     """
     for item in self.defaults:
         if type(item)==types.StringType: continue
-        self.__dict__[item[0]] = item[1]
+        self.__dict__[item[0].strip()] = item[1]
     for key in kwargs.keys():
         if key in self.__dict__: self.__dict__[key]=kwargs[key]
         else:
