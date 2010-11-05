@@ -34,6 +34,12 @@ class PointSource(object):
                                 '\t'+self.model.__str__(indent='\t'), 
                                 ])
 
+    def copy(self):
+        """ Create a deep copy of the point source. """
+        return PointSource(SkyDir(self.skydir.ra(),self.skydir.dec()),
+                           self.name,self.model.copy(),leave_parameters=True)
+
+
 ###====================================================================================================###
 
 
