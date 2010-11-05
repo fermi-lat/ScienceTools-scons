@@ -190,6 +190,9 @@ public:
             AeffSum(const std::vector<std::string>& irflist){
                 for(std::vector<std::string>::const_iterator sit= irflist.begin(); sit!=irflist.end(); ++sit){
                     irfInterface::Irfs* irf=IrfsFactory::instance()->create(*sit);
+                    // this line means that phi dependence is never used
+                    // attempts to do so have been a disaster.
+                    irf->aeff()->setPhiDependence(false);
                     m_aeff.push_back(irf->aeff());
                 }
             }
