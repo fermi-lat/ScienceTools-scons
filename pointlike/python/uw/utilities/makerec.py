@@ -94,6 +94,6 @@ def load(filename):
     ext = os.path.splitext(filename)[1]
     if ext=='.txt':
         return textrec(filename)
-    elif ext=='.pickle':
+    elif ext=='.pickle' or ext=='.rec':
         return pickle.load(open(filename))
-    raise Exception('extension %s not recognized: expect either txt or pickle' %ext)
+    raise Exception('extension %s not recognized: expect txt, rec or pickle' %ext)
