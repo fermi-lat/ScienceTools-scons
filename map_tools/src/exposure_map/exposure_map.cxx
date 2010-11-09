@@ -113,8 +113,6 @@ public:
         }
         if (costh<m_cutoff) return 0;
         double theta(acos(costh)*180/M_PI);
-        double ret(0), phibin(3.);
-        int n(0);
         return m_aeff->value(m_energy, theta, phi);
         
     }
@@ -337,7 +335,7 @@ public:
         }
         double ctcutoff = cos(thetaCut.maxVal()*M_PI/180);
 
-        m_f.info() << "cos theta cutoff used: " << (abs(ctcutoff)< 1e-6? 0: ctcutoff) << std::endl;
+        m_f.info() << "cos theta cutoff used: " << (std::abs(ctcutoff)< 1e-6? 0: ctcutoff) << std::endl;
 
 
         // create the image object, fill it from the exposure, write out
