@@ -1,3 +1,4 @@
+
 /** @file exposure_map.cxx
 @brief Classes specific to the exposure_map application
 
@@ -6,7 +7,7 @@
 See the <a href="exposure_map_guide.html"> user's guide </a>.
 $Header$
 */
-#define CAN_IGNORE_PHI // as of version 1.6 of irfInterface::IAeff an undocumented entry was added avoid phi dependence
+//#define CAN_IGNORE_PHI // as of version 1.6 of irfInterface::IAeff an undocumented entry was added avoid phi dependence
 
 #include "map_tools/SkyImage.h"
 #include "map_tools/Exposure.h"
@@ -29,6 +30,7 @@ $Header$
 
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
+#include "tip/Header.h"
 
 #include <sstream>
 #include <iomanip>
@@ -61,9 +63,8 @@ namespace {
 
       delete table;
    }
-   bool have_phi_dependence(false); // set below   
-   double deltaphi(5.), // phi step for averaging
-       phioffset(15.);  // central phi value, will be used if step is 45.
+   bool use_phi_dependence(false); // set below   
+  double phioffset(15.);  // central phi value, will be used if step is 45.
 }
 
 using namespace map_tools;
@@ -92,16 +93,7 @@ public:
         }
         // make an average here
         double theta(acos(costh)*180/M_PI);
-#ifdef CAN_IGNORE_PHI // new use of changed interface to avoid need to explicitly average
-        const_cast<irfInterface::IAeff*>(m_aeff)->setPhiDependence(false);
         return m_aeff->value(m_energy,theta , phioffset);
-#else // old explicit average code
-        double sum(0); int n(0);
-        for( double phi=offset; phi<45+phioffset; phi+=deltaphi, n++){
-            sum+=  m_aeff->value(m_energy,theta , phi+phioffset);
-        }
-        return sum/n;
-#endif 
     }
 
  
@@ -147,7 +139,7 @@ public:
         , m_norm(norm)
     {}
     double operator()(const astro::SkyDir& s)const{
-        if( have_phi_dependence)  return m_norm*m_exp.integral(s, m_aeff);
+        if( use_phi_dependence)  return m_norm*m_exp.integral(s, m_aeff);
         return m_norm*m_exp(s,m_aeff);
     }
 private:
@@ -178,7 +170,7 @@ public:
     */
 
 
-    irfInterface::IAeff* findAeff(std::string rspfunc)
+  irfInterface::IAeff* findAeff(std::string rspfunc)
     {
         using namespace irfInterface;
         m_f.setMethod("findAeff");
@@ -188,9 +180,16 @@ public:
             AeffSum(const std::vector<std::string>& irflist){
                 for(std::vector<std::string>::const_iterator sit= irflist.begin(); sit!=irflist.end(); ++sit){
                     irfInterface::Irfs* irf=IrfsFactory::instance()->create(*sit);
-                    // this line means that phi dependence is never used
-                    // attempts to do so have been a disaster.
-                    irf->aeff()->setPhiDependence(false);
+                    //if ltcube phi is absent or ignored, disable phi dependence in irfs
+                    if( !use_phi_dependence ) {
+                      std::clog << "\t ==> disabling phi dependence in irfs"<<std::endl;;
+                      irf->aeff()->setPhiDependence(false);
+                    } 
+                    //if irfs do not have phi dependence, ignore the ltcube one
+                    else if( !irf->aeff()->usePhiDependence() ) {
+                      std::clog << "\t ==> irfs don't have phi dependence, disabling phi dependence in ltcube"<<std::endl;;
+                      use_phi_dependence = false;
+                    }
                     m_aeff.push_back(irf->aeff());
                 }
             }
@@ -287,25 +286,26 @@ public:
         std::string in_file = m_pars["infile"];
         std::string table = m_pars["table"];
         Exposure ex(in_file, table);
+        //use the first CosineBinner element of the HealPixArray object ex to access the PHIBINS keyword value
+        int phibins = ex.data()[0].nphibins();
 
-        const SkyBinner& bins = ex.data();
-        const healpix::CosineBinner& bin = bins[0];
-        int nbins = bin.size();
+        //user can choose to disable phi dependence
         bool ignorephi = m_pars["ignorephi"];
-        have_phi_dependence = nbins>40 && ! ignorephi;
-        if(! have_phi_dependence){
-            deltaphi = m_pars["deltaphi"];
-            std::clog << (ignorephi ? "\t ==> has phi dependence but ignoring it,"
-                                    : "\t ==> has no phi dependence,");
-#ifdef CAN_IGNORE_PHI
-            std::clog << "using special flag to effective area to ignore phi"<<std::endl;
-#else
-            std::clog <<" will average Aeff, using deltaphi="<<deltaphi << std::endl;
-#endif
-        }else{
-            std::clog << "\t ==> has phi dependence" << std::endl;
-        }
 
+        if(phibins==0){
+          std::clog << "\t ==> no phi dependence found in ltcube" << std::endl;
+          use_phi_dependence = false;
+        }
+        else if(ignorephi)
+          {
+            std::clog << "\t ==> phi dependence found in ltcube, but ignored by user request" << std::endl;
+            use_phi_dependence = false;
+          }
+        else
+          {
+            std::clog << "\t ==> phi dependence found in ltcube, enabled" << std::endl;
+            use_phi_dependence = true;
+          }
 
         irfInterface::IAeff* aeff = findAeff(m_pars["irfs"]);
 
@@ -388,7 +388,6 @@ public:
         }
     
         m_pars.Prompt("bincalc");
-        m_pars.Prompt("deltaphi");
         m_pars.Prompt("ignorephi");
         m_pars.Prompt("table");
 				m_pars.Prompt("evtable");
