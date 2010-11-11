@@ -151,7 +151,7 @@ class XML_to_Model(object):
             if model.p[ip]<=0: raise Exception('For source %s, %s parameter %s cannot be negative' % (source_name,specname,p))
             model.free[ip] = (pdict['free'] == '1')
             if 'error' in pdict.keys():
-                err = float(pdict['error'])
+                err = float(pdict['error'])*scale
                 model.cov_matrix[ip,ip] = (err/value*JAC)**2
 
         model.p = N.log10(model.p)
@@ -247,7 +247,7 @@ class XML_to_SpatialModel(object):
             spatial_model.free[ip] = (pdict['free'] == '1')
 
             if 'error' in pdict.keys():
-                err = float(pdict['error'])
+                err = float(pdict['error'])*scale
                 if spatial_model.log[ip]: 
                     spatial_model.cov_matrix[ip,ip] = (err/value*JAC)**2
                 else:
