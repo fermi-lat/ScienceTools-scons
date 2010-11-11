@@ -135,7 +135,8 @@ class ROILocalizer(object):
             
             nover           = ro(band,rd,skydir)
             oover           = band.overlaps[wh]
-            psnc            = (band.bandfits if self.bandfits else band.ps_counts[wh]/band.er[wh])*exposure_ratio
+            psnc            = (band.bandfits if self.bandfits else band.ps_counts[wh])*exposure_ratio/band.er[wh]                                          
+
             psoc            = band.ps_counts[wh] # N.B. -- ps_counts includes exposure ratio
 
             if psnc < 0: continue # skip potentially bad band fits, or bands without appreciable flux
