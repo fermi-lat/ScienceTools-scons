@@ -297,4 +297,4 @@ class ROILocalizerExtended(ROILocalizer):
         sm  = es.extended_source.spatial_model
 
         sm.cov_matrix = N.zeros([len(sm.p),len(sm.p)])
-        sm.cov_matrix[0][0] = self.cov_matrix[1][1] = self.roi.lsigma**2
+        sm.cov_matrix[0][0] = sm.cov_matrix[1][1] = self.roi.lsigma**2
