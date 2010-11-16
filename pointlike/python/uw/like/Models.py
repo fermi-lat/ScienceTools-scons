@@ -277,6 +277,7 @@ Optional keyword arguments:
         a = eval(self.name+'(iscopy=True, **self.__dict__)') #create instance of same spectral model type
         
         a.p = N.asarray(self.p).copy() #copy in log values
+        a.free = N.asarray(self.free).copy()
         try: a.cov_matrix = self.cov_matrix.__copy__()
         except: pass
         return a
