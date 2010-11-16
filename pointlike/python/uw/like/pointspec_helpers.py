@@ -359,7 +359,7 @@ def get_diffuse_source(spatialModel='ConstantValue',
 
     if spatialModel=='MapCubeFunction':
         if (spatialModelFile is None) or (not os.path.exists(spatialModelFile)):
-            raise Exception,'Could not find the FITS file specified for MapCubeFunction.'
+            raise Exception,'Could not find the FITS file specified for MapCubeFunction (file = %s).' % spatialModelFile
     elif spatialModel != 'ConstantValue':
         raise NotImplementedError,'Must provide one of the understood spatial models.'
     else:
