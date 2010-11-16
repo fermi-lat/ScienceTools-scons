@@ -321,11 +321,12 @@ class SpatialModel(object):
         
         a = eval(self.name+'(iscopy=True, **self.__dict__)') #create instance of same spectral model type
         
-        a.p = N.asarray(self.p).copy() #copy in parameters
-        a.param_names = N.asarray(self.param_names).copy() # copy in names
-        a.limits = N.asarray(self.limits).copy() #copy in limits
-        a.log = N.asarray(self.log).copy() #copy in log
-        a.steps = N.asarray(self.steps).copy() #copy in steps
+        a.p           = N.asarray(self.p).copy() #copy in parameters
+        a.free        = N.asarray(self.free).copy() 
+        a.param_names = N.asarray(self.param_names).copy() 
+        a.limits      = N.asarray(self.limits).copy() 
+        a.log         = N.asarray(self.log).copy() 
+        a.steps       = N.asarray(self.steps).copy() 
 
         try: a.cov_matrix = self.cov_matrix.__copy__()
         except: pass
