@@ -199,6 +199,7 @@ class BackgroundConvolution(Grid):
             self.bg_vals = self.fill(override_skyfun)
         else:
             self.bg_vals = override_vals
+        self.bg_vals[N.isnan(self.bg_vals)] = 0
 
         pb = PretendBand(energy,conversion_type)
         bpsf = BandCALDBPsf(self.psf,pb,override_en=override_en,adjust_mean=False)
