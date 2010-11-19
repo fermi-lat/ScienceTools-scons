@@ -207,6 +207,7 @@ class ROIPointSourceManager(ROIModelManager):
         self.names         = N.append(self.names,ps.name)
         self.mask          = N.append(self.mask,N.any(ps.model.free))
         self.setup_initial_counts(bands) # not most efficient, but fewest loc!
+        self.cache(bands)
 
     def del_source(self, which, bands):
         ops = self.point_sources[which]
@@ -216,6 +217,7 @@ class ROIPointSourceManager(ROIModelManager):
         self.mask          = N.delete(self.mask,which)
 
         self.setup_initial_counts(bands) # ditto
+        self.cache(bands)
         return ops
 
     def zero_source(self, which, bands):
