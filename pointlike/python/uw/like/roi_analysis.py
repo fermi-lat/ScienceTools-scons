@@ -203,7 +203,7 @@ class ROIAnalysis(object):
         models    = self.psm.models
 
         # sanity check -- for efficiency, the gradient should be called with the same params as the log likelihood
-        if not N.allclose(parameters,self.parameters(),rtol=0):
+        if not N.allclose(parameters,self.parameters(),rtol=0,atol=1e-6):
             self.update_counts(parameters)
 
         # do the point sources
@@ -334,7 +334,15 @@ class ROIAnalysis(object):
         else:
             ll_0 = self.logLikelihood(self.parameters())
             if use_gradient:
-                f = self._save_bfgs = fmin_bfgs(self.logLikelihood,self.parameters(),self.gradient,full_output=1,maxiter=500,gtol=gtol,disp=0)
+                f0 = fmin_bfgs(self.logLikelihood,self.parameters(),self.gradient,full_output=1,maxiter=500,gtol=gtol,disp=0)
+                for i in xrange(10):
+                    f = self._save_bfgs = fmin_bfgs(self.logLikelihood,self.parameters(),self.gradient,full_output=1,maxiter=500,gtol=gtol,disp=0)
+                    if abs(f0[1] - f[1]) < tolerance: break # note absolute tolerance
+                    if not self.quiet:
+                        print 'Did not converge on first gradient iteration.  Trying again.'
+                        print f0[1],f[1],abs(f0[1]-f[1])
+                    f0 = f
+
             else:
                 minimizer  = fmin_powell if method == 'powell' else fmin
                 f = minimizer(self.logLikelihood,self.parameters(),full_output=1,
