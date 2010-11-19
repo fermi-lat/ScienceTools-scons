@@ -15,6 +15,8 @@ author: M. Kerr <matthew.kerr@gmail.com>
 
 """
 
+#TODO -- remove TOA stuff from LCFitter
+
 import numpy as np
 
 from lcprimitives import *
@@ -68,8 +70,8 @@ class LCTemplate(object):
             self.primitives += [g]
          elif tok[0].startswith('fwhm'):
             g = self.primitives[-1]
-            g.p[1] = float(tok[2])/g.fwhm_scale
-            g.errors[1] = float(tok[4])/g.fwhm_scale
+            g.p[1] = float(tok[2])/2.3548200450309493      # kluge for now
+            g.errors[1] = float(tok[4])/2.3548200450309493
          elif tok[0].startswith('ampl'):
             g = self.primitives[-1]
             g.p[0] = float(tok[2])
@@ -245,7 +247,10 @@ class LCFitter(object):
    def __hist_setup__(self):
       """ Setup binning for a quick chi-squared fit."""
       nbins = max(min( int( len(self.phases)/50. ) , 32),101)
-      hist = np.histogram(self.phases,bins=np.linspace(0,1,nbins),new=True)
+      try:
+         hist = np.histogram(self.phases,bins=np.linspace(0,1,nbins),new=True)
+      except:
+         hist = np.histogram(self.phases,bins=np.linspace(0,1,nbins))
       x = ((hist[1][1:] + hist[1][:-1])/2.)[hist[0]>0]
       counts = hist[0][hist[0]>0]
       y    = counts / (x[1] - x[0]) / counts.sum()
