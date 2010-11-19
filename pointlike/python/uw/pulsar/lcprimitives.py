@@ -79,10 +79,10 @@ class LCPrimitive(object):
         return self.p[0]
 
     def get_width(self,error=False,fwhm=False):
-        scale = self.fwhm_scale if fwhm else 1
+        scale = self.fwhm()/self.p[1] if fwhm else 1
         if error: return np.asarray([self.p[1],self.errors[1]])*scale
         return self.p[1]*scale
-
+    
     def get_gradient(self,phases):
         g = self.gradient(phases)
         ###N.B. -- the "-1" comes from the normalization constraint!
