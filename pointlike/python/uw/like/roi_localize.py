@@ -177,16 +177,17 @@ class ROILocalizer(object):
                 # update the cached counts with new location -- note that this used the _broadband_ spectral
                 # model rather than the band-by-band fit; otherwise, subsequent fits for broadband parameters
                 # would fail
+
+                # here, only update stuff set in setup_initial_counts which changes w/ localization
                 band.overlaps[wh] = nover
-                band.ps_counts[wh]*=exposure_ratio/band.er[wh]
                 band.er[wh] = exposure_ratio
-                band.ps_all_counts += band.ps_counts[wh]*nover - psoc*oover
-                if band.has_pixels:
-                    band.ps_all_pix_counts    += band.ps_counts[wh]*ps_pix_counts - psoc*band.ps_pix_counts[:,wh]
-                    band.ps_pix_counts[:,wh]   = ps_pix_counts
+                if band.has_pixels: band.ps_pix_counts[:,wh]   = ps_pix_counts
+
         if update:
             # need to update frozen_pix_counts/unfrozen_pix_counts
             roi.psm.cache(roi.bands)
+            # need to update ps_counts, ps_all_counts, ps_all_pix_counts
+            roi.psm.update_counts(roi.bands)
             
             # update source position
             roi.psm.point_sources[wh].skydir = skydir
