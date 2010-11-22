@@ -114,12 +114,13 @@ class ROILocalizer(object):
             ld = SkyDir(l.dir.ra(),l.dir.dec())
             old_sigma=sigma
 
+        roi.qform    = l
+        roi.ldir     = l.dir
+        roi.lsigma   = l.sigma
+
         ll1 = self.spatialLikelihood(l.dir,update=update)
         if not self.quiet: print 'TS change: %.2f'%(2*(ll0 - ll1))
 
-        roi.qform    = l
-        roi.ldir     = l.dir
-        roi.lsigma  = l.sigma
         roi.delta_loc_logl = (ll0 - ll1)
 
         return l.dir, i, delt, 2*(ll0-ll1)
