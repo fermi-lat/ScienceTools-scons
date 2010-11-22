@@ -519,8 +519,8 @@ void SkyProj::setKeywords(tip::Header& hdr)
     // todo: fix these
     setKey("CROTA2",  0, "", "Image rotation (deg)");
     if( std::string(m_wcs->ctype[0]).substr(5,3)=="CAR") return;
-    // these may be needed by ds9 for non-CAR. I get confused
-    setKey("LONPOLE", 180.0, "deg", "longitude of celestial pole");
-    setKey("LATPOLE", 0,     "deg", "latitude of celestial pole");
+    // these are needed by ds9 for non-CAR. 
+    setKey("LONPOLE", 0.,     "deg", "longitude of celestial pole");
+    setKey("LATPOLE", 90.,    "deg", "latitude of celestial pole");
 }
 
