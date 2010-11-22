@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-03-11-08 22-Nov-2010 burnett resolve LATPOLE problem
  astro-03-11-07 01-Aug-2010 burnett fix SWIG fix
  astro-03-11-06 01-Aug-2010 burnett fix comment fix
  astro-03-11-05 31-Jul-2010 burnett fix SWIG warning in IGRField
