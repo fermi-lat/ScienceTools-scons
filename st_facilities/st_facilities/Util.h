@@ -20,6 +20,11 @@ namespace tip {
    class Extension;
 }
 
+namespace astro {
+   class SkyDir;
+   class SkyProj;
+}
+
 namespace st_facilities {
 
 /**
@@ -115,6 +120,15 @@ public:
                                  double stop_time, bool extension=true,
                                  const astro::JulianDate & mission_start
                                  =astro::JulianDate(2001, 1, 1, 0));
+
+   /// @brief Add SkyDir to pixel index interface to SkyProj
+   static void skyDir2pixel(const astro::SkyProj & proj,
+                            const astro::SkyDir & dir,
+                            double & i, double & j);
+
+   /// @brief Add pixel index to SkyDir interface to SkyProj
+   static void pixel2SkyDir(const astro::SkyProj & proj, double i, double j,
+                            astro::SkyDir & dir);
    
 #ifndef SWIG   
    /// @return The current time ascertained using the <ctime> standard

@@ -21,6 +21,9 @@
 #include "tip/Header.h"
 #include "tip/Table.h"
 
+#include "astro/SkyDir.h"
+#include "astro/SkyProj.h"
+
 #include "st_facilities/Util.h"
 
 namespace {
@@ -303,6 +306,32 @@ namespace st_facilities {
       if (table->getHeader().find("TELAPSE") != table->getHeader().end()) {
          header["TELAPSE"].set(stop_time - start_time);
       }
+   }
+
+   void Util::skyDir2pixel(const astro::SkyProj & proj,
+                           const astro::SkyDir & dir,
+                           double & i, double & j) {
+      std::pair<double, double> pixels;
+      if (proj.isGalactic()) {
+         pixels = proj.sph2pix(dir.l(), dir.b());
+      } else {
+         pixels = proj.sph2pix(dir.ra(), dir.dec());
+      }
+      i = pixels.first;
+      j = pixels.second;
+   }
+
+   void Util::pixel2SkyDir(const astro::SkyProj & proj, double i, double j,
+                           astro::SkyDir & dir) {
+      std::pair<double, double> coords;
+      coords = proj.pix2sph(i, j);
+      if (proj.isGalactic()) {
+         dir = astro::SkyDir(coords.first, coords.second,
+                             astro::SkyDir::GALACTIC);
+      } else {
+         dir = astro::SkyDir(coords.first, coords.second,
+                             astro::SkyDir::EQUATORIAL);
+      }         
    }
 
    astro::JulianDate Util::currentTime() {
