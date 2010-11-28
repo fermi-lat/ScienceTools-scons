@@ -344,7 +344,7 @@ class SpectralAnalysis(object):
             see docstring for SpectralAnalysis.roi
         """
         from uw.utilities.xml_parsers import parse_sources
-        ps,ds = parse_sources(xmlfile,diffdir=diffdir)
+        ps,ds = parse_sources(xmlfile,diffdir=diffdir,roi_dir=roi_dir,max_roi=self.maxROI+5)
         return self.roi(roi_dir=roi_dir,point_sources=ps,diffuse_sources=ds,
                         diffuse_mapper=diffuse_mapper,*args,**kwargs)
 
