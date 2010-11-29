@@ -135,7 +135,10 @@ double Exposure::effArea(double time, double energy) const {
    double livetimefrac = (m_scData->livetime(indx)
                           /(m_scData->stop(indx) - m_scData->start(indx)));
    double theta(m_srcDir.difference(zAxis)*180./M_PI);
-   double phi(0);
+
+   CLHEP::Hep3Vector yhat(zAxis.dir().cross(xAxis.dir()));
+   double phi = std::atan2(yhat.dot(m_srcDir.dir()), 
+                           xAxis.dir().dot(m_srcDir.dir()))*180./M_PI;
    
    double my_effArea(0);
    for (size_t i = 0; i < m_irfs.size(); i++) {
