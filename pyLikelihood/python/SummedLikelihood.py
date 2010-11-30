@@ -291,7 +291,7 @@ class SummedLikelihood(AnalysisBase):
     def plot(self, *args):
         raise NotImplementedError("plot not implemented for SummedLikelihood")
     def setPlotter(self, *args):
-        raise NotImplementedError("setPlott not implemented for SummedLikelihood")
+        raise NotImplementedError("setPlotter not implemented for SummedLikelihood")
     def oplot(self, *args):
         raise NotImplementedError("oplot not implemented for SummedLikelihood")
     def plotSource(self, *args):
