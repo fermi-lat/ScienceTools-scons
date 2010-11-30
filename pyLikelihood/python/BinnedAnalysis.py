@@ -147,6 +147,8 @@ class BinnedAnalysis(AnalysisBase):
         print "setting energy bounds to "
         print "%.2f  %.2f" % (self.emin, self.emax)
         self.logLike.set_klims(kmin, kmax)
+    def selectEbands(self, kmin, kmax):
+        self.logLike.set_klims(kmin, kmax)
     def plot(self, oplot=0, color=None, omit=(), symbol='line'):
         AnalysisBase.plot(self, oplot, color, omit, symbol)
         try:
