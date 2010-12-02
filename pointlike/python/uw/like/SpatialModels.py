@@ -938,7 +938,7 @@ class SpatialMap(SpatialModel):
         return self.skyfun(skydir)
 
     def get_PySkyFunction(self):
-        return self.skyfun(skydir)
+        return self.skyfun
 
     def __getstate__(self):
         """ You cannot pickle a skymaps.SkyImage object. To avoid this,
