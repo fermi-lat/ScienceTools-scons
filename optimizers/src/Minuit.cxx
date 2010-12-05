@@ -305,5 +305,3 @@ namespace optimizers {
   }
 
 } // namespace optimizers
-
-
