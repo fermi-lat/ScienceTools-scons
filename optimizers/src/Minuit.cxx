@@ -97,8 +97,11 @@ namespace optimizers {
     mline << "MINIMIZE " << m_maxEval << " " << tolerance << std::endl;
     int retCode = doCmd(mline.str());  // Minimize fcn
 
-    // Improve the quality of the Hessian matrix.
-    if (doHesse) doCmd("HESSE");
+    // Move this below the extraction of the fitted parameters into m_stat.
+    // // Improve the quality of the Hessian matrix.
+    // if (doHesse) {
+    //    doCmd("HESSE");
+    // }
 
     // Extract fitted parameters
     if (verbose != 0) {
@@ -125,10 +128,17 @@ namespace optimizers {
     }
     m_stat->setFreeParamValues(paramValues);
 
+    // Improve the quality of the Hessian matrix.
+    if (doHesse) {
+       doCmd("HESSE");
+       m_stat->setFreeParamValues(paramValues);
+    }
+
     // Get information about quality of minimization
     integer nVariable, nparx, minStat;
     double fmin, vertDist, errDef;
     mnstat_(&fmin, &vertDist, &errDef, &nVariable, &nparx, &minStat);
+    m_stat->setFreeParamValues(paramValues);
     m_val = fmin;
     m_quality = minStat;
     m_distance = vertDist;
@@ -150,6 +160,7 @@ namespace optimizers {
 	std::cout << "  " << i << "  " << eParab << std::endl;
       }
     }
+    m_stat->setFreeParamValues(paramValues);
 
     if (retCode == 0 && minStat == 3) {
       setRetCode(0);    // OK!
@@ -166,6 +177,8 @@ namespace optimizers {
   } // End of minimize 
 
   std::pair<double,double> Minuit::Minos(unsigned int n, double level) {
+    std::vector<double> parValues;
+    m_stat->getFreeParamValues(parValues);
     integer npar(m_stat->getNumFreeParams());
 //     if (n < 1 || n > npar) {
 //       throw Exception("Parameter number out of range in Minos", n);
@@ -195,11 +208,14 @@ namespace optimizers {
       //Set internal error level back to 0.5=1sigma for -logLike optimizer
       doCmd("SET ERR 0.5");
     }
+    m_stat->setFreeParamValues(parValues);
     return std::pair<double,double>(eminus,eplus);
   }
 
   void Minuit::MnContour(unsigned int par1, unsigned int par2,
 			    double level, unsigned int npts) {
+    std::vector<double> parValues;
+    m_stat->getFreeParamValues(parValues);
     integer npar(m_stat->getNumFreeParams());
     if (par1 >= static_cast<unsigned int>(npar)) {
       throw Exception("Parameter number out of range in MnContour", par1);
@@ -223,6 +239,7 @@ namespace optimizers {
       //Set internal error level back to 0.5=1sigma for -logLike optimizer
       doCmd("SET ERR 0.5");
     }
+    m_stat->setFreeParamValues(parValues);
     return;
   }
 
@@ -263,6 +280,8 @@ namespace optimizers {
   }    
 
    std::vector< std::vector<double> > Minuit::covarianceMatrix() const {
+      std::vector<double> parValues;
+      m_stat->getFreeParamValues(parValues);
       integer npar(m_stat->getNumFreeParams());
       std::vector<double> entries(npar*npar);
       mnemat_(&entries[0], &npar);
@@ -275,6 +294,7 @@ namespace optimizers {
          }
          matrix.push_back(row);
       }
+      m_stat->setFreeParamValues(parValues);
       return matrix;
    }
 
