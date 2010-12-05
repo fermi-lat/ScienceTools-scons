@@ -56,7 +56,10 @@ namespace optimizers {
   // Call Minuit's MIGRAD to find the minimum of the function
   int NewMinuit::find_min(int verbose, double tol, int TolType) {
     find_min_only(verbose, tol, TolType);
+    std::vector<double> parValues;
+    m_stat->getFreeParamValues(parValues);
     hesse(verbose);
+    m_stat->setFreeParamValues(parValues);
     return getRetCode();
   }
 
@@ -77,6 +80,7 @@ namespace optimizers {
     ROOT::Minuit2::MnUserParameterState userState(upar);
     ROOT::Minuit2::MnMinimize migrad(m_FCN, userState, m_strategy);
     ROOT::Minuit2::FunctionMinimum min = migrad(m_maxEval, m_tolerance);
+    delete m_min;
     m_min = new ROOT::Minuit2::FunctionMinimum(min);
     if (verbose > 0) std::cout << *m_min;
     if (!min.IsValid()) {
