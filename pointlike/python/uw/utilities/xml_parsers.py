@@ -211,7 +211,7 @@ class XML_to_SpatialModel(object):
             if diffdir:
                 file = join(diffdir,os.path.basename(str(xml_dict['file'])))
             else:
-                file = os.path.expandvars(str(xml_dict['file']))
+                file = str(xml_dict['file'])
             return SpatialMap(file=file)
 
         d = dict()
