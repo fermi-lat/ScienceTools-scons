@@ -46,7 +46,7 @@ def decorate(defaults):
                 value = "'" + value + "'"
             s += indent+'%-12s' % key
             if len(key)>=12: s += indent + 12*' '
-            s += '%-10s' % value
+            s += '%-10s' % str(value)
             if len(str(value))>10: s += indent + 23*' '
             s += ' '+ (indent+23*' ').join(description.split('\n'))
         if func.__doc__ is None: func.__doc__ = ''
