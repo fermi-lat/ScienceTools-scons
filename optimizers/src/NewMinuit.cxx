@@ -118,6 +118,8 @@ namespace optimizers {
 
   // Call MINOS
   std::pair<double,double> NewMinuit::Minos(unsigned int n, double level) {
+    std::vector<double> parValues;
+    m_stat->getFreeParamValues(parValues);
     unsigned int npar = m_min->UserParameters().Params().size();
     if (n >= npar) {
       throw Exception("Parameter number out of range in Minos", n);
@@ -133,11 +135,15 @@ namespace optimizers {
       m_FCN.SetErrorDef(0.5);
       m_min->SetErrorDef(0.5);
     }
+    m_stat->setFreeParamValues(parValues);
     return results;
   }
+
   // Call MNCONTOUR
   void NewMinuit::MnContour(unsigned int par1, unsigned int par2,
 			 double level, unsigned int npts) {
+    std::vector<double> parValues;
+    m_stat->getFreeParamValues(parValues);
     unsigned int npar = m_min->UserParameters().Params().size();
     if (par1 >= npar) {
       throw Exception("Parameter number out of range in MnContour", par1);
@@ -160,6 +166,7 @@ namespace optimizers {
       m_FCN.SetErrorDef(0.5);
       m_min->SetErrorDef(0.5);
     }
+    m_stat->setFreeParamValues(parValues);
     return;
   }
   // Constructor for the function to be minimized
@@ -207,6 +214,8 @@ namespace optimizers {
 
   // Get the uncertainty values from covariance matrix
    const std::vector<double> & NewMinuit::getUncertainty(bool useBase) {
+      std::vector<double> parValues;
+      m_stat->getFreeParamValues(parValues);
       if (useBase) {
          Optimizer::getUncertainty(useBase);
       } else {
@@ -218,6 +227,7 @@ namespace optimizers {
             m_uncertainty.push_back(sqrt(m_min->UserCovariance()(i, i)));
          }
       }
+      m_stat->setFreeParamValues(parValues);
       return m_uncertainty;
    }
 
@@ -227,6 +237,8 @@ namespace optimizers {
   }
 
    std::vector<std::vector<double> > NewMinuit::covarianceMatrix() const {
+      std::vector<double> parValues;
+      m_stat->getFreeParamValues(parValues);
       if (!m_min->HasValidCovariance()) {
          const_cast<NewMinuit *>(this)->hesse(0);
       }
@@ -241,7 +253,7 @@ namespace optimizers {
          }
          covariancematrix.push_back(vec);
       }
-      
+      m_stat->setFreeParamValues(parValues);
       return covariancematrix;
    }
 
