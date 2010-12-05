@@ -29,7 +29,6 @@ namespace optimizers {
   */
 
   class myFCN : public ROOT::Minuit2::FCNGradientBase {
-//  class myFCN : public ROOT::Minuit2::FCNBase {
   public:
     myFCN(Statistic &);
     virtual ~myFCN() {};
@@ -69,7 +68,6 @@ namespace optimizers {
        m_strategy=ROOT::Minuit2::MnStrategy(strat);
     }
     double getDistance(void) const {return m_distance;};
-    void hesse(int verbose = 0);
     virtual const std::vector<double> & getUncertainty(bool useBase = false);
     virtual std::vector<std::vector<double> > covarianceMatrix() const;
     virtual std::ostream& put (std::ostream& s) const;
@@ -78,7 +76,6 @@ namespace optimizers {
     /// Run a MNCONTOUR dynamic CONTOUR analysis
     void MnContour(unsigned int par1, unsigned int par2,
 		   double level=1., unsigned int npts=20);
-    int checkResults();
   private:
     myFCN m_FCN;
     double m_distance;
@@ -86,6 +83,8 @@ namespace optimizers {
     ROOT::Minuit2::MnStrategy m_strategy;
     ROOT::Minuit2::FunctionMinimum * m_min;
     void setTolerance(double tol, int tolType);
+    void hesse(int verbose = 0);
+    int checkResults();
   };
 
 }
