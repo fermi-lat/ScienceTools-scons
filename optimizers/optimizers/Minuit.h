@@ -59,7 +59,7 @@ namespace optimizers {
     
     int find_min(int verbose = 0, double tol = 1e-3, int tolType = ABSOLUTE);
     int find_min_only(int verbose = 0, double tol = 1e-3, int tolType = ABSOLUTE);
-    int minimize(int verbose, double tol, int tolType, bool doHesse);
+    // int minimize(int verbose, double tol, int tolType, bool doHesse);
 
     //! Minuit return status.   3=OK, 2=forced positive def., 1= not accurate
     int getQuality(void) const;
@@ -92,6 +92,8 @@ namespace optimizers {
 
   private:
     
+    int minimize(int verbose, double tol, int tolType, bool doHesse);
+
     //! Pass a command string to Minuit
     int doCmd(std::string command);
     int m_quality;
