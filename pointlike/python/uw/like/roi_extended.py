@@ -131,6 +131,7 @@ class ROIExtendedModel(ROIDiffuseModel):
 
     def set_state(self,band):
         self.active_bgc.do_convolution(band)
+        self.current_energy = energy=band.psf.eopt if band.psf.__dict__.has_key('eopt') else band.e
 
     def initialize_counts(self,bands,roi_dir=None):
         rd = self.roi_dir if roi_dir is None else roi_dir
@@ -144,9 +145,6 @@ class ROIExtendedModel(ROIDiffuseModel):
             self.set_state(band)
 
             exposure=band.exp.value
-
-            # Use the 'optimal' energy (calculated by the ADJUST_MEAN flag) if it exists.
-            self.current_energy = energy=band.psf.eopt if band.psf.__dict__.has_key('eopt') else band.e
 
             myband.er = exposure(es.spatial_model.center,self.current_energy)/exposure(rd,self.current_energy)
 
@@ -502,6 +500,7 @@ class ROIExtendedModelAnalytic(ROIExtendedModel):
 
     def set_state(self,band):
         self.active_bgc.do_convolution(band,self.fitpsf)
+        self.current_energy = energy=band.psf.eopt if band.psf.__dict__.has_key('eopt') else band.e
 
     def _pix_value(self,pixlist):
         return self.active_bgc(pixlist)
