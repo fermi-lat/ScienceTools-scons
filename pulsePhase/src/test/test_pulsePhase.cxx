@@ -304,13 +304,13 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
 
   // Prepare variables to create application objects.
   std::list<std::string> test_name_cont;
-  test_name_cont.push_back("par1");
-  test_name_cont.push_back("par2");
+  test_name_cont.push_back("par1a");
+  test_name_cont.push_back("par1b");
   test_name_cont.push_back("par2a");
   test_name_cont.push_back("par2b");
   test_name_cont.push_back("par2c");
-  test_name_cont.push_back("par3");
-  test_name_cont.push_back("par4");
+  test_name_cont.push_back("par3a");
+  test_name_cont.push_back("par3b");
   test_name_cont.push_back("par4a");
   test_name_cont.push_back("par4b");
   test_name_cont.push_back("par5");
@@ -377,7 +377,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
     pars["mode"] = "ql";
 
     // Set test-specific parameters.
-    if ("par1" == test_name) {
+    if ("par1a" == test_name) {
       // Test standard computation with DB option.
       tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
       pars["evfile"] = out_file;
@@ -389,7 +389,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       log_file.erase();
       log_file_ref.erase();
 
-    } else if ("par2" == test_name) {
+    } else if ("par1b" == test_name) {
       // Test standard computation with FREQ option.
       tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
       pars["evfile"] = out_file;
@@ -446,7 +446,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["matchsolareph"] = "NONE";
       log_file_ref = prependOutrefPath(log_file);
 
-    } else if ("par3" == test_name) {
+    } else if ("par3a" == test_name) {
       // Test phase computation with orbital modulation with DB option.
       tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
       pars["evfile"] = out_file;
@@ -458,7 +458,7 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       log_file.erase();
       log_file_ref.erase();
 
-    } else if ("par4" == test_name) {
+    } else if ("par3b" == test_name) {
       // Test phase computation with orbital modulation with FREQ option.
       tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
       pars["evfile"] = out_file;
@@ -704,7 +704,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
 
   // Prepare variables to create application objects.
   std::list<std::string> test_name_cont;
-  test_name_cont.push_back("par1");
+  test_name_cont.push_back("par1a");
   test_name_cont.push_back("par2");
   test_name_cont.push_back("par3");
   test_name_cont.push_back("par4");
@@ -752,7 +752,7 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
     pars["mode"] = "ql";
 
     // Set test-specific parameters.
-    if ("par1" == test_name) {
+    if ("par1a" == test_name) {
       // Test standard computation with DB option.
       tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
       pars["evfile"] = out_file;
