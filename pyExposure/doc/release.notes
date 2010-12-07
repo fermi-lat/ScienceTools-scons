@@ -6,6 +6,7 @@
   $Id$
   * EOH *
 
+ pyExposure-02-05-09 06-Dec-2010 jchiang trivial change to Exposure::effArea
  pyExposure-02-05-08 24-Feb-2010    jrb TRAP_FPE is for Linux only
  pyExposure-02-05-07 24-Feb-2010    jrb fix linking for mac
  pyExposure-02-05-06 24-Feb-2010    jrb fix linking for mac
