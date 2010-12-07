@@ -306,8 +306,13 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
   std::list<std::string> test_name_cont;
   test_name_cont.push_back("par1");
   test_name_cont.push_back("par2");
+  test_name_cont.push_back("par2a");
+  test_name_cont.push_back("par2b");
+  test_name_cont.push_back("par2c");
   test_name_cont.push_back("par3");
   test_name_cont.push_back("par4");
+  test_name_cont.push_back("par4a");
+  test_name_cont.push_back("par4b");
   test_name_cont.push_back("par5");
   test_name_cont.push_back("par6");
   test_name_cont.push_back("par7");
@@ -323,6 +328,8 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
   std::string sc_file = prependDataPath("my_pulsar_spacecraft_data_v3r1.fits");
   std::string test_pulsardb = prependDataPath("testpsrdb_ephcomp.fits");
   std::string ev_file_2gti = prependDataPath("my_pulsar_events_2gti.fits");
+  std::string ev_file_long = prependDataPath("testevdata_1year.fits");
+  std::string sc_file_long = prependDataPath("testscdata_1year.fits");
 
   // Loop over parameter sets.
   for (std::list<std::string>::const_iterator test_itor = test_name_cont.begin(); test_itor != test_name_cont.end(); ++test_itor) {
@@ -404,6 +411,41 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       log_file.erase();
       log_file_ref.erase();
 
+    } else if ("par2a" == test_name) {
+      // Test phase computation by FrequencyEph class for a wide range of event times.
+      tip::IFileSvc::instance().openFile(ev_file_long).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file_long;
+      pars["psrname"] = "PSR J9999+9999";
+      pars["ephstyle"] = "DB";
+      pars["psrdbfile"] = prependDataPath("testpsrdb_spin_freq.txt");
+      pars["matchsolareph"] = "NONE";
+      log_file.erase();
+      log_file_ref.erase();
+
+    } else if ("par2b" == test_name) {
+      // Test phase computation by PeriodEph class for a wide range of event times.
+      tip::IFileSvc::instance().openFile(ev_file_long).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file_long;
+      pars["psrname"] = "PSR J9999+9999";
+      pars["ephstyle"] = "DB";
+      pars["psrdbfile"] = prependDataPath("testpsrdb_spin_per.txt");
+      pars["matchsolareph"] = "NONE";
+      log_file.erase();
+      log_file_ref.erase();
+
+    } else if ("par2c" == test_name) {
+      // Test phase computation by HighPrecisionEph class for a wide range of event times.
+      tip::IFileSvc::instance().openFile(ev_file_long).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file_long;
+      pars["psrname"] = "PSR J9999+9999";
+      pars["ephstyle"] = "DB";
+      pars["psrdbfile"] = prependDataPath("testpsrdb_spin_hp.txt");
+      pars["matchsolareph"] = "NONE";
+      log_file_ref = prependOutrefPath(log_file);
+
     } else if ("par3" == test_name) {
       // Test phase computation with orbital modulation with DB option.
       tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
@@ -433,6 +475,48 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["f0"] = 19.83401688366839422996;
       pars["f1"] = -1.8869945816704768775044e-10;
       pars["f2"] = 0.;
+      pars["matchsolareph"] = "NONE";
+      log_file.erase();
+      log_file_ref.erase();
+
+    } else if ("par4a" == test_name) {
+      // Test phase computation with orbital modulation by SimpleDd class for a wide range of event times.
+      tip::IFileSvc::instance().openFile(ev_file_long).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file_long;
+      pars["psrdbfile"] = prependDataPath("testpsrdb_orbital_dd.txt");
+      pars["psrname"] = "PSR J9999+9999";
+      pars["ephstyle"] = "FREQ";
+      pars["ephepoch"] = 55200.0;
+      pars["timeformat"] = "MJD";
+      pars["timesys"] = "TDB";
+      pars["ra"] = 20.940328750000006;
+      pars["dec"] = -12.582441388888888;
+      pars["phi0"] = 0.0;
+      pars["f0"] = 12.3456789;
+      pars["f1"] = 0.0;
+      pars["f2"] = 0.0;
+      pars["matchsolareph"] = "NONE";
+      log_file.erase();
+      log_file_ref.erase();
+
+    } else if ("par4b" == test_name) {
+      // Test phase computation with orbital modulation by BtModel class for a wide range of event times.
+      tip::IFileSvc::instance().openFile(ev_file_long).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file_long;
+      pars["psrdbfile"] = prependDataPath("testpsrdb_orbital_bt.txt");
+      pars["psrname"] = "PSR J9999+9999";
+      pars["ephstyle"] = "FREQ";
+      pars["ephepoch"] = 55200.0;
+      pars["timeformat"] = "MJD";
+      pars["timesys"] = "TDB";
+      pars["ra"] = 20.940328750000006;
+      pars["dec"] = -12.582441388888888;
+      pars["phi0"] = 0.0;
+      pars["f0"] = 12.3456789;
+      pars["f1"] = 0.0;
+      pars["f2"] = 0.0;
       pars["matchsolareph"] = "NONE";
       log_file.erase();
       log_file_ref.erase();
