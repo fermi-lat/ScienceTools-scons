@@ -213,7 +213,7 @@ class SpectralAnalysis(object):
     def roi(self, roi_dir = None,
                   point_sources = [], catalogs = [], catalog_mapper = None,
                   diffuse_sources = [], diffuse_mapper = None,
-                  *args,**kwargs):
+                  **kwargs):
         """
         return an ROIAnalysis object
 
