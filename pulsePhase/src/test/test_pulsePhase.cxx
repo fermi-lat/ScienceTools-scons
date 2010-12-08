@@ -306,11 +306,13 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
   std::list<std::string> test_name_cont;
   test_name_cont.push_back("par1a");
   test_name_cont.push_back("par1b");
+  test_name_cont.push_back("par1c");
   test_name_cont.push_back("par2a");
   test_name_cont.push_back("par2b");
   test_name_cont.push_back("par2c");
   test_name_cont.push_back("par3a");
   test_name_cont.push_back("par3b");
+  test_name_cont.push_back("par3c");
   test_name_cont.push_back("par4a");
   test_name_cont.push_back("par4b");
   test_name_cont.push_back("par5");
@@ -411,6 +413,28 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       log_file.erase();
       log_file_ref.erase();
 
+    } else if ("par1c" == test_name) {
+      // Test standard computation with PER option.
+      tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file;
+      pars["psrname"] = "PSR B0540-69";
+      pars["ephstyle"] = "PER";
+      pars["psrdbfile"] = "NONE";
+      pars["tcorrect"] = "BARY";
+      pars["ra"] = 85.0482;
+      pars["dec"] = -69.3319;
+      pars["ephepoch"] = 212380785.922;
+      pars["timeformat"] = "FILE";
+      pars["timesys"] = "TDB";
+      pars["phi0"] = 0.1234;
+      pars["pphaseoffset"] = -0.1234;
+      pars["p0"] = 50.41843041e-3;
+      pars["p1"] = 4.79677442839826504e-13;
+      pars["p2"] = 0.;
+      log_file.erase();
+      log_file_ref.erase();
+
     } else if ("par2a" == test_name) {
       // Test phase computation by FrequencyEph class for a wide range of event times.
       tip::IFileSvc::instance().openFile(ev_file_long).copyFile(out_file, true);
@@ -475,6 +499,27 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["f0"] = 19.83401688366839422996;
       pars["f1"] = -1.8869945816704768775044e-10;
       pars["f2"] = 0.;
+      pars["matchsolareph"] = "NONE";
+      log_file.erase();
+      log_file_ref.erase();
+
+    } else if ("par3c" == test_name) {
+      // Test phase computation with orbital modulation with PER option.
+      tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file;
+      pars["psrname"] = "PSR J1959+2048";
+      pars["ephstyle"] = "PER";
+      pars["psrdbfile"] = test_pulsardb; // Needed for binary demodulation.
+      pars["ra"] = 85.0482;
+      pars["dec"] = -69.3319;
+      pars["ephepoch"] = 212380785.922;
+      pars["timeformat"] = "FERMI";
+      pars["timesys"] = "TDB";
+      pars["phi0"] = 0.;
+      pars["p0"] = 50.41843041e-3;
+      pars["p1"] = 4.79677442839826504e-13;
+      pars["p2"] = 0.;
       pars["matchsolareph"] = "NONE";
       log_file.erase();
       log_file_ref.erase();
@@ -705,6 +750,8 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
   // Prepare variables to create application objects.
   std::list<std::string> test_name_cont;
   test_name_cont.push_back("par1a");
+  test_name_cont.push_back("par1b");
+  test_name_cont.push_back("par1c");
   test_name_cont.push_back("par2");
   test_name_cont.push_back("par3");
   test_name_cont.push_back("par4");
@@ -717,6 +764,8 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
   std::string sc_file = prependDataPath("my_pulsar_spacecraft_data_v3r1.fits");
   std::string test_pulsardb = prependDataPath("testpsrdb_ephcomp.fits");
   std::string ev_file_2gti = prependDataPath("my_pulsar_events_2gti.fits");
+  std::string ev_file_long = prependDataPath("testevdata_1year.fits");
+  std::string sc_file_long = prependDataPath("testscdata_1year.fits");
 
   // Loop over parameter sets.
   for (std::list<std::string>::const_iterator test_itor = test_name_cont.begin(); test_itor != test_name_cont.end(); ++test_itor) {
@@ -761,6 +810,32 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       pars["psrdbfile"] = test_pulsardb;
       pars["ra"] = 85.0482; // Note: Need to use those wrong RA & Dec to match the reference output.
       pars["dec"] = -69.3319;
+      pars["matchsolareph"] = "NONE";
+      log_file.erase();
+      log_file_ref.erase();
+
+    } else if ("par1b" == test_name) {
+      // Test phase computation with orbital modulation by SimpleDd class for a wide range of event times.
+      tip::IFileSvc::instance().openFile(ev_file_long).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file_long;
+      pars["psrdbfile"] = prependDataPath("testpsrdb_orbital_dd.txt");
+      pars["psrname"] = "PSR J9999+9999";
+      pars["ra"] = 20.940328750000006;
+      pars["dec"] = -12.582441388888888;
+      pars["matchsolareph"] = "NONE";
+      log_file.erase();
+      log_file_ref.erase();
+
+    } else if ("par1c" == test_name) {
+      // Test phase computation with orbital modulation by BtModel class for a wide range of event times.
+      tip::IFileSvc::instance().openFile(ev_file_long).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file_long;
+      pars["psrdbfile"] = prependDataPath("testpsrdb_orbital_bt.txt");
+      pars["psrname"] = "PSR J9999+9999";
+      pars["ra"] = 20.940328750000006;
+      pars["dec"] = -12.582441388888888;
       pars["matchsolareph"] = "NONE";
       log_file.erase();
       log_file_ref.erase();
