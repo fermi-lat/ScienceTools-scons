@@ -262,6 +262,9 @@ Arguments:
         quiet = roi.quiet
         roi.quiet = True
 
+        if roi.TS(which=self.name,quick=True,bandfits=bandfits) < 1:
+            raise Exception("Unable to localize a source with initial TS<1")
+
         init_spectral = self.smodel.get_parameters()
         init_spatial = sm.get_parameters(absolute=False)
 
@@ -343,7 +346,7 @@ Arguments:
         f=likelihood_wrapper
 
         ll_0 = 0
-        old_quiet = quiet; quiet = False; 
+        old_quiet = quiet; quiet = True; 
         ll_0 = -f(init_spatial); 
         quiet = old_quiet
 
