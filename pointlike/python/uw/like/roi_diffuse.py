@@ -33,7 +33,8 @@ class DiffuseSource(object):
         if not hasattr(self.dmodel,'__len__'):
             self.dmodel = [self.dmodel]
    
-    def __str__(self): return self.name
+    def __str__(self): return '\n'.join((self.name,'\t'+self.dmodel.__str__(),
+            '\t'+self.smodel.__str__()))
 
 
 ###=========================================================================###
