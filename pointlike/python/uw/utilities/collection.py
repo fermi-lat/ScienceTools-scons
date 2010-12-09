@@ -1,12 +1,12 @@
 """
-generate collection file for LiveLabs Pivot viewer
+generate collection file for the  Pivot viewer
 
 $Header$
 See <http://getpivot.com>
 Author: Toby Burnett <tburnett@uw.edu>
 """
 
-import os, pickle, pyfits, types, exceptions
+import os, types, exceptions
 import xml.sax
 
 import numpy as np
