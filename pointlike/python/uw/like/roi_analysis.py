@@ -63,7 +63,7 @@ class ROIAnalysis(object):
         self.psm.cache(self.bands)
         #self.psm.update_counts(self.bands)
 
-        self.logl = -self.logLikelihood(self.get_parameters()) # make sure everything initialized
+        self.logl = self.prev_logl =-self.logLikelihood(self.get_parameters()) # make sure everything initialized
 
     def __setup_bands__(self):
 
@@ -159,7 +159,7 @@ class ROIAnalysis(object):
         self.bgm.update_counts(self.bands)
         self.psm.update_counts(self.bands)
 
-    def logLikelihood(self,parameters,*args):
+    def logLikelihood(self, parameters, *args):
         """ the total likelihood, according to model
             parameters parameters to pass to model
         """
