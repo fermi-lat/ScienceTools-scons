@@ -200,13 +200,19 @@ class ROIPointSourceManager(ROIModelManager):
         self.models[which] = e
         self.point_sources[which].model = e
 
-    def add_source(self, ps, bands):
+    def add_source(self, ps, bands, nosort=False):
         """Add a new PointSource object to the model and re-calculate the point source
            contribution. When adding the source, resort the point sources
-           based upon their distance from the center. """
+           based upon their distance from the center. 
+           
+           Use the flag nosort to not sort the point sources after adding the new one
+           (for backwards compatability). """
 
-        sd = [ i.skydir for i in self.point_sources ] + [ ps.skydir ]
-        sort_index=N.argsort([self.roi_dir.difference(i) for i in sd])
+        if nosort:
+            sort_index=N.arange(len(self.point_sources)+1)
+        else:
+            sd = [ i.skydir for i in self.point_sources ] + [ ps.skydir ]
+            sort_index=N.argsort([self.roi_dir.difference(i) for i in sd])
 
         self.point_sources = N.append(self.point_sources,ps)[sort_index]
         self.models        = N.append(self.models,ps.model)[sort_index]

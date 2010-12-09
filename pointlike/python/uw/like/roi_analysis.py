@@ -706,7 +706,7 @@ class ROIAnalysis(object):
 
         pass #make this a TS map? negative -- spatialLikelihood does it, essentially
 
-    def add_source(self,source):
+    def add_source(self,source,**kwargs):
          """Add a new source object to the model.
 
             N.B. for point sources, add a pointspec_helpers.PointSource
@@ -726,7 +726,7 @@ class ROIAnalysis(object):
                  source=diffuse_mapper(source)
          else:
              raise Exception("Unable to add source %s. Only able to add PointSource, DiffuseSource, or ROIDiffuseModel objects.")
-         manager.add_source(source,self.bands)
+         manager.add_source(source,self.bands,**kwargs)
 
     def del_source(self,which):
          """Remove the source at position given by which from the model."""
