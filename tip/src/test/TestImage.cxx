@@ -4,6 +4,7 @@
 */
 
 #include <cstddef>
+#include <cstdio>
 #include <iostream>
 #include <memory>
 #include <vector>
