@@ -74,7 +74,8 @@ def unparse_localization(roi):
         """
 
     if roi.__dict__.has_key('qform'):
-        ra,dec,a,b,ang=roi.qform.par[0:5]
+        ra,dec=roi.qform.par[0:2]
+        a,b,ang=roi.qform.par[3:6]
         return ["# The next line is the localization error",
                 "fk5; ellipse(%.4f, %.4f, %.4f %.4f, %.4f)" % \
                 (ra,dec,b,a,ang)]
