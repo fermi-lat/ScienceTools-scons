@@ -764,7 +764,7 @@ class ROIWrapper(object):
 
     def __init__(self,roi,nside=6):
         self.roi = roi
-        self.band = Band(6)
+        self.band = Band(nside)
         self.index = self.band.index(roi.roi_dir)
 
 class MultiHealpixKDEMap(object):
