@@ -13,7 +13,7 @@ def makefits(r, filename=None):
     def convertformat(dtype):
         if dtype[:2]=='|S': return dtype[2:]+'A'
         try:
-            return {'<f8':'D', '<f4':'E', '<i4':'J', '|b1':'L', '|O4':'|O4',}[dtype]
+            return {'<f8':'D', '<f4':'E', '<i4':'J', '|b1':'L', '|O4':'|O4','<i8':'I',}[dtype]
         except KeyError:
             print 'recarry type %s not recognized' %dtype
             raise
