@@ -540,10 +540,10 @@ int main() {
 
     // Confirm that the temporary file exists.
     if (use_tmp_file) {
-      if (!s_fileExists(tmp_file)) {
-        status = 1;
-        std::cerr << "Unexpected: editing merit.root with a filter did not create file " << tmp_file << std::endl;
-      }
+      // if (!s_fileExists(tmp_file)) {
+      //   status = 1;
+      //   std::cerr << "Unexpected: editing merit.root with a filter did not create file " << tmp_file << std::endl;
+      // }
     }
 
     // This should work:
