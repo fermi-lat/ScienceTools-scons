@@ -234,6 +234,7 @@ class ROIPointSourceManager(ROIModelManager):
 
     def zero_source(self, which, bands):
         m = self.models[which]
+        if m.p[0]==-100: return #already zeroed
         m.old_flux = m.p[0]
         m.p[0] = -100
         m.old_free = m.free.copy()
