@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.32  2009/07/15 23:14:30  jurgen
+Correctly write double precision columns
+
 Revision 1.31  2009/07/07 21:32:52  jurgen
 Correctly read binary double columns
 
@@ -111,6 +114,7 @@ creation and allow in memory catalogues and FITS disk catalogues.
  */
 
 /* Includes _________________________________________________________________ */
+#include <cstring>
 #include "sourceIdentify.h"
 #include "Catalogue.h"
 #include "Log.h"

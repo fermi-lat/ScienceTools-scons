@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.35  2010/10/13 14:19:35  jurgen
+Dump candidates before probability cut in refine step
+
 Revision 1.34  2010/04/16 15:23:11  jurgen
 Move euler and modula in GSkyDir.cxx
 
@@ -118,9 +121,9 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v2r3p1"
+#define TOOL_VERSION  "v2r3p2"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "13-Oct-2010"
+#define TOOL_DATE     "20-Dec-2010"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
