@@ -33,6 +33,7 @@
 #include <string>
 #include <cstring>
 #include <cassert>
+#include <cstdio>
 
 namespace {
   XERCES_CPP_NAMESPACE_USE
