@@ -17,6 +17,7 @@
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
+#include <cstdio>
 #include <iostream>
 #include <iomanip>
 #include <string>

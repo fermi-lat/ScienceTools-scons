@@ -9,6 +9,7 @@ $Header$
 #include "healpix/HealpixArrayIO.h"
 #include "tip/IFileSvc.h"
 
+#include <cstdio>
 #include <cmath>
 #include <errno.h>
 #include <sstream>

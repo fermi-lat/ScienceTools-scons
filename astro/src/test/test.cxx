@@ -20,6 +20,7 @@
 #include "tip/Image.h"
 
 
+#include <cstdio>
 #include <stdexcept>
 #include <iomanip>
 #include <typeinfo>

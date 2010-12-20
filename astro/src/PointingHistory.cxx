@@ -180,7 +180,7 @@ void PointingHistory::readFitsData(std::string filename) {
         static double lat_tol(0.5), lon_tol(0.5); // was 0.2, 0.01
         static int error_count(50); // allow this many
 
-        if( (fabs(check_lat)>lat_tol || fabs(check_lon)>lon_tol && abs(lon)<179) && error_count>0 ){
+        if( (fabs(check_lat)>lat_tol || fabs(check_lon)>lon_tol && std::abs(lon)<179) && error_count>0 ){
             std::stringstream error; 
             error << "PointingHistory::readFitsData: apparent inconsistency for Earth position, time=" 
                 << start_time

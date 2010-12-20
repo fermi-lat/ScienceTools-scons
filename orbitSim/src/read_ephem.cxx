@@ -16,6 +16,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <cstdio>
 
 #include <iostream>
 #include <iomanip>

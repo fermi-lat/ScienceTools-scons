@@ -21,6 +21,7 @@ $Header$
 using namespace std;
 using namespace healpix;
 #include <cmath>
+#include <typeinfo>
 
 namespace {
 
