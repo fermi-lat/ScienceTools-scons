@@ -550,7 +550,10 @@ def parse_sourcelib(xml):
     parser = x.make_parser()
     handler = SourceHandler()
     parser.setContentHandler(handler)
-    parser.parse(xml)
+    if isinstance(xml,list):
+	    [parser.parse(xmlfile) for xmlfile in xml]
+    else:
+	    parser.parse(xml)
     return handler
 
 def parse_point_sources(handler,roi_dir,max_roi):
