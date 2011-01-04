@@ -7,6 +7,10 @@
 #include "config.h"
 #endif
 
+#ifdef ScienceTools
+#include <stdexcept>
+#endif
+
 #if defined(__APPLE__)
 #include <crt_externs.h>
 #define environ (*_NSGetEnviron())
@@ -310,6 +314,9 @@ namespace facilities {
     // caldb. 
 #ifdef ScienceTools
     std::string calDbData = getDataPath("caldb");
+    if (calDbData == "") {
+       throw std::runtime_error("CALDB environment variable not set properly.");
+    }
     setEnvironment("CALDB", calDbData);
     setEnvironment("CALDBCONFIG", 
                    joinPath(joinPath(joinPath(calDbData, "software"), 
