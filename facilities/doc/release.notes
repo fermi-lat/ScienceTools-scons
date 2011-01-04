@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+ facilities-02-19-12 04-Jan-2011 jchiang in commonUtilities, throw exception if CALDB env var is not set properly
  facilities-02-19-11 12-Oct-2010    jrb swap a couple lines to get compile for ST as well as GR
  facilities-02-19-10 11-Oct-2010    jrb Bug fix, general straightening up of setupEnvironment routine
  facilities-02-19-09 15-Sep-2010    jrb Don't require all containers to use extFiles
