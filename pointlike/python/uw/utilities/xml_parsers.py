@@ -456,7 +456,7 @@ class Model_to_XML(object):
             if self.pval[index] < self.pmin[index]:
                 msg = 'Found %s=%s < %s, minimum allowed valus '%(param, str(self.pval[index]),str(self.pmin[index]))
                 if self.strict: raise Exception(msg)
-                print 'WARNING: %s, \n\tSetting parameter value to minimum.' %s
+                print 'WARNING: %s, \n\tSetting parameter value to minimum.' %msg
                 self.pval[index] = self.pmin[index]
             if self.pval[index] > self.pmax[index]:
                 msg = 'Found %s=%s > %s, maximum allowed value'%(param, str(self.pval[index]),str(self.pmax[index]))
