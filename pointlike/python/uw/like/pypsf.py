@@ -397,7 +397,7 @@ class PsfOverlap(object):
         """Return the fractional overlap for a point source at location skydir.
             Note radius arguments are in radians."""
 
-        roi_rad  = radius_in_rad or band.radius_in_rad
+        roi_rad  = band.radius_in_rad if radius_in_rad is None else radius_in_rad
         integral = band.psf.integral if override_integral is None else override_integral
 
         offset    = roi_dir.difference(ps_dir)
