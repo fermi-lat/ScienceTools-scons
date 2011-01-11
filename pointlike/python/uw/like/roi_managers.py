@@ -344,7 +344,7 @@ class ROIDiffuseManager(ROIModelManager):
             band.bg_pix_counts = N.append(band.bg_pix_counts, N.empty((len(band.wsdl),1)),axis=1) if band.has_pixels else 0
 
         self.bgmodels[index].initialize_counts(bands)
-        self.bgmodels[index].update_counts(bands,index)
+        self.update_counts(bands)
 
     def del_source(self, which, bands):
         """ which must be an index to the desired diffuse source 
