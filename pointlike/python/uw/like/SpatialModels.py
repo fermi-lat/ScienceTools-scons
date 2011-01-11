@@ -371,7 +371,7 @@ class SpatialModel(object):
         pnames      = self.param_names
 
         l=[]
-        for name,val,lo,hi,avg,abs,log,free in zip(pnames,p,hi_p,lo_p,avg_p,abs_p,self.log,self.free):
+        for name,val,hi,lo,avg,abs,log,free in zip(pnames,p,hi_p,lo_p,avg_p,abs_p,self.log,self.free):
             l += [ '%-10s: ' % name ]
 
             if log and avg != 0 and hi != 0 and lo !=0:
