@@ -382,7 +382,8 @@ class SpatialModel(object):
             if not log and abs != 0: 
                 l[-1] += ' +/- %.3g' % abs
 
-            if not free: print ' (FROZEN)'
+            if not free: l[-1] += ' (FROZEN)'
+
         return ('\n'+indent).join(l)
 
     def full_name(self):
