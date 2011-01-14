@@ -107,7 +107,7 @@ class CountsImage(ROIImage):
                      'ENERGY < %s'% emax,
                      'ZENITH_ANGLE < %s' % roi.sa.pixeldata.zenithcut,
                      'THETA < %s' % roi.sa.pixeldata.thetacut,
-                     'EVENT_CLASS == %s' % roi.sa.pixeldata.event_class]
+                     'EVENT_CLASS >= %s' % roi.sa.pixeldata.event_class]
         if conv_type >= 0:        base_cuts += ['EVENT_CLASS == %d'%(conv_type)]
         if mc_src_id is not None: base_cuts += ['MC_SRC_ID == %d'%(mc_src_id)]
         cuts = base_cuts if extra_cuts is None else extra_cuts + base_cuts
