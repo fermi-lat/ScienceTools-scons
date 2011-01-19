@@ -270,7 +270,7 @@ class ExtendedSourceConvolution(BackgroundConvolution):
         self.extended_source = extended_source
 
         # Pass in none for the 
-        super(ExtendedSourceConvolution,self).__init__(spatial_model.center,None,psf,
+        super(ExtendedSourceConvolution,self).__init__(self.extended_source.spatial_model.center,None,psf,
                 npix=self.npix,pixelsize=self.pixelsize,
                 bounds_error=False,fill_value=0)
 
