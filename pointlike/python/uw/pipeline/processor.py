@@ -175,7 +175,8 @@ def make_tsmap(roi, source, tsmap_dir, **kwargs):
  
 def make_association(source, tsf, associate):
     print ' %s association(s) ' % source.name,
-    ell = source.ellipse
+    try:    ell = source.ellipse
+    except: ell = None
     if ell is None:
         print '...no localization'
         source.adict = None
@@ -199,7 +200,9 @@ def make_association(source, tsf, associate):
 
 def process_sources(roi, sources, **kwargs):
     outdir     = kwargs.pop('outdir', '.')
+    for source in sources: source.ellipse=None
     associate= kwargs.pop('associate', None)
+    
     if associate is not None:
         for which,source in enumerate(sources):
             make_association(source, roi.tsmap(which), associate)
