@@ -91,7 +91,8 @@ class ExtendedCatalog(pointspec_helpers.ExtendedSourceCatalog):
         """ return an ExtendedSource object, or None if not found """
         for source in self.sources:
             if name==source.name:
-                source.free = source.model.free.copy() 
+                source.free = source.model.free.copy()
+                if source.model.name=='LogParabola': source.free[-1]=False # E_break not free
                 return source
                 # since Josh checks for his ExtendedSource class, I have to modify it rather than 
                 # use my own
@@ -208,7 +209,7 @@ class SkyModel(object):
             # make a list of extended sources used in the model   
             t = []
             for name, model in zip(p['diffuse_names'] , p['diffuse']):
-                if len(t)<2: # alwasy assume first two are global
+                if len(t)<2: # always assume first two are global
                     t.append(GlobalSource(name=name, model=model, skydir=None, index=index))
                 else:
                     es = self.extended_catalog.lookup(name)
