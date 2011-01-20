@@ -173,6 +173,10 @@ class PipelineROI(roi_analysis.ROIAnalysis):
     @decorate_with(counts_plotter.plot_counts)
     def plot_counts(self, **kwargs):
         return counts_plotter.plot_counts(self, **kwargs)
+    
+    @decorate_with(tsmap_plotter.plot_tsmap)
+    def plot_tsmap(self, *pars, **kwargs):
+        return tsmap_plotter.plot_tsmap(self, *pars, **kwargs)
      
     def band_ts(self, which=0):
         """ return the sum of the individual band ts values
@@ -213,7 +217,7 @@ class PipelineROI(roi_analysis.ROIAnalysis):
         #self.find_tsmax()
         return loc, deltaTS
     
-    def get_model(which):
+    def get_model(self,which):
         """ return a reference to the model
             which : integer or string
             
