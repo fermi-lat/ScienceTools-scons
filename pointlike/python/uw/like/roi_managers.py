@@ -244,11 +244,12 @@ class ROIPointSourceManager(ROIModelManager):
     def unzero_source(self, which, bands):
         m = self.models[which]
         try:
+            assert m.old_flux!=-100, 'attempt to unzero non-zeroed source %d ' % which
             m.p[0] = m.old_flux
             m.free = m.old_free.copy()
             self.cache(bands)      
         except:
-            print 'Source indicated was not zeroed in the first place!'
+            print 'Source %d indicated was not zeroed in the first place!' %which
 
 
 ###====================================================================================================###
