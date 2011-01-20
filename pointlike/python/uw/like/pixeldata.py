@@ -6,7 +6,7 @@ Manage data and livetime information for an analysis
 
 """
 version='$Revision$'.split()[1]
-import os, math, pyfits
+import os, math, pyfits, types, glob
 import numpy as N
 import pointlike, skymaps
 
@@ -121,17 +121,32 @@ Create a new PixelData instance, managing data and livetime.
                 raise Exception, 'keyword %s not recognized' % key
         self._binner_set = False
 
-        # check explicit files
-        for filelist in [self.ft1files, self.ft2files] :
-            if filelist is not None and len(filelist)>0 and not os.path.exists(filelist[0]):
-                raise Exception('PixelData setup: file name or path "%s" not found'%filelist[0])
-
+        self._setup_files()
         # order of operations: GTI is needed for livetime; livetime is needed for PSF
         self.gti  =  self._GTI_setup()
         self.lt   =  self.get_livetime()
         self.weighted_lt = self.get_livetime(weighted=True,clobber=False) if self.use_weighted_livetime else None
         self.get_data()
         self.dmap.updateIrfs()
+
+    def _setup_files(self):
+        """
+        use glob and expandvars to expand wildcards and convert to absolute paths (in backward-compatible manner)
+        """
+        if type(self.ft1files)==types.StringType:
+            self.ft1files = glob.glob(os.path.expandvars(self.ft1files))
+        if type(self.ft2files)== types.StringType:
+            self.ft2files = glob.glob(os.path.expandvars(self.ft2files))
+            
+        # check explicit files
+        for filelist in [self.ft1files, self.ft2files] :
+            if filelist is not None and len(filelist)>0 and not os.path.exists(filelist[0]):
+                raise Exception('PixelData setup: file name or path "%s" not found'%filelist[0])
+        if type(self.binfile)==types.StringType:
+            self.binfile = os.path.expandvars(self.binfile)
+        if type(self.ltcube)==types.StringType:
+            self.ltcube=os.path.expandvars(self.ltcube)
+
 
     def __str__(self):
         s ='Pixeldata: %.3f M events, %.3f Ms' % (self.dmap.photonCount()/1e6, self.gti.computeOntime()/1e6)
