@@ -13,6 +13,20 @@ from pointlike import DoubleVector
 from pypsf import PsfOverlap
 from roi_extended import BandFitExtended
 
+def localizer(roi, which, **kwargs):
+    """ roi : a ROIanalysis object
+        which: int or string
+            if int, the index of the point source; if string, the name of a point or extended source
+    --> a Localizer object
+    """
+    manager,index = roi.mapper(which)
+
+    if manager == roi.dsm and not isinstance(manager.diffuse_sources[index],ExtendedSource):
+        raise Exception("Can only localize Point and Extended Sources")
+
+    return ROILocalizer(roi, index, **kwargs) if manager == roi.psm\
+      else ROILocalizerExtended(roi, index, **kwargs)
+
 ###====================================================================================================###
 class ROILocalizer(object):
 
