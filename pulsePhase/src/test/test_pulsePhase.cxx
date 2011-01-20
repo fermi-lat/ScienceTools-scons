@@ -315,6 +315,8 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
   test_name_cont.push_back("par3c");
   test_name_cont.push_back("par4a");
   test_name_cont.push_back("par4b");
+  test_name_cont.push_back("par4c");
+  test_name_cont.push_back("par4d");
   test_name_cont.push_back("par5");
   test_name_cont.push_back("par6");
   test_name_cont.push_back("par7");
@@ -551,6 +553,48 @@ void PulsePhaseTestApp::testPulsePhaseApp() {
       pars["evfile"] = out_file;
       pars["scfile"] = sc_file_long;
       pars["psrdbfile"] = prependDataPath("testpsrdb_orbital_bt.txt");
+      pars["psrname"] = "PSR J9999+9999";
+      pars["ephstyle"] = "FREQ";
+      pars["ephepoch"] = 55200.0;
+      pars["timeformat"] = "MJD";
+      pars["timesys"] = "TDB";
+      pars["ra"] = 20.940328750000006;
+      pars["dec"] = -12.582441388888888;
+      pars["phi0"] = 0.0;
+      pars["f0"] = 12.3456789;
+      pars["f1"] = 0.0;
+      pars["f2"] = 0.0;
+      pars["matchsolareph"] = "NONE";
+      log_file.erase();
+      log_file_ref.erase();
+
+    } else if ("par4c" == test_name) {
+      // Test phase computation with orbital modulation by Ell1Model class for a wide range of event times.
+      tip::IFileSvc::instance().openFile(ev_file_long).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file_long;
+      pars["psrdbfile"] = prependDataPath("testpsrdb_orbital_ell1.txt");
+      pars["psrname"] = "PSR J9999+9999";
+      pars["ephstyle"] = "FREQ";
+      pars["ephepoch"] = 55200.0;
+      pars["timeformat"] = "MJD";
+      pars["timesys"] = "TDB";
+      pars["ra"] = 20.940328750000006;
+      pars["dec"] = -12.582441388888888;
+      pars["phi0"] = 0.0;
+      pars["f0"] = 12.3456789;
+      pars["f1"] = 0.0;
+      pars["f2"] = 0.0;
+      pars["matchsolareph"] = "NONE";
+      log_file.erase();
+      log_file_ref.erase();
+
+    } else if ("par4d" == test_name) {
+      // Test phase computation with orbital modulation by MssModel class for a wide range of event times.
+      tip::IFileSvc::instance().openFile(ev_file_long).copyFile(out_file, true);
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file_long;
+      pars["psrdbfile"] = prependDataPath("testpsrdb_orbital_mss.txt");
       pars["psrname"] = "PSR J9999+9999";
       pars["ephstyle"] = "FREQ";
       pars["ephepoch"] = 55200.0;
