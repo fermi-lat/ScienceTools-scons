@@ -672,6 +672,7 @@ class HealpixKDEMap(object):
         sd = skydir or SkyDir(Hep3Vector(v[0],v[1],v[2]))
         rval = 0
         for band in self.bands:
+            if band.photons==0: continue
             band.rvals = np.empty(len(band.wsdl),dtype=float)
             PythonUtilities.arclength(band.rvals,band.wsdl,sd)
             mask = band.rvals < band.r99
