@@ -108,14 +108,14 @@ class ROIExtendedModel(ROIDiffuseModel):
             numeric convolution extended model for non-radially symmetric
             sources. """
 
-        if not isinstance(extended_source,ExtendedSource):
-            raise Exception("The extended_source option passed to ROIExtendedModel.factory() must inherit from ExtendedSource.")
+        #if not isinstance(extended_source,ExtendedSource):
+        #    raise Exception("The extended_source option passed to ROIExtendedModel.factory() must inherit from ExtendedSource.")
 
         spatial_model = extended_source.spatial_model
 
         if isinstance(spatial_model,RadiallySymmetricModel):
             return ROIExtendedModelAnalytic(spectral_analysis,extended_source,*args,**kwargs)
-        elif isinstance(spatial_model,SpatialModel):
+        elif isinstance(spatial_model,SpatialModel) or isinstance(spatial_model,SpatialMap):
             return ROIExtendedModel(spectral_analysis,extended_source,*args,**kwargs)
         else:
             raise Exception("The extended_source.dmodel option passed to ROIExtendedModel.factory must inherit from SpatialModel.")
