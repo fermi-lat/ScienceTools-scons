@@ -466,13 +466,12 @@ class ROIDisplay(object):
             ax.set_xlabel(xl) 
             ax.set_ylabel(yl)
         
-        # round scale to nearest half integer, wuch that model & counts have same scale.
-        log_counts_max = 10**(N.ceil(2*N.log10(max(N.max(self.cm.image),N.max(self.mm.image))))/2.0)
-        log_counts_min = 10**max(N.floor(2*N.log10(min(N.min(self.cm.image),N.min(self.mm.image))))/2.0,0)
-        print 'min,max',log_counts_min,log_counts_max
+        # Use same scale for the counts and model map
+        counts_max = N.ceil(max(N.max(self.cm.image),N.max(self.mm.image)))
+        counts_min = 1.0
 
         self.norm1 = mpl.colors.Normalize(vmin=0,vmax=5)
-        self.norm2 = mpl.colors.LogNorm(vmin=log_counts_min,vmax=log_counts_max,clip=True)
+        self.norm2 = mpl.colors.LogNorm(vmin=counts_min,vmax=counts_max,clip=True)
         self.norm3 = mpl.colors.Normalize(vmin=-5,vmax=5)
 
         #resid colorbar
