@@ -52,7 +52,7 @@ class ExtendedSource(DiffuseSource):
             raise Exception("The diffuse_model passed to an Extended Source must inherit from SpatialModel.")
 
         super(ExtendedSource,self).__init__(
-            diffuse_model = self.spatial_model.get_PySkySpectrum(),
+            diffuse_model = self.spatial_model,
             scaling_model = self.model,
             name          = self.name)
 
