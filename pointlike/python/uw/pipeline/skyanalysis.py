@@ -5,7 +5,7 @@ $Header$
 import os, pickle, glob, types
 import numpy as np
 from skymaps import SkyDir, PySkyFunction
-from uw.pipeline import skymodel, dataspec
+from . import skymodel, dataspec
 from uw.utilities import keyword_options
 from uw.like import pointspec, roi_analysis, roi_managers, roi_diffuse, roi_localize
 from uw.like import sed_plotter, tsmap_plotter, counts_plotter
@@ -233,7 +233,7 @@ class PipelineROI(roi_analysis.ROIAnalysis):
             tsp.plot(center, label=name)
             tsp.show()
         """
-        self.localizer = roi_localize.ROILocalizer(self, which, bandfits=bandfits)
+        self.localizer = roi_localize.localizer(self, which, bandfits=bandfits)
         return PySkyFunction(self.localizer)
         
     def fit_ts_list(self, which=0):
