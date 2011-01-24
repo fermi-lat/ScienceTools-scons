@@ -28,20 +28,12 @@ RAD2DEG = 180./N.pi
 class Psf(object):
 
     def init(self):
-        self.irf      = 'P6_v3_diff'
-        self.psf_irf = None # a possible override to use an on-orbit PSF file
+        pass
 
-    def __init__(self,CALDB=None,**kwargs):
-        if CALDB is None:
-            try: CALDB =os.environ['CALDB']
-            except:
-                 print 'Environment variable CALDB was not set'
-                 raise
-        self.CALDB = join(CALDB,'bcf')
-        if not os.path.exists(self.CALDB):
-            self.CALDB = join(CALDB,'data', 'glast', 'lat', 'bcf')
-            if not os.path.exists(self.CALDB):
-                raise Exception,  'Invalid CALDB'
+    def __init__(self,CALDBManager,**kwargs):
+
+        self.CALDBManager = CALDBManager
+
         self.init()
         self.__dict__.update(kwargs)
 
@@ -53,15 +45,7 @@ class Psf(object):
 
     def __readCALDB__(self):
 
-        # open CALDB files
-        if self.psf_irf is not None:
-            print 'Overriding default PSF; using %s'%(self.psf_irf)
-        psf_files = [join(self.CALDB,'psf','psf_%s_%s.fits'%(self.psf_irf or self.irf,x)) for x in ['front','back']]
-
-        try:
-            h0,h1 = self.CALDBhandles = [pf.open(x) for x in psf_files]
-        except:
-            raise Exception,'Could not open CALDB files for PSF!  Aborting!'
+        h0,h1 = self.CALDBhandles = [pf.open(x) for x in self.CALDBManager.get_psf()]
 
         # read in stuff that doesn't depend on conversion type
         self.scale_factors = N.asarray(h0[2].data.field('PSFSCALE')).flatten()
@@ -77,7 +61,7 @@ class Psf(object):
 
     def __calc_weights__(self,livetimefile='',skydir=None):
 
-        aeffstrs = [join(self.CALDB,'ea','aeff_%s_%s.fits'%(self.irf,ct)) for ct in ['front','back']]
+        aeffstrs = self.CALDBManager.get_aeff()
         ew         = ExposureWeighter(aeffstrs[0],aeffstrs[1],livetimefile)
         dummy     = skydir or SkyDir() 
 
