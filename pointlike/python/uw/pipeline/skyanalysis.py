@@ -134,13 +134,11 @@ class SourceSelector(object):
         keyword_options.process(self,kwargs)
 
     def include(self,source):
-        """ source -- an instance of Source
-            skymodel -- an instance of SkyModel """
+        """ source -- an instance of Source """
         return source.near(self.mskydir,self.max_radius)
 
     def free(self,source):
-        """ source -- an instance of Source
-            skymodel -- an instance of SkyModel """
+        """ source -- an instance of Source """
         return source.near(self.mskydir,self.free_radius)
 
     def frozen(self,source): return not self.free(source)
@@ -148,16 +146,29 @@ class SourceSelector(object):
     def skydir(self): return self.mskydir
         
 class HEALPixSourceSelector(SourceSelector):
-    """ Manage inclusion of sources in an ROI based on HEALPix."""
+    """ Manage inclusion of sources in an ROI based on HEALPix.
+    Overrides the free method to define HEALpix-based free regions
+    """
 
     @keyword_options.decorate(SourceSelector.defaults)
-    def __init__(self, index, skymodel,**kwargs):
+    def __init__(self, index, skymodel,  **kwargs):
+        """ index : int
+                HEALpix index for the ROI
+            skymodel : an instance of SkyModel
+        """
         keyword_options.process(self,kwargs)
         self.index = index
-        self.mskydir = skymodel.skydir(index)
+        self.skymodel = skymodel
+        self.mskydir =  skymodel.skydir(index)
 
     def free(self,source):
-        return source.index == self.index
+        """
+        source : instance of skymodel.Source
+        -> bool, if this source in in the region where fit parameters are free
+        """
+        return self.skymodel.index(source.skydir) == self.index
+
+    
 
 class PipelineROI(roi_analysis.ROIAnalysis):
     """ sub class of the standard ROIAnalysis class to cusomize the fit, add convenience functions
