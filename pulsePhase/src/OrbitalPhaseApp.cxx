@@ -48,6 +48,8 @@ void OrbitalPhaseApp::runApp() {
   par_group.Prompt("psrname");
   par_group.Prompt("ra");
   par_group.Prompt("dec");
+  par_group.Prompt("srcposition");
+  par_group.Prompt("strict");
   par_group.Prompt("solareph");
   par_group.Prompt("matchsolareph");
   par_group.Prompt("angtol");
@@ -74,12 +76,36 @@ void OrbitalPhaseApp::runApp() {
   defineTimeCorrectionMode("DEFAULT", REQUIRED, REQUIRED, SUPPRESSED);
   selectTimeCorrectionMode("DEFAULT");
 
+  // Set variables to initialize ephemeris computations and arrival time corrections.
+  std::auto_ptr<pulsarDb::EphChooser> chooser(0);
+  std::string eph_style;
+  bool vary_ra_dec = false;
+  std::string src_position = par_group["srcposition"];
+  std::string src_position_uc(src_position);
+  for (std::string::iterator itor = src_position_uc.begin(); itor != src_position_uc.end(); ++itor) *itor = std::toupper(*itor);
+  if ("USER" == src_position_uc) {
+    chooser.reset(new pulsarDb::StrictEphChooser);
+    eph_style = "NONE";
+    vary_ra_dec = false;
+
+  } else if ("DB" == src_position_uc) {
+    bool strict = par_group["strict"];
+    if (strict) {
+      chooser.reset(new pulsarDb::StrictEphChooser);
+    } else {
+      chooser.reset(new pulsarDb::SloppyEphChooser);
+    }
+    eph_style = "DB";
+    vary_ra_dec = true;
+
+  } else {
+    throw std::runtime_error("Unsupported type of source position \"" + src_position + "\" was specified");
+  }
+
   // Set up EphComputer for arrival time corrections.
-  pulsarDb::StrictEphChooser chooser;
-  initEphComputer(par_group, chooser, "NONE", m_os.info(4));
+  initEphComputer(par_group, *chooser, eph_style, m_os.info(4));
 
   // Use user input (parameters) together with computer to determine corrections to apply.
-  bool vary_ra_dec = false;
   bool guess_pdot = false;
   initTimeCorrection(par_group, vary_ra_dec, guess_pdot, m_os.info(3), "START");
 

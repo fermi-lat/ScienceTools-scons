@@ -802,6 +802,9 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
   test_name_cont.push_back("par5");
   test_name_cont.push_back("par6");
   test_name_cont.push_back("par7");
+  test_name_cont.push_back("par8");
+  test_name_cont.push_back("par9");
+  test_name_cont.push_back("par10");
 
   // Prepare files to be used in the tests.
   std::string ev_file = prependDataPath("testevdata_1day_unordered.fits");
@@ -828,6 +831,8 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
     pars["psrname"] = "ANY";
     pars["ra"] = 0.;
     pars["dec"] = 0.;
+    pars["srcposition"] = "USER";
+    pars["strict"] = "no";
     pars["solareph"] = "JPL DE405";
     pars["matchsolareph"] = "ALL";
     pars["angtol"] = 1.e-8;
@@ -1009,6 +1014,77 @@ void PulsePhaseTestApp::testOrbitalPhaseApp() {
       remove(log_file_ref.c_str());
       std::ofstream ofs(log_file_ref.c_str());
       std::runtime_error error("No orbital ephemeris is available for solar system ephemeris \"JPL DE405\" for pulsar \"PSR J1834-0010\" in the database");
+      app_tester.writeException(ofs, error);
+      ofs.close();
+
+      out_file.erase();
+      out_file_ref.erase();
+      ignore_exception = true;
+
+    } else if ("par8" == test_name) {
+      // Test reading RA and Dec from ephemeris database with strict=no.
+      tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
+      std::string summary_file("psrdb_summary.txt");
+      remove(summary_file.c_str());
+      std::ofstream ofs_summary(summary_file.c_str());
+      ofs_summary << prependDataPath("psrdb_spin5.txt") << std::endl;
+      ofs_summary << test_pulsardb << std::endl;
+      ofs_summary.close();
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file;
+      pars["psrname"] = "PSR J1834-0010";
+      pars["psrdbfile"] = "@" + summary_file;
+      pars["ra"] = 278.571942; // Note: Should be overridden by the database entry.
+      pars["dec"] = -0.180347;
+      pars["srcposition"] = "DB";
+      pars["strict"] = "no";
+      pars["matchsolareph"] = "NONE";
+      log_file.erase();
+      log_file_ref.erase();
+
+    } else if ("par9" == test_name) {
+      // Test reading RA and Dec from ephemeris database with strict=yes.
+      tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
+      std::string summary_file("psrdb_summary.txt");
+      remove(summary_file.c_str());
+      std::ofstream ofs_summary(summary_file.c_str());
+      ofs_summary << prependDataPath("psrdb_spin6.txt") << std::endl;
+      ofs_summary << test_pulsardb << std::endl;
+      ofs_summary.close();
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file;
+      pars["psrname"] = "PSR J1834-0010";
+      pars["psrdbfile"] = "@" + summary_file;
+      pars["ra"] = 278.571942; // Note: Should be overridden by the database entry.
+      pars["dec"] = -0.180347;
+      pars["srcposition"] = "DB";
+      pars["strict"] = "yes";
+      pars["matchsolareph"] = "NONE";
+      log_file.erase();
+      log_file_ref.erase();
+
+    } else if ("par10" == test_name) {
+      // Test detection of an error in reading RA and Dec from ephemeris database with strict=yes.
+      tip::IFileSvc::instance().openFile(ev_file).copyFile(out_file, true);
+      std::string summary_file("psrdb_summary.txt");
+      remove(summary_file.c_str());
+      std::ofstream ofs_summary(summary_file.c_str());
+      ofs_summary << prependDataPath("psrdb_spin5.txt") << std::endl;
+      ofs_summary << test_pulsardb << std::endl;
+      ofs_summary.close();
+      pars["evfile"] = out_file;
+      pars["scfile"] = sc_file;
+      pars["psrname"] = "PSR J1834-0010";
+      pars["psrdbfile"] = "@" + summary_file;
+      pars["ra"] = 278.571942; // Note: Should be overridden by the database entry.
+      pars["dec"] = -0.180347;
+      pars["srcposition"] = "DB";
+      pars["strict"] = "yes";
+      pars["matchsolareph"] = "NONE";
+
+      remove(log_file_ref.c_str());
+      std::ofstream ofs(log_file_ref.c_str());
+      std::runtime_error error("StrictEphChooser::choose: Could not find a spin ephemeris for 54639.2294886258 seconds after 54367.0 MJD (TT)");
       app_tester.writeException(ofs, error);
       ofs.close();
 
