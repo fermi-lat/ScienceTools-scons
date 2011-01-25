@@ -187,11 +187,10 @@ class SpatialModel(object):
                 raise Exception("Do not make the spatial parameters log.")
 
             # map the log parameters into log space.
-            # careful not to take log of a negative number
-            self.p = N.where(self.log,N.log10(self.p),self.p)
-            log_transpose = self.log.reshape((self.log.shape[0],1))
-            self.limits = N.where(log_transpose,
-                                  N.log10(self.limits),self.limits)
+            for i in range(2,len(self.log)):
+                if self.log[i]: 
+                    self.p[i] = N.log10(self.p[i])
+                    self.limits[i,:] = N.log10(self.limits[i,:])
 
         self.cache()
 
