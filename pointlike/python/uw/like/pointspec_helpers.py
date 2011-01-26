@@ -131,6 +131,7 @@ class FermiCatalog(PointSourceCatalog):
         self.init()
         self.__dict__.update(kwargs)
         self.__open_catalog__(catalog_file)
+        self.catalog_file=catalog_file
 
     def __open_catalog__(self,catalog_file):
         from pyfits import open
