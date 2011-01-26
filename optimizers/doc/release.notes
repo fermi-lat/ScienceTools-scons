@@ -5,6 +5,7 @@
     @verbatim
     EOH
 
+ optimizers-02-20-01 26-Jan-2011 jchiang by-pass fortran code in test_optimizers via ifdefs
  optimizers-02-20-00 05-Dec-2010 jchiang bug-fix for large negative TS values occasionally seen by from NewMinuit: restore best-fit values after calls to hesse(...) etc.
  optimizers-02-19-00 07-Jun-2010 jchiang make Function::fetchParamValues virtual so that subclasses can override
  optimizers-02-18-00 04-May-2010 jchiang add access to delta chi-square for Minos and MnContour (from JCT)
