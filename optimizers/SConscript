@@ -3,6 +3,7 @@
 # $Header$
 # Authors: James Chiang <jchiang@slac.stanford.edu>, Pat Nolan <pln@razzle.stanford.edu>
 # Version: optimizers-02-20-00
+import sys
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
@@ -18,6 +19,8 @@ optimizersLib = libEnv.SharedLibrary('optimizers',
 progEnv.Tool('optimizersLib')
 if baseEnv['PLATFORM'] == "posix":
     progEnv.Append(CPPDEFINES = 'TRAP_FPE')
+if sys.platform == 'darwin':
+    progEnv.Append(CPPDEFINES = 'DARWIN')
 test_optimizersBin = progEnv.Program('test_optimizers', 'src/test/main.cxx')
 
 progEnv.Tool('registerTargets', package='optimizers', 

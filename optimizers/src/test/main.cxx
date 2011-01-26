@@ -193,7 +193,7 @@ void test_Mcmc() {
       double scale = 1.;
 
       int verbose = 1;
-      Minuit myMinuitObj(my_rosen);
+      NewMinuit myMinuitObj(my_rosen);
       myMinuitObj.find_min(verbose, .0001);
       std::vector<double> sig = myMinuitObj.getUncertainty();
       for (unsigned int i=0; i < sig.size(); i++) {
@@ -284,19 +284,26 @@ void test_Optimizers() {
    params[1].setBounds(-10., 10);
    my_rosen.setParams(params);
 
-   char * optimizers[] = {"NewMinuit", "Lbfgs", "Minuit", "Drmngb", "Drmnfb",
-			  "Powell"};
-
+   std::vector<std::string> optimizers;
+   optimizers.push_back("NewMinuit");
+#ifndef DARWIN
+   optimizers.push_back("Minuit");
+   optimizers.push_back("Drmngb");
+   optimizers.push_back("Drmnfb");
+   optimizers.push_back("Powell");
+   optimizers.push_back("Lbfgs");
+#endif
+   
    OptimizerFactory & optFactory(OptimizerFactory::instance());
 
    int verbose = 1;
-   for (size_t i = 0; i < 6; i++) {
+   for (size_t i = 0; i < optimizers.size(); i++) {
       std::cout << "Testing " << optimizers[i] 
                 << " using 2-D Rosenbrock function...\n";
       Optimizer * my_opt(optFactory.create(optimizers[i], my_rosen));
       TestOptimizer tester(*my_opt);
       tester.run(verbose);
-      std::cout << *my_opt << std::endl;
+//      std::cout << *my_opt << std::endl;
       delete my_opt;
    }
 
@@ -308,7 +315,7 @@ void test_Optimizers() {
    }
    rosenND.setParams(params);
 
-   for (size_t i = 0; i < 6; i++) {
+   for (size_t i = 0; i < optimizers.size(); i++) {
       std::cout << "Testing " << optimizers[i] 
                 << " using 5-D Rosenbrock function..." 
                 << std::endl;
