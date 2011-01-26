@@ -23,6 +23,8 @@ from numpy.fft import fft2,ifft2,fftshift
 from scipy import optimize
 import keyword_options
 
+SkyImage.setNaN(np.nan) 
+
 class Ellipse(object):
     def __init__(self, q):
         """ q: ellipical parameters
@@ -426,7 +428,7 @@ class AIT(object):
         if   scale=='linear':  m=self.axes.imshow(scale_fun(self.masked_image),   **kwargs)
         elif scale=='log':     m=self.axes.imshow(ma.log10(self.masked_image), **kwargs)
         elif scale=='sqrt':    m=self.axes.imshow(ma.sqrt(self.masked_image), **kwargs)
-        else: raise Exception('bad scale: %s, expect either "linear" or "log"'%scale)
+        else: raise Exception('bad scale: %s, expect either "linear" "sqrt", or "log"'%scale)
                                         
         #self.colorbar =pylab.colorbar(orientation='horizontal', shrink=1.0 if self.size==180 else 1.0)
         if not nocolorbar:
