@@ -59,7 +59,7 @@ class ROIImage(object):
         self.nx, self.ny = self.skyimage.naxis1(), self.skyimage.naxis2()
         self.image=N.array(self.skyimage.image()).reshape((self.ny, self.nx))
 
-    def fill():
+    def fill(self):
         raise NotImplementedError("Subclasses should implement this!")
 
     def get_ZEA(self,axes=None,nticks=None):
@@ -239,10 +239,10 @@ class ModelImage(ROIImage):
         else:
             # hold onto this thing since it is needed by downsample_model
             if not hasattr(self.size,'__iter__'):
-                self.fine_skyimage = SkyImage(self.center, self.fitsfile, float(self.pixelsize)/self.factor,
+                self.fine_skyimage = SkyImage(self.center, '', float(self.pixelsize)/self.factor,
                                          self.size, 1, self.proj, self.galactic, False)
             else:
-                self.fine_skyimage = SkyImage(self.center, self.fitsfile, float(self.pixelsize)/self.factor,
+                self.fine_skyimage = SkyImage(self.center, '', float(self.pixelsize)/self.factor,
                                          float(self.size[0]), 1, self.proj, self.galactic, False, float(self.size[1]))
 
             wsdl = self.fine_skyimage.get_wsdl() 
@@ -395,7 +395,7 @@ class RadialImage(object):
 
         self.fill()
 
-    def fill():
+    def fill(self):
         """ This should fill up self.image appropriatly."""
         raise NotImplementedError("Subclasses should implement this!")
 
