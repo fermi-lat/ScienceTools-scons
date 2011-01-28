@@ -125,7 +125,7 @@ def generate(env, **kw):
             exes = []
             for bin in binaries:
                 if env['PLATFORM'] == 'win32':
-                    if  (str(bin.path)).find("manifest") != -1:
+                    if  (str(bin.path)).find("manifest") == -1:
                         exes.append(bin)
                 else:
                     exes.append(bin)
