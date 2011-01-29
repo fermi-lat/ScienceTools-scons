@@ -19,6 +19,8 @@
 
 namespace optimizers {
 
+   class Function;
+
 #ifndef SWIG
 using XERCES_CPP_NAMESPACE_QUALIFIER DOMElement;
 using XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument;
@@ -47,7 +49,7 @@ public:
 
    Parameter() : m_name(""), m_value(0), m_minValue(-HUGE), m_maxValue(HUGE),
                  m_free(true), m_scale(1.), m_error(0), m_alwaysFixed(false),
-                 m_par_ref(0) {}
+                 m_par_ref(0), m_log_prior(0), m_log_prior_deriv(0) {}
 
    /// @param name The name of the Parameter
    /// @param value The (scaled) value of the Parameter
@@ -59,12 +61,17 @@ public:
              double maxValue, bool isFree=true, double error=0) 
       : m_name(name), m_value(value), m_minValue(minValue), 
         m_maxValue(maxValue), m_free(isFree), m_scale(1.), m_error(error),
-        m_alwaysFixed(false), m_par_ref(0) {}
+        m_alwaysFixed(false), m_par_ref(0), m_log_prior(0),
+        m_log_prior_deriv(0) {}
 
    Parameter(const std::string & name, double value, bool isFree=true)
       : m_name(name), m_value(value), m_minValue(-HUGE), m_maxValue(HUGE),
         m_free(isFree), m_scale(1.), m_error(0), m_alwaysFixed(false),
-        m_par_ref(0) {}
+        m_par_ref(0), m_log_prior(0), m_log_prior_deriv(0) {}
+
+   Parameter(const Parameter & other);
+
+   Parameter & operator=(const Parameter & rhs);
 
    virtual ~Parameter() throw() {}
 
@@ -169,6 +176,10 @@ public:
       m_alwaysFixed = par->m_alwaysFixed;
    }
 
+   double log_prior() const;
+
+   double log_prior_deriv() const;
+
 protected:
 
    std::string m_name;
@@ -191,6 +202,13 @@ protected:
    /// classes. This should not be deleted by this class.
    Parameter * m_par_ref;
 
+   /// Pointers to prior function (assumed to be the log of the 1D
+   /// PDF) and its derivative.  These will not be deleted by this
+   /// class.
+   Function * m_log_prior;
+
+   Function * m_log_prior_deriv;
+   
 };
 
 } // namespace optimizers

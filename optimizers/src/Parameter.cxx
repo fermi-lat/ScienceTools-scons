@@ -21,13 +21,47 @@
 #include "xmlBase/Dom.h"
 #include "xmlBase/XmlParser.h"
 
+#include "optimizers/dArg.h"
 #include "optimizers/Dom.h"
+#include "optimizers/Function.h"
 #include "optimizers/OutOfBounds.h"
 #include "optimizers/Parameter.h"
 
 namespace optimizers {
 
 XERCES_CPP_NAMESPACE_USE
+
+Parameter::Parameter(const Parameter & other) 
+   : m_name(other.m_name),
+     m_value(other.m_value),
+     m_minValue(other.m_minValue),
+     m_maxValue(other.m_maxValue),
+     m_free(other.m_free),
+     m_scale(other.m_scale),
+     m_error(other.m_error),
+     m_alwaysFixed(other.m_alwaysFixed) {
+   m_par_ref = other.m_par_ref;
+   m_log_prior = other.m_log_prior;
+   m_log_prior_deriv = other.m_log_prior_deriv;
+}
+
+Parameter & Parameter::operator=(const Parameter & rhs) {
+   if (this == &rhs) {
+      return *this;
+   }
+   m_name = rhs.m_name;
+   m_value = rhs.m_value;
+   m_minValue = rhs.m_minValue;
+   m_maxValue = rhs.m_maxValue;
+   m_free = rhs.m_free;
+   m_scale = rhs.m_scale;
+   m_error = rhs.m_error;
+   m_alwaysFixed = rhs.m_alwaysFixed; 
+   m_par_ref = rhs.m_par_ref;
+   m_log_prior = rhs.m_log_prior;
+   m_log_prior_deriv = rhs.m_log_prior_deriv;
+   return *this;
+}
 
 void Parameter::setValue(double value) {
    static double tol(1e-8);
@@ -122,6 +156,22 @@ DOMElement * Parameter::createDomElement(DOMDocument * doc) const {
    }
 
    return paramElt;
+}
+
+double Parameter::log_prior() const {
+   if (!m_log_prior) {
+      return 0;
+   }
+   dArg x(m_value);
+   return m_log_prior->operator()(x);
+}
+
+double Parameter::log_prior_deriv() const {
+   if (!m_log_prior_deriv) {
+      return 0;
+   }
+   dArg x(m_value);
+   return m_log_prior_deriv->operator()(x);
 }
 
 } // namespace optimizers
