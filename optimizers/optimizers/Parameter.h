@@ -176,6 +176,8 @@ public:
       m_alwaysFixed = par->m_alwaysFixed;
    }
 
+   void setPrior(Function & log_prior, Function & log_prior_deriv);
+
    double log_prior() const;
 
    double log_prior_deriv() const;

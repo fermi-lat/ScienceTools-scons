@@ -158,6 +158,11 @@ DOMElement * Parameter::createDomElement(DOMDocument * doc) const {
    return paramElt;
 }
 
+void Parameter::setPrior(Function & log_prior, Function & log_prior_deriv) {
+   m_log_prior = &log_prior;
+   m_log_prior_deriv = &log_prior_deriv;
+}
+
 double Parameter::log_prior() const {
    if (!m_log_prior) {
       return 0;
