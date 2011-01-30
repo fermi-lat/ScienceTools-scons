@@ -177,6 +177,8 @@ public:
 
    void setPrior(Function & log_prior);
 
+   Function * removePrior();
+
    double log_prior_value() const;
 
    double log_prior_deriv() const;

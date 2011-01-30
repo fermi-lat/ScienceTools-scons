@@ -160,6 +160,12 @@ void Parameter::setPrior(Function & log_prior) {
    m_log_prior = &log_prior;
 }
 
+Function * Parameter::removePrior() {
+   Function * log_prior = m_log_prior;
+   m_log_prior = 0;
+   return log_prior;
+}
+
 double Parameter::log_prior_value() const {
    if (!m_log_prior) {
       return 0;
