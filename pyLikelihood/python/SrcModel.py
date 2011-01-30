@@ -10,6 +10,8 @@ import sys
 from xml.dom import minidom
 import pyLikelihood as pyLike
 
+_app_helper = pyLike.AppHelpers()
+
 def ids(istart=0):
     i = istart - 1
     while True:
@@ -79,14 +81,9 @@ class SourceModel(object):
             return self.params[srcName]
         except:
             try:
-                #return self.srcs[self._findSrc(srcName)]
                 return self.srcs[srcName]
             except:
                 pass
-#    def _findSrc(self, name):
-#        for item in self.srcNames:
-#            if item.find(name) != -1:
-#                return item
     def __repr__(self):
         lines = []
         for src in self.srcNames:
@@ -160,5 +157,37 @@ class Parameter(object):
             self.parameter.setError(0)
     def value(self):
         return self.parameter.getValue()
+    def addPrior(self, func):
+        if self.parameter.log_prior() is not None:
+            raise RuntimeError("Prior for parameter %s already applied"
+                               % self.parameter.getName())
+        self.parameter.setPrior(func)
+    def setPriorParams(self, **kwds):
+        prior = self.parameter.log_prior()
+        if prior is None:
+            raise RuntimeError("No prior for parameter " 
+                               + self.parameter.getName())
+        for key, value in kwds.items():
+            prior.setParam(key, value)
+    def addGaussianPrior(self, mean, sigma):
+        self.addPrior(_app_helper.funcFactory().create('LogGaussian'))
+        self.setPriorParams(Mean=mean, Sigma=sigma)
+    def getPriorParams(self):
+        prior = self.parameter.log_prior()
+        if prior is None:
+            return None
+        pars = {}
+        names = pyLike.StringVector()
+        prior.getParamNames(names)
+        for name in names:
+            pars[name] = prior.getParamValue(name)
+        return pars
+    def setGaussianPriorParams(self, mean, sigma):
+        func = self.parameter.log_prior()
+        if func.getName() != 'LogGaussian':
+            raise RuntimeError('Prior is not Gaussian')
+        self.setPriorParams(Mean=mean, Sigma=sigma)
+    def removePrior(self):
+        return self.parameter.removePrior()
     def __getattr__(self, attrname):
         return getattr(self.parameter, attrname)
