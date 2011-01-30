@@ -5,7 +5,8 @@ $Header$
 """
 import os, glob, pickle, types
 import numpy as np
-from uw.like import roi_tsmap, roi_plotting # for TSCalc
+from uw.like import roi_tsmap
+#from uw.like import roi_plotting
 from uw.utilities import image
 from uw.pipeline import skymodel
 from skymaps import Band, SkyDir, PySkyFunction, Hep3Vector 
@@ -147,10 +148,10 @@ class ResidualTS(object):
         self.zea.axes.set_title(self.roi.name)
         plt.draw_if_interactive()
         
-    def show_sources(self):
+    def show_sources(self, **kwargs):
         for s in self.roi.psm.point_sources:
             if not self.band.index(s.skydir)==self.hp_index: break # assume inside guys first
-            self.zea.plot_source(s.name, s.skydir, color='grey')
+            self.zea.plot_source(s.name, s.skydir, color='grey', fontsize=8, **kwargs)
         
     def savefig(self, outdir):
         if not os.path.exists(outdir): os.mkdir(outdir)
