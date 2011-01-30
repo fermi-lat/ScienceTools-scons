@@ -49,7 +49,7 @@ public:
 
    Parameter() : m_name(""), m_value(0), m_minValue(-HUGE), m_maxValue(HUGE),
                  m_free(true), m_scale(1.), m_error(0), m_alwaysFixed(false),
-                 m_par_ref(0), m_log_prior(0), m_log_prior_deriv(0) {}
+                 m_par_ref(0), m_log_prior(0) {}
 
    /// @param name The name of the Parameter
    /// @param value The (scaled) value of the Parameter
@@ -61,13 +61,12 @@ public:
              double maxValue, bool isFree=true, double error=0) 
       : m_name(name), m_value(value), m_minValue(minValue), 
         m_maxValue(maxValue), m_free(isFree), m_scale(1.), m_error(error),
-        m_alwaysFixed(false), m_par_ref(0), m_log_prior(0),
-        m_log_prior_deriv(0) {}
+        m_alwaysFixed(false), m_par_ref(0), m_log_prior(0) {}
 
    Parameter(const std::string & name, double value, bool isFree=true)
       : m_name(name), m_value(value), m_minValue(-HUGE), m_maxValue(HUGE),
         m_free(isFree), m_scale(1.), m_error(0), m_alwaysFixed(false),
-        m_par_ref(0), m_log_prior(0), m_log_prior_deriv(0) {}
+        m_par_ref(0), m_log_prior(0) {}
 
    Parameter(const Parameter & other);
 
@@ -176,11 +175,15 @@ public:
       m_alwaysFixed = par->m_alwaysFixed;
    }
 
-   void setPrior(Function & log_prior, Function & log_prior_deriv);
+   void setPrior(Function & log_prior);
 
-   double log_prior() const;
+   double log_prior_value() const;
 
    double log_prior_deriv() const;
+
+   Function & log_prior() {
+      return *m_log_prior;
+   }
 
 protected:
 
@@ -201,16 +204,13 @@ protected:
    bool m_alwaysFixed;
 
    /// pointer to underlying Parameter object for use by composite Function
-   /// classes. This should not be deleted by this class.
+   /// classes. This will not be deleted by this class.
    Parameter * m_par_ref;
 
-   /// Pointers to prior function (assumed to be the log of the 1D
-   /// PDF) and its derivative.  These will not be deleted by this
-   /// class.
+   /// Pointer to prior function (the log of the 1D PDF).  This will
+   /// not be deleted by this class.
    Function * m_log_prior;
 
-   Function * m_log_prior_deriv;
-   
 };
 
 } // namespace optimizers

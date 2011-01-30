@@ -42,7 +42,6 @@ Parameter::Parameter(const Parameter & other)
      m_alwaysFixed(other.m_alwaysFixed) {
    m_par_ref = other.m_par_ref;
    m_log_prior = other.m_log_prior;
-   m_log_prior_deriv = other.m_log_prior_deriv;
 }
 
 Parameter & Parameter::operator=(const Parameter & rhs) {
@@ -59,7 +58,6 @@ Parameter & Parameter::operator=(const Parameter & rhs) {
    m_alwaysFixed = rhs.m_alwaysFixed; 
    m_par_ref = rhs.m_par_ref;
    m_log_prior = rhs.m_log_prior;
-   m_log_prior_deriv = rhs.m_log_prior_deriv;
    return *this;
 }
 
@@ -158,12 +156,11 @@ DOMElement * Parameter::createDomElement(DOMDocument * doc) const {
    return paramElt;
 }
 
-void Parameter::setPrior(Function & log_prior, Function & log_prior_deriv) {
+void Parameter::setPrior(Function & log_prior) {
    m_log_prior = &log_prior;
-   m_log_prior_deriv = &log_prior_deriv;
 }
 
-double Parameter::log_prior() const {
+double Parameter::log_prior_value() const {
    if (!m_log_prior) {
       return 0;
    }
@@ -172,11 +169,11 @@ double Parameter::log_prior() const {
 }
 
 double Parameter::log_prior_deriv() const {
-   if (!m_log_prior_deriv) {
+   if (!m_log_prior) {
       return 0;
    }
    dArg x(m_value);
-   return m_log_prior_deriv->operator()(x);
+   return m_log_prior->derivative(x);
 }
 
 } // namespace optimizers

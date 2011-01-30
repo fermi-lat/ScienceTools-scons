@@ -12,6 +12,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <stdexcept>
 #include <string>
 
 #include "optimizers/Parameter.h"
@@ -156,6 +157,15 @@ public:
 
    /// Return the integral of function wrt data variable.
    virtual double integral(Arg &, Arg &) const {
+      throw std::runtime_error("integral method not implemented for "
+                               + m_functionName);
+      return 0;
+   }
+
+   /// Derivative of function wrt data variable.
+   virtual double derivative(Arg &) const {
+      throw std::runtime_error("derivative method not implemented for "
+                               + m_functionName);
       return 0;
    }
 
