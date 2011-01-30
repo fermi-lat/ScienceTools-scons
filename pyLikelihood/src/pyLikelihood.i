@@ -47,7 +47,6 @@
 #include "Likelihood/ExposureMap.h"
 #include "Likelihood/FileFunction.h"
 #include "Likelihood/LogGaussian.h"
-#include "Likelihood/LogGaussianDeriv.h"
 #include "Likelihood/LogParabola.h"
 #include "Likelihood/MapBase.h"
 #include "Likelihood/MapCubeFunction.h"
@@ -156,7 +155,6 @@ using optimizers::Exception;
 %include Likelihood/ExpCutoff.h
 %include Likelihood/BrokenPowerLawExpCutoff.h
 %include Likelihood/LogGaussian.h
-%include Likelihood/LogGaussianDeriv.h
 %include Likelihood/ResponseFunctions.h
 %include Likelihood/Event.h
 %include Likelihood/Source.h
@@ -169,7 +167,6 @@ using optimizers::Exception;
 %include Likelihood/Observation.h
 %include Likelihood/BinnedExposure.h
 %include Likelihood/AppHelpers.h
-//%include Likelihood/SourceModel.h
 %include Likelihood/WcsMap.h
 %include Likelihood/MapBase.h
 %include Likelihood/DiffuseSource.h
