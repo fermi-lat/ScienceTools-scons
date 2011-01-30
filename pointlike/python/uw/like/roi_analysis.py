@@ -761,16 +761,6 @@ class ROIAnalysis(object):
     zero_ps = zero_source
     unzero_ps = unzero_source
 
-    def get_source(self,which):
-        """ If which refers to a point source, return the corresponding
-            pointspec_helpers.PointSource object. If which refers to a
-            diffuse source, return roi_diffuse.DiffuseSource object. """
-        manager,index=self.mapper(which)
-        if manager==self.psm:
-            return self.psm.point_sources[index]
-        elif manager==self.dsm:
-            return self.dsm.diffuse_sources[index]
-
     def modify_loc(self,skydir,which):
         """Move point source given by which to new location given by skydir."""
         manager,index=self.mapper(which)
