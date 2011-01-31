@@ -713,13 +713,13 @@ def writeXML(stacks,filename, title='source_library'):
     f.write('\n</source_library>')
 
 def writeROI(roi,filename,strict=False,convert_extended=False):
-    """ out the contents of an ROIAnalysis source model
+    """ Out the contents of an ROIAnalysis source model
         to a gtlike XML file.
 
         the strict flag raises an exception if any of the spectral
         parameters are outside of the fit range.
 
-        The convert_extended converst extended sources to be fully
+        The convert_extended flag converts extended sources to be fully
         compliant with gtlike.  By default, extended sources are saved
         out with a format incompatable with gtlike. This is because
         each diffuse source has its spatial parameters saved out in
