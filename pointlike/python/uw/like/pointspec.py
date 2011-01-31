@@ -249,9 +249,10 @@ class SpectralAnalysis(object):
                          path), and returns an object implementing the
                          PointSourceCatalog interface.
 
-        diffuse_sources  [[]] a list of DiffuseSources; if None, the
+        diffuse_sources  [[]] a list of DiffuseSources; if an empty list, the
                          system tries to assemble a sensible default using the GLAST_EXT
-                         environment variable.
+                         environment variable. If None, no diffuse sources are used
+                         (this is probably only useful for MC testing).
 
         diffuse_mapper   [None] a function or instance of a class (via __call__)
                          which takes two arguments, a DiffuseSource and the ROI
@@ -295,7 +296,7 @@ class SpectralAnalysis(object):
             print 'WARNING!  No point sources are included in the model.'
 
         # process diffuse models
-        if len(diffuse_sources) == 0:
+        if diffuse_sources is not None and len(diffuse_sources) == 0:
             # try to use default
             diffuse_sources = get_default_diffuse(diffdir=diffdir)
             if len(diffuse_sources) == 0:
@@ -303,7 +304,7 @@ class SpectralAnalysis(object):
         if diffuse_mapper is None:
             diffuse_mapper = get_default_diffuse_mapper(self,roi_dir)
 
-        diffuse_models = [diffuse_mapper(ds) for ds in diffuse_sources]
+        diffuse_models = [diffuse_mapper(ds) for ds in diffuse_sources]  if diffuse_sources is not None else []
 
         # instantiate and return ROIAnalysis object
         psm = ROIPointSourceManager(point_sources,roi_dir,quiet=self.quiet)
