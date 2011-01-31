@@ -83,6 +83,10 @@ def unparse_localization(roi):
         return []
 
 def writeRegion(roi,filename,color='green'):
+    """ Saves out an ROI to a ds9 style region file.
+        
+        The size of simple exended sources is saved to the region file
+        as are elliptical localization errors if they exist. """
 
     lines = [
         "# Region file format: DS9 version 4.0",
