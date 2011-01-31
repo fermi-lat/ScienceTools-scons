@@ -67,6 +67,7 @@ def unparse_diffuse_sources(roi,diffuse_sources,emin,emax,**kwargs):
     return diffuse_dict
 
 def writeResults(roi,filename,**kwargs):
+    """ Saves out an ROI to a gtlike style results file. """
     emin,emax=roi.bin_edges[[0,-1]]
     if not roi.quiet:
         print "\nSaving ROI to results file %s" % filename
