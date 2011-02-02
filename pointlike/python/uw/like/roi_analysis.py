@@ -741,11 +741,13 @@ class ROIAnalysis(object):
                  source=diffuse_mapper(source)
          else:
              raise Exception("Unable to add source %s. Only able to add PointSource, DiffuseSource, or ROIDiffuseModel objects.")
+         if self.__dict__.has_key('cov_matrix'): del self.cov_matrix
          manager.add_source(source,self.bands,**kwargs)
 
     def del_source(self,which):
          """Remove the source at position given by which from the model."""
          manager,index=self.mapper(which)
+         if self.__dict__.has_key('cov_matrix'): del self.cov_matrix
          return manager.del_source(index,self.bands)
 
     def zero_source(self,which):
