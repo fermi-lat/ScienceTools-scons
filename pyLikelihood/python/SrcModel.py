@@ -157,10 +157,11 @@ class Parameter(object):
             self.parameter.setError(0)
     def value(self):
         return self.parameter.getValue()
-    def addPrior(self, func):
+    def addPrior(self, funcname):
         if self.parameter.log_prior() is not None:
             raise RuntimeError("Prior for parameter %s already applied"
                                % self.parameter.getName())
+        func = _app_helper.funcFactory().create(funcname)
         self.parameter.setPrior(func)
     def setPriorParams(self, **kwds):
         prior = self.parameter.log_prior()
@@ -170,7 +171,7 @@ class Parameter(object):
         for key, value in kwds.items():
             prior.setParam(key, value)
     def addGaussianPrior(self, mean, sigma):
-        self.addPrior(_app_helper.funcFactory().create('LogGaussian'))
+        self.addPrior('LogGaussian')
         self.setPriorParams(Mean=mean, Sigma=sigma)
     def getPriorParams(self):
         prior = self.parameter.log_prior()
