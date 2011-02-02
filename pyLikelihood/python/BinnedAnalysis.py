@@ -59,7 +59,7 @@ class BinnedObs(object):
     def __repr__(self):
         return self._inputs
     def _obsDialog(self, srcMaps, expCube):
-        paramDict = map()
+        paramDict = MyOrderedDict()
         if srcMaps is None:
             paramDict['srcMaps'] = Param('file', '*.fits')
         else:

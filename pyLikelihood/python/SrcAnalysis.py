@@ -59,7 +59,7 @@ class Observation(object):
             if expCube is not None and expCube != '':
                 checkTimeCuts(eventFiles[0], 'EVENTS', expCube, 'Exposure')
     def _obsDialog(self):
-        paramDict = map()
+        paramDict = MyOrderedDict()
         paramDict['eventFile'] = Param('file', '*.fits')
         paramDict['scFile'] = Param('file', '*scData*.fits')
         paramDict['expMap'] = Param('file', '')
@@ -123,7 +123,7 @@ class SrcAnalysis(object):
         self.resids = None
         self.tolType = pyLike.ABSOLUTE
     def _srcDialog(self):
-        paramDict = map()
+        paramDict = MyOrderedDict()
         paramDict['Source Model File'] = Param('file', '*.xml')
         paramDict['optimizer'] = Param('string', 'Minuit')
         root = SimpleDialog(paramDict, title="Define SrcAnalysis Object:")

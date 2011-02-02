@@ -103,7 +103,7 @@ class Null(object):
     def __call__(self):
         return None
 
-class map(dict):
+class MyOrderedDict(dict):
     def __init__(self):
         dict.__init__(self)
         self.ordered_keys = []
@@ -117,7 +117,7 @@ class Param(object):
         self.value = value
     
 def answers():
-    paramDict = map()
+    paramDict = MyOrderedDict()
     paramDict['infile'] = Param('file', '*.py')
     paramDict['outfile'] = Param('file', 'bar')
     paramDict['value'] = Param('double', 10.)

@@ -28,7 +28,7 @@ class AnalysisBase(object):
         self.tolType = pyLike.ABSOLUTE
         self.optObject = None
     def _srcDialog(self):
-        paramDict = map()
+        paramDict = MyOrderedDict()
         paramDict['Source Model File'] = Param('file', '*.xml')
         paramDict['optimizer'] = Param('string', 'Drmngb')
         root = SimpleDialog(paramDict, title="Define Analysis Object:")

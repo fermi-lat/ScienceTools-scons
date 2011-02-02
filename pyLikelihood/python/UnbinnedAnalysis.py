@@ -75,7 +75,7 @@ class UnbinnedObs(object):
             if expCube is not None and expCube != '':
                 checkTimeCuts(eventFiles, 'EVENTS', expCube, 'Exposure')
     def _obsDialog(self):
-        paramDict = map()
+        paramDict = MyOrderedDict()
         paramDict['eventFile'] = Param('file', '*.fits')
         paramDict['scFile'] = Param('file', '*.fits')
         paramDict['expMap'] = Param('file', '')
