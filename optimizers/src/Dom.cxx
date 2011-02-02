@@ -27,7 +27,12 @@ namespace {
 }
 
 namespace optimizers {
-   XERCES_CPP_NAMESPACE_USE
+//   XERCES_CPP_NAMESPACE_USE
+   using XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument;
+   using XERCES_CPP_NAMESPACE_QUALIFIER DOMImplementation;
+   using XERCES_CPP_NAMESPACE_QUALIFIER DOMImplementationRegistry;
+   using XERCES_CPP_NAMESPACE_QUALIFIER DOMElement;
+   using XERCES_CPP_NAMESPACE_QUALIFIER DOMNode;
 
    DOMDocument * Dom::createDocument() {
       DOMImplementation * impl = DOMImplementationRegistry::

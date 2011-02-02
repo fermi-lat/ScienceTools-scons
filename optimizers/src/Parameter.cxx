@@ -29,7 +29,8 @@
 
 namespace optimizers {
 
-XERCES_CPP_NAMESPACE_USE
+//XERCES_CPP_NAMESPACE_USE
+using XERCES_CPP_NAMESPACE_QUALIFIER DOMElement;
 
 Parameter::Parameter(const Parameter & other) 
    : m_name(other.m_name),

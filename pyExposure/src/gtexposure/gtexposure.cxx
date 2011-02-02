@@ -53,7 +53,9 @@
 
 #include "pyExposure/Exposure.h"
 
-XERCES_CPP_NAMESPACE_USE
+// XERCES_CPP_NAMESPACE_USE
+using XERCES_CPP_NAMESPACE_QUALIFIER DOMElement;
+using XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument;
 
 class GtExposure : public st_app::StApp {
 
