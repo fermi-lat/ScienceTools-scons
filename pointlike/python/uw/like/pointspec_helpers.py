@@ -290,7 +290,7 @@ class ExtendedSourceCatalog(PointSourceCatalog):
         xmls      = self.xmls[mask][sorting]
         spatials  = self.spatial_models[mask][sorting]
 
-        template_dir=join(self.archive_directory,'Templates')
+        template_dir=self.archive_directory
         os.environ["LATEXTDIR"]=template_dir
 
         sources = []
