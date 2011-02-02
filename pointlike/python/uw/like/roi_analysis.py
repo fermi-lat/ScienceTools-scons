@@ -852,5 +852,5 @@ class ROIAnalysis(object):
     def get_source(self, which):
         """ return a reference to a source in the ROI by name, or point-source index"""
         psm, index = self.mapper(which) #raise exception if wrong.
-        return psm.point_sources[index] if psm==self.psm else self.dsm.bgmodels[index] 
+        return psm.point_sources[index] if psm==self.psm else self.dsm.diffuse_sources[index] 
         
