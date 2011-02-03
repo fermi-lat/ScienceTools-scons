@@ -302,11 +302,8 @@ class ExtendedSourceConvolution(BackgroundConvolution):
             the entire spatial part is normalized.
 
             Note that this formula assumes the entire extended source is
-            within the grid (or equivalently that the entire spatial part is
-            normalized), but not that the entire ROI is within the
-            grid. Any addition to the fraction from parts of the ROI
-            outside of the grid simply contribue 0 and can therefore
-            be ignored.
+            within the grid, which should be enforced by a reasonable
+            choice of r_max and r_multi.
             
             roi_radius is in radians."""
         
