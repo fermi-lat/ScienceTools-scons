@@ -649,6 +649,9 @@ class AnalyticConvolutionCache(AnalyticConvolution):
         the same fitpsf value) as the last time, the previous value is
         returned instead of being recalculated. """
 
+    defaults = AnalyticConvolution.defaults
+
+    @keyword_options.decorate(defaults)
     def __init__(self,*args,**kwargs):
 
         super(AnalyticConvolutionCache,self).__init__(*args,**kwargs)
