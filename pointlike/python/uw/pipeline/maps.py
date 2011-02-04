@@ -284,7 +284,8 @@ class Display_map(object):
                 os.makedirs(self.map_path)
             print 'will save figures in folder %s' % self.map_path
         else: self.map_path = None
-        self.sources = skymodel.SkyModel(outdir).sources
+        skm = skymodel.SkyModel(outdir)
+        self.sources = skm.point_sources+skm.extended_sources
         print 'loaded %d sources from skymodel %s' % (len(self.sources),outdir)
          
     def get_pyskyfun(self):

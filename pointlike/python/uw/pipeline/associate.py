@@ -209,7 +209,9 @@ class SrcId(srcid.SourceAssociation):
                 raise Exception(txt)
         super(SrcId, self).__init__(os.path.join(catalog_path, 'srcid'),quiet=True)
         self.class_list = self.classes # will be used by the id method
-        
+     
+    def __str__(self):
+        return 'SrcId(%s)' %self.classes
     #def id(self, pos, error):
     #    """ the format returned by Srcid:
     #        a dictionary with keys classes and values a dict[sourcename]
