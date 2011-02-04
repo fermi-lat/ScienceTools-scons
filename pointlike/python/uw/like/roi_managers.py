@@ -14,6 +14,7 @@ from roi_diffuse import ROIDiffuseModel,DiffuseSource
 from Models import *
 from pypsf import *
 from roi_bands import *
+from abc import abstractmethod
 
       
 ###====================================================================================================###
@@ -41,17 +42,17 @@ class ROIModelManager(object):
     def get_free_errors(self):
         return list(N.concatenate([m.get_free_errors() for m in self.models]))
 
-    def add_source(self, model, bands):
-         raise NotImplementedError("Subclasses should implement this.")
+    @abstractmethod
+    def add_source(self, model, bands): pass
 
-    def del_source(self, which, bands):
-         raise NotImplementedError("Subclasses should implement this.")
+    @abstractmethod
+    def del_source(self, which, bands): pass
 
-    def zero_source(self, which, bands):
-         raise NotImplementedError("Subclasses should implement this.")
+    @abstractmethod
+    def zero_source(self, which, bands): pass
 
-    def unzero_source(self, which, bands):
-         raise NotImplementedError("Subclasses should implement this.")
+    @abstractmethod
+    def unzero_source(self, which, bands): pass
         
 
 ###====================================================================================================###

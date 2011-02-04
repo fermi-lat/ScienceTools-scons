@@ -12,6 +12,7 @@ from roi_extended import ExtendedSource,ROIExtendedModel
 from SpatialModels import Disk,Gaussian,EllipticalDisk,EllipticalGaussian,GAUSSIAN_X68
 from os.path import join
 import os
+from abc import abstractmethod
 
 ###====================================================================================================###
 
@@ -107,11 +108,13 @@ class PointSourceCatalog(object):
     """ Define an interface for point source catalog that can be used to
          construct the model for an ROI analysis."""
 
+    @abstractmethod
     def get_sources(self,skydir,radius=15):
-        raise NotImplementedError,'Virtual'
+        pass
 
+    @abstractmethod
     def merge_lists(self,skydir,radius=15,user_point_list=None,user_diffuse_list=None):
-        raise NotImplementedError,'Virtual'
+        pass
 
 ###====================================================================================================###
 
