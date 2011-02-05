@@ -474,7 +474,7 @@ class RadialModel(RadialImage):
 
             if type(extended_model) == ROIExtendedModel:
 
-                nsize = RadialModel.get_nside(self.size,self.npix)
+                nside = RadialModel.get_nside(self.size,self.npix)
 
                 temp_band = Band(nside)
                 wsdl = WeightedSkyDirList(temp_band,self.center,N.radians(self.size),True)
