@@ -6,7 +6,7 @@
 
 import numpy as N
 from skymaps import *
-from uw.like.Models import Model,Constant,PowerLaw,ExpCutoff,DefaultModelValues
+from uw.like.Models import Model,Constant,PowerLaw,ExpCutoff,DefaultModelValues,LogParabola
 from roi_diffuse import DiffuseSource,ROIDiffuseModel_OTF
 from roi_extended import ExtendedSource,ROIExtendedModel
 from SpatialModels import Disk,Gaussian,EllipticalDisk,EllipticalGaussian,SpatialMap,GAUSSIAN_X68
@@ -147,15 +147,25 @@ class FermiCatalog(PointSourceCatalog):
         n0s  = f[1].data.field('FLUX_DENSITY')
         inds = f[1].data.field('SPECTRAL_INDEX')
         cutoffs = f[1].data.field('CUTOFF_ENERGY') if 'Cutoff_Energy' in colnames else None
+        betas = f[1].data.field('beta') if 'beta' in colnames else None
+
         inds = N.where(inds > 0, inds, -inds)
 
         self.dirs    = map(SkyDir,N.asarray(ras).astype(float),N.asarray(decs).astype(float))
-        if cutoffs is None:
-            self.models = N.asarray([PowerLaw(p=[n0,ind],e0=pen) for n0,ind,pen in zip(n0s,inds,pens)])
-        else:
-            self.models = N.asarray([PowerLaw(p=[n0,ind],e0=pen) if N.isnan(cutoff) else 
-                                     ExpCutoff(p=[n0,ind,cutoff],e0=pen)
-                                     for n0,ind,pen,cutoff in zip(n0s,inds,pens,cutoffs)])
+
+        self.models = []
+        for i,(n0,ind,pen) in enumerate(zip(n0s,inds,pens)):
+            if cutoffs is not None and not N.isnan(cutoffs[i]):
+                cutoff=cutoffs[i]
+                self.models.append(ExpCutoff(p=[n0,ind,cutoff],e0=pen))
+            elif betas is not None and not N.isnan(betas[i]):
+                beta=betas[i]
+                self.models.append(LogParabola(p=[n0,ind,beta,pen]))
+            else:
+                self.models.append(PowerLaw(p=[n0,ind],e0=pen))
+
+        self.models = N.asarray(self.models)
+
         self.names  = N.chararray.strip(f[1].data.field(sname))
 
         f.close()
