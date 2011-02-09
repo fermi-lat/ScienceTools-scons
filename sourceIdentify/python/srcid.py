@@ -289,7 +289,7 @@ def get_name_key(pars, hdu):
 				pass
 	
 	# Build possible name string
-	names = [prefix + s for s in ['HESS','NAME','ID', 'NICKNAME']]
+	names = [prefix + s for s in ['HESS','NAME','ID', 'NICKNAME', 'SOURCE_NAME']]
 	
 	# Search for possible name strings (case insensitive)
 	for card in cards:
@@ -1024,7 +1024,10 @@ if __name__ == '__main__':
 		os.rename('gtsrcid.log', pars['cptCatPrefix'].lower() + '.log')
 		
 		# Attach counterparts to LAT catalogue
-		hdu_lat = attach_counterparts(pars, hdu_lat)
+		try:
+			hdu_lat = attach_counterparts(pars, hdu_lat)
+		except:
+			print "Unable to attach counterparts for catalogue "+cpt_url
 		
 		# Increment index
 		cpt_index = cpt_index + 1

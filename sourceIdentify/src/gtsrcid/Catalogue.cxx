@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.55  2010/12/20 08:52:00  jurgen
+Adapt to gcc 4.4
+
 Revision 1.54  2010/11/04 21:20:35  jurgen
 Remove unused variable
 
@@ -411,7 +414,7 @@ Status get_id_info(Parameters *par, InCatalogue *in,
 
       // Search for ID in keys
       for (int k = 0; search_id[k] != "stop"; ++k) {
-        std::string match  = find(qtyNames, upper(search_id[k]));
+        std::string match = find(qtyNames, upper(search_id[k]));
         if (match.length() > 0) {
           in->col_id = match;
           status     = STATUS_OK;
