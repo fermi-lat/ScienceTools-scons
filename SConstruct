@@ -48,7 +48,7 @@ baseEnv.Tool('generateScript')
 baseEnv.Tool('doxygen')
 baseEnv.Alias('NoTarget')
 baseEnv.SourceCode(".", None)
-variant = "Unknown"
+variant = "Unknown-"
 baseEnv['OSNAME'] = "Unknown"
 baseEnv['MACHINENAME'] = "Unknown"
 baseEnv['ARCHNAME'] = "Unknown"
@@ -62,6 +62,9 @@ if baseEnv['PLATFORM'] == "darwin":
     version = commands.getoutput("sw_vers -productVersion")
     cpu = commands.getoutput("arch")
     baseEnv['MACHINENAME'] = cpu
+    if version.startswith("10.6"):
+        variant="snowleopard-"
+        baseEnv['OSNAME'] = "snowleopard"
     if version.startswith("10.5"):
         variant="leopard-"
         baseEnv['OSNAME'] = "leopard"
