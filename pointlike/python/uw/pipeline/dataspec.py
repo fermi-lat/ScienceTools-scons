@@ -49,8 +49,6 @@ class DataSpec(object):
             ltcube      = data_join('twenty','20month_lt.fits'),
             ),
        '2years': dict(data_name = "two years 4 bins/decade to 1 TeV",
-            ft1files    = None,
-            ft2files    = None,
             binfile     = data_join('monthly','2years_4bpd.fits'),
             ltcube      = data_join('monthly','2years_lt.fits'),
             ),

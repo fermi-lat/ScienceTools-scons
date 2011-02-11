@@ -62,7 +62,7 @@ def make_pivot(z, outdir,
     maxes = np.array([pks[i,:].max() for i in indices])
     p.add_facet('maximum TS','Number', 'F1', maxes)
 
-    related = [[['sources', 'sources.cxml#healpix_12=EQ.%d'%(index)]] for index in range(len(names))]
+    related = [[['sources', 'sources.cxml#ROI_num=EQ.%d'%(index)]] for index in range(len(names))]
     p.add_related(related)
     p.write(pivot_file)
   

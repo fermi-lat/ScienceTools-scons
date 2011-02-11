@@ -8,6 +8,31 @@ import pylab as plt
 from uw.utilities import image
 from skymaps import Band, SkyDir, PySkyFunction, Hep3Vector, SkyImage
 
+def skyplot(crec, title='', axes=None, fignum=30, ait_kw={}, **kwargs):
+    """ make an AIT skyplot of a HEALpix array
+    crec : array
+        must be sorted according to the HEALpix index
+    title : string
+        set the figure title
+    ait_kw : dict
+        to set kwargs for image.AIT, perhaps pixelsize
+    
+    Other args passed to imshow
+    """
+    n = len(crec)
+    nside = int(np.sqrt(n/12))
+    assert n==12*nside**2, 'wrong length to be healpix array'
+    band = Band(nside)
+    def skyplotfun(v):
+        skydir = SkyDir(Hep3Vector(v[0],v[1],v[2]))
+        index = band.index(skydir)
+        return crec[index]
+    if axes is None:
+        plt.close(fignum)
+        fig = plt.figure(fignum, figsize=(12,6))
+    ait=image.AIT(PySkyFunction(skyplotfun) ,axes=axes, **ait_kw)
+    ait.imshow(title=title, **kwargs)
+    return ait
 
 class DisplayMap(object):
     """ display the contents of a HEALpix table as ait or zea
