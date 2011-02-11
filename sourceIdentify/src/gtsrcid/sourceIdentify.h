@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.36  2010/12/20 08:52:00  jurgen
+Adapt to gcc 4.4
+
 Revision 1.35  2010/10/13 14:19:35  jurgen
 Dump candidates before probability cut in refine step
 
@@ -121,9 +124,9 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v2r3p2"
+#define TOOL_VERSION  "v2r3p3"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "20-Dec-2010"
+#define TOOL_DATE     "11-Feb-2011"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"

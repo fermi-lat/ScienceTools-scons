@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.42  2010/04/16 21:53:16  jurgen
+Fully implement HEALPix counterpart density maps
+
 Revision 1.41  2010/04/16 16:16:19  jurgen
 Implement HEALPix interface to read counterpart density maps
 
@@ -156,7 +159,7 @@ namespace sourceIdentify {
 #define OUTCAT_PRE_CHAR               '@'
 #define OUTCAT_PRE_STRING             "@"
 //
-#define OUTCAT_MAX_STRING_LEN         256
+#define OUTCAT_MAX_STRING_LEN         8192
 #define OUTCAT_MAX_KEY_LEN            256
 #define OUTCAT_EXT_NAME               "GLAST_CAT"
 //
