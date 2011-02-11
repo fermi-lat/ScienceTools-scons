@@ -693,7 +693,7 @@ def process_diffuse_source(ds,convert_extended,expand_env_vars,filename):
             spind = dm.value(sd,100)*100/iflux + 1
             pl = PowerLawFlux()
             pl.p[0] = ds.smodel.p[0] + N.log10(iflux)
-            p1.p[1] = N.log10(spind+10**(ds.smodel.p[1]-ds.smodel.index_offset))
+            pl.p[1] = N.log10(spind+10**(ds.smodel.p[1]-ds.smodel.index_offset))
             pl.cov_matrix = ds.smodel.cov_matrix.copy() #correct?
             m2x.process_model(pl,scaling=False)
             specxml = m2x.getXML()
