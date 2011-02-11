@@ -285,6 +285,10 @@ class ExtendedSourceCatalog(PointSourceCatalog):
                 self.spatial_models.append(
                     SpatialMap(file=self.templates[i])
                 )
+            # remember the fits file template in case the XML needs to be saved out.
+            self.spatial_models[-1].original_template = self.templates[i]
+            self.spatial_models[-1].original_parameters = self.spatial_models[-1].p.copy()
+
 
         self.spatial_models = N.asarray(self.spatial_models)
 
