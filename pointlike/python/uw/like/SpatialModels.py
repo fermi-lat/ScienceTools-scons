@@ -569,11 +569,11 @@ class Ring(RadiallySymmetricModel):
         return self.sigma
 
     def pretty_spatial_string(self):
-        return "[ %.3fd, %.3d' ]" % (self.sigma,self.frac*self.sigma)
+        return "[ %.3fd, %.3f ]" % (self.sigma,self.frac)
 
     def shrink(self): 
         self.p[2]=N.where(self.log[2],N.log10(SMALL_ANALYTIC_EXTENSION),SMALL_ANALYTIC_EXTENSION)
-        self.p[3]=1
+        self.p[3]=0
         self.free[2:4]=False
         self.cache()
 
