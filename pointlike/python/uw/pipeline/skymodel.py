@@ -6,7 +6,7 @@ $Header$
 import os, pickle, glob, types
 import numpy as np
 from skymaps import SkyDir, Band
-from uw.utilities import keyword_options, makerec
+from uw.utilities import keyword_options, makerec, xml_parsers
 from . import sources
 
 class SkyModel(object):
@@ -235,6 +235,14 @@ class SkyModel(object):
             s.smodel = s.model
             
         return globals, extended
+
+    def toXML(self,filename):
+        stacks= [
+            xml_parsers.unparse_diffuse_sources(self.extended_sources,True,False,filename),
+            xml_parsers.unparse_point_sources(self.point_sources,strict=True),
+        ]
+        xml_parsers.writeXML(stacks, filename)
+
         
 class SourceSelector(object):
     """ Manage inclusion of sources in an ROI."""
