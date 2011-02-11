@@ -84,9 +84,9 @@ class ExtendedSource(DiffuseSource):
                           'R.A. (J2000):\t\t%.5f'%(self.spatial_model.center.ra()),
                           'Dec. (J2000):\t\t%.5f'%(self.spatial_model.center.dec()),
                           'Model:\t\t%s'%(self.smodel.full_name()),
-                          '\t'+self.smodel.__str__(indent='\t\t'), 
+                          '\t'+self.smodel.__str__(indent='\t'), 
                           'SpatialModel:\t%s'%(self.spatial_model.full_name()),
-                          '\t'+self.spatial_model.__str__(indent='\t\t')
+                          '\t'+self.spatial_model.__str__(indent='\t')
                          ])
 
 
