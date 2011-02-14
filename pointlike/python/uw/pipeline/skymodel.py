@@ -178,6 +178,7 @@ class SkyModel(object):
             print 'updated positions of %d sources' % moved
  
     def _check_for_extended(self):
+        if self.__dict__.get('extended_catalog') is None: return
         for name in self.extended_catalog.names:
             if name.replace(' ','') not in [g.name.replace(' ','') for g in self.extended_sources]:
                 print 'extended source %s added to model' % name
