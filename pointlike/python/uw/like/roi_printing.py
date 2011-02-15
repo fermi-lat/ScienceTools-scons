@@ -65,9 +65,9 @@ def print_summary(roi, sdir=None, galactic=False, maxdist=5, title=None):
     print 90*'-','\n\tDiffuse sources\n',90*'-'
     for source in self.bgm.diffuse_sources:
         if  'spatial_model' in source.__dict__: continue
-        par, sigpar = source.model.statistical()
+        par, sigpar = source.smodel.statistical()
         n= len(par)
-        freeflag = map(makefreeflag, source.model.free, sigpar)
+        freeflag = map(makefreeflag, source.smodel.free, sigpar)
         fmt ='%-22s' 
         values = (source.name.strip(),)
         for v,f in zip(par, freeflag):
