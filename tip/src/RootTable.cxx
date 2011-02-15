@@ -16,7 +16,6 @@
 #include "TString.h"
 #include "TSystem.h"
 #include "TTree.h"
-#include "TEventList.h"
 
 #include "tip/IFileSvc.h"
 
@@ -97,12 +96,23 @@ namespace tip {
 
   // Subclasses call this to open the file and position it to the desired extension.
   void RootTable::open() {
-//    static bool first_time = true;
+    static bool first_time = true;
     // Most of the following block of code was taken from the tuple package, by Toby Burnett.
     // tuple/src/RootTable.cxx: RootTable::RootTable(const std::string &, const std::string &, const std::string &);
     // cvs revision 1.8
     // Begin theft:
 // TODO 5: 4/2/2004: The following block are similar idiosyncrasies probably resulting from using
+// incomplete Root link lines. Really this should be resolved by correcting this behavior in the
+// requirements file.
+    if (first_time) {
+      first_time = false;
+#ifdef WIN32 // needed for windows.
+//      gSystem->Load("libTree.dll");
+// JP added:
+#else
+      gSystem->Load("libHist.so");
+#endif
+    }
 
     // JP added: Prevent Root warning about file from being logged:
     // Save current error chattiness level:
@@ -146,16 +156,26 @@ namespace tip {
 //        std::cout << "\t  filter \""<< filter << "\" ..." << std::endl;
 //    }
     if( ! m_filter.empty() ){ // apply filter expression
-        m_tree->Draw(">>+elist", m_filter.c_str() );
-        TEventList *elist = (TEventList*)gDirectory->Get("elist");
-        if (elist == 0)
-            throw TipException(std::string("TEventList is null"));
-        Int_t size = elist->GetN(); // number of elements in list
+        // Get path to temporary file.
+        m_tmp_file_name = IFileSvc::getTmpFileName();
+        if (m_tmp_file_name.empty()) m_tmp_file_name = "dummy.root";
+
+        TFile * dummy = new TFile(m_tmp_file_name.c_str(), "recreate");
+        // JP added this check:
+        if (!dummy->IsOpen()) {
+          delete dummy;
+          throw TipException("Could not create temporary filtered ROOT file");
+        }
+        TTree * tnew = m_tree->CopyTree(m_filter.c_str() );
+        Index_t size = Index_t(tnew->GetEntries());
         if( size == 0) {
             throw TipException(std::string("Filter expression \"")+m_filter+"\" yielded no events");
         }
-        m_tree->SetEventList(elist);
+        m_tree = tnew;
+//        std::cout << "\t " << size << "/" << m_num_records << " events" << std::endl;
         m_num_records = size;
+        delete m_fp;
+        m_fp = dummy;
     }
     // turn off all branches: enable them as requested for the event loop
     m_tree->SetBranchStatus("*", 0);
