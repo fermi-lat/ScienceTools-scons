@@ -44,6 +44,10 @@ public:
 
    /// Move to first row of filtered data. Returns 0.
    Long64_t rewind();
+
+   Long64_t index() const {
+      return m_index;
+   }
    
    /// Value of named column for current row.
    double operator[](const std::string & fieldname);
