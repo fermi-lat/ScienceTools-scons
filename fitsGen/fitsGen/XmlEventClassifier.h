@@ -25,6 +25,8 @@ namespace evtUtils {
 
 namespace fitsGen {
 
+class MeritFile2;
+
 /**
  * @class XmlEventClassifier
  *
@@ -42,6 +44,8 @@ public:
    virtual ~XmlEventClassifier() throw();
 
    virtual unsigned int operator()(tip::ConstTableRecord & row) const;
+
+   virtual unsigned int operator()(MeritFile2 & merit) const;
 
    virtual unsigned int 
    operator()(const std::map<std::string, double> & row) const;

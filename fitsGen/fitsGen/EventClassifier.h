@@ -22,6 +22,8 @@ namespace tip {
 
 namespace fitsGen {
 
+class MeritFile2;
+
 /**
  * @class EventClassifier
  * @brief Set event classes for writing to FT1 files using
@@ -46,6 +48,11 @@ public:
    /// event does not fit into any class.
    /// @param row A row from a merit file, typically
    virtual unsigned int operator()(tip::ConstTableRecord & row) const;
+
+   /// @return The event class id number.  This is -1 if the
+   /// event does not fit into any class.
+   /// @param merit MeritFile2 interface to merit data
+   virtual unsigned int operator()(MeritFile2 & merit) const;
 
    /// @return The event class id number.  This is -1 if the
    /// event does not fit into any class.
@@ -83,6 +90,8 @@ private:
                    double value);
 
       void setItems(tip::ConstTableRecord & row);
+
+      void setItems(MeritFile2 & merit);
 
       void setItems(const std::map<std::string, double> & row);
 

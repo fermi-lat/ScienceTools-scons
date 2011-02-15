@@ -8,6 +8,7 @@
 
 #include <stdexcept>
 
+#include "TError.h"
 #include "TEventList.h"
 #include "TFile.h"
 #include "TLeaf.h"
@@ -20,7 +21,12 @@ namespace fitsGen {
 MeritFile2::MeritFile2(const std::string & meritfile,
                        const std::string & tree,
                        const std::string & filter) :
-   m_file(TFile::Open(meritfile.c_str())), m_index(0) {
+   m_file(0), m_index(0) {
+/// Vain effort to suppress uninformative error messages from ROOT.
+/// This is borrowed from tip::RootTable.cxx.
+   long root_err_level = gErrorIgnoreLevel;
+   m_file = TFile::Open(meritfile.c_str());
+   gErrorIgnoreLevel = root_err_level;
 
    if (m_file == 0) {
       throw std::runtime_error("Failed to load " + meritfile);
@@ -40,6 +46,11 @@ MeritFile2::MeritFile2(const std::string & meritfile,
    m_eventList = (TEventList *)gDirectory->Get("merit_event_list");
 
    m_nrows = m_eventList->GetN();
+
+   m_tstart = operator[]("EvtElapsedTime");
+   m_tree->GetEvent(m_eventList->GetEntry(m_nrows-1));
+   m_tstop = operator[]("EvtElapsedTime");
+   rewind();
 }
 
 MeritFile2::~MeritFile2() {

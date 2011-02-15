@@ -23,6 +23,7 @@
 
 #include "evtUtils/EventClass.h"
 
+#include "fitsGen/MeritFile2.h"
 #include "fitsGen/XmlEventClassifier.h"
 
 namespace fitsGen {
@@ -101,6 +102,13 @@ unsigned int XmlEventClassifier::
 operator()(tip::ConstTableRecord & row) const {
    unsigned int run = static_cast<unsigned int>(row["EvtRun"].get());
    unsigned int eventId = static_cast<unsigned int>(row["EvtEventId"].get());
+   return operator()(run, eventId);
+}
+
+unsigned int XmlEventClassifier::
+operator()(fitsGen::MeritFile2 & merit) const {
+   unsigned int run = static_cast<unsigned int>(merit["EvtRun"]);
+   unsigned int eventId = static_cast<unsigned int>(merit["EvtEventId"]);
    return operator()(run, eventId);
 }
 
