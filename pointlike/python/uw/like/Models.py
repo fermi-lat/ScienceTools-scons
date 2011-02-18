@@ -281,6 +281,15 @@ Optional keyword arguments:
         except:
             print 'Encountered a numerical error when attempting to calculate integral flux.'
 
+    def set_flux(self,flux,**kwargs):
+        """ Set the flux of the source. 
+                
+            This function ensures that after the function, call,
+                flux == model.i_flux(**kwargs)
+            where kwargs is consistently passed into i_flux and set_flux
+        """
+        self.p[0] += N.log10(flux/self.i_flux(**kwargs))
+
     def copy(self):
         
         a = eval(self.name+'(iscopy=True, **self.__dict__)') #create instance of same spectral model type
@@ -748,6 +757,9 @@ class InterpConstants(Model):
         from scipy.interpolate import interp1d
         interp = interp1d(self.e_breaks,10**self.p)
         return interp(N.log10(e))
+
+    def set_flux(self,flux,**kwargs):
+        raise NotImplementedError("No way to set flux for InterpConstants spectral model")
 
 
 def convert_exp_cutoff(model):
