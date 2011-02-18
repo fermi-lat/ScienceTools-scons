@@ -7,6 +7,7 @@ $Id$
  --------- -----   --- -----------------------------------------------------------------------
  * EOH *
 
+ pointlike-07-07-04 17-Feb-2011  lande adding function modify to ROIAnalysis.
  pointlike-07-07-03 30-Jan-2011  lande Updating pointlike to the latest version
  pointlike-07-07-02 10-Dec-2010 burnett fix test program
  pointlike-07-07-01 08-Dec-2010  lande New model counts code as well as improvemnts to adding/removing sources from an ROI.
