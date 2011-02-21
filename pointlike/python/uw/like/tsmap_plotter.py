@@ -21,7 +21,10 @@ def plot_tsmap(roi, name=None, center=None, size=0.5, pixelsize=None, outdir=Non
         markercolor='blue', markersize=12,
         primary_markercolor='green', primary_markersize=14,
          **kwargs):
-    """ create a TS map for the source
+    """ create a TS map for the source. These are localization style
+        TS maps (where the source is not in the background model) and
+        are useful for source localization.
+
     roi: an ROIAnalsyis object
 
         Optional keyword arguments:
