@@ -13,10 +13,10 @@ from uw.utilities import keyword_options
 class CALDBManager(object):
     """ This object abstracts access to IRF files which can be
         found in the file system. The intention is to provide a
-        consistentcy between the pointlike and gtlike IRF loading.
+        consistency between the pointlike and gtlike IRF loading.
 
         In particular, the caldb.indx is read so that a consistent
-        naming convnetion can be used. Additionally, the CUSTOM_IRF_DIR
+        naming convention can be used. Additionally, the CUSTOM_IRF_DIR
         environment varaible can used to define new IRFs. """
 
     defaults=(
