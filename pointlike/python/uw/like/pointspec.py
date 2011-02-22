@@ -92,30 +92,23 @@ class SavedData(DataSpecification):
            at a boundary between days, the data for the full day containing
            tstop will be used.
     """
-    defaults = (('data_dir','','path to the saved data products')
+    try:
+        default_data_dir = os.environ['DATA_DIR']
+    except KeyError:
+        default_data_dir = ''
+
+    new_defaults = (('data_dir',default_data_dir,'path to the saved data products')
                ,('use_weighted_livetime',False,'''Specify whether to get
                   the weighted livetimes.''')
                ,('binsperdec',4,'''Bins per decade for the
                   BinnedPhotonData files.''')
                )
+    defaults = DataSpecification.defaults + new_defaults
 
-    @keyword_options.decorate(DataSpecification.defaults + defaults)
+    @keyword_options.decorate(defaults)
     def __init__(self,tstart,tstop,**kwargs):
-        self.binfile = None
-        self.ltcube = None
-        self.tstart = tstart
-        self.tstop = tstop
-        self.binsperdec = 4
-        self.use_weighted_livetime = True
-        try:
-            self.data_dir = os.environ['DATA_DIR']
-        except KeyError:
-            self.data_dir = ''
-        for k,v in kwargs.items():
-            try:
-                self.__setattr__(k,v)
-            except AttributeError:
-                raise AttributeError('Invalid keyword argument: %s'%k)
+
+        keyword_options.process(self,kwargs)
 
         if self.data_dir =='' or not os.path.exists(self.data_dir):
             raise Exception("""No valid data directory provided. Either the DATA_DIR environment
@@ -138,7 +131,6 @@ class SavedData(DataSpecification):
                 merge_bpd(bpds,self.binfile)
             if not os.path.exists(self.ltcube):
                 merge_lt(lts,self.ltcube,weighted = self.use_weighted_livetime)
-
 
 class SpectralAnalysis(object):
     """ Interface to the spectral analysis code."""
