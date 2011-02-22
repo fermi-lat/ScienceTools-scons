@@ -14,7 +14,7 @@ from glob import glob
 from datetime import date,timedelta
 
 from pixeldata import PixelData
-from pypsf     import Psf,OldPsf,NewPsf,CALDBPsf
+from pypsf     import Psf,CALDBPsf
 from pycaldb   import CALDBManager
 from pointspec_helpers import *
 from roi_managers import ROIPointSourceManager,ROIBackgroundManager,ROIDiffuseManager
@@ -197,7 +197,7 @@ class SpectralAnalysis(object):
         keyword_options.process(self, kwargs)
 
         self.CALDBManager = CALDBManager(irf=self.irf,psf_irf=self.psf_irf,
-                                         CALDB=self.CALDB,custom_irf_dir=self.custom_irf_dir)
+            CALDB=self.CALDB,custom_irf_dir=self.custom_irf_dir)
 
          #TODO -- sanity check that BinnedPhotonData agrees with analysis parameters
         self.pixeldata = PixelData(self.__dict__)
