@@ -302,7 +302,7 @@ class Catalog(object):
         cards = self.hdu.header.ascardlist()
         #First check for UCD in header
         for card in cards:
-            if card.key[:5]=='TBUCD' and card.value == 'ID_MAIN':
+            if card.key[:5]=='TBUCD' and card.value in ['ID_MAIN','meta.id;meta.main']:
                 name_key = cards['TTYPE'+card.key[5:8]].value
                 break
             #Sometimes UCDs are declared in comments
@@ -351,7 +351,10 @@ class Catalog(object):
                 lat_key = ttypes[ttypes.keys()[ttypes.values().index('DEJ2000')]].value
             elif 'RA' in ttypes.values():
                 lon_key = ttypes[ttypes.keys()[ttypes.values().index('RA')]].value
-                lat_key = ttypes[ttypes.keys()[ttypes.values().index('DE')]].value
+                try:
+                    lat_key = ttypes[ttypes.keys()[ttypes.values().index('DE')]].value
+                except ValueError:
+                    lat_key = ttypes[ttypes.keys()[ttypes.values().index('DEC')]].value
         if not lon_key:
             self.coords = SkyDir.GALACTIC
             if 'POS_GAL_LON' in ucds.values():
