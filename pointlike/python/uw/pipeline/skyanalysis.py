@@ -51,7 +51,8 @@ class SkyAnalysis(pointspec.SpectralAnalysis):
         # add keys to modify to kwargs
         for kw in default_keys: 
             if kw in self.config: kwargs[kw]= self.config[kw]
-        super(SkyAnalysis,self).__init__( dataspec.DataSpec(dataset), **kwargs)
+        month = kw.pop("month",None)
+        super(SkyAnalysis,self).__init__( dataspec.DataSpec(dataset,month=month), **kwargs)
         # now add waht is left
         self.__dict__.update(self.config)
         self.skymodel = sky
