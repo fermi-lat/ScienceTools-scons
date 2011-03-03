@@ -1,5 +1,5 @@
 #  $Id$
-import os, pprint, sys
+import os, pprint, sys, os.path
 from SCons.Script import *
 from fermidebug import fdebug
 
@@ -278,6 +278,10 @@ def generate(env, **kw):
 ### NOTE!!! Need to add something to makeStudio for job options
         if sys.platform=='win32':
             if env['PLATFORM'] == "win32" and env['COMPILERNAME'] == "vc90":
+                # In special case where rootcint lib is first project
+                # encountered, directory might not exist
+                if not os.path.exists(str(env['STUDIODIR'])):
+                    Execute(Mkdir(env['STUDIODIR']))
                 env.Tool('makeStudio', package=kw.get('package',''),
                          libraryCxts=kw.get('libraryCxts',''),
                          staticLibraryCxts=kw.get('staticLibraryCxts',''),
