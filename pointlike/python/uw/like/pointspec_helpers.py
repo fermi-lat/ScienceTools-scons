@@ -5,6 +5,7 @@
     """
 
 import numpy as N
+import glob
 from skymaps import *
 from uw.like.Models import Model,Constant,PowerLaw,ExpCutoff,DefaultModelValues,LogParabola
 from roi_diffuse import DiffuseSource,ROIDiffuseModel_OTF
@@ -242,7 +243,11 @@ class ExtendedSourceCatalog(PointSourceCatalog):
         self.archive_directory = archive_directory
 
         from pyfits import open
-        f = open(join(self.archive_directory,"LAT_extended_sources.fit"))
+        filename=join(self.archive_directory,"LAT_extended_sources*.fit")
+        filename=glob.glob(filename)
+        if len(filename)!=1: raise Exception("Unable to find LAT_extended_sources.fit archive file.")
+        filename=filename[0]
+        f = open(filename)
         self.names = f[1].data.field('Source_Name')
         ras   = f[1].data.field('RAJ2000')
         decs  = f[1].data.field('DEJ2000')
