@@ -24,8 +24,8 @@ def get_latalog(latalog_file='f:/glast/data/kerr/gll_psc_v02.fit'):
 
 J = np.log(10)
 
-# re-implementation of scipy version that uses half the calls!               
 def my_newton(func,x0,fprime,tol=1e-2):
+    """ re-implementation of scipy version that uses half the calls!  """
     p0 = x0
     for i in xrange(30):
         fval = func(x0)
