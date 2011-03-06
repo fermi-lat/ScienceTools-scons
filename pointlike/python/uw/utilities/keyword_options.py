@@ -55,17 +55,21 @@ def decorate(defaults):
     return decorator
 
 # use with the above
-def process(self, kwargs):
+def process(self, kwargs, defaults=None):
     """
     self: class instance, used to set the dictionary, and find the name
     kwargs: kwargs entry in function
-    note assumes the defaults list is named 'defaults'
-    
+    defaults: None, list or tuple
+        if None, use the 'default' class member
+        a list item is either 
+            * string, which is ignored
+            * a list or 3-tuple (name, value, comment)
     Raises KeyError exception for any kwargs entry not in the defaults list
     """
-    for item in self.defaults:
+    for item in self.defaults if defaults is None else defaults:
         if type(item)==types.StringType: continue
         self.__dict__[item[0].strip()] = item[1]
+        
     for key in kwargs.keys():
         if key in self.__dict__: self.__dict__[key]=kwargs[key]
         else:
