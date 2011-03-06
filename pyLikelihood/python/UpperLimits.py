@@ -124,7 +124,6 @@ class UpperLimit(object):
             try:
                 self.like[self.indx] = x
             except RuntimeError, message:
-                print par.getName()
                 print x
                 raise RuntimeError(message)
             self.fit(0, renorm=renorm)
