@@ -318,7 +318,7 @@ class Catalog(object):
                             break
                     except IndexError:
                         pass
-            if card.key[:5]=='TTYPE' and card.value.upper() in ['NAME','ID']:
+            if card.key[:5]=='TTYPE' and card.value.upper() in ['NAME','ID','PSR_NAME']:
                 name_key = card.value
                 break
         try:
