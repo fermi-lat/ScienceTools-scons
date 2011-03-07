@@ -9,6 +9,8 @@ author: M. Kerr <matthew.kerr@gmail.com>
 
 import numpy as np
 
+TWOPI = np.pi*2
+
 def vec(func):
     from numpy import vectorize
     return vectorize(func,doc=func.__doc__)
