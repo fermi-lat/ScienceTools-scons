@@ -31,8 +31,9 @@ class BinnedObs(object):
                                   'IRFs: ' + str(irfs)))
         self.srcMaps = srcMaps
         self.expCube = expCube
-        self.binnedExpMap =binnedExpMap
+        self.binnedExpMap = binnedExpMap
         self.irfs = irfs
+        pyLike.AppHelpers_checkExposureMap(srcMaps, binnedExpMap)
         self._createObservation(srcMaps, expCube, irfs)
         if binnedExpMap is not None and binnedExpMap != "":
             pyLike.SourceMap_setBinnedExposure(binnedExpMap)
