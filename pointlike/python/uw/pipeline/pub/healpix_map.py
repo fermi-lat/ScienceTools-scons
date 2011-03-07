@@ -416,4 +416,37 @@ class Rings(object):
 #    return skyplotfun #HPskyfun('exposure', skyplotfun, nside=nside)
 #
 
+#
+
+def make_setup(outdir, title,
+        imshow_kw,
+        label=''):
+    """
+    Use this to setup for mec-generation combining the individual ROI tables to make images centered on the ROIs
+    """
+    extra='ZEA_kw=dict(galactic=True),imshow_kw=dict(%s),label="%s"' %( imshow_kw,label)
+    setup_string =  """\
+import os; import numpy as np;os.chdir(r"%(cwd)s")
+from uw.pipeline.pub import healpix_map;
+g = healpix_map.ZEAdisplayTasks("%(title)s","%(outdir)s", %(extra)s)
+""" %dict(cwd=os.getcwd(), title=title, outdir=outdir, extra=extra)
+    return setup_string
+
+class Setup(object):
+    def __init__(self,outdir, title):
+        self.outdir = outdir
+        if title[:2]=='ts':
+            self.setup= make_setup(outdir, title, 
+                imshow_kw='interpolation="bilinear", vmin=0,vmax=5,fun=np.sqrt',
+                label = r'$\mathrm{\sqrt{TS_{max}-TS}}$',
+                )
+        elif title=='kde':
+                self.setup= make_setup(outdir, title, 
+                imshow_kw='interpolation="bilinear",fun=np.log10',
+                label='log10(photon density)')
+        else:
+            assert False, 'title %s not recognized' % title
+    def __call__(self):
+        return self.setup
+
     

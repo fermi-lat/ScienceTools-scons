@@ -19,15 +19,15 @@ def hpdir(index):
     
 def hpname(index):
     return 'HP12_%04d'%index
-def table_array(name, outdir):
+    
+def table_array_max(name, outdir):
     files =glob.glob(os.path.join(outdir, '%s_table'%name,'*.pickle'))
     nf = len(files)
     assert nf>0, 'no pickle files found in %s' % os.path.join(outdir, '%s_table'%name)
     if nf<1728: print 'warning: missing %d files' % (1728-nf)
     files.sort()
-
-    pklist = np.array([pickle.load(open(f)) for f in files])
-    return pklist
+    maxes = map(lambda f:pickle.load(open(f)).max(), files)
+    return maxes
 
     
 def make_pivot(z, outdir,
@@ -58,9 +58,8 @@ def make_pivot(z, outdir,
         p.add_facet(cname, 'Number', 'F2', z.field(cname))
         
     # get the TS map arrays
-    pks = table_array('ts', outdir)
-    maxes = np.array([pks[i,:].max() for i in indices])
-    p.add_facet('maximum TS','Number', 'F1', maxes)
+    tsmax= table_array_max('ts', outdir)
+    p.add_facet('maximum TS','Number', 'F1', tsmax)
 
     related = [[['sources', 'sources.cxml#ROI_num=EQ.%d'%(index)]] for index in range(len(names))]
     p.add_related(related)

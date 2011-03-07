@@ -42,12 +42,10 @@ def make_pivot(z, outdir,
                     'SE':'SEED', '24':'24M',
                     'Cy':'bin', 'LS':'bin','PS':'PSR','gc':'CG source'}[name[:2]] 
         except:
-            if name in ['IC443','W28','HESSJ1825-137','W44','W51C','MSH1552','VelaX','LMC','SMC']:
+            if name in ['IC443','W28','HESS J1825-137','W44','W51C','MSH 1552','Vela X','LMC','SMC']:
                 return 'Extended'
             else: return name[:2]
         
-    #source = [{'1F':'1FGL', 'PG':'PGW', 'MR':'MRF', 'UW':'UW', 'MS':'MST', 'SE':'SEED', '24':'24M',
-    #   'Cy':'bin', 'LS':'bin','PS':'PSR','gc':'CG source'}[n[:2]] for n in p.rec.name]
     p.add_facet('source', 'String', 'C', map(source_name, p.rec.name))
     ts = z.ts
     ts[ts<0]=0

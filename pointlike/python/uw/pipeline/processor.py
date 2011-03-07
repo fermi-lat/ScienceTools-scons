@@ -62,15 +62,9 @@ def source_band_info(roi, which):
     man,i = roi.mapper(which)
     bands = roi.energy_bands
     return dict(
-        ts =      np.asarray([band.bandFit(i)                        for band in bands],np.float32),
-        photons = np.array([int(sum( (b.photons for b in band.bands))) for band in bands]),
-        galactic= np.asarray([sum((b.bg_counts[0] for b in band.bands))  for band in bands],np.float32),
-        isotropic=np.asarray([sum(sum((b.bg_counts[1:]) for b in band.bands))  for band in bands],np.float32),
-        flux   =  np.asarray([band.flux for band in bands],np.float32),
-        lflux  =  np.asarray([band.lflux for band in bands],np.float32),
-        uflux =   np.asarray([band.uflux for band in bands],np.float32),
-        signal =  np.asarray([sum( (b.expected(band.m) for b in band.bands) )for band in bands],np.float32),
-        fit_ts =  roi.fit_ts_list(),
+        ts =      np.asarray([band.bandFit(i) for band in bands],np.float32),
+        fit_ts =  roi.fit_ts_list(which),
+        signal_counts= roi.signal_counts(which),
         )
 
 def pickle_dump(roi, fit_sources, pickle_dir, pass_number, **kwargs):

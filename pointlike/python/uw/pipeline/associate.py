@@ -198,9 +198,9 @@ class SrcId(srcid.SourceAssociation):
             self.classes = allclasses
         elif self.classes=='all_but_gammas':
             self.classes = ['agn', 'bllac', 'bzcat', 'cgrabs', 'crates', 'crates_fom', 'dwarfs', 
-            'galaxies', 'globular', 'hmxb', 'ibis', 'lbv', 'lmxb', 'msp', 'ocl', 'ostar', 'pulsar_fom',
-            'pulsar_high', 'pulsar_lat', 'pulsar_low', 'pwn', 'qso', 'seyfert', 'seyfert_rl', 'snr',
-            'snr_ext', 'starbursts', 'tev']
+            'galaxies', 'globular', 'hmxb', 'ibis', 'lbv', 'lmxb', 'msp', 'ocl', 'ostar', 
+            'pulsar_fom','pulsar_high', 'pulsar_lat', 'pulsar_low', #'pulsar_nonATNF', 
+            'pwn', 'qso', 'seyfert', 'seyfert_rl', 'snr', 'snr_ext', 'starbursts', 'tev']
         else:
             self.classes=classes
         for c in self.classes:

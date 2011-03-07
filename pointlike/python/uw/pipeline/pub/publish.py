@@ -401,9 +401,11 @@ class Publish(object):
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Fermi-LAT sky model %(catname)s</title></head>
 <body><h2>Fermi-LAT sky model version %(catname)s</h2>
-    IRF: %(irf)s<br/>
-    Diffuse components: %(diffuse)s<br/>
-    Extended definition: %(extended)s<br/>
+    <dl>
+    <dt>IRF: <dd>%(irf)s
+    <dt>Diffuse components: <dd>%(diffuse)s
+    <dt>Extended definition: <dd>%(extended)s
+    </dl>
 
 <h3>Generated files:</h3>
 <ul>
