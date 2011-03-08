@@ -21,7 +21,9 @@ def localizer(roi, which, **kwargs):
     """
     manager,index = roi.mapper(which)
 
-    if manager == roi.dsm and not 'skydir' in manager.diffuse_sources[index].__dict__:
+    source=roi.get_source(which)
+
+    if not hasattr(source,'skydir'):
         raise Exception("Can only localize Point and Extended Sources")
 
     return ROILocalizer(roi, index, **kwargs) if manager == roi.psm\
