@@ -58,6 +58,9 @@ class DataSpecification(object):
         if self.ft1files is None and self.binfile is None:
             raise Exception,'No event data (FT1 or binfile) provided!  Must pass at least one of these.'
 
+        if self.ft1files is None and not os.path.exists(self.binfile):
+            raise Exception,'An FT1 file must be specified if the binfile does not exist.'
+
         ltfile_exists = self.ltcube is not None and os.path.exists(self.ltcube)
         if self.ft2files is None and (self.ltcube is None or (not ltfile_exists)):
             raise Exception,'No FT2 or livetime file provided! Must pass at least one of these.'
