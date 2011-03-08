@@ -587,8 +587,7 @@ class ROIDisplay(object):
         nx = image.nx
         ny = image.ny
 
-        src = list(self.roi.psm.point_sources) + \
-              [i for i in self.roi.dsm.diffuse_sources if isinstance(i,ExtendedSource)]
+        src = [p for p in self.roi.get_sources() if hasattr(p,'skydir')]
 
         def allow(nx, ny, px, py, padx = 0.15, pady = 0.15):
             padx = padx * nx
