@@ -877,5 +877,5 @@ class ROIAnalysis(object):
         manager, index = self.mapper(which) #raise exception if wrong.
         return manager.point_sources[index] if manager==self.psm else self.dsm.diffuse_sources[index] 
     
-    def get_sources(self,which):
+    def get_sources(self):
         return self.psm.point_sources.tolist()+ self.dsm.diffuse_sources.tolist() 
