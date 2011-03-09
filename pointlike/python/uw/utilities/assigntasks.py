@@ -138,6 +138,7 @@ class AssignTasks(object):
         if not self.quiet:
             print >>self.logstream,\
                 '%4d-%02d-%02d %02d:%02d:%02d - %s' %(time.localtime()[:6]+ (message,))
+            if self.logstream is not None: self.logstream.flush()
         if self.progress_bar:
             self.progress_bar.update(self.index+1)
             print self.progress_bar.__str__()+ ' '+message+ ('\r' if os.name=='nt' else chr(27)+'[A'),
