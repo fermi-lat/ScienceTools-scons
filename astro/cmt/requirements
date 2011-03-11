@@ -1,6 +1,6 @@
 package astro
 
-version v3r11p8
+version v3r11p10
 #$Id$
 
 author  T. Burnett <tburnett@u.washington.edu>

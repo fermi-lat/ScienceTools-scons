@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-03-11-10 10-Mar-2011  lande Fixing LONPOLE/LATPOLE bug
  astro-03-11-09 20-Dec-2010  cohen fix gcc 4.4 builds
  astro-03-11-08 22-Nov-2010 burnett resolve LATPOLE problem
  astro-03-11-07 01-Aug-2010 burnett fix SWIG fix
