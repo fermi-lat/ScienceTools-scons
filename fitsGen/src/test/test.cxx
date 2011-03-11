@@ -83,6 +83,7 @@ int test_MeritFile2() {
    } catch(std::runtime_error & eObj) {
 //      std::cout << eObj.what() << std::endl;
    }
+   return 0;
 }
 
 int main() {

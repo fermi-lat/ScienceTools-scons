@@ -6,6 +6,8 @@
     @verbatim
     EOH
 
+ fitsGen-06-02-02 11-Mar-2011 hmk     insert return 0 in test.cxx's 
+                                      test_MeritFile2 to avoid win error
  fitsGen-06-02-01 15-Feb-2011 jchiang small fix to MeritFile2
  fitsGen-06-02-00 15-Feb-2011 jchiang add MeritFile2 implementation so that TEventList can be used to avoid temporary file produced by tip
  fitsGen-06-01-03 05-Oct-2010 jchiang use native ROOT datatypes in call to TTree::Draw in XmlClassifier.cxx
