@@ -14,6 +14,8 @@ import pyfits as pf
 from skymaps import SkyDir
 from uw.utilities.fitstools import rad_mask
 
+class SrcidError(Exception): pass
+
 conv95 = (-2*np.log(0.05))**.5
 class SourceAssociation(object):
     """A class to associate LAT sources with multiwavelength counterparts."""

@@ -150,14 +150,16 @@ class XML_to_Model(object):
                 else:         scale = -scale
                 value += index_offset
                 model.index_offset = index_offset
-            model.p[ip] = value*scale
-            if model.p[ip]<=0: raise Exception('For source %s, %s parameter %s cannot be negative' % (source_name,specname,p))
+            #model.p[ip] = value*scale
+            if value*scale<0: raise Exception('For source %s, %s parameter %s cannot be negative' % (source_name,specname,p))
+            model.setp(ip, value*scale)
             model.free[ip] = (pdict['free'] == '1')
             if 'error' in pdict.keys():
                 err = float(pdict['error'])*scale
                 model.cov_matrix[ip,ip] = (err/value*JAC)**2
 
-        model.p = N.log10(model.p)
+        #model.p = N.log10(model.p)
+        # done by selfp
 
         for p in self.kwargdict[specname]:
             pdict = d[p[0]]
