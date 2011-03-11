@@ -194,7 +194,7 @@ class PlotSED(object):
         energy_flux_factor = self.scale_factor
         
         # show position of e0, possibly the pivot energy
-        e0 = m.e0 if m.name!='LogParabola' else 10**m.p[-1]
+        e0 = m.e0 if m.name!='LogParabola' else m[-1]
         flux = m(e0); flux_unc = flux*stat[1][0]
         axes.errorbar([e0], 
                 [energy_flux_factor*flux * e0**2], fmt='or', 

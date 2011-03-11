@@ -267,7 +267,7 @@ class PipelineROI(roi_analysis.ROIAnalysis):
         r = []
         for eband in self.energy_bands:
             eband.bandFit(which=i)
-            eband.m.p[0] = np.log10(eband.uflux)
+            eband.m[0] = eband.uflux
             ul = sum( (b.expected(eband.m)*b.er[i] for b in eband.bands) ) * eband.bands[0].phase_factor
             if eband.flux is None:
                 r.append([ 0, ul,0] )
