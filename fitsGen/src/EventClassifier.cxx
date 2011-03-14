@@ -34,7 +34,12 @@ EventClassifier::~EventClassifier() throw() {
    try {
       delete m_meritDict;
       if (m_classifier) {
+// Omit this from the Windows builds since it seems to require the
+// package to be linked against the debug version of python.
+// See http://www.scipy.org/Cookbook/C_Extensions
+#ifndef WIN32
          Py_DECREF(m_classifier);
+#endif
       }
       delete m_module;
    } catch (std::exception & eObj) {
