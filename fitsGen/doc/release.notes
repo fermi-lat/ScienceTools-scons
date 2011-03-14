@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ fitsGen-06-02-03 13-Mar-2011 jchiang comment out Py_DECREF in EventClassifier destructor for Windows build
  fitsGen-06-02-02 11-Mar-2011 hmk     insert return 0 in test.cxx's 
                                       test_MeritFile2 to avoid win error
  fitsGen-06-02-01 15-Feb-2011 jchiang small fix to MeritFile2
