@@ -195,7 +195,8 @@ class FermiCatalog(PointSourceCatalog):
             provided by the user.  In case of duplicates (closer than prune_radius), the user object
             takes precedence."""
 
-        user_extended_list = [i for i in user_diffuse_list if isinstance(i,ExtendedSource)]
+        user_extended_list = [i for i in user_diffuse_list if isinstance(i,ExtendedSource)] \
+                if user_diffuse_list is not None else []
 
         cat_list = self.get_sources(skydir,radius)
         if user_point_list==[] and user_extended_list==[]: return cat_list,user_diffuse_list
