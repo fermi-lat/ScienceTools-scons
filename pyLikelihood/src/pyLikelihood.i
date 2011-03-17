@@ -49,7 +49,8 @@
 #include "Likelihood/LogGaussian.h"
 #include "Likelihood/LogParabola.h"
 #include "Likelihood/MapBase.h"
-#include "Likelihood/MapCubeFunction.h"
+//#include "Likelihood/MapCubeFunction.h"
+#include "Likelihood/MapCubeFunction2.h"
 #include "Likelihood/MeanPsf.h"
 #include "Likelihood/Npred.h"
 #include "Likelihood/OneSourceFunc.h"
@@ -76,7 +77,8 @@
 #include "Likelihood/Pixel.h"
 #include "Likelihood/CountsMap.h"
 #include "Likelihood/Observation.h"
-#include "Likelihood/WcsMap.h"
+//#include "Likelihood/WcsMap.h"
+#include "Likelihood/WcsMap2.h"
 #include "pyLikelihood/Aeff.h"
 #include "pyLikelihood/enableFPE.h"
 #include <vector>
@@ -167,7 +169,8 @@ using optimizers::Exception;
 %include Likelihood/Observation.h
 %include Likelihood/BinnedExposure.h
 %include Likelihood/AppHelpers.h
-%include Likelihood/WcsMap.h
+ //%include Likelihood/WcsMap.h
+%include Likelihood/WcsMap2.h
 %include Likelihood/MapBase.h
 %include Likelihood/DiffuseSource.h
 %include Likelihood/DiffRespIntegrand.h
@@ -193,7 +196,8 @@ using optimizers::Exception;
 %include Likelihood/SourceFactory.h
 %include Likelihood/SrcArg.h
 %include Likelihood/TrapQuad.h
-%include Likelihood/MapCubeFunction.h
+ //%include Likelihood/MapCubeFunction.h
+%include Likelihood/MapCubeFunction2.h
 %include Likelihood/TiedParameter.h
 %include Likelihood/Composite2.h
 %include Likelihood/CompositeLikelihood.h
