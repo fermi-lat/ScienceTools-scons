@@ -207,6 +207,7 @@ class SpectralAnalysis(object):
     def roi(self, roi_dir = None,
                   point_sources = [], catalogs = [], catalog_mapper = None,
                   diffuse_sources = [], diffuse_mapper = None,
+                  catalog_include_radius = None,
                   **kwargs):
         """
         return an ROIAnalysis object
@@ -259,6 +260,8 @@ class SpectralAnalysis(object):
                          center, and returns an object implementing the
                          ROIDiffuseModel interface.  If None, the system uses
                          the default, an on-the-fly numerical convolution.
+        catalog_include_radius [None] The radius within which all catalog sources are 
+                         included. The default is 5 degrees larger than maxROI
 
         Optional Keyword Arguments:
             ==========   =============
@@ -291,7 +294,9 @@ class SpectralAnalysis(object):
         for cat in catalogs:
             if not isinstance(cat,PointSourceCatalog):
                 cat = catalog_mapper(cat)
-            point_sources,diffuse_sources = cat.merge_lists(roi_dir,self.maxROI+5,point_sources,diffuse_sources)
+            point_sources,diffuse_sources = cat.merge_lists(roi_dir,
+                    self.maxROI+5 if catalog_include_radius is None else catalog_include_radius,
+                    point_sources,diffuse_sources)
         if point_sources == []:
             print 'WARNING!  No point sources are included in the model.'
 
