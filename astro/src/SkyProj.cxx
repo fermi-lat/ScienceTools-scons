@@ -388,7 +388,7 @@ void SkyProj::init(const std::string &projName,
     try {
         findBound(crpix);
     }catch(...){
-        std::cerr << "warning: could not find bounding box" << std::endl;
+//        std::cerr << "warning: could not find bounding box" << std::endl;
     }
 
     // a simple test
