@@ -91,44 +91,6 @@ class Singleton(object):
             print 'SkyModel: Global source %s not initialized' % self.key
             raise
             
-#class Diffuse(Singleton):
-#    """ manage a skymaps.DiffuseFunction object, create only when new fits file found to open
-#    """
-#    _dfile = None
-#    locked = False
-#    key = None
-#    def __init__(self, dfile, lock=False):
-#        super(Diffuse,self).__init__(DiffuseFunction)
-#        if Diffuse.locked or dfile==Diffuse._dfile: return
-#        Diffuse._dfile=dfile
-#        self.set_instance(dfile)
-#        print 'loaded new diffuse map, %s with lock=%s' %(dfile, lock)
-#        Diffuse.locked = lock
-#class Limb(Singleton):
-#    _dfile = None
-#    locked = False
-#    key = None
-#    def __init__(self, dfile, lock=False):
-#        super(Limb,self).__init__(DiffuseFunction)
-#        if Limb.locked or dfile==Diffuse._dfile: return
-#        Limb._dfile=dfile
-#        self.set_instance(dfile)
-#        print 'loaded new Limb map, %s with lock=%s' %(dfile, lock)
-#        Limb.locked = lock
-#        
-#class Isotropic(Singleton):
-#    """ manage a skymaps.IsotropicSpectrum object, create only when new fits file found to open
-#    """
-#    _dfile = None
-#    locked = False
-#    key = None
-#    def __init__(self, dfile, lock=False):
-#        super(Isotropic,self).__init__(IsotropicSpectrum)
-#        if Isotropic.locked or dfile==Isotropic._dfile: return
-#        Isotropic._dfile=dfile
-#        self.set_instance(dfile)
-#        print 'loaded new isotropic spectrum, %s, with lock=%s' %(dfile, lock)
-#        Isotropic.locked = lock
 
 class DiffuseDict(dict):
     """ manage a dictionary of diffuse objects

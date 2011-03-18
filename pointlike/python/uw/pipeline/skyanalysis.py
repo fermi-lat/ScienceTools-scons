@@ -296,7 +296,7 @@ class PipelineROI(roi_analysis.ROIAnalysis):
             if man == self.psm:
                 ul = sum( (b.expected(eband.m)*b.er[i] for b in eband.bands) ) * eband.bands[0].phase_factor
             else:
-                ul = sum( (b.expected(eband.m)*mb.er for b,my in zip(bfe.bands,bfe.mybands))) * eband.bands[0].phase_factor
+                ul = sum( (b.expected(eband.m)*mb.er for b,mb in zip(bfe.bands,bfe.mybands))) * eband.bands[0].phase_factor
 
 
             if eband.flux is None:
