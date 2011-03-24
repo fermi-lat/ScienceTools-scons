@@ -529,7 +529,11 @@ class _GenerateV7DSP(_DSPGenerator):
             elif self.targettype == "rootcintlib":
                 self.DoRootcint()
                 
+            #  set additional_includes to be our package root
             self.additional_includes      = ""
+            if env.has_key('packageroot'):
+                self.additional_includes = env['packageroot']
+
             #  Do we always want runtimelibrary = 2 ?  Probably not.
             #  It dictates whether we get MSVCRTD, MSVCRT, etc.
             self.runtimelibrary           = "2"
