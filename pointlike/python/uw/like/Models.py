@@ -140,7 +140,7 @@ Optional keyword arguments:
     def set_all_parameters(self, pars, internal=False):
         """ set all parameters (external representation)"""
         assert len(pars)== len(self._p)
-        self._p = np.asarray(pars) if internal else np.log10(asarray(pars))
+        self._p = np.asarray(pars) if internal else np.log10(np.asarray(pars))
 
     def setp(self, i, par, internal=False):
         """ set internal value, convert unless inte
