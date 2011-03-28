@@ -676,6 +676,13 @@ Spectral parameters:
         self._p[3] = N.log10(e0p)
         self.e0 = e0p
  
+    def create_powerlaw(self, beta_max=3e-2):
+        """ if beta is small and fixed, return an equivalent PowerLaw, otherwise just return self """
+        if self[2]>beta_max or self.free[2]: return self
+        nm = PowerLaw(p=self[0:2], e0=self[3])
+        nm.cov_matrix=self.cov_matrix[:-2,:-2]
+        return nm
+    
 #===============================================================================================#
 
 class ExpCutoff(Model):
@@ -822,3 +829,6 @@ def convert_exp_cutoff(model):
     nm.cov_matrix[:-1,:-1] = model.cov_matrix[:,:]
     nm.e0 = model.e0
     return nm
+    
+    
+    
