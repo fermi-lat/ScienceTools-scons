@@ -121,7 +121,7 @@ namespace evtUtils {
 	first = false;
       } else {
 	// terminate previous line and index
-	os << ",\\" << std::endl << indent;
+	os << "," << std::endl << indent;
       }
       itr->second->writePythonDict(os);
     }

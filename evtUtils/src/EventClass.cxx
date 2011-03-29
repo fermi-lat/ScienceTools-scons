@@ -206,6 +206,12 @@ namespace evtUtils {
       first = false;
     }
     os << '}' << std::endl << std::endl;
+
+    os << "def load_AliasDict_" << m_version << "(rootTree):" << std::endl
+       << "  for (key,val) in AliasDict_" << m_version << ".items():" << std::endl
+       << "    rootTree.SetAlias(key,val)" << std::endl
+       << "    pass" << std::endl
+       << "  return" << std::endl << std::endl;    
   }
 
 
