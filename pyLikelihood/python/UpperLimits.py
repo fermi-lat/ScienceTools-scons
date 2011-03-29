@@ -69,6 +69,10 @@ class UpperLimit(object):
         covar_is_current = self.like.covar_is_current
         source = self.source
 
+        # Save the error on the normalization parameter for use in estimating
+        # the step size to use in the scan.
+        normPar_error = self.like[self.indx].error()
+
         # Fix the normalization parameter for the scan.
         self.like.freeze(self.indx)
 
@@ -91,7 +95,8 @@ class UpperLimit(object):
 
         logLike0 = self.like()
         x0 = self.like[self.indx].getValue()
-        dx, dlogLike_est = self._find_dx(self.normPar, nsigmax, renorm, 
+        dx, dlogLike_est = self._find_dx(self.normPar, normPar_error,
+                                         nsigmax, renorm, 
                                          logLike0, mindelta=mindelta)
         xvals, dlogLike, fluxes = [], [], []
         if verbosity > 1:
@@ -293,8 +298,8 @@ class UpperLimit(object):
         self.bayesianUL_integral = x, integral_dist, y, yy
         
         return flux, xval
-    def _find_dx(self, par, nsigmax, renorm, logLike0, niter=3, factor=2,
-                 mindelta=1e-2):
+    def _find_dx(self, par, par_error, nsigmax, renorm, logLike0, 
+                 niter=3, factor=2, mindelta=1e-2):
         """Find an initial dx such that the change in -log-likelihood 
         evaluated at x0 + dx (dlogLike) is larger than mindelta.  A very 
         small or even negative value can occur if x0 is not right
@@ -302,7 +307,7 @@ class UpperLimit(object):
         tolerance.
         """
         x0 = par.getValue()
-        dx = par.error()
+        dx = par_error
         if dx == 0:
             dx = abs(par.getValue())
         for i in range(niter):
