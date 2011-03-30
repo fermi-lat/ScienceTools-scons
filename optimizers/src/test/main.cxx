@@ -286,7 +286,7 @@ void test_Optimizers() {
 
    std::vector<std::string> optimizers;
    optimizers.push_back("NewMinuit");
-#ifndef DARWIN
+#ifndef DARWIN_F2C_FAILURE
    optimizers.push_back("Minuit");
    optimizers.push_back("Drmngb");
    optimizers.push_back("Drmnfb");
