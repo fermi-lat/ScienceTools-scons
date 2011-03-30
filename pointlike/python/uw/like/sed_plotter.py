@@ -160,7 +160,7 @@ class BandFlux(object):
         err = stat[0]*stat[1]
         energy_flux_factor = self.scale_factor
         # show position of e0 
-        e0 = m.e0 if m.name!='LogParabola' else 10**m.p[-1]
+        e0 = m.e0 if m.name!='LogParabola' else 10**m._p[-1]
         flux = m(e0); flux_unc = flux*stat[1][0]
         axes.errorbar([e0], 
                 [energy_flux_factor*flux * m.e0**2], fmt='or', 
