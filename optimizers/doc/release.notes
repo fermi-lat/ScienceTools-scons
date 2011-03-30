@@ -5,6 +5,7 @@
     @verbatim
     EOH
 
+ optimizers-02-21-01 30-Mar-2011 jchiang disable f2c workaround for DARWIN
  optimizers-02-21-00 01-Feb-2011 jchiang enable specification of priors on individual parameters
  optimizers-02-20-01 26-Jan-2011 jchiang by-pass fortran code in test_optimizers via ifdefs
  optimizers-02-20-00 05-Dec-2010 jchiang bug-fix for large negative TS values occasionally seen by from NewMinuit: restore best-fit values after calls to hesse(...) etc.
