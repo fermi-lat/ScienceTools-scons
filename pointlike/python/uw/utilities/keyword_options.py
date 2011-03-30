@@ -40,8 +40,10 @@ def decorate(defaults):
             if type(item)==types.StringType:
                 s+= '\n%s%s   %s'% (indent,9*'=',item.upper())
                 continue
-
-            key, value, description = item    
+            if len(item)==3:
+                key, value, description = item 
+            else:
+                (key, value), description = item, ''
             if type(value)==types.StringType:
                 value = "'" + value + "'"
             s += indent+'%-12s' % key
