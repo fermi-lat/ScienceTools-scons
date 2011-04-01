@@ -7,6 +7,7 @@
    @verbatim
    * EOH *
 
+ pyLikelihood-01-28-01 01-Apr-2011 jchiang workaround for rhel4 and std::pair
  pyLikelihood-01-28-00 31-Mar-2011 jchiang add BinnedAnalysis.plotSourceFit(...)
  pyLikelihood-01-27-05 29-Mar-2011 jchiang bug-fix for UpperLimit.[compute,_find_dx]
  pyLikelihood-01-27-04 16-Mar-2011 jchiang include refs to WcsMap2, MapCubeFunction2
