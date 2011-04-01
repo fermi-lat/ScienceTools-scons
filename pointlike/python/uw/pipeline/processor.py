@@ -234,7 +234,7 @@ def localize_all(roi,sources):
             source.tsmaxpos, delta_ts =roi.localize(which=source.name)
             source.ellipse = roi.qform.par[0:2]+roi.qform.par[3:7] +[delta_ts] if roi.qform is not None else None
         
-def repivot(roi, fit_sources, min_ts = 25, max_beta=1.5):
+def repivot(roi, fit_sources, min_ts = 16, max_beta=3.0):
         print '\ncheck need to repivot sources with TS>%.0f, beta<%.1f: \n'\
         'source                     TS        e0      pivot' % (min_ts, max_beta)
         need_refit =False

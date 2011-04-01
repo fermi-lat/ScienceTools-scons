@@ -102,7 +102,7 @@ class Setup(dict):
                 self['tables'] = self['tables']%self
                 #print 'fix key %s: %s' % (key, self[key])
         self.setup_string =  """\
-import os; os.chdir(r"%(cwd)s");
+import os, pickle; os.chdir(r"%(cwd)s");
 from uw.pipeline import pipe, maps, skymodel;
 g=pipe.Pipe("%(indir)s", "%(dataset)s",
         skymodel_kw=dict(auxcat="%(auxcat)s",diffuse=%(diffuse)s,
