@@ -465,7 +465,7 @@ class AnalysisBase(object):
                                                  ytitle='counts spectrum',
                                                  color=color, symbol=symbol)
         return model_counts
-    def plotSource(self, srcName, color='black',symbol='line'):
+    def plotSource(self, srcName, color='black', symbol='line'):
         self._plotSource(srcName, color, symbol)
     def __repr__(self):
         return self._inputs()

@@ -169,6 +169,22 @@ class BinnedAnalysis(AnalysisBase):
                                       symbol='dotted')
         except AttributeError:
             pass
+    def plotFixed(self, color='black', symbol='line', show=True, display=None):
+        energies = self.e_vals
+        model_counts = self.logLike.fixedModelSpectrum()
+        if display is None:
+            display = self.spectralPlot
+        if show:
+            try:
+                display.overlay(energies, model_counts, color=color,
+                                symbol=symbol)
+            except AttributeError:
+                self.spectralPlot = self.plotter(energies, model_counts,
+                                                 xlog=1, ylog=1, 
+                                                 xtitle='Energy (MeV)',
+                                                 ytitle='counts spectrum',
+                                                 color=color, symbol=symbol)
+        return model_counts
     def plotSourceFit(self, srcName, color='black'):
         self._importPlotter()
         nobs = num.array(self.logLike.countsSpectrum(srcName))
