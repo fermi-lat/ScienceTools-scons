@@ -116,7 +116,7 @@ using optimizers::Exception;
    }
 }
 %template(DoublePair) std::pair<double, double>;
-%template(UnsignedPair) std::pair<unsigned int, unsigned int>;
+%template(IntPair) std::pair<int, int>;
 %template(EventVector) std::vector<Likelihood::Event>;
 %template(DoubleVector) std::vector<double>;
 %template(FloatVector) std::vector<float>;
