@@ -491,7 +491,7 @@ class ROIAnalysis(object):
              return 0
         return -2*(ll_0 - ll)
 
-    def localize(self,which=0, tolerance=1e-3,update=False, verbose=False, bandfits=False, seedpos=None):
+    def localize(self,which=0, tolerance=1e-3,update=False, verbose=False, bandfits=False, seedpos=None, **kwargs):
         """Localize a source using an elliptic approximation to the likelihood surface.
 
             which      -- index of point source; default to central
@@ -504,7 +504,7 @@ class ROIAnalysis(object):
             return fit position
         """
         rl = roi_localize.localizer(self, which=which, bandfits=bandfits,
-                                   tolerance=tolerance, update=update, verbose=verbose)
+                                   tolerance=tolerance, update=update, verbose=verbose, **kwargs)
         if seedpos is not None:
             rl.sd = seedpos  # override 
         return rl.localize()
