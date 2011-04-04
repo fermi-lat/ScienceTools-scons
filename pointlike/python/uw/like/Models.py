@@ -495,8 +495,16 @@ Spectral parameters:
         """
     def __call__(self,e):
         n0,gamma1,gamma2,e_break=10**self._p
-        return (n0/self.flux_scale)*N.where( e < e_break, (e_break/e)**gamma1, (e_break/e)**gamma2 )
+        return (n0/self.flux_scale)*(e_break/e)**np.where(e<e_break,gamma1,gamma2)
 
+    def gradient(self,e):
+        n0,gamma1,gamma2,e_break=10**self._p
+        mask = e < e_break
+        x = e_break/e
+        lx = np.log(x)
+        g = np.where(mask,gamma1,gamma2)
+        f = (n0/self.flux_scale)*x**g
+        return np.asarray([f/n0,f*lx*mask,f*lx*(~mask),f/e_break*g])
 #===============================================================================================#
 
 class BrokenPowerLawFlux(Model):
