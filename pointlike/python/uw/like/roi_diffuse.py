@@ -103,7 +103,7 @@ class ROIDiffuseModel(object):
         """
         raise NotImplementedError,'Classes must implement this method!'
 
-    def gradient(self,bands,model_index,phase_factor=1):
+    def gradient(self,bands,model_index):
         """ This method should return the gradient with respect to the
             free parameters of the spectral model.
         """
@@ -249,7 +249,7 @@ class ROIDiffuseModel_OTF(ROIDiffuseModel):
         """
         return self.active_bgc(pixlist,self.active_bgc.cvals)
 
-    def gradient(self,bands,model_index,phase_factor=1):
+    def gradient(self,bands,model_index):
         sm  = self.smodel
         np  = len(sm.get_all_parameters())
         nfp = sm.free.sum()
@@ -259,10 +259,9 @@ class ROIDiffuseModel_OTF(ROIDiffuseModel):
 
         # special case -- only normalization free
         if (nfp == 1) and sm.free[0]:
-            apterm  = sum( (b.bg_counts[model_index] for b in bands) )
+            apterm  = sum( (b.phase_factor*b.bg_counts[model_index] for b in bands) )
             pixterm = sum( ( (b.bg_pix_counts[:,model_index]*b.pix_weights).sum() for b in bands if b.has_pixels) )
-            #return [(phase_factor*apterm - pixterm)/10**sm.p[0]]
-            return [(phase_factor*apterm - pixterm)/sm.getp(0)]
+            return [(apterm - pixterm)/sm.getp(0)]
 
         # general case -- this is a little gross, improve if time
         gradient = [0]*nfp
@@ -272,7 +271,7 @@ class ROIDiffuseModel_OTF(ROIDiffuseModel):
             cp = 0
             for j in xrange(np):
                 if not sm.free[j]: continue
-                apterm = phase_factor*(myband.ap_evals * pts[j,:]).sum()
+                apterm = band.phase_factor*(myband.ap_evals * pts[j,:]).sum()
                 if band.has_pixels:
                     pixterm = (band.pix_weights*(myband.pi_evals * pts[j,:]).sum(axis=1)).sum()
                 else:

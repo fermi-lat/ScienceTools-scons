@@ -166,7 +166,7 @@ class ROILocalizer(object):
 
             if psnc < 0: continue # skip potentially bad band fits, or bands without appreciable flux
 
-            tot_term = (band.bg_all_counts + band.ps_all_counts + psnc*nover - psoc*oover ) * roi.phase_factor
+            tot_term = (band.bg_all_counts + band.ps_all_counts + psnc*nover - psoc*oover ) * band.phase_factor
 
             if band.has_pixels:
                 
@@ -258,7 +258,7 @@ class ROILocalizerExtended(ROILocalizer):
 
             if esnc < 0: continue # skip potentially bad band fits, or bands without appreciable flux
 
-            tot_term = (band.bg_all_counts + band.ps_all_counts + esnc*nover - esoc*oover ) * roi.phase_factor
+            tot_term = (band.bg_all_counts + band.ps_all_counts + esnc*nover - esoc*oover ) * band.phase_factor
 
             if band.has_pixels:
                 

@@ -193,6 +193,7 @@ def plot_sed(roi, which=0, fignum=5, axes=None,
             use_ergs = True,
             outdir = None,
             galmap = True,
+            phase_corr=False,
             ):
     """Plot a SED
     ========     ===================================================
@@ -209,12 +210,13 @@ def plot_sed(roi, which=0, fignum=5, axes=None,
     use_ergs     [True] convert to ergs in the flux units and use GeV on the x-axis
     outdir       [None] if set, save sed into <outdir>/<source_name>_sed.png if outdir is a directory, save into filename=<outdir> if not.
     galmap       [True] plot position on galactic map if set
+    phase_corr   [False] multiply sed by phase_factor; appropriate for an on-pulse spectral analysis
     ========     ===================================================
     
     """
     self = roi # temp.
     energy_flux_unit = 'ergs' if use_ergs else 'MeV'
-    energy_flux_factor = 1.602e-6 if use_ergs else 1.0
+    energy_flux_factor = (1.602e-6 if use_ergs else 1.0)*(roi.phase_factor if phase_corr else 1)
     # conversion 1.602E-19 * 1E6 eV/Mev * 1E7 erg/J * = 1.602E-6 erg/MeV
     oldlw = plt.rcParams['axes.linewidth']
     plt.rcParams['axes.linewidth'] = 2

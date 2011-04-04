@@ -149,7 +149,7 @@ class ROIExtendedModel(ROIDiffuseModel):
             if band.has_pixels:
                 band.bg_pix_counts[:,mi] = myband.es_pix_counts * myband.es_counts
 
-    def gradient(self,bands,model_index,phase_factor=1):
+    def gradient(self,bands,model_index):
         """ Return the gradient of the log likelihood with respect to the spectral parameters of
             this model. Note that this calculation is essentially identical to that of point
             sources since extended sources decouple the spectral and spatial parts, as is done
@@ -166,7 +166,7 @@ class ROIExtendedModel(ROIDiffuseModel):
         for myband,band in zip(self.bands,bands):
 
             grad    = band.gradient(sm)[sm.free]*myband.er # correct for exposure
-            apterm = phase_factor*myband.overlaps
+            apterm =  band.phase_factor*myband.overlaps
             if band.has_pixels:
                 pixterm = (band.pix_weights*myband.es_pix_counts).sum()
             else:

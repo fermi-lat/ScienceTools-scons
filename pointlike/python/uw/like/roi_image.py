@@ -229,6 +229,7 @@ class ModelImage(ROIImage):
         model_counts += self.all_point_sources_counts()
         model_counts += self.all_diffuse_sources_counts()
         model_counts *= self.roi.phase_factor # don't forget about the phase factor!
+        #NB -- this will need to be fixed if want to account for bracketing IRFs
 
         PythonUtilities.set_wsdl_weights(model_counts,self.wsdl)
         
