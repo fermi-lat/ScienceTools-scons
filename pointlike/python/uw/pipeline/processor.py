@@ -205,7 +205,7 @@ def process_sources(roi, sources, **kwargs):
     outdir     = kwargs.pop('outdir', '.')
     associate= kwargs.pop('associate', None)
     
-    if associate is not None:
+    if associate is not None and associate!='None':
         for source in sources:
             make_association(source, roi.tsmap(which=source.name), associate)
  
