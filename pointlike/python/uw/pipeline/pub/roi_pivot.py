@@ -54,7 +54,7 @@ def make_pivot(z, outdir,
     p.add_facet('glat','Number', 'F1', b)
     p.add_facet('glon','Number', 'F1', [s.l() for s in sdir])
     p.add_facet('High Latitude', 'String', 'C', np.abs(b)>10)
-    for cname in 'galnorm galindex isonorm loglike chisq'.split():
+    for cname in 'galnorm galindex isonorm limbnorm loglike chisq'.split():
         p.add_facet(cname, 'Number', 'F2', z.field(cname))
         
     # get the TS map arrays

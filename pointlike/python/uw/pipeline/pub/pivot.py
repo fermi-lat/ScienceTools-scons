@@ -37,7 +37,7 @@ class Pivot(object):
         self.fill_default()
 
     def limit(self, v, a, b, nan=None):
-        r = v[:]
+        r = v.copy()
         if nan is not None: r[np.isnan(v)]=nan
         if a is not None: r[v<a]=a
         if b is not None: r[v>b]=b
