@@ -240,6 +240,21 @@ dec [double]
     Declination of point source in degrees for which to perform the
     barycentric correction.
 
+(srcposition = USER) [enumerated string (USER|DB)]
+    Method to specify how the source position for barycentric
+    corrections will be supplied. If srcposition is USER, the values
+    of the ra and the dec parameters will be used. If srcposition is
+    DB, a pulsar database file in Fermi (formerly GLAST) D4 FITS
+    format will be used to compute the source position.
+
+(strict = no) [bool]
+    If strict is yes, only spin ephemerides whose stated range of
+    validity contains a photon arrival time will be selected for the
+    photon.  If strict is no, the ephemeris closest to the photon
+    arrival time will be selected, regardless of its stated range of
+    validity. This only has effect when the srcposition parameter is
+    DB.
+
 (solareph = JPL DE405) [enumerated string (JPL DE200|JPL DE405)]
     Solar system ephemeris for the barycentric correction.
 
