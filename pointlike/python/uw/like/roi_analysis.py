@@ -889,7 +889,7 @@ class ROIAnalysis(object):
     @staticmethod
     def load(*args,**kwargs):
         from . import roi_save
-        return roi_save.load(self,*args,**kwargs)
+        return roi_save.load(*args,**kwargs)
 
 load=ROIAnalysis.load
 
