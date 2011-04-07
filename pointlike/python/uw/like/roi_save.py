@@ -91,6 +91,12 @@ def load(filename,**kwargs):
         else:
             raise Exception("Unknown argument %s to function load" % k)
 
+    # backwards compatability
+    for ps in d['point_sources']: 
+        if hasattr(ps.model,'p'): ps.model._p=ps.model.p
+    for ds in d['diffuse_sources']: 
+        if hasattr(ds.smodel,'p'): ds.smodel._p=ds.smodel.p
+
     ds=DataSpecification(**d['DataSpecification'])
     sa=SpectralAnalysis(ds,**d['SpectralAnalysis'])
     roi=sa.roi(roi_dir=d['roi_dir'],
