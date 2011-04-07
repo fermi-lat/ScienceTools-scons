@@ -7,6 +7,7 @@
     @verbatim
     * EOH *
 
+ pulsePhase-09-00-03 06-Apr-2011 hirayama Stop gtophase to prompt for ra and dec when srcposition is not USER.
  pulsePhase-09-00-02 06-Apr-2011 hirayama Add srcposition and strict parameters to mainpage.h.
  pulsePhase-09-00-01 15-Feb-2011 hirayama Add a missing reference output file (testPulsePhaseApp_par2c.log).
  pulsePhase-09-00-00 14-Feb-2011 hirayama Improve gtophase to read RA and Dec from the database. Add tests for new features of pulsarDb package (glitch reporting by PulsarEph and support of new types of ephemeris: PER, HP, BT, ELL1, and MSS). Clean up the code for minor improvements.
