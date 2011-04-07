@@ -46,9 +46,16 @@ void OrbitalPhaseApp::runApp() {
   par_group.Prompt("sctable");
   par_group.Prompt("psrdbfile");
   par_group.Prompt("psrname");
-  par_group.Prompt("ra");
-  par_group.Prompt("dec");
+
   par_group.Prompt("srcposition");
+  std::string src_position = par_group["srcposition"];
+  std::string src_position_uc(src_position);
+  for (std::string::iterator itor = src_position_uc.begin(); itor != src_position_uc.end(); ++itor) *itor = std::toupper(*itor);
+  if ("USER" == src_position_uc) {
+    par_group.Prompt("ra");
+    par_group.Prompt("dec");
+  }
+
   par_group.Prompt("strict");
   par_group.Prompt("solareph");
   par_group.Prompt("matchsolareph");
@@ -80,9 +87,6 @@ void OrbitalPhaseApp::runApp() {
   std::auto_ptr<pulsarDb::EphChooser> chooser(0);
   std::string eph_style;
   bool vary_ra_dec = false;
-  std::string src_position = par_group["srcposition"];
-  std::string src_position_uc(src_position);
-  for (std::string::iterator itor = src_position_uc.begin(); itor != src_position_uc.end(); ++itor) *itor = std::toupper(*itor);
   if ("USER" == src_position_uc) {
     chooser.reset(new pulsarDb::StrictEphChooser);
     eph_style = "NONE";
