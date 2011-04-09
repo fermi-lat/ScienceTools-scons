@@ -234,7 +234,7 @@ class ROIAnalysis(object):
             self.update_counts(parameters)
 
         # do the point sources
-        indices  = N.arange(len(models))[N.asarray([N.any(m.free) for m in models])]
+        indices  = N.arange(len(models))[N.asarray([N.any(m.free) for m in models])] if len(models)>0 else []
         nparams  = N.asarray([model.free.sum() for model in models])
         gradient = N.zeros(nparams.sum())
 
