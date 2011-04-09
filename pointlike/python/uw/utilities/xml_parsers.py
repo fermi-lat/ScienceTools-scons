@@ -432,6 +432,9 @@ class Model_to_XML(object):
         my_xml_name = xml_name # fix scope issue
         if model.name == 'ExpCutoff':
             model = convert_exp_cutoff(model)
+        elif model.name == 'LogParabola' and model[2]<= 2e-3 and not model.free[2]:
+            # convert to equivalent powerlaw
+            model = model.create_powerlaw()
 
         # map the Model instance onto an xml-style model
         if xml_name == None:
