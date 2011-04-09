@@ -141,6 +141,9 @@ class ROILocalizer(object):
 
         roi.delta_loc_logl = (ll0 - ll1)
 
+        # this is necessary in case the fit always fails.
+        delt = l.dir.difference(self.sd)*180/N.pi
+
         return l.dir, i, delt, 2*(ll0-ll1)
 
     def spatialLikelihood(self,skydir,update=False):
