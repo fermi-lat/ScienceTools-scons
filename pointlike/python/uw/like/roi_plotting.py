@@ -233,7 +233,7 @@ def counts(r,integral=False):
     #gal = N.asarray([ sum((band.bg_counts[0] for band in g)) for g in groupings]) * p
     dif = N.asarray([ N.asarray([band.phase_factor*band.bg_counts for band in g]).sum(axis=0) for g in groupings])
     obs = N.asarray([ sum((band.photons for band in g)) for g in groupings])
-    src = N.asarray([ N.asarray([band.phase_factor*band.ps_counts*band.overlaps for band in g]).sum(axis=0) for g in groupings])*p
+    src = N.asarray([ N.asarray([band.phase_factor*band.ps_counts*band.overlaps for band in g]).sum(axis=0) for g in groupings])
     
     if integral:
         for i in xrange(len(iso)):
