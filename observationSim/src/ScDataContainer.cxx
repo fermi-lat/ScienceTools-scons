@@ -107,10 +107,6 @@ void ScDataContainer::writeScData() {
          ft2["lon_geo"].set(sc->lon());
          double met((ft2["start"].get() + ft2["stop"].get())/2.);
          ft2["geomag_lat"].set(::geomag_lat(sc->position(), met));
-//          ft2["ra_scz"].set(sc->zAxis().ra());
-//          ft2["dec_scz"].set(sc->zAxis().dec());
-//          ft2["ra_scx"].set(sc->xAxis().ra());
-//          ft2["dec_scx"].set(sc->xAxis().dec());
          ft2.setScAxes(sc->zAxis().ra(), sc->zAxis().dec(),
                        sc->xAxis().ra(), sc->xAxis().dec());
          ft2["sc_position"].set(sc->position());
@@ -120,6 +116,8 @@ void ScDataContainer::writeScData() {
          if (sc->inSaa()) {
             ft2["livetime"].set(0);
          }
+         ft2["data_qual"].set(1);
+         ft2["lat_config"].set(1);
       }
       ft2.setPhduKeyword("FILENAME", ft2File);
       ft2.setPhduKeyword("VERSION", 1);
