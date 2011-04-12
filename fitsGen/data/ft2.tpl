@@ -152,7 +152,7 @@ TFORM20      = 'J'                         / data format of field: 4-byte signed
 TTYPE21      = 'LAT_CONFIG'                / flag for config. of LAT (1=nominal sci. config)
 TFORM21      = 'B'                         / data format of field: byte 
 TTYPE22      = 'DATA_QUAL'                 / flag for quality of data (1=nominal)
-TFORM22      = 'B'                         / data format of field: byte 
+TFORM22      = 'I'                         / data format of field: 2-byte signed INTEGER
 TTYPE23      = 'LIVETIME'                  / livetime
 TFORM23      = 'D'                         / data format of field: 8-byte DOUBLE
 TUNIT23      = 's'                         / physical unit of field
@@ -164,3 +164,13 @@ TTYPE26      = 'QSJ_3'                     / Third component of SC attitude quat
 TFORM26      = 'D'                         / 8-byte DOUBLE
 TTYPE27      = 'QSJ_4'                     / Fourth component of SC attitude quaternion
 TFORM27      = 'D'                         / 8-byte DOUBLE
+TTYPE28      = 'RA_SUN'                    / RA of Sun
+TFORM28      = 'E'                         / 4-byte REAL
+TUNIT28      = 'deg'                       / physical unit of field: degrees
+TLMIN28      = 0.0                         / minimum value
+TLMAX28      = 360.0                       / maximum value
+TTYPE29      = 'DEC_SUN'                   / DEC of Sun
+TFORM29      = 'E'                         / 4-byte REAL
+TUNIT29      = 'deg'                       / physical unit of field: degrees
+TLMIN29      = -90.0                       / minimum value
+TLMAX29      = 90.0                        / maximum value
