@@ -327,6 +327,7 @@ Optional keyword arguments:
             return flux
         except:
             print 'Encountered a numerical error when attempting to calculate integral flux.'
+            return np.nan if not eror else ([np.nan]*(3 if two_sided else 2))
 
     def set_flux(self,flux,*args,**kwargs):
         """ Set the flux of the source. 
@@ -384,11 +385,11 @@ Optional keyword arguments:
         hi,lo = self.copy(),self.copy()
         derivs = []
         for i in xrange(len(self._p)):
-            hi.p[i] += errs[i]
-            lo.p[i] -= errs[i]
+            hi._p[i] += errs[i]
+            lo._p[i] -= errs[i]
             derivs  += [(hi.i_flux(*args) - lo.i_flux(*args))/(2*errs[i])]
-            hi.p[i] -= errs[i]
-            lo.p[i] += errs[i]
+            hi._p[i] -= errs[i]
+            lo._p[i] += errs[i]
 
         return N.asarray(derivs)
         
