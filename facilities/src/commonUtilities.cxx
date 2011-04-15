@@ -324,6 +324,16 @@ namespace facilities {
     setEnvironment("CALDBALIAS", 
                    joinPath(joinPath(joinPath(calDbData, "software"), 
                                      "tools"), "alias_config.fits"));
+
+  // catalogProducts and diffuseModels
+#ifdef catalogProducts
+    setEnvironment("CATALOGPRODUCTSPATH", joinPath(joinPath(getEnvironment("GLAST_EXT"), "catalogProducts"), catalogProducts));
+#endif
+
+#ifdef diffuseModels
+    setEnvironment("DIFFUSEMODELSPATH", joinPath(joinPath(getEnvironment("GLAST_EXT"), "diffuseModels"), diffuseModels));
+#endif
+
 #endif
   }
 }
