@@ -327,7 +327,7 @@ Optional keyword arguments:
             return flux
         except:
             print 'Encountered a numerical error when attempting to calculate integral flux.'
-            return np.nan if not eror else ([np.nan]*(3 if two_sided else 2))
+            return np.nan if not error else ([np.nan]*(3 if two_sided else 2))
 
     def set_flux(self,flux,*args,**kwargs):
         """ Set the flux of the source. 
