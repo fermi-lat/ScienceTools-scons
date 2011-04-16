@@ -27,7 +27,7 @@ class SkyModel(object):
                                          'if None, look it up in the config.txt file'),
         ('alias', dict(), 'dictionary of aliases to use for lookup'),
         ('diffuse', None,   'set of diffuse file names; if None, expect config to have'),
-        ('use_limb',True,'whether to include the model for the limb emission'),
+        ('use_limb',False,'whether to add the model for the limb emission'),
         ('auxcat', None, 'name of auxilliary catalog of point sources to append or names to remove',),
         ('newmodel', None, 'if not None, a string to eval\ndefault new model to apply to appended sources'),
         ('update_positions', None, 'set to minimum ts  update positions if localization information found in the database'),
@@ -123,9 +123,11 @@ class SkyModel(object):
             self.point_sources.remove(ps)
             
     def _setup_extended(self):
+        """ a little confusion: 'None' means that, but None means use the config file"""
         if self.extended_catalog_name is None:
             self.extended_catalog_name=self.config.get('extended')
-        if not self.extended_catalog_name: return 
+        if not self.extended_catalog_name or self.extended_catalog_name=='None' :
+            return
         extended_catalog_name = \
             os.path.expandvars(os.path.join('$FERMI','catalog',self.extended_catalog_name))
         if not os.path.exists(extended_catalog_name):

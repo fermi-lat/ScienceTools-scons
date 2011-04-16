@@ -178,18 +178,16 @@ class PipelineROI(roi_analysis.ROIAnalysis):
         ignore_exception = kwargs.pop('ignore_exception', True)
         fit_kw = self.fit_kw
         fit_kw.update(kwargs)
-        ts = 0
         initial_count = self.likelihood_count
         initialL = self.logl
         try:
             super(PipelineROI, self).fit( **fit_kw)
-            ts = self.TS()
         except Exception, msg:
             if not self.quiet: print 'Fit failed: %s' % msg
             if not ignore_exception: raise
         if not self.quiet:
             print 'logLikelihood called %d times, change: %.1f' % (self.likelihood_count - initial_count, initialL-self.logl )
-        return ts
+        return self.logl
         
     @decorate_with(roi_analysis.ROIAnalysis.print_summary)
     def dump(self, sdir=None, galactic=False, maxdist=5, title=''):
