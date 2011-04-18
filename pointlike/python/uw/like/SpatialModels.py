@@ -7,6 +7,7 @@
 """
 import os
 import copy
+import numbers
 
 import numpy as N
 from scipy import vectorize
@@ -259,6 +260,10 @@ class SpatialModel(object):
                 p = N.append([center.ra(),center.dec()],p)
             elif self.coordsystem == SkyDir.GALACTIC:
                 p = N.append([center.l(),center.b()],p)
+        if isinstance(p,numbers.Real) and len(self.p)==3:
+            return self.set_parameters([p],absolute,center=self.center)
+        elif len(p)==len(self.p)-2:
+            return self.set_parameters(p,absolute,center=self.center)
 
         if len(p)!=len(self.p):
             raise Exception("SpatialModel.set_parameters given the wrong number of parameters.")
