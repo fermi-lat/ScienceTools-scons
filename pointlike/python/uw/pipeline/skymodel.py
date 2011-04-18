@@ -32,7 +32,7 @@ class SkyModel(object):
         ('newmodel', None, 'if not None, a string to eval\ndefault new model to apply to appended sources'),
         ('update_positions', None, 'set to minimum ts  update positions if localization information found in the database'),
         ('free_index', None, 'Set to minimum TS to free photon index if fixed'),
-        ('filter',   lambda s: True,   'selection filter'), 
+        ('filter',   lambda s: True,   'selection filter: see examples at the end.'), 
         ('rename_source',  lambda name: name, 'rename function'),
         ('closeness_tolerance', 0., 'if>0, check each point source for being too close to another, print warning'),
         ('quiet',  False,  'make quiet' ),
@@ -431,6 +431,12 @@ class Rename(object):
             return '%s%04d' %(self.prefix,self.names.index(name))
         except:
             return name
+#========================================================================================
+#  These classes are filters. An object of which can be loaded by the filter parameter
+# A filter must implement a __call__ method, which must return True to keep the source.
+# Since it is passed a refterence to the source, it may change any characteristic, such as the model
+#
+# note MultiFilter that can be used to combine filters.
 
 class RemoveByName(object):
     """ functor to remove sources, intended to be a filter for SkyModel"""
@@ -499,3 +505,16 @@ class MultiFilter(list):
         for filter in self:
             if not filter(source): return False
         return True
+
+class FluxFreeOnly(object):
+    """ Filter that fixes all but flux for sources"""
+    def __init__(self):
+        pass
+    def __call__(self, source):
+        if np.any(source.free):
+            source.free[1:]=False
+        return True
+        
+
+
+            
