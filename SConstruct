@@ -448,6 +448,9 @@ if not baseEnv.GetOption('help'):
     if  'usePfiles' in baseEnv:
         baseEnv.Depends(setupScript, pfilesSetup)
 
+    if override != '.':
+        baseEnv.AlwaysBuild(setupScript)
+
     baseEnv.Default(setupScript)
     baseEnv.Alias('all', setupScript)
     baseEnv.Alias('setup', setupScript)
