@@ -4,7 +4,8 @@
  $Header$
  author: T. Burnett <tburnett@uw.edu>
 """
-import pyfits, os, pickle, glob
+import pyfits, os, glob
+import cPickle as pickle
 import numpy as np
 from skymaps import SkyDir
 from uw.utilities import makerec

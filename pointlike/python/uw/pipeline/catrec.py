@@ -2,7 +2,8 @@
 Support for generating output files
 $Header$
 """
-import os, glob, pickle
+import os, glob
+import cPickle as pickle
 import numpy as np
 from uw.utilities import makerec
 from skymaps import Band, SkyDir

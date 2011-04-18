@@ -2,7 +2,8 @@
 Main entry for the UW all-sky pipeline
 $Header$
 """
-import os, types, glob, time, pickle
+import os, types, glob, time
+import cPickle as pickle
 import numpy as np
 from . import skymodel, skyanalysis, processor, associate
 from uw.utilities import makerec

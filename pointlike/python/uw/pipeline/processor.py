@@ -2,7 +2,8 @@
 roi and source processing used by the roi pipeline
 $Header$
 """
-import os, pickle
+import os
+import cPickle as pickle
 import numpy as np
 import pylab as plt
 from skymaps import SkyDir
