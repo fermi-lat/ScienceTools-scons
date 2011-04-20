@@ -451,10 +451,14 @@ class RadiallySymmetricModel(SpatialModel):
         return self.at_r(skydir.difference(self.center),energy)
 
     @abstractmethod
-    def r68(self): pass
+    def r68(self): 
+        """ 68% containment radius, in degrees. """
+        pass
 
     @abstractmethod
-    def r99(self): pass
+    def r99(self): 
+        """ 99% containment radius, in degrees. """
+        pass
 
     def at_r(self,r,energy=None):
         """ r is in radians. """
@@ -487,7 +491,7 @@ class Gaussian(RadiallySymmetricModel):
 
        p = [ ra, dec, sigma ]
 
-       sigma = one dimensional r68 of the spatial model, measured in degrees
+       sigma = one dimensional size of the spatial model, measured in degrees
        """
     def extension(self):
         # extension defined as a function so it is easy to overload
