@@ -1226,7 +1226,7 @@ class ROISmoothedSource(object):
                          cbar_location="right",
                          axes_class=(pywcsgrid2.Axes, dict(header=h)))
 
-        ax = grid[0]
+        self.ax = ax = grid[0]
 
         im=ax.imshow(d, origin="lower", cmap=self.cmap)
 
