@@ -387,7 +387,10 @@ Arguments:
         likelihood_wrapper(best_spatial)
 
         # Fit once more at the end to get the right errors.
-        roi.fit(estimate_errors=True,use_gradient=use_gradient)
+        try:
+            roi.fit(estimate_errors=True,use_gradient=use_gradient)
+        except Exception, err:
+            print err
 
         roi.quiet = quiet
 
@@ -431,7 +434,10 @@ Arguments:
 
         def f():
             d={'use_gradient':kwargs['use_gradient']} if kwargs.has_key('use_gradient') else {}
-            roi.fit(estimate_errors=True,**d)
+            try:
+                roi.fit(estimate_errors=True,**d)
+            except Exception, err:
+                print err
 
         ll_disk = l()
 
