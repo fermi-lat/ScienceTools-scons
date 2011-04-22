@@ -161,6 +161,8 @@ class ROIImage(object):
             ["CDELT2", cdelt2, "Y-axis incr per pixel of physical coord at position of ref pixel(deg)"],
             ["CROTA2",  0, "Image rotation (deg)"],
         ]
+        for i in values: 
+            if len(i)>2 and len(i[2])>47: i[2]=i[2][0:47]
 
         cards = [ pyfits.Card(*i) for i in values]
 
