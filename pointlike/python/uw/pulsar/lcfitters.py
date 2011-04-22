@@ -303,7 +303,7 @@ class UnweightedLCFitter(object):
             else: raise ValueError
         except ValueError:
             print 'Unable to invert hessian!'
-            self.cov_matrix = np.zeros_like(h)
+            self.cov_matrix = np.zeros_like(h1)
 
     def __str__(self):
         if 'll' in self.__dict__.keys():
