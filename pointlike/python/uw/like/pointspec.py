@@ -159,7 +159,7 @@ class SpectralAnalysis(object):
         'keywords controlling instrument response',
         ('irf','none','Which IRF to use'),
         ('psf_irf',None,'specify a different IRF to use for the PSF; must be in same format/location as typical IRF file!'),
-        ('CALDB',os.environ['CALDB'],'override the CALDB specified by the env. variable'),
+        ('CALDB',None,'override the CALDB specified by $CALDB.'),
         ('custom_irf_dir',None,'override the CUSTOM_IRF_DIR specified by the env. variable'),
         ('keywords controlling spectral analysis'),
         ('background','1FGL','a choice of global model specifying a diffuse background; see ConsistentBackground for options'),
