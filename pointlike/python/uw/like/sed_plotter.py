@@ -246,8 +246,9 @@ def plot_sed(roi, which=0, fignum=5, axes=None,
     data_kwargs['printout'] = printout
     bf.plot_data(axes, **data_kwargs)
 
-    model = roi.get_model(which)
-    name  = model.name
+    source = roi.get_source(which)
+    model = source.model
+    name  = source.name
     
     # and the model, perhaps with a butterfly
     dom = np.logspace(np.log10(roi.fit_emin[0]), np.log10(roi.fit_emax[0]), 101)
