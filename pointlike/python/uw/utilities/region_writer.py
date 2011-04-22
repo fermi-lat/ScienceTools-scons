@@ -85,7 +85,7 @@ def unparse_localization(roi):
     else:
         return []
 
-def get_region(roi,color,label_sources):
+def get_region(roi,color,label_sources,show_localization):
     lines = [
         "# Region file format: DS9 version 4.0",
         "global color=%s" % color,
@@ -93,10 +93,11 @@ def get_region(roi,color,label_sources):
 
     lines += unparse_diffuse_sources(roi.dsm.diffuse_sources,label_sources)
     lines += unparse_point_sources(roi.psm.point_sources,label_sources)
-    lines += unparse_localization(roi)
+    if show_localization:
+        lines += unparse_localization(roi)
     return '\n'.join(lines)
 
-def writeRegion(roi,filename,color='green',label_sources=True):
+def writeRegion(roi,filename,color='green',label_sources=True,show_localization=True):
     """ Saves out an ROI to a ds9 style region file.
         
         The size of simple exended sources is saved to the region file
