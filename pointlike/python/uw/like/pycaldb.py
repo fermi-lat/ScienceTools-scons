@@ -21,7 +21,7 @@ class CALDBManager(object):
 
     defaults=(
         ('psf_irf',None,'specify a different IRF to use for the PSF'),
-        ('CALDB',None,'override the CALDB specified by the env. variable'),
+        ('CALDB',None,'override the CALDB specified by the env. variable or by py_facilities'),
         ('custom_irf_dir',None,'')
     )
 
@@ -32,10 +32,15 @@ class CALDBManager(object):
         self.irf = irf
 
         if self.CALDB is None:
-            try: 
+            try:
                 self.CALDB=os.environ['CALDB']
             except:
-                raise Exception('Environment variable CALDB was not set:')
+                try:
+                    import py_facilities
+                    os_environ = py_facilities.commonUtilities_getEnvironment
+                    self.CALDB=os_environ('CALDB')
+                except:
+                    raise Exception('Environment variable must be set, or findable by py_facilities package')
 
         if self.custom_irf_dir is not None:
             if not os.path.exists(self.custom_irf_dir):
