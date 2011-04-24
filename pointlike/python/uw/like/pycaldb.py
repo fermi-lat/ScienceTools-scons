@@ -108,6 +108,8 @@ class CALDBManager(object):
             
         # try the cusom_irf_dir
         if self.custom_irf_dir is not None:
+            if not os.path.exists(self.custom_irf_dir):
+                raise Exception("custom_irf_dir does not exist.")
             self.psf_files = [join(self.custom_irf_dir,'psf_%s_%s.fits' % (irf,i)) for i in ['front','back']]
 
             if os.path.exists(self.psf_files[0]) and os.path.exists(self.psf_files[0]):
