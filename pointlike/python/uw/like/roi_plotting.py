@@ -953,7 +953,7 @@ class ROIRadialIntegral(object):
             sources = list(self.roi.psm.point_sources) + \
                     [ i for i in self.roi.dsm.diffuse_sources if isinstance(i,ExtendedSource) ]
             # don't zero already zeroed sources
-            sources = [ i for i in sources if i.model.p[0] != -100 ] 
+            sources = [ i for i in sources if i.model.getp(0,internal=True) != -100 ]
 
             ROISlice.cache_roi(self.roi)
 
