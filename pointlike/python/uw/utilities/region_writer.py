@@ -85,7 +85,7 @@ def unparse_localization(roi):
     else:
         return []
 
-def get_region(roi,color,label_sources,show_localization,show_extension):
+def get_region(roi,color,label_sources=True,show_localization=True,show_extension=True):
     lines = [
         "# Region file format: DS9 version 4.0",
         "global color=%s" % color,
