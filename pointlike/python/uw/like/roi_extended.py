@@ -77,6 +77,13 @@ class ExtendedSource(DiffuseSource):
                           '\t'+self.spatial_model.__str__(indent='\t')
                          ])
 
+    def copy(self):
+        """ Create a deep copy of an extended source. """
+        return ExtendedSource(name=self.name,
+                              spatial_model=self.spatial_model.copy(),
+                              model=self.model.copy(),
+                              leave_parameters=True)
+
 
 ###=========================================================================###
 
