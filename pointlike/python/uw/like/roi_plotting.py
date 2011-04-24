@@ -450,10 +450,9 @@ class ROIDisplay(object):
         ROIDisplay.matplotlib_format()
 
         try:
-            self.cmap_sls = colormaps.sls
             self.cmap_b   = colormaps.b
         except:
-            self.cmap_sls = self.cmap_b = mpl.cm.jet
+            self.cmap_b = mpl.cm.jet
 
         interactive=P.isinteractive(); P.ioff()
         fig = P.figure(self.fignum,self.figsize)
