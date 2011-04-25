@@ -94,7 +94,7 @@ class DataSpec(object):
             spec
         """
         # basic data files: will expand here
-        data = self.datasets[lookup_key]
+        data = self.datasets[lookup_key].copy()
         for key in 'ft1files ft2files binfile ltcube'.split():
             if key in data:
                 data[key]=os.path.expandvars(data[key])
