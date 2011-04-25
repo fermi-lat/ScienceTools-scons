@@ -1241,6 +1241,8 @@ class ROISmoothedSource(object):
 
         im=ax.imshow(d, origin="lower", cmap=self.cmap)
 
+        ax.set_ticklabel_type("absdeg")
+
         cb_axes = grid.cbar_axes[0] # colorbar axes
 
         cb_axes.colorbar(im)
