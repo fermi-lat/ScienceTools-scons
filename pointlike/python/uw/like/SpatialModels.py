@@ -181,6 +181,9 @@ class SpatialModel(object):
                     self.p = N.append([center.ra(),center.dec()],self.p)
                 elif self.coordsystem == SkyDir.GALACTIC:
                     self.p = N.append([center.l(),center.b()],self.p)
+            else:
+                if len(self.p) == len(self.param_names)-2:
+                    self.p = N.append([0,0],self.p)
 
             if len(self.p) != len(self.param_names):
                 raise Exception("SpatialModel set with wrong number of parameters.")
