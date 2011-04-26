@@ -116,6 +116,8 @@ namespace evtbin {
       */
       void insertInterval(Interval_t interval);
 
+      const IntervalCont_t & intervals() const;
+
     private:
       IntervalCont_t m_intervals;
   };

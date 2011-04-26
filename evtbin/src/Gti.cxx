@@ -202,6 +202,10 @@ namespace evtbin {
     }
   }
 
+  const std::map<double, double> & Gti::intervals() const {
+    return m_intervals;
+  }
+
   std::ostream & operator <<(std::ostream & os, const Gti & gti) {
     gti.write(os);
     return os;
