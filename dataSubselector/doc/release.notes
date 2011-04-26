@@ -5,6 +5,7 @@
     @verbatim
     * EOH *
 
+ dataSubselector-08-02-00 25-Apr-2011 jchiang use std::map::lower_bound in Gti::accept2
  dataSubselector-08-01-01 25-Sep-2010 jchiang change default: gtvcut suppress_gtis=yes
  dataSubselector-08-01-00 23-Jul-2010 jchiang implement evclass=INDEF for gtselect (as default)
  dataSubselector-08-00-00 21-Jul-2010 jchiang gtselect updated to perform bitmask filtering on EVENT_CLASS
