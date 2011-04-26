@@ -87,7 +87,7 @@ class Setup(dict):
                 fit_emax=800000,
                 fix_beta=False, dofit=True,
                 source_kw=dict(),
-                #fit_kw=dict(use_gradient=False,),
+                fit_kw=dict(),
                 repivot = True,
                 update_positions=None,
                 free_index=None,
