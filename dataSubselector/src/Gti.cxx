@@ -8,6 +8,7 @@
  */
 
 #include <algorithm>
+#include <map>
 #include <memory>
 
 #include "fitsio.h"
@@ -35,7 +36,8 @@ namespace {
 
 namespace dataSubselector {
 
-Gti::Gti(const tip::Table & gtiTable) : evtbin::Gti() {
+Gti::Gti(const tip::Table & gtiTable) 
+   : evtbin::Gti() {
    tip::Table::ConstIterator it = gtiTable.begin();
    tip::ConstTableRecord & interval = *it;
    for ( ; it != gtiTable.end(); ++it) {
@@ -46,6 +48,9 @@ Gti::Gti(const tip::Table & gtiTable) : evtbin::Gti() {
    }
 }
 
+Gti::Gti(const evtbin::Gti & gti)  
+   : evtbin::Gti(gti) {}
+
 bool Gti::accept(double time) const {
    for (ConstIterator it = begin(); it != end(); ++it) {
       if (it->first <= time && time <= it->second) {
@@ -53,6 +58,15 @@ bool Gti::accept(double time) const {
       }
    }
    return false;
+}
+
+bool Gti::accept2(double time) const {
+   std::map<double, double>::const_iterator it = intervals().lower_bound(time);
+   if (it == begin()) {
+      return false;
+   }
+   --it;
+   return it->first <= time && time <= it->second;
 }
 
 void Gti::writeExtension(const std::string & filename) const {
@@ -70,9 +84,9 @@ void Gti::writeExtension(const std::string & filename) const {
       fits_open_file(&fptr, filename.c_str(), READWRITE, &status);
       ::fitsReportError(status);
       
-      char *ttype[] = {"START", "STOP"};
-      char *tform[] = {"D", "D"};
-      char *tunit[] = {"s", "s"};
+      char * ttype[] = {"START", "STOP"};
+      char * tform[] = {"D", "D"};
+      char * tunit[] = {"s", "s"};
       fits_create_tbl(fptr, BINARY_TBL, 0, 2, ttype, tform, tunit,
                       "GTI", &status);
       ::fitsReportError(status);
@@ -115,23 +129,36 @@ Gti Gti::applyTimeRangeCut(double start, double stop) const {
 }
 
 double Gti::minValue() const {
-   double min_val = begin()->first;
-   for (ConstIterator interval = begin(); interval != end(); ++interval) {
-      if (interval->first < min_val) {
-         min_val = interval->first;
-      }
-   }
-   return min_val;
+   // double min_val = begin()->first;
+   // for (ConstIterator interval = begin(); interval != end(); ++interval) {
+   //    if (interval->first < min_val) {
+   //       min_val = interval->first;
+   //    }
+   // }
+   // return min_val;
+
+   /// Explicitly declare this iterator using std::map<double, double>
+   /// to guard (at compile time) against implementation changes in
+   /// evtbin::Gti class.
+   std::map<double, double>::const_iterator it = begin();
+   return it->first;
 }
 
 double Gti::maxValue() const {
-   double max_val = begin()->first;
-   for (ConstIterator interval = begin(); interval != end(); ++interval) {
-      if (interval->second > max_val) {
-         max_val = interval->second;
-      }
-   }
-   return max_val;
+   // double max_val = begin()->first;
+   // for (ConstIterator interval = begin(); interval != end(); ++interval) {
+   //    if (interval->second > max_val) {
+   //       max_val = interval->second;
+   //    }
+   // }
+   // return max_val;
+
+   /// Explicitly declare this iterator using std::map<double, double>
+   /// to guard (at compile time) against implementation changes in
+   /// evtbin::Gti class.
+   std::map<double, double>::const_iterator it = end();
+   --it;
+   return it->second;
 }
 
 } // namespace dataSubselector

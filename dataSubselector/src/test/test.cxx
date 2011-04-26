@@ -34,6 +34,7 @@ class DssTests : public CppUnit::TestFixture {
 
    CPPUNIT_TEST_SUITE(DssTests);
 
+   CPPUNIT_TEST(test_accept2);
    CPPUNIT_TEST(compareGtis);
    CPPUNIT_TEST(updateGti);
    CPPUNIT_TEST(combineGtis);
@@ -53,6 +54,7 @@ public:
 
    void setUp();
    void tearDown();
+   void test_accept2();
    void compareGtis();
    void updateGti();
    void combineGtis();
@@ -86,19 +88,49 @@ private:
 #define ASSERT_EQUALS(X, Y) CPPUNIT_ASSERT(std::fabs( (X - Y)/Y ) < 1e-4)
 
 void DssTests::setUp() {
-   std::string root_path = facilities::commonUtilities::getDataPath("dataSubselector");
+   std::string root_path = 
+      facilities::commonUtilities::getDataPath("dataSubselector");
    m_infile = "input_events.fits";
    m_evtable = "EVENTS";
    if (root_path != "") {
       m_infile = facilities::commonUtilities::joinPath(root_path, m_infile);
    } else {
-      throw std::runtime_error("Unable to determine dataSubselector's data path");
+      throw std::runtime_error("Unable to determine dataSubselector's "
+                               "data path");
    }
    m_outfile = "filtered_events.fits";
    m_outfile2 = "filtered_events_2.fits";
 }
 
 void DssTests::tearDown() {
+}
+
+void DssTests::test_accept2() {
+   dataSubselector::Gti gti;
+   for (size_t i(0); i < 100; i++) {
+      double tmin = static_cast<double>(i);
+      double tmax = tmin + 0.1;
+      gti.insertInterval(tmin, tmax);
+   }
+
+   CPPUNIT_ASSERT(!gti.accept2(-0.05));
+
+   CPPUNIT_ASSERT(gti.accept2(0.05));
+   CPPUNIT_ASSERT(!gti.accept2(0.15));
+
+   CPPUNIT_ASSERT(gti.accept2(50.05));
+   CPPUNIT_ASSERT(!gti.accept2(50.15));
+
+   CPPUNIT_ASSERT(!gti.accept(-0.05));
+
+   CPPUNIT_ASSERT(gti.accept(0.05));
+   CPPUNIT_ASSERT(!gti.accept(0.15));
+
+   CPPUNIT_ASSERT(gti.accept(50.05));
+   CPPUNIT_ASSERT(!gti.accept(50.15));
+
+   CPPUNIT_ASSERT(gti.minValue() == 0);
+   CPPUNIT_ASSERT(gti.maxValue() == 99.1);
 }
 
 void DssTests::compareGtis() {

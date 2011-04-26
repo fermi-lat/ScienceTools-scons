@@ -20,10 +20,7 @@ namespace dataSubselector {
 
 /**
  * @class Gti
- * @brief A more useful and complete implementation of evtbin::Gti
- * @author J. Chiang
  *
- * $Header$
  */
 
 class Gti : public evtbin::Gti {
@@ -37,9 +34,11 @@ public:
 
    Gti(const tip::Table & gtiTable);
 
-   Gti(const evtbin::Gti & gti) : evtbin::Gti(gti) {}
+   Gti(const evtbin::Gti & gti);
 
    bool accept(double time) const;
+
+   bool accept2(double time) const;
 
    void writeExtension(const std::string & filename) const;
 

@@ -20,9 +20,6 @@ namespace dataSubselector {
 /**
  * @class SkyConeCut
  * @brief Acceptance cone on the sky.
- * @author J. Chiang
- *
- * $Header$
  */
 
 class SkyConeCut : public CutBase {
