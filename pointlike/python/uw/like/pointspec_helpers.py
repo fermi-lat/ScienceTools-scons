@@ -150,7 +150,11 @@ class FermiCatalog(PointSourceCatalog):
         inds = f[1].data.field('SPECTRAL_INDEX')
         cutoffs = f[1].data.field('CUTOFF_ENERGY') if 'Cutoff_Energy' in colnames else None
         betas = f[1].data.field('beta') if 'beta' in colnames else None
-        self.ts=N.asarray(f[1].data.field('TEST_STATISTIC'))
+        try:
+            self.ts=N.asarray(f[1].data.field('TEST_STATISTIC'))
+        except KeyError, er:
+            if self.min_ts is not None:
+                raise Exception("Cannot apply min_ts cut since TEST_STATISTIC column not found in fits file.")
 
         inds = N.where(inds > 0, inds, -inds)
 
