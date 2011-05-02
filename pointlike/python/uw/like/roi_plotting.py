@@ -1247,8 +1247,6 @@ class ROISmoothedSource(object):
 
         cb_axes.colorbar(im)
 
-        cb_axes.axis["right"].toggle(ticklabels=False)
-        
         ax.grid()
 
         if self.title: ax.set_title(self.title)
