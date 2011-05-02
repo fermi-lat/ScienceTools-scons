@@ -54,7 +54,9 @@ class TSCalc(object):
 
     defaults = ('keywords governing the spectral model used to calculate the TS',
                     ('photon_index',2,'photon index for default power law model'),
-                    ('spectral_model',None,'instance of spectral model to use for TS calc'),
+                    ('spectral_model',None,"""instance of spectral model
+                     (from Models.py) to use for TS calc. This will
+                     override photon_index."""),
                )
 
     @keyword_options.decorate(defaults)    
