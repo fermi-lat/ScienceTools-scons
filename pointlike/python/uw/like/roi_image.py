@@ -60,8 +60,12 @@ class ROIImage(object):
         quantity gotten from an ROIAnalysis object. 
         The acutal work is done by subclasses. """
 
-    defaults = ZEA.defaults + (
-        ('center',    None, 'Center of image'),
+    defaults = (
+        ('size',     2,     'size of image in degrees'), 
+        ('pixelsize',0.1,   'size, in degrees, of pixels'), 
+        ('galactic', False, 'galactic or equatorial coordinates'), 
+        ('proj',     'ZEA', 'projection name: can change if desired'),
+        ('center',    None, 'Center of image. If None, use roi center.'),
     )
 
     @keyword_options.decorate(defaults)
@@ -81,10 +85,10 @@ class ROIImage(object):
         # set up, then create a SkyImage object to perform the projection
         # to a grid and manage an image
         if not isinstance(self.size,collections.Iterable):
-            self.skyimage = SkyImage(self.center, self.fitsfile, self.pixelsize, 
+            self.skyimage = SkyImage(self.center, '', self.pixelsize, 
                                      self.size, 1, self.proj, self.galactic, False)
         else:
-            self.skyimage = SkyImage(self.center, self.fitsfile, self.pixelsize, 
+            self.skyimage = SkyImage(self.center, '', self.pixelsize, 
                                      float(self.size[0]), 1, self.proj, self.galactic, False, float(self.size[1]))
 
         self.fill()
@@ -176,8 +180,15 @@ class ROIImage(object):
 class ROITSMapImage(ROIImage):
     """ Subclass of ROIImage representing a residual TS map. """
 
+    defaults = ROIImage.defaults + TSCalc.defaults
+
+    @keyword_options.decorate(defaults)
+    def __init__(self,*args,**kwargs):
+        super(ROITSMapImage,self).__init__(*args,**kwargs)
+
     def fill(self):
-        tscalc = TSCalc(self.roi)
+
+        tscalc = TSCalc(self.roi,**defaults_to_kwargs(self,TSCalc.defaults))
         temp=TSCalcPySkyFunction(tscalc)
         self.skyimage.fill(temp.get_pyskyfun())
 
