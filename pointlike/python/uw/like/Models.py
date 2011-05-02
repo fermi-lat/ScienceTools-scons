@@ -325,7 +325,7 @@ Optional keyword arguments:
                     return (flux,N.exp(log_flux+log_err)-flux,flux-N.exp(log_flux-log_err))
 
             return flux
-        except:
+        except Exception:
             print 'Encountered a numerical error when attempting to calculate integral flux.'
             return np.nan if not error else ([np.nan]*(3 if two_sided else 2))
 
