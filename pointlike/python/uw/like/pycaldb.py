@@ -36,7 +36,7 @@ class CALDBManager(object):
                 self.CALDB=os.environ['CALDB']
             except:
                 try:
-                    import py_facilities
+                    from facilities import py_facilities
                     os_environ = py_facilities.commonUtilities_getEnvironment
                     self.CALDB=os_environ('CALDB')
                 except:
