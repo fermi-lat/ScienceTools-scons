@@ -202,6 +202,7 @@ def plot_sed(roi, which=0, fignum=5, axes=None,
             galmap = True,
             phase_corr=False,
             printout=False,
+            title=None,
             ):
     """Plot a SED
     ========     ===================================================
@@ -220,6 +221,7 @@ def plot_sed(roi, which=0, fignum=5, axes=None,
     galmap       [True] plot position on galactic map if set
     phase_corr   [False] multiply sed by phase_factor; appropriate for an on-pulse spectral analysis
     printout     [False] if True, print the sed points to stdout
+    title        [None] Title for the plot, if specified. Otherwise, use source name
     ========     ===================================================
     
     """
@@ -262,7 +264,7 @@ def plot_sed(roi, which=0, fignum=5, axes=None,
         axes.set_xticklabels(['','1','10','100', ''])
     else:
         plt.xlabel(r'$\mathsf{Energy\ (MeV)}$')
-    plt.title(name)
+    plt.title(name if title is None else title)
     
     # a galactic map if requested
     if galmap: image.galactic_map(roi.roi_dir, color='lightblue', marker='o', markercolor='r')
