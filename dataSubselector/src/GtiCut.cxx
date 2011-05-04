@@ -44,7 +44,8 @@ void GtiCut::getKeyValues(std::string & type, std::string & unit,
 }
 
 bool GtiCut::accept(double time) const {
-   return m_gti.accept(time);
+//   return m_gti.accept(time);
+   return m_gti.accept2(time);
 }
 
 void GtiCut::writeCut(std::ostream & stream, unsigned int keynum) const {
