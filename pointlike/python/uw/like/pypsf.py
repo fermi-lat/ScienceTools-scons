@@ -478,8 +478,9 @@ class PsfOverlapHealpix(object):
 
 class PretendBand(object):
 
-     def __init__(self,energy,conversion_type):
+     def __init__(self,energy,conversion_type,**kwargs):
           self.e = energy; self.ct = conversion_type
+          self.__dict__.update(kwargs)
 
 class ConvolutionPsf(object):
      """N.B. -- the PSF center is assumed to be at the Galactic north pole."""
