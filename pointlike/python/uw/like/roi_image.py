@@ -79,7 +79,7 @@ class ROIImage(object):
         keyword_options.process(self, kwargs)
 
         if self.size < self.pixelsize:
-            raise Exception("Can only create images whith >=1 pixel in them.")
+            raise Exception("Can only create images with >=1 pixel in them.")
         
         self.roi = roi
 
