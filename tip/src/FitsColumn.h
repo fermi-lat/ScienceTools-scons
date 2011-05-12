@@ -109,7 +109,7 @@ namespace tip {
         char * tmp_dest[] = { buf };
 
         // Redimension the destination so that it will hold the contents of this vector.
-        dest.resize(m_repeat);
+        dest.resize(getNumElements(record_index));
         
         for (std::vector<std::string>::size_type index = 0; index != dest.size(); ++index) {
           // Read each element in the column, letting cfitsio do the conversions to strings.
@@ -151,7 +151,13 @@ namespace tip {
           case TLOGICAL: {
               // String data -> boolean column.
               bool logical_val = false;
-              std::string src_copy(src);
+              // Strip leading/trailing blanks.
+              std::string::size_type begin = src.find_first_not_of(" \n\t\v");
+              if (begin == std::string::npos) begin = src.size();
+              std::string::size_type end = src.find_last_not_of(" \n\t\v");
+              if (end == std::string::npos) end = src.size();
+              else ++end;
+              std::string src_copy(src.begin() + begin, src.begin() + end); // begin and end are size_type, not iterator.
               for (std::string::iterator itor = src_copy.begin(); itor != src_copy.end(); ++itor) *itor = tolower(*itor);
               if (src_copy == "t" || src_copy == "true") logical_val = true;
               else if (src_copy == "f" || src_copy == "false") logical_val = false;
@@ -164,8 +170,9 @@ namespace tip {
               // String data -> numeric column. Use double for everything.
               char * remainder = 0;
               double dval = strtod(src.c_str(), &remainder);
-              if (0 != remainder && '\0' != *remainder) throw TipException(
-                "FitsColumn::set(Index_t, const std::string &) could not convert string \"" + src + "\" to double");
+              if (0 != remainder && '\0' != *remainder && std::string(remainder).find_first_not_of(" \n\t\v") != std::string::npos)
+                throw TipException(
+                  "FitsColumn::set(Index_t, const std::string &) could not convert string \"" + src + "\" to double");
               set(record_index, dval);
               break;
             }
@@ -192,9 +199,11 @@ namespace tip {
               for (std::vector<std::string>::size_type idx = 0; idx != src.size(); ++idx) {
                 // Strip leading/trailing blanks.
                 std::string::size_type begin = src[idx].find_first_not_of(" \n\t\v");
-                std::string::size_type end = src[idx].find_last_of(" \n\t\v");
-                if (begin == std::string::npos) begin = 0;
+                if (begin == std::string::npos) begin = src[idx].size();
+                std::string::size_type end = src[idx].find_last_not_of(" \n\t\v");
                 if (end == std::string::npos) end = src[idx].size();
+                else ++end;
+                // begin and end are size_type, not iterator.
                 std::string src_copy(src[idx].begin() + begin, src[idx].begin() + end);
                 for (std::string::iterator itor = src_copy.begin(); itor != src_copy.end(); ++itor) *itor = tolower(*itor);
                 if (src_copy == "t" || src_copy == "true") buf[idx] = true;
@@ -212,8 +221,9 @@ namespace tip {
               char * remainder = 0;
               for (std::vector<std::string>::size_type idx = 0; idx != src.size(); ++idx) {
                 buf[idx] = strtod(src[idx].c_str(), &remainder);
-                if (0 != remainder && '\0' != *remainder) throw TipException(
-                  "FitsColumn::set(Index_t, const vector<string> &) could not convert string \"" + src[idx] + "\" to double");
+                if (0 != remainder && '\0' != *remainder && std::string(remainder).find_first_not_of(" \n\t\v") != std::string::npos)
+                  throw TipException("FitsColumn::set(Index_t, const vector<string> &) could not convert string \"" +
+                    src[idx] + "\" to double");
               }
               setVector(record_index, buf);
               break;
@@ -239,18 +249,22 @@ namespace tip {
         if (m_scalar) throw TipException("FitsColumn::get(Index_t, std::vector<bool> &) was called but field is not a vector");
         int status = 0;
         Index_t num_els = getNumElements(record_index);
+        dest.resize(num_els);
         char * tmp_dest = new char[num_els];
-        int * any_nul = new int[num_els];
-        fits_read_col(m_ext->getFp(), FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
-          0, tmp_dest, any_nul, &status);
+        memset(tmp_dest, '\0', num_els);
+        char * null_array = new char[num_els];
+        memset(null_array, '\0', num_els);
+        int any_nul = 0;
+        fits_read_colnull(m_ext->getFp(), FitsPrimProps<bool>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
+          tmp_dest, null_array, &any_nul, &status);
         if (0 != status) {
-          delete [] any_nul;
+          delete [] null_array;
           delete [] tmp_dest;
           throw TipException(status, "FitsColumn::get(Index_t, std::vector<bool> &) failed to read vector cell value");
         }
         for (Index_t ii = 0; ii != num_els; ++ii)
-          if (0 == any_nul[ii]) dest[ii] = (0 != tmp_dest[ii]); else dest[ii] = FitsPrimProps<bool>::undefined();
-        delete [] any_nul;
+          if (0 == null_array[ii]) dest[ii] = (0 != tmp_dest[ii]); else dest[ii] = FitsPrimProps<bool>::undefined();
+        delete [] null_array;
         delete [] tmp_dest;
       }
 

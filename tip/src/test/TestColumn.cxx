@@ -4,7 +4,9 @@
 */
 #include <cstdlib>
 #include <limits>
+#include <list>
 #include <memory>
+#include <sstream>
 
 #include "fitsio.h"
 
@@ -189,6 +191,163 @@ namespace tip {
       }
     } catch (const TipException & x) {
       ReportExpected("TestColumn::test() was not able to read/write null value in a double column", x);
+    }
+
+    // Check for valid behavior for boolean values with leading/trailing blanks, scalar and vector behavior.
+    try {
+      // Set file names.
+      std::string out_file("testFitsColumnByMH.fits");
+      std::string tpl_file("");
+      std::string table_name("TEST_DATA");
+
+      // Create a FITS file for following tests.
+      IFileSvc & file_svc(tip::IFileSvc::instance());
+      file_svc.createFile(out_file, tpl_file);
+      file_svc.appendTable(out_file, table_name);
+      std::auto_ptr<Table> table(file_svc.editTable(out_file, table_name));
+
+      // Add columns to the FITS file.
+      table->appendField("1L_COLUMN", "1L");
+      table->appendField("1I_COLUMN", "1I");
+      table->appendField("3L_COLUMN", "3L");
+      table->appendField("3I_COLUMN", "3I");
+      table->appendField("PI_COLUMN", "PI");
+
+      // Add one row to the FITS table.
+      table->setNumRecords(1);
+      Table::Record record(table.get(), 0);
+
+      // Set integer numbers to 1I_COLUMN and 3I_COLUMN columns.
+      record["1I_COLUMN"].set(7);
+      std::vector<int> vector_int_initial(3);
+      vector_int_initial[0] = 1;
+      vector_int_initial[1] = 2;
+      vector_int_initial[2] = 3;
+      record["3I_COLUMN"].set(vector_int_initial);
+
+      // Set Boolean values to 1L_COLUMN and 3L_COLUMN column.
+      record["1L_COLUMN"].set(false);
+      std::vector<bool> vector_bool_expected(3);
+      vector_bool_expected[0] = false;
+      vector_bool_expected[1] = true;
+      vector_bool_expected[2] = false;
+      record["3L_COLUMN"].set(vector_bool_expected);
+
+      // Set three integer numbers to PI_COLUMN column.
+      std::vector<int> vector_int_expected(5);
+      vector_int_expected[0] = 11;
+      vector_int_expected[1] = 22;
+      vector_int_expected[2] = 33;
+      vector_int_expected[3] = 44;
+      vector_int_expected[4] = 55;
+      record["PI_COLUMN"].set(vector_int_expected);
+
+      // Case 1: Read out a variable-length array using a vector of string.
+      // --- With FitsColumn.cxx r1.24, tip::Table::Record always returns an array with a single element.
+      std::vector<std::string> vector_string_result;
+      record["PI_COLUMN"].get(vector_string_result);
+      if (vector_string_result.size() != vector_int_expected.size()) {
+        std::ostringstream os;
+        os << "tip::Table::Record::get(std::vector<std::string>) returned a string array with " <<
+          vector_string_result.size() << " elements, not " << vector_int_expected.size() << " as expected.";
+        ReportUnexpected(os.str());
+      }
+
+      // Case 2: Set a numerical value as a string with extra leading or trailing spaces.
+      // --- With FitsColumn.cxx r1.24, this makes tip::Table::Record throw an exception.
+      std::list<std::string> test_string_list;
+      test_string_list.push_back(" ");
+      test_string_list.push_back("123");
+      test_string_list.push_back("123   ");
+      test_string_list.push_back("   123");
+      test_string_list.push_back("   123   ");
+      for (std::list<std::string>::const_iterator itor = test_string_list.begin(); itor != test_string_list.end(); ++itor) {
+        const std::string & test_string(*itor);
+        try {
+          record["1I_COLUMN"].set(test_string);
+        } catch (...) {
+          std::ostringstream os;
+          os << "tip::Table::Record::set(\"" << test_string << "\") unexpectedly threw an exception.";
+          ReportUnexpected(os.str());
+        }
+      }
+
+      // Case 3: Set a vector of numerical values as a vector of strings with extra leading or trailing spaces.
+      // --- With FitsColumn.cxx r1.24, this makes tip::Table::Record throw an exception.
+      std::vector<std::string> vector_string_input(3);
+      vector_string_input[0] = "111";
+      vector_string_input[1] = "222";
+      vector_string_input[2] = "333";
+      for (std::list<std::string>::const_iterator itor = test_string_list.begin(); itor != test_string_list.end(); ++itor) {
+        vector_string_input[1] = *itor;
+        try {
+          record["3I_COLUMN"].set(vector_string_input);
+        } catch (...) {
+          std::ostringstream os;
+          os << "tip::Table::Record::set((\"" << vector_string_input[0] << "\", \"" <<
+            vector_string_input[1] << "\", \"" << vector_string_input[2] << "\")) unexpectedly threw an exception.";
+          ReportUnexpected(os.str());
+        }
+      }
+
+      // Case 4: Set a Boolean value as a string with extra leading or trailing spaces.
+      // --- With FitsColumn.cxx r1.24, this makes tip::Table::Record throw an exception.
+      test_string_list.clear();
+      test_string_list.push_back("T");
+      test_string_list.push_back("T   ");
+      test_string_list.push_back("   T");
+      test_string_list.push_back("   T   ");
+      for (std::list<std::string>::const_iterator itor = test_string_list.begin(); itor != test_string_list.end(); ++itor) {
+        const std::string & test_string(*itor);
+        try {
+          record["1L_COLUMN"].set(test_string);
+        } catch (...) {
+          std::ostringstream os;
+          os << "tip::Table::Record::set(\"" << test_string << "\") unexpectedly threw an exception.";
+          ReportUnexpected(os.str());
+        }
+      }
+
+      // Case 5: Set a vector of Boolean values as a vector of strings with extra leading or trailing spaces.
+      // --- With FitsColumn.cxx r1.24, this makes tip::Table::Record throw an exception.
+      // NOTE: This test case causes a FITSIO error (CFITSIO ERROR 312: bad binary table datatype),
+      //       the underlying FITSIO function (fits_write_col_null, which then calls ffpclb for this case)
+      //       does not support TLOGICAL as of this writing (CFITSIO version 3.26). So, this test is
+      //       disabled for now. This test case should be revived unchanged and the test result should be checked.
+    #if 0
+      vector_string_input[0] = "F";
+      vector_string_input[1] = "F";
+      vector_string_input[2] = "F";
+    #endif
+    #if 1
+      // Instead, run the following test cases with white spaces only to see they are handled correctly,
+      // which does not reveal any bug in tip::FitsColumn class in FitsColumn.cxx r1.24.
+      vector_string_input[0] = "";
+      vector_string_input[1] = "";
+      vector_string_input[2] = "";
+      test_string_list.clear();
+      test_string_list.push_back(" ");
+    #endif
+      for (std::list<std::string>::const_iterator itor = test_string_list.begin(); itor != test_string_list.end(); ++itor) {
+        vector_string_input[1] = *itor;
+        try {
+          record["3L_COLUMN"].set(vector_string_input);
+        } catch (...) {
+          std::ostringstream os;
+          os << "tip::Table::Record::set((\"" << vector_string_input[0] << "\", \"" <<
+            vector_string_input[1] << "\", \"" << vector_string_input[2] << "\")) unexpectedly threw an exception.";
+          ReportUnexpected(os.str());
+        }
+      }
+
+      // Case 4: Read out the vector of bool.
+      // --- With FitsColumn.cxx r1.24, This causes a segmentation fault.
+      std::vector<bool> vector_bool_result;
+      record["3L_COLUMN"].get(vector_bool_result);
+
+      // Return exit status.
+    } catch (const TipException & x) {
+      ReportUnexpected("TestColumn::test() caught unexpected exception while testing leading and trailing blanks in bools", x);
     }
 
     return getStatus();
