@@ -118,7 +118,8 @@ class ROIImage(object):
         if hasattr(self.size,'__iter__'):
             raise Exception("Can only create ZEA object for square objects.")
 
-        zea_dict = dict((d[0],self.__dict__[d[0]]) for d in ZEA.defaults if hasattr(d,'__iter__'))
+        zea_dict = dict((d[0],self.__dict__[d[0]]) for d in ZEA.defaults if hasattr(d,'__iter__') and \
+                hasattr(self,d[0]))
         if axes is not None: zea_dict['axes']=axes
         if nticks is not None: zea_dict['nticks']=nticks
 
