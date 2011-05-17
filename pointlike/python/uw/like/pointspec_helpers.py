@@ -143,8 +143,8 @@ class FermiCatalog(PointSourceCatalog):
         f = open(catalog_file)
         colnames = [x.name for x in f[1].get_coldefs()]
         sname     = 'NickName' if 'NickName' in colnames else 'Source_Name'
-        ras  = f[1].data.field('RA')
-        decs = f[1].data.field('DEC')
+        ras  = f[1].data.field('RA' if 'RA' in colnames else 'RAJ2000')
+        decs = f[1].data.field('DEC' if 'DEC' in colnames else 'DEJ2000')
         pens = f[1].data.field('PIVOT_ENERGY')
         n0s  = f[1].data.field('FLUX_DENSITY')
         inds = f[1].data.field('SPECTRAL_INDEX')
