@@ -574,7 +574,7 @@ def parse_point_sources(handler,roi_dir,max_roi):
     xtm = XML_to_Model()
     for src in handler.sources:
         if src['type'] != 'PointSource': continue
-        name = src['name']
+        name = str(src['name'])
         sd = get_skydir(src.getChild('spatialModel'))
         mo = xtm.get_model(src.getChild('spectrum'),name)
         if None in [roi_dir,max_roi] or N.degrees(sd.difference(roi_dir))<max_roi:
@@ -589,7 +589,7 @@ def parse_diffuse_sources(handler,diffdir=None):
         if src['type'] != 'DiffuseSource': continue
         spatial  = src.getChild('spatialModel')
         spectral = src.getChild('spectrum')
-        name = src['name']
+        name = str(src['name'])
         if spatial['type'] == 'ConstantValue':
             if spectral['type'] == 'FileFunction':
                 fname = str(os.path.expandvars(spectral['file']))
@@ -618,7 +618,7 @@ def parse_diffuse_sources(handler,diffdir=None):
 
                 spatial_model=xtsm.get_spatial_model(spatial,diffdir=diffdir)
                 spectral_model=xtm.get_model(spectral,name)
-                ds.append(ExtendedSource(name=str(name),
+                ds.append(ExtendedSource(name=name,
                                          model=spectral_model,
                                          spatial_model=spatial_model,
                                          leave_parameters=True))
