@@ -24,7 +24,6 @@ from . pointspec_helpers import get_default_diffuse_mapper
 from . roi_tsmap import TSCalc,TSCalcPySkyFunction
 from uw.utilities import keyword_options
 from uw.utilities.fitstools import get_fields
-from uw.utilities.image import ZEA
 from pypsf import PsfOverlap
 import collections
 from abc import abstractmethod
@@ -123,6 +122,7 @@ class ROIImage(object):
         if axes is not None: zea_dict['axes']=axes
         if nticks is not None: zea_dict['nticks']=nticks
 
+        from uw.utilities.image import ZEA
         zea=ZEA(self.center,**zea_dict)
         zea.skyimage = self.skyimage
         # recalculate, in case the sky image has changed
