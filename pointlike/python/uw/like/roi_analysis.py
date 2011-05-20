@@ -884,5 +884,9 @@ class ROIAnalysis(object):
         self.pf=tsmap.get_pyfits()
         self.pf.writeto(outfile,clobber=True)
 
+    def plot_sed(self,*args,**kwargs):
+        from uw.like import sed_plotter
+        return sed_plotter.plot_sed(self,*args,**kwargs)
+
 load=ROIAnalysis.load
 
