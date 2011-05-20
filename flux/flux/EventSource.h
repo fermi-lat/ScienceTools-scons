@@ -102,8 +102,8 @@ public:
     virtual std::string particleName() { return std::string("unknown");}
 
     virtual double energy()const { return 0;}
-    virtual const Hep3Vector & launchDir()const { static Hep3Vector dummy; return dummy;}
-    virtual const Hep3Vector & launchPoint()const { static Hep3Vector dummy; return dummy;}
+    virtual const CLHEP::Hep3Vector & launchDir()const { static CLHEP::Hep3Vector dummy; return dummy;}
+    virtual const CLHEP::Hep3Vector & launchPoint()const { static CLHEP::Hep3Vector dummy; return dummy;}
     
     virtual int identifier(){return -1;} ///< indetifier only determined by FluxSOurce
 

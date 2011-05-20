@@ -52,10 +52,10 @@ public:
     virtual double energy()const=0;
     
     /// starting point 
-    virtual Hep3Vector launchPoint()const=0;
+    virtual CLHEP::Hep3Vector launchPoint()const=0;
     
     /// direction
-    virtual Hep3Vector launchDir()const=0;
+    virtual CLHEP::Hep3Vector launchDir()const=0;
     
     /// time (s) (absolute or elapsed??)
     virtual double time()const=0;

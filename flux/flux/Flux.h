@@ -57,10 +57,10 @@ public:
     virtual double energy()const;
     
     /// starting point 
-    virtual Hep3Vector launchPoint()const;
+    virtual CLHEP::Hep3Vector launchPoint()const;
     
     /// direction
-    virtual Hep3Vector launchDir()const;
+    virtual CLHEP::Hep3Vector launchDir()const;
     
     /// return the time
     virtual double time()const;

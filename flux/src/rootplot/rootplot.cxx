@@ -309,7 +309,7 @@ void rootplot::init(std::vector<std::string> argv)
             magstat.accum(geolat);
  
 //            double cutOffRigidity = gps->expansion();
-            HepVector3D dir = f->launchDir();
+            HepGeom::Vector3D<double> dir = f->launchDir();
             double energy = f->energy();
             gps->time(time2); // reset
 

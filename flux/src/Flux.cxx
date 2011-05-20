@@ -74,7 +74,7 @@ double Flux::energy()const
 }
 
 // starting point 
-Hep3Vector Flux::launchPoint()const
+CLHEP::Hep3Vector Flux::launchPoint()const
 {
     return m_flux->launchPoint();
 }
@@ -102,7 +102,7 @@ double Flux::gpsTime () const{
 
 
 // direction
-Hep3Vector Flux::launchDir()const
+CLHEP::Hep3Vector Flux::launchDir()const
 {
     return m_flux->launchDir();
 }

@@ -439,7 +439,7 @@ std::string FluxMgr::writeXmlFile(const std::vector<std::string>& fileList) {
 
 void FluxMgr::setAlignmentRotation(double qx, double qy, double qz, bool misalign)
 {
-    HepRotation R(HepRotationX(qx*M_PI/180)* HepRotationY(qy*M_PI/180) * HepRotationZ(qz*M_PI/180));
+    CLHEP::HepRotation R(CLHEP::HepRotationX(qx*M_PI/180)* CLHEP::HepRotationY(qy*M_PI/180) * CLHEP::HepRotationZ(qz*M_PI/180));
     if( misalign){
         EventSource::setAlignmentRotation(R);
     }else{

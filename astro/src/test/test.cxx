@@ -447,7 +447,7 @@ int main(){
         SkyDir zenith(20,0,astro::SkyDir::GALACTIC);
         SkyDir xdir(-70,0,astro::SkyDir::GALACTIC);
         PointingTransform trans(zenith,xdir);
-        Hep3Vector vertical(0,0,1);
+        CLHEP::Hep3Vector vertical(0,0,1);
         //double templ=trans.gDir(vertical).l();	
         //double tempb=trans.gDir(vertical).b();
         test += trans.gDir(vertical).l()-20.0;
@@ -457,11 +457,11 @@ int main(){
         JulianDate jdbary(2454101.5001062094);
         JulianDate mission(2451910.5);
         SolarSystem ss(SolarSystem::EARTH);
-        Hep3Vector bary = ss.getBarycenter(jdbary);
-        Hep3Vector solar = ss.getSolarVector(mission);
+        CLHEP::Hep3Vector bary = ss.getBarycenter(jdbary);
+        CLHEP::Hep3Vector solar = ss.getSolarVector(mission);
 
         //expected direction 1/1/2001 : 00:00:00
-        Hep3Vector svec = SkyDir(18.771666*15,-23.013055)();
+        CLHEP::Hep3Vector svec = SkyDir(18.771666*15,-23.013055)();
         test += (1-svec.dot(solar.unit()))*1e3;
         solar = ss.getSolarVector(mission+1);
 
@@ -477,7 +477,7 @@ int main(){
         std::cout << "Barycenter coords for JD: "
             << std::setprecision(8)<< jdbary << ": "  << bary << std::endl;
         // expected, from comparison with glbary.
-        Hep3Vector expect (84.7056619, -445.132338, -192.922157);
+        CLHEP::Hep3Vector expect (84.7056619, -445.132338, -192.922157);
         test += (expect-bary).mag() *1e3 ;
 
 
