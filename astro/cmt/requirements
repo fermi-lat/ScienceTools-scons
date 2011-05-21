@@ -1,6 +1,6 @@
 package astro
 
-version v3r11p12
+version v3r11p13
 #$Id$
 
 author  T. Burnett <tburnett@u.washington.edu>
@@ -8,7 +8,7 @@ author  T. Burnett <tburnett@u.washington.edu>
 use GlastPolicy  * -no_auto_imports
 use facilities   *
 use cfitsio * IExternal 
-use CLHEP v3* IExternal
+use CLHEP * IExternal
 use extFiles * IExternal -no_auto_imports # for jphephem data
 use tip *
 use python * IExternal -no_auto_imports   # needed for windows in RM
