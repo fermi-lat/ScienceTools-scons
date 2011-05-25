@@ -218,8 +218,8 @@ void MakeTime::createGti() {
       double stop_time;
       std::vector<double> tstart;
       std::vector<double> tstop;
-// Initialize arrays with the first interval that ends after the first
-// event time, m_tmin
+// Initialize arrays with the first interval that ends after the start
+// time of the FT1 file, m_tmin
       for (; input != in_table->end(); ++input) {
          in["START"].get(start_time);
          in["STOP"].get(stop_time);

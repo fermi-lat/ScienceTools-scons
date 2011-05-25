@@ -6,6 +6,7 @@ def generate(env, **kw):
     env.Tool('astroLib')
     env.Tool('st_facilitiesLib')
     env.Tool('facilitiesLib')
+    env.Tool('irfLoaderLib')
     env.Tool('evtbinLib')
 
 def exists(env):
