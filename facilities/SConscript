@@ -28,26 +28,38 @@ if 'obfLdPath' in libEnv:
 
 configfile.close()
 
-libEnv.Tool('addLinkDeps', package = 'facilities',
-            toBuild = 'shared')
-facilitiesLib = libEnv.SharedLibrary('facilities', listFiles(['src/*.cxx']))
+if 'makeStatic' in baseEnv:
+    libEnv.Tool('addLinkDeps', package = 'facilities', toBuild = 'static')
+    facilitiesLib = libEnv.StaticLibrary('facilities', listFiles(['src/*.cxx']))
+else:
+    libEnv.Tool('addLinkDeps', package = 'facilities',
+                toBuild = 'shared')
+    facilitiesLib = libEnv.SharedLibrary('facilities', listFiles(['src/*.cxx']))
 
-swigEnv.Tool('facilitiesLib')
-swigEnv.Tool('addLibrary', library=swigEnv['pythonLibs'])
-lib_pyFacilities = swigEnv.SwigLibrary('_py_facilities', 'src/py_facilities.i')
+    swigEnv.Tool('facilitiesLib')
+    swigEnv.Tool('addLibrary', library=swigEnv['pythonLibs'])
+    lib_pyFacilities = swigEnv.SwigLibrary('_py_facilities', 'src/py_facilities.i')
 
 progEnv.Tool('facilitiesLib')
 test_time = progEnv.Program('test_time', ['src/test/test_time.cxx'])
 test_env = progEnv.Program('test_env', ['src/test/test_env.cxx'])
 test_Util = progEnv.Program('test_Util',[ 'src/test/testUtil.cxx'])
 
-progEnv.Tool('registerTargets', package = 'facilities',
-             libraryCxts = [[facilitiesLib, libEnv]],
-             swigLibraryCxts = [[lib_pyFacilities, swigEnv]],
-             testAppCxts = [[test_time, progEnv], [test_env,progEnv],
-                            [test_Util,progEnv]],
-             includes = listFiles(['facilities/*.h']),
-             python = ['python/facilities.py', 'src/py_facilities.py'])
+if 'makeStatic' in baseEnv:
+    progEnv.Tool('registerTargets', package = 'facilities',
+                 staticLibraryCxts = [[facilitiesLib, libEnv]],
+                 testAppCxts = [[test_time, progEnv], [test_env,progEnv],
+                                [test_Util,progEnv]],
+                 includes = listFiles(['facilities/*.h']),
+                 python = ['python/facilities.py', 'src/py_facilities.py'])
+else:
+    progEnv.Tool('registerTargets', package = 'facilities',
+                 libraryCxts = [[facilitiesLib, libEnv]],
+                 swigLibraryCxts = [[lib_pyFacilities, swigEnv]],
+                 testAppCxts = [[test_time, progEnv], [test_env,progEnv],
+                                [test_Util,progEnv]],
+                 includes = listFiles(['facilities/*.h']),
+                 python = ['python/facilities.py', 'src/py_facilities.py'])
 
 
 
