@@ -290,9 +290,9 @@ std::vector<double> LeastSquaresFitter::ring(astro::SkyDir& oldDir, double err) 
     //m_psl->setDir(oldDir,false);
 
     //pick 2D coordinate system
-    Hep3Vector rand_x = oldDir().orthogonal();
+    CLHEP::Hep3Vector rand_x = oldDir().orthogonal();
     rand_x=rand_x.unit();
-    Hep3Vector rand_y = (oldDir().cross(rand_x)).unit();
+    CLHEP::Hep3Vector rand_y = (oldDir().cross(rand_x)).unit();
     double iTS = m_psl->TSmap(oldDir);
     std::vector<double> likes;
 
@@ -311,9 +311,9 @@ std::vector<double> LeastSquaresFitter::ring(astro::SkyDir& oldDir, double err) 
 
 astro::SkyDir LeastSquaresFitter::maxDir(astro::SkyDir& sd) {
     //pick 2D coordinate system
-    Hep3Vector rand_x = sd().orthogonal();
+    CLHEP::Hep3Vector rand_x = sd().orthogonal();
     rand_x=rand_x.unit();
-    Hep3Vector rand_y = (sd().cross(rand_x)).unit();
+    CLHEP::Hep3Vector rand_y = (sd().cross(rand_x)).unit();
 
     //set the position to the maximum likelihood
     return SkyDir((m_ellipse[4]*rand_x+m_ellipse[5]*rand_y)*M_PI/180+sd());
@@ -321,11 +321,11 @@ astro::SkyDir LeastSquaresFitter::maxDir(astro::SkyDir& sd) {
 
 double LeastSquaresFitter::operator() (const astro::SkyDir& dir) const {
     astro::SkyDir curDir = m_psl->dir();
-    Hep3Vector rv = (curDir()-dir()).unit();
+    CLHEP::Hep3Vector rv = (curDir()-dir()).unit();
     double r = dir.difference(curDir)*180/M_PI;
-    Hep3Vector rand_x = curDir().orthogonal();
+    CLHEP::Hep3Vector rand_x = curDir().orthogonal();
     rand_x=rand_x.unit();
-    Hep3Vector rand_y = (curDir().cross(rand_x)).unit();
+    CLHEP::Hep3Vector rand_y = (curDir().cross(rand_x)).unit();
     double x = -rand_x.dot(rv)*r;
     double y = -rand_y.dot(rv)*r;
     return func(m_fitparams,x,y);
