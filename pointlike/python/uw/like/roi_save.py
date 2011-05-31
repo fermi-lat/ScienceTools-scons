@@ -5,6 +5,7 @@ $Header$
 
 author: Joshua Lande
 """
+import os
 import cPickle
 import collections
 
@@ -66,6 +67,8 @@ def save(roi,filename):
             j=i[0]
             d['ROIAnalysis'][j]=self.__dict__[j]
 
+    d['LATEXTDIR']=os.environ['LATEXTDIR'] if os.environ.has_key('LATEXTDIR') else None
+
     cPickle.dump(d,open(filename,'w'))
 
 def load(filename,**kwargs):
@@ -75,6 +78,10 @@ def load(filename,**kwargs):
         Any additional kwargs is used to modify DataSpecification, SpectralAnalysis,
         and ROIAnalysis objects."""
     d=cPickle.load(open(filename,'r'))
+
+    # restore previous LATEXTDIR if it is not already set
+    if not os.environ.has_key('LATEXTDIR') and d['LATEXTDIR'] not in [None,{}]:
+        os.environ['LATEXTDIR']=d['LATEXTDIR'] 
 
     from . pointspec import DataSpecification,SpectralAnalysis
     from . roi_analysis import ROIAnalysis
