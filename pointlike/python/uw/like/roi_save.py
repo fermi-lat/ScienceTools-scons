@@ -8,6 +8,7 @@ author: Joshua Lande
 import os
 import cPickle
 import collections
+import numpy as N
 
 class Empty: pass
 
@@ -82,6 +83,14 @@ def load(filename,**kwargs):
     # restore previous LATEXTDIR if it is not already set
     if not os.environ.has_key('LATEXTDIR') and d['LATEXTDIR'] not in [None,{}]:
         os.environ['LATEXTDIR']=d['LATEXTDIR'] 
+
+    # SpatialMap objects may fail to load if LATEXTDIR wasn't previously
+    # set. If so, try again.
+    if N.any([hasattr(ds,'spatial_model') and \
+              hasattr(ds.spatial_model,'skyfun') \
+              and ds.spatial_model.skyfun is None 
+              for ds in d['diffuse_sources']]):
+        d=cPickle.load(open(filename,'r'))
 
     from . pointspec import DataSpecification,SpectralAnalysis
     from . roi_analysis import ROIAnalysis
