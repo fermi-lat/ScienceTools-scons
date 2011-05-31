@@ -1015,7 +1015,10 @@ class SpatialMap(SpatialModel):
     def __setstate__(self,state):
         """ When unpickling the object, afterwords recreate the skymaps.SkyImage object. """
         self.__dict__ = state
-        self.skyfun=SkyImage(SpatialMap.expand(self.file),self.extension,self.interpolate)
+        try:
+            self.skyfun=SkyImage(SpatialMap.expand(self.file),self.extension,self.interpolate)
+        except:
+            self.skyfun=None
 
 #===============================================================================================#
 
