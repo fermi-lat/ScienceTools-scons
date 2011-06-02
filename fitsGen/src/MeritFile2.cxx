@@ -86,10 +86,10 @@ MeritFile2::~MeritFile2() {
    for ( ; it != m_branches.end(); ++it) {
       delete_branch_pointer(it->second);
    }
-   delete m_file;
    if (dynamic_cast<TChain *>(m_tree)) {
       delete m_tree;
    }
+   delete m_file;
 }
 
 Long64_t MeritFile2::next() {
