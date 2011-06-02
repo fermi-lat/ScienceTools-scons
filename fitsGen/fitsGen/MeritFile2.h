@@ -17,8 +17,8 @@
 
 #include "TTree.h"
 
-class TFile;
 class TEventList;
+class TFile;
 
 namespace fitsGen {
 
@@ -27,6 +27,10 @@ class MeritFile2 {
 public:
    
    MeritFile2(const std::string & meritfile,
+              const std::string & tree="MeritTuple",
+              const std::string & filter="");
+
+   MeritFile2(const std::vector<std::string> & meritFiles,
               const std::string & tree="MeritTuple",
               const std::string & filter="");
 

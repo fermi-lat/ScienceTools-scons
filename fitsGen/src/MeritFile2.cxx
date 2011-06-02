@@ -8,6 +8,7 @@
 
 #include <stdexcept>
 
+#include "TChain.h"
 #include "TError.h"
 #include "TEventList.h"
 #include "TFile.h"
@@ -21,7 +22,7 @@ namespace fitsGen {
 MeritFile2::MeritFile2(const std::string & meritfile,
                        const std::string & tree,
                        const std::string & filter) :
-   m_file(0), m_index(0) {
+   m_file(0), m_tree(0), m_index(0) {
 /// Vain effort to suppress uninformative error messages from ROOT.
 /// This is borrowed from tip::RootTable.cxx.
    long root_err_level = gErrorIgnoreLevel;
@@ -53,12 +54,42 @@ MeritFile2::MeritFile2(const std::string & meritfile,
    rewind();
 }
 
+MeritFile2::MeritFile2(const std::vector<std::string> & meritFiles,
+                       const std::string & tree,
+                       const std::string & filter) :
+   m_file(0), m_tree(new TChain(tree.c_str())), m_index(0) {
+/// Vain effort to suppress uninformative error messages from ROOT.
+/// This is borrowed from tip::RootTable.cxx.
+   long root_err_level = gErrorIgnoreLevel;
+   gErrorIgnoreLevel = root_err_level;
+
+   for (size_t i(0); i < meritFiles.size(); i++) {
+      dynamic_cast<TChain *>(m_tree)->Add(meritFiles[i].c_str());
+   }
+   m_tree->SetBranchStatus("*", 1);
+   
+// Use TTree::Draw function to apply the filter string and get a
+// TEventList.
+   m_tree->Draw(">>merit_event_list", filter.c_str(), "");
+   m_eventList = (TEventList *)gDirectory->Get("merit_event_list");
+
+   m_nrows = m_eventList->GetN();
+
+   m_tstart = operator[]("EvtElapsedTime");
+   m_tree->GetEvent(m_eventList->GetEntry(m_nrows-1));
+   m_tstop = operator[]("EvtElapsedTime");
+   rewind();
+}
+
 MeritFile2::~MeritFile2() {
    BranchMap_t::iterator it = m_branches.begin();
    for ( ; it != m_branches.end(); ++it) {
       delete_branch_pointer(it->second);
    }
    delete m_file;
+   if (dynamic_cast<TChain *>(m_tree)) {
+      delete m_tree;
+   }
 }
 
 Long64_t MeritFile2::next() {
