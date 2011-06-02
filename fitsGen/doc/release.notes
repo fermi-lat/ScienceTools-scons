@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ fitsGen-06-04-00 02-Jun-2011 jchiang add constructor to MeritFile2 that takes a list of input merit files
  fitsGen-06-03-00 11-Apr-2011 jchiang add RA_SUN, DEC_SUN to ft2.tpl; change DATA_QUAL format to I (signed 2 byte interger)
  fitsGen-06-02-04 14-Mar-2011 hmk     comment out a couple more Py_DECREFs in EventClassifier
  fitsGen-06-02-03 13-Mar-2011 jchiang comment out Py_DECREF in EventClassifier destructor for Windows build
