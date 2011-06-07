@@ -871,6 +871,9 @@ class ROIAnalysis(object):
     def get_sources(self):
         return self.psm.point_sources.tolist()+ self.dsm.diffuse_sources.tolist() 
 
+    def get_names(self):
+        return N.append(self.psm.names,self.dsm.names).tolist()
+
     # get these functions from roi_save.py
     save=roi_save.save
     load=staticmethod(roi_save.load)
