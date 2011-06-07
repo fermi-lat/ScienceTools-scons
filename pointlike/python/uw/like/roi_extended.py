@@ -460,10 +460,9 @@ Arguments:
 
         ll_disk = l()
 
-        try:
-            sm.shrink()
-        except:
+        if not sm.can_shrink():
             raise Exception("Unable to calculate ts_ext for %s source %s. No way to shrink to null hypothesis." % (sm.pretty_name,es.name))
+
         self.initialize_counts(roi.bands)
 
         if not roi.quiet: print 'Refitting position for the null hypothesis'
