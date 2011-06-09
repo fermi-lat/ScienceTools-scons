@@ -50,8 +50,7 @@ if 'makeStatic' in baseEnv:
                  staticLibraryCxts = [[facilitiesLib, libEnv]],
                  testAppCxts = [[test_time, progEnv], [test_env,progEnv],
                                 [test_Util,progEnv]],
-                 includes = listFiles(['facilities/*.h']),
-                 python = ['python/facilities.py', 'src/py_facilities.py'])
+                 includes = listFiles(['facilities/*.h']) )
 else:
     progEnv.Tool('registerTargets', package = 'facilities',
                  libraryCxts = [[facilitiesLib, libEnv]],
