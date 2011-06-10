@@ -1,2 +1,14 @@
- BackgroundEstimator-00-00-01 04-May-2011 omodei Test to checkout release notes.
+/** 
+  @file release.notes
+  @brief package BackgroundEstimator
+
+  @verbatim
+  $Id$
+  EOH
+
+       -- prior to move to GRBAnalysis-scons --
  BackgroundEstimator-00-00-02 04-May-2011 omodei Test to checkout release notes.
+ BackgroundEstimator-00-00-01 04-May-2011 omodei Test to checkout release notes.
+
+  @endverbatim
+*/
