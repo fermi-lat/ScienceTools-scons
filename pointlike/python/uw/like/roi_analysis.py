@@ -791,6 +791,7 @@ class ROIAnalysis(object):
     modify_loc = roi_modify.modify_loc
     modify_spatial_model = roi_modify.modify_spatial_model
     modify_model = roi_modify.modify_model
+    modify_name = roi_modify.modify_name
     modify = roi_modify.modify
         
     # get the print_summary function from roi_printing
