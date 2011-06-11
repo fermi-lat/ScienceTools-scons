@@ -338,7 +338,7 @@ class SpatialModel(object):
         
         a.p           = N.asarray(self.p,dtype=float).copy() #copy in parameters
         a.free        = N.asarray(self.free,dtype=float).copy() 
-        a.param_names = N.asarray(self.param_names,dtype=float).copy() 
+        a.param_names = N.asarray(self.param_names).copy() 
         a.limits      = N.asarray(self.limits,dtype=float).copy() 
         a.log         = N.asarray(self.log,dtype=float).copy() 
         a.steps       = N.asarray(self.steps,dtype=float).copy() 
