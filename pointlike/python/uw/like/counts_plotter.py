@@ -143,9 +143,12 @@ def roi_pipeline_counts_plot(roi, counts_dir=None, fignum=6, **kwargs):
     axes[0].set_xlabel('') 
     axes[0].set_ylim(ymin=0.3)
     axes[1].set_ylabel('fract. dev')
-    fig.suptitle(roi.name)
+    if hasattr(roi,'name'): fig.suptitle(roi.name)
     if counts_dir is not None:
-        fout = os.path.join(counts_dir, ('%s_counts.png'%roi.name) )
+        if os.path.isdir(counts_dir) and hasattr(roi,'name'):
+            fout = os.path.join(counts_dir, ('%s_counts.png'%roi.name) )
+        else:
+            fout = counts_dir
         fig.savefig(fout)
         print 'saved counts plot to %s' % fout
     return axes
