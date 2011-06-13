@@ -152,6 +152,9 @@ class ROIAnalysis(object):
             source manager, so the return is the point source manager
             and the particular index.
 
+            If which is None, it will find the closest point+extended
+            to the center of the ROI and return that.
+
             if which is a string, the name of all the point sources and
             diffuse sources is searched and the first source with that
             name is returned.
@@ -953,6 +956,10 @@ class ROIAnalysis(object):
     @decorate_with(roi_plotting.ROITSMapPlotter,append_init=True)
     def plot_tsmap(self,filename,**kwargs):
         roi_plotting.ROITSMapPlotter(self,**kwargs).show(filename=filename)
+
+    @decorate_with(roi_plotting.ROISmoothedModel,append_init=True)
+    def plot_model(self,filename="model_counts.png",**kwargs):
+        ROISmoothedModel(self,**kwargs).show(filename=filename)
 
 load=ROIAnalysis.load
 
