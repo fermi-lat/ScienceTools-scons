@@ -180,10 +180,12 @@ class ROIAnalysis(object):
         elif which is None:
             # Get closest to ROI center.
             sources=[i for i in self.get_sources() if hasattr(i,'skydir')]
-            sources.sort(lambda s:s.skydir.difference(self.roi_dir))
+            sources.sort(key=lambda s:s.skydir.difference(self.roi_dir))
             source=sources[0]
-            manager=self.psm if isinstance(source,PointSource) else self.dsm
-            return manager,source
+            if isinstance(source,PointSource):
+                return self.psm,N.where(self.psm.point_sources==source)[0][0]
+            else:
+                return self.dsm,N.where(self.dsm.diffuse_sources==source)[0][0]
         elif isinstance(which,PointSource):
             return self.psm,int(N.where(self.psm.point_sources==which)[0])
         elif isinstance(which,DiffuseSource):
