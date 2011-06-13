@@ -207,7 +207,7 @@ class ROIExtendedModel(ROIDiffuseModel):
                  es.name,es.model.full_name(),
                  '\t'+es.model.__str__(indent='\t'))
 
-    def fit_extension(self,roi,tolerance=0.05, bandfits=False, error="HESSE",init_grid=None, use_gradient=True, estimate_errors=True):
+    def fit_extension(self,roi,tolerance=0.05, bandfits=False, error="UMINOS",init_grid=None, use_gradient=True, estimate_errors=True):
         """ Fit the extension of this extended source by fitting all non-fixed spatial paraameters of 
             self.extended_source. The likelihood at the best position is returned.
 
