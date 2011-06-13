@@ -102,9 +102,8 @@ class ROIBand(object):
         # are used elsewhere.  This comes up in, e.g., saving the values for use in localization.
         which = args[0] if len(args) > 0 else 0
         new_counts = parameters[0]*self.er[which]
-        band = self # what's this for? M.K. 23 Sept. 2010
 
-        old_counts = band.ps_counts[which]
+        old_counts = self.ps_counts[which]
 
         tot_term = (self.bg_all_counts + self.ps_all_counts + self.overlaps[which]*(new_counts - old_counts))*self.phase_factor
 
