@@ -209,7 +209,7 @@ int DurationEstimator::EvaluateBins_Coarse(vector <TH1F*> &hROI, vector <double>
 
     //printf(" %e %e %e %e\n",Flux.back(),Flux.back()-Flux_Err_Down.back(),Flux_Err_Down.back(),Flux_Err_Up.back());
     //check if we reached a plateau
-    float Min_Plateau_Duration=std::min(1000.,std::max(400.,0.15*TSTOP.back()));
+    float Min_Plateau_Duration=std::min(1000.,std::max(400.,0.15*(TSTOP.back()-GTI_Offset_0)));
     if (verbosity>3) printf("%s:TSTOP.back()=%f GTI_Offset_0=%f diff=%f min_plateau_duration=%f\n",__FUNCTION__,
         	    TSTOP.back(),GTI_Offset_0,TSTOP.back()-GTI_Offset_0,Min_Plateau_Duration);
     if ((TSTOP.back()-GTI_Offset_0)>Min_Plateau_Duration) { //start checking for a plateau 350s after the start of the current GTI
@@ -218,7 +218,7 @@ int DurationEstimator::EvaluateBins_Coarse(vector <TH1F*> &hROI, vector <double>
        TGraph gIntDet_temp = TGraph(IntDet.size(),&TSTOP.front(),&IntDet.front());
        TGraphErrors gIntBkg_temp = TGraphErrors(IntDet.size(),&TSTOP.front(),&IntBkg.front());
        cCoarse->cd(1);gIntDiff_temp.Draw("A*");
-       double Plateau_stop,Plateau_start=-1.5;  
+       double Plateau_stop,Plateau_start=-2.0;  
        /*here we ask for a well defined plateau which when simulated will still have a high chance of giving good plateaus
          if we stop evaluating the bins after only a short not very well defined plateau has been found,
          then sometimes the simulated lightcurves do not show a good plateau and their duration estimation fails.

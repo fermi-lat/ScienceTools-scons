@@ -180,7 +180,7 @@ string GANGSTER::PlotBackground(string Interval_name, double MET, double DURATIO
           }
           hExp[iEst] = (TH1F*)fEst[iEst]->Get("hExposure");
 
-          hROIEst[iEst] = (TH1F*)fEst[iEst]->Get("hROI_Max");
+          hROIEst[iEst] = (TH1F*)fEst[iEst]->Get("hROI");
           hEst[iEst] = (TH1F*)fEst[iEst]->Get("hCtsvsEnergy_Est");
           if (!hEst[iEst]) {
              printf("no hCtsvsEnergy histogram in %s\n Delete that file and run again.",name); 

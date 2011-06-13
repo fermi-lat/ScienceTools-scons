@@ -26,7 +26,7 @@ class DurationEstimator {
         int CalculateLATT90();
         int PerformPerturbedEstimation( double * q_T95, double *q_T05, double *q_T90, double *q_Plateau, double *q_DetTotal, int iterations);
 	int FindT90(TGraph * gDiff, double &T05, double &T95, double Plateau);
-	bool FindPlateau(TGraph* gIntDiff, TGraph* gIntDet, TGraphErrors *gIntBkg, double &Plateau_start, double &Plateau_stop, float min_plateau_duration, float GTI_Offset_0=0);
+	bool FindPlateau(TGraph* gIntDiff, TGraph* gIntDet, TGraphErrors *gIntBkg, double &Plateau_start, double &Plateau_stop, float min_plateau_duration, float GTI_Offset_0=0, bool quick=true);
 	double FailedFraction;
 	int Iterations;
 	TCanvas *cCoarse, *cExtras, *cDuration1;

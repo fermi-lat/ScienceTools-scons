@@ -1,6 +1,9 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
 // $Header$
 #include "BackgroundEstimator/DurationEstimator.h"
+#include "Math/QuantFuncMathCore.h"
+#include "Math/PdfFuncMathCore.h"
+
 
 //returns >=0 if ok, <0 if crap
 
@@ -115,8 +118,8 @@ int DurationEstimator::CalculateLATT90(){
         }
     } //if crossed GTI
     else { //simple calculation
-	double Plateau_stop,Plateau_start=-1.5;
-        bool Found_Plateau=FindPlateau(gIntDiff_fine,gIntDet_fine,gIntBkg_fine,Plateau_start,Plateau_stop,300.,GTI_Offset_0);
+	double Plateau_stop,Plateau_start=-2.5; //here ask for an increased significance since the code makes many trials
+        bool Found_Plateau=FindPlateau(gIntDiff_fine,gIntDet_fine,gIntBkg_fine,Plateau_start,Plateau_stop,300.,GTI_Offset_0,false);
         if (!Found_Plateau) {
            status=-7;
         }
@@ -209,10 +212,10 @@ int DurationEstimator::CalculateLATT90(){
 }
 
 //Ok this function receives more data than it uses, but I keep it like that for possible future changes in the Plateau-finding algorithm (VV)
-bool DurationEstimator::FindPlateau(TGraph* gIntDiff, TGraph* gIntDet, TGraphErrors *gIntBkg, double &Plateau_start, double & Plateau_stop, const float min_plateau_duration, float GTI_Offset_0) {
- double SigmaLim=1.5;
+bool DurationEstimator::FindPlateau(TGraph* gIntDiff, TGraph* gIntDet, TGraphErrors *gIntBkg, double &Plateau_start, double & Plateau_stop, const float min_plateau_duration, float GTI_Offset_0, bool quick) {
+ double SigmaLim=2.0;
  if (Plateau_start<0) SigmaLim=-Plateau_start;
-
+ #define DRAW
  #ifdef DRAW
  TLine l;
  cCoarse->cd(2);
@@ -236,7 +239,7 @@ bool DurationEstimator::FindPlateau(TGraph* gIntDiff, TGraph* gIntDet, TGraphErr
  }
  
 
- const float time_step=std::max((graph_stop-GTI_Offset_0)/20.,10.);
+ const float time_step=std::max((graph_stop-GTI_Offset_0)/20.,20.);
  for (Plateau_start=GTI_Offset_0; Plateau_start<graph_stop-min_plateau_duration && !found_plateau;Plateau_start+=time_step) {
 
     double level_start=gIntDiff->Eval(Plateau_start);
@@ -248,17 +251,28 @@ bool DurationEstimator::FindPlateau(TGraph* gIntDiff, TGraph* gIntDet, TGraphErr
     double Det_start=gIntDet->Eval(Plateau_start);
     double Bkg_start=gIntBkg->Eval(Plateau_start);
     bool PlateauOK=true;
-    for (float apoint=Plateau_start;apoint<graph_stop && PlateauOK;apoint+=std::min(graph_stop/50.,20.)) { //find the highest point of the diff plateau in the plateau
+    for (float apoint=Plateau_start;apoint<graph_stop && PlateauOK;apoint+=std::min(graph_stop/50.,30.)) { //find the highest point of the diff plateau in the plateau
         if (gIntDiff->Eval(apoint)<level_start || apoint==Plateau_start) continue;
         double Det_stop =gIntDet->Eval(apoint);
         double Bkg_stop =gIntBkg->Eval(apoint);
         float Significance,aBkg;
+	/*Here I calculate some "Significance" of the fluctuations throught the analysed interval.
+	 We are in the Poisson regime but the calls to the ROOT::Math::poisson_cdf_c functions are slow and if I used them to 
+	 estimate the true significances the code would take a long time. I instead calculate a quick Gaussian-regime significance as an approximation
+	 of the true significance.
+	*/
         int aSignal=int(Det_stop-Det_start+0.5);
-        aBkg       =Bkg_stop-Bkg_start;
-        Significance=(aSignal-aBkg)/sqrt(aBkg);
+	aBkg        =Bkg_stop-Bkg_start;
+	if (quick) {
+            Significance=(aSignal-aBkg)/sqrt(aBkg);
+        }
+	else {
+	    Significance=ROOT::Math::gaussian_quantile_c(ROOT::Math::poisson_cdf_c(aSignal,aBkg)+ROOT::Math::poisson_pdf(aSignal,aBkg),1);
+        }
         #ifdef DRAW
         printf("Check time %f (p.s.=%f) signal=%d bkg=%.1f (%.1f-%.1f) (%.1f-%.1f) sig=%.2f min_plateau_dur=%f\n",apoint,Plateau_start,aSignal,aBkg,Det_stop,Det_start,Bkg_stop,Bkg_start,Significance,min_plateau_duration);
         #endif
+
         if (Significance>SigmaLim) PlateauOK=false;
      }
      if (!PlateauOK) continue; 
