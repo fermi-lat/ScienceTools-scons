@@ -222,7 +222,7 @@ int BackgroundEstimator::FillBackgroundHist(string GRB_DIR, TH1F * hROI_Max, dou
      hExposure->Write();
      hExposure->Delete();
      hBkg.Write();
-     hROI_Max->Write("hROI_Max");
+     hROI_Max->Write("hROI");
      gSpectralTemplate.Write("gSpectralTemplate");
 
      sprintf(name,"RA/DEC %.3f %.3f",RA_BURST,DEC_BURST);
