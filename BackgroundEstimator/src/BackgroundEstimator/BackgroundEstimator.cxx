@@ -1,6 +1,7 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
-// $Header$
+//$Header$
 #include "BackgroundEstimator/BackgroundEstimator.h"
+
 
 #define DEBUG
 
@@ -77,27 +78,35 @@ StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposu
       sscanf(fResidualOverExposure->Get("Energy_Data")->GetTitle(),"%lf-%lf-%d",&Energy_Min_datafiles,&Energy_Max_datafiles,&Energy_Bins_datafiles);
 
       if (Energy_Min_user<=0)  Energy_Min_user=Energy_Min_datafiles;
-      else if (fabs(Energy_Min_user-Energy_Min_datafiles)>0.1) UsingDefaultBinning=false;
+      else if (fabs(Energy_Min_user-Energy_Min_datafiles)>0.1) {
+          if (ShowLogo) printf("%s: Energy_Min set to %f\n",__FUNCTION__,Energy_Min_user);
+          UsingDefaultBinning=false;
+      }
       if (Energy_Max_user<=0)  Energy_Max_user=Energy_Max_datafiles;
-      else if (fabs(Energy_Max_user-Energy_Max_datafiles)>0.1) UsingDefaultBinning=false;
+      else if (fabs(Energy_Max_user-Energy_Max_datafiles)>0.1) {
+           if (ShowLogo) printf("%s: Energy_Max set to %f\n",__FUNCTION__,Energy_Max_user);
+           UsingDefaultBinning=false;
+      }
       if (Energy_Bins_user<=0) Energy_Bins_user=Energy_Bins_datafiles;
-      else if (Energy_Bins_user!=Energy_Bins_datafiles) UsingDefaultBinning=false;
-
+      else if (Energy_Bins_user!=Energy_Bins_datafiles) {
+            if (ShowLogo) printf("%s: Energy_Bins set to %d\n",__FUNCTION__,Energy_Bins_user);
+            UsingDefaultBinning=false;
+      }
+      
       if (ShowLogo) {
                                   printf("Data Files Energy: (%.1f-%.1f)MeV - %d bins\n",Energy_Min_datafiles,Energy_Max_datafiles,Energy_Bins_datafiles);
-         if (UsingDefaultBinning) printf("User is using the above energy configuration\n");
+         if (UsingDefaultBinning) printf("User is using the default (shown above) energy configuration\n");
    	 else                     printf("User's Energy:     (%.1f-%.1f)MeV - %d bins\n",Energy_Min_user,Energy_Max_user,Energy_Bins_user);
       }
       
       float FT1ZenithTheta_Cut_datafiles;
       sscanf(fResidualOverExposure->Get("FT1ZenithTheta_Cut")->GetTitle(),"%f",&FT1ZenithTheta_Cut_datafiles);
       if (FT1ZenithTheta_Cut<=0) FT1ZenithTheta_Cut=FT1ZenithTheta_Cut_datafiles;
-      else if (fabs(FT1ZenithTheta_Cut-FT1ZenithTheta_Cut_datafiles)>0.1) {
+      else if (fabs(FT1ZenithTheta_Cut-FT1ZenithTheta_Cut_datafiles)>0.1 && ShowLogo) {
           printf("%s: WARNING: You are overriding the default FT1ZenithTheta_Cut (%.1fdeg). New value is %.0fdeg. Note: BKG Estimates do not include albedos.\n", __FUNCTION__,FT1ZenithTheta_Cut_datafiles,FT1ZenithTheta_Cut);
-	  UsingDefaultBinning=false;
       }	     
 
-      if (ShowLogo) printf("Data Files FT1ZenithTheta_Cut: %.1fdeg\n",FT1ZenithTheta_Cut);
+      if (ShowLogo) printf("Data Files FT1ZenithTheta_Cut: %.1fdeg\n",FT1ZenithTheta_Cut_datafiles);
       
       float aversion=atof(fResidualOverExposure->Get("version")->GetTitle());
       if (aversion<Residuals_version) {
@@ -137,8 +146,7 @@ StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposu
           RatiovsTime.push_back((TH1F*)fCorrectionFactors->Get(name));
       }
    }
-   else {
-   }
+   
 }
 
 
