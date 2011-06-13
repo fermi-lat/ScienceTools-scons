@@ -1,4 +1,5 @@
-// $Header$
+//author vlasisva@gmail.com
+//$Header$
 #include "BackgroundEstimator/GANGSTER.h"
 #include "TFile.h"
 #include "TH1F.h"
@@ -22,8 +23,8 @@ int GANGSTER::MakeGtLikeTemplate(float gtlike_ROI, string GRB_DIR, string DATACL
  TFile * fEstParticles[3];
  
  //Create and read estimated background component files
- if (Est->FillBackgroundHist(GRB_DIR, &hFlatROI,TOOLS::Get("GRB_RA"),TOOLS::Get("GRB_DEC"),2,1,verbosity)) return -1; //only gamma
- if (Est->FillBackgroundHist(GRB_DIR, &hFlatROI,TOOLS::Get("GRB_RA"),TOOLS::Get("GRB_DEC"),2,2,verbosity)) return -1; //CR + extragalactic
+ if (Est->FillBackgroundHist(GRB_DIR, &hFlatROI,TOOLS::Get("GRB_RA"),TOOLS::Get("GRB_DEC"),1,verbosity)) return -1; //only gamma
+ if (Est->FillBackgroundHist(GRB_DIR, &hFlatROI,TOOLS::Get("GRB_RA"),TOOLS::Get("GRB_DEC"),2,verbosity)) return -1; //CR + extragalactic
  for (int iParType=0;iParType<2;iParType++) {//here open only the two components (do not open the total root file since it is for a 95% ROI instead of flat gtlike one)
       sprintf(name,"%s/%s_bkg_%.0f_%.0f_%s.root",GRB_DIR.c_str(),Est->DataClass.c_str(),ENERGY_MIN_DEFAULT,ENERGY_MAX_DEFAULT,BKG_COMPONENT[iParType]);
       fEstParticles[iParType]= TFile::Open(name);

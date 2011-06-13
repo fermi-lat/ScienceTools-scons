@@ -1,5 +1,5 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
-// $Header$
+//$Header$
 #ifndef _BackgroundEstimator_H
 #define _BackgroundEstimator_H
 
@@ -21,7 +21,7 @@ class BackgroundEstimator{
     int Make_Background_Map(string FT1_FILE, string FT2File, string GRB_DIR, double Burst_t0, double Burst_Dur,const double Iterations, int verbosity=1, bool Calc_Residual=true); 
 
     ///Integrate a background map over the ROI to produce the final bkg estimate
-    int FillBackgroundHist(string GRB_DIR, TH1F * hROI, double par1, double par2, int CoordType, short int type, int verbosity=0);
+    int FillBackgroundHist(string GRB_DIR, TH1F * hROI_Max, double RA_BURST, double DEC_BURST, short int type, int verbosity=0, TH1F* hROI_Min=0, TH1F * hCtsvsEnergy_Est=0);
 
     ///Min and max energy in MeV of the datafiles
     double Energy_Min_datafiles, Energy_Max_datafiles;

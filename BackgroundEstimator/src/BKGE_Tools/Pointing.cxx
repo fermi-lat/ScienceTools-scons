@@ -1,5 +1,5 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
-// $Header$
+//$Header$
 #include "BackgroundEstimator/BKGE_Tools.h"
 #include "TLine.h"
 
@@ -134,7 +134,7 @@ TCanvas * TOOLS::MakePointingPlots(double PreTime, double PostTime, double GRB_t
 }
 
 
-void TOOLS::GetThetaPhi(float &theta, float &phi, float &ZTheta, double MET, string FT2_FILE, float GRB_RA, float GRB_DEC) {
+void TOOLS::GetThetaPhi(double &theta, double &phi, double &ZTheta, double MET, string FT2_FILE, float GRB_RA, float GRB_DEC) {
   if (GRB_RA<-400)  GRB_RA=TOOLS::Get("GRB_RA");
   if (GRB_DEC<-400) GRB_DEC=TOOLS::Get("GRB_DEC");
 

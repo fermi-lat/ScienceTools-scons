@@ -1,5 +1,6 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
-// $Header$
+//$Header$
+
 #ifndef _BKGE_Tools_H
 #define _BKGE_Tools_H
 
@@ -81,11 +82,11 @@ namespace TOOLS{
     //void MakeLightcurve(double par1, double par2, int CoordType, double T_ZERO, float DT, float TimeBinSize, float ROI_RADIUS, string FitsDir, string DataClass);
     ///Average the exposure over an ROI and save it in hExposure
     void CalcExposure(TFile * fResults, float L_BURST, float B_BURST, float FT1ZenithTheta_Cut, TH1F * hExposure, string GRB_DIR, int verbosity);
-    int Make_Burst_Plots(string DataClass, string FT1_FILE, string GRB_DIR, float FT1ZenithTheta_Cut, double par1,double par2, int CoordType, double GRB_t0, double Burst_Dur, TH1F* hROI, short int verbosity );
+    int Make_Burst_Plots(string DataClass, string FT1_FILE, string GRB_DIR, float FT1ZenithTheta_Cut, double RA_BURST, double DEC_BURST, double GRB_t0, double Burst_Dur, TH1F* hROI_Max, short int verbosity=1, TH1F * hROI_Min=0, TH1F * hCtsvsEnergy_copy=0);
 
 
     ///Integrate a skymap that shows ev/sr over an ROI to produce events in the ROI
-    double Integrate(TH2F * hMap, float L_BURST, float B_BURST, float ROI_RADIUS, string MAPNAME="");
+    double Integrate(TH2F * hMap, float L_BURST, float B_BURST, float ROI_RADIUS_MAX, float ROI_RADIUS_MIN=0, string MAPNAME="");
 
     void PlotBand(float MinEnergy,float PeakEnergy, float MaxEnergy, float a,float b,double IntFlux);
 
@@ -93,7 +94,7 @@ namespace TOOLS{
     int Make_Plots(double PreTime, double PostTime, double Burst_t0, string Filename, string FT2_FILE, int verbosity=1);
 
     ///Get theta phi and zenith theta coordinates
-    void GetThetaPhi(float &theta, float &phi, float &ZTheta, double MET, string FT2_FILE, float RA=-999, float DEC=-999);
+    void GetThetaPhi(double &theta, double &phi, double &ZTheta, double MET, string FT2_FILE, float RA=-999, float DEC=-999);
     ///Generates plots of theta and phi vs time for the source
     TCanvas* MakePointingPlots(double PreTime, double PostTime, double Burst_t0, double RA, double DEC, string FT2_FILE);
     ///Return EarthAzimuth angle of coordinate RA/DEC

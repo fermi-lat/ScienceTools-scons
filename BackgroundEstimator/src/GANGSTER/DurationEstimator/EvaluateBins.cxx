@@ -1,5 +1,5 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
-// $Header$
+//$Header$
 #include "BackgroundEstimator/DurationEstimator.h"
 
 //returns 0 if ok, -1 if fail, -2/-3 if non-significant signal,-4 if started out of FOV, +5 if stopped because out of FOV
@@ -12,12 +12,8 @@ int DurationEstimator::EvaluateBins_Coarse(vector <TH1F*> &hROI, vector <double>
 
  TRandom t;
  t.SetSeed(0);
- char timedata_file[1000];
- sprintf(timedata_file,"/tmp/timedata_temp_%.0f",t.Uniform()*10000);
- if (verbosity>3) printf("timedatafile=%s\n",timedata_file);
  /////////////////////////////////////////////////////
 
- char name[1000];
  double offset_start=0,dt;
  vector <double> DT_HALF,TMIDDLE; 
  vector <double> IntDet,IntBkg,IntDiff,Flux,Effective_Area,Dets,Bkgs,Bkgs_Err,Flux_Err_Up,Flux_Err_Down;
@@ -41,7 +37,7 @@ int DurationEstimator::EvaluateBins_Coarse(vector <TH1F*> &hROI, vector <double>
     if (verbosity>1) printf("MET=%lf tstart=%f tstop=%f\n",GRB_TRIGGER_TIME+offset_start,offset_start,offset_start+dt);
  
     //Check if burst observable ok at the beginning of the interval
-    float theta0,ztheta0,phi;
+    double theta0,ztheta0,phi;
     TOOLS::GetThetaPhi(theta0,phi,ztheta0,GRB_TRIGGER_TIME+offset_start, FT2_FILE, -999,-999);
     if (theta0>75 || ztheta0>90 || theta0<0) {
         if (verbosity>0) printf ("%s: Burst is out of FOV (theta=%f) or occulted by the earth (ztheta=%f) or in SAA at time offset %f.",__FUNCTION__,theta0,ztheta0,offset_start);
@@ -105,7 +101,7 @@ int DurationEstimator::EvaluateBins_Coarse(vector <TH1F*> &hROI, vector <double>
     //if not then set dt to the point that it just crossed the boundaries. Proceed with the calculation. 
     //If JumpGTIs==false then at the next iteration, the starting-time-check code above should trigger and stop the calculation.
     for (float adt=1;adt<=dt;adt+=2) {
-	float theta1,ztheta1,phi;	
+	double theta1,ztheta1,phi;	
         TOOLS::GetThetaPhi(theta1,phi,ztheta1,GRB_TRIGGER_TIME+offset_start+adt,FT2_FILE, -999,-999);
         if (theta1>75 || ztheta1>90 || theta1<0) {
             if (verbosity>1) printf("%s: Burst is out of FOV (theta_1=%f) or occulted by the earth (ztheta_1=%.0f) or LAT in SAA at offset=%f (offset_planned=%f).\n ",__FUNCTION__,theta1,ztheta1,offset_start+adt,offset_start+dt);
@@ -116,7 +112,9 @@ int DurationEstimator::EvaluateBins_Coarse(vector <TH1F*> &hROI, vector <double>
     ////////////////////////////////////////
     
 //   if (CalculateBackground(verbosity)!=0){ offset_start+=dt; continue;}
-    int result=GANGSTER::CalculateBackground(name, GRB_TRIGGER_TIME+offset_start,dt,FT1_FILE,FT2_FILE, DATACLASS, MIN_ENERGY, MAX_ENERGY, 0, FT1ZenithTheta_Cut, verbosity);
+    char Interval_name[1000];
+    sprintf(Interval_name,"%.2f_%.2f",offset_start,offset_start+dt);
+    int result=GANGSTER::CalculateBackground(Interval_name, GRB_TRIGGER_TIME+offset_start,dt,FT1_FILE,FT2_FILE, DATACLASS, MIN_ENERGY, MAX_ENERGY, 0, FT1ZenithTheta_Cut, verbosity);
     /*
     if (result==1){
         printf("%s: We reached the end of the GTI. Will stop the calculation here (offset=%f). It is possible that the emission continues well after this point.\n",__FUNCTION__,offset_start);
@@ -129,12 +127,13 @@ int DurationEstimator::EvaluateBins_Coarse(vector <TH1F*> &hROI, vector <double>
         status=-1;
         break;
     }
-    sprintf(name,"%.2f_%.2f",offset_start,offset_start+dt);
-    if (GANGSTER::PlotBackground(name, GRB_TRIGGER_TIME+offset_start,dt,FT1_FILE,FT2_FILE, DATACLASS, MIN_ENERGY, MAX_ENERGY, -1, FT1ZenithTheta_Cut, 0,verbosity)=="")   { break;}
+
+    if (GANGSTER::PlotBackground(Interval_name, GRB_TRIGGER_TIME+offset_start,dt,FT1_FILE,FT2_FILE, DATACLASS, MIN_ENERGY, MAX_ENERGY, -1, FT1ZenithTheta_Cut, 0,verbosity)=="")   { break;}
 
     char GRB_DIR[1000];
     sprintf(GRB_DIR,"%s/Bkg_Estimates/%.2f_%.2f",(TOOLS::GetS("OUTPUT_DIR")).c_str(),offset_start,offset_start+dt);
 
+    char name[1000];
     sprintf(name,"%s/%s_sig_%.0f_%.0f.root",GRB_DIR,DATACLASS.c_str(),MIN_ENERGY,MAX_ENERGY);
     TFile *fs = TFile::Open(name);
     if (!fs) {printf("%s: Can't open file %s\n",__FUNCTION__,name); offset_start+=dt;continue;}
@@ -331,7 +330,6 @@ int DurationEstimator::EvaluateBins_Coarse(vector <TH1F*> &hROI, vector <double>
  
  cCoarse->Update();
  cExtras->Update();
- unlink(timedata_file);
  
  if (status==0) {
    if (Plateau_level<10) {
@@ -406,7 +404,7 @@ int DurationEstimator::EvaluateBins_Fine(vector <TH1F*> &hROI, vector <double>& 
      double bkg_fine = bkg_rate*dt; //amount of background for our fine interval
      if (bkg_fine<=0) {printf("%s: bkg negative at time %f-%f..Probably a high-theta observation. Interval skipped.\n",__FUNCTION__,atstart,atstart+dt);atstart+=dt; continue;} 
     
-     double sig_fine = (double) TOOLS::Make_Burst_Plots(DATACLASS, FT1_FILE,"",FT1ZenithTheta_Cut, RA,DEC,2,GRB_TRIGGER_TIME+atstart,dt,hROI[interval],0);
+     double sig_fine = (double) TOOLS::Make_Burst_Plots(DATACLASS, FT1_FILE,"",FT1ZenithTheta_Cut, RA,DEC,GRB_TRIGGER_TIME+atstart,dt,hROI[interval],0);
      //printf("%f %e %e %e %e %e\n",atstart,sig_fine,bkg_fine,bkg_rate,gBkgs->Eval(atstart+dt/2,0,"S"),gBkgs->Eval(atstart+dt/2));
      TSTOP_fine.push_back(atstart+dt);
      TMIDDLE_fine.push_back(atstart+dt/2);

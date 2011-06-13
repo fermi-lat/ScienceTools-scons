@@ -1,5 +1,5 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
-// $Header$
+//$Header$
 #include "BackgroundEstimator/BackgroundEstimator.h"
 #include "TGraph.h"
 
@@ -9,7 +9,7 @@
 //0 all good
 
 //type 1=Galactic Gammas, 2=CR+ExtraG, 3=both
-int BackgroundEstimator::FillBackgroundHist(string GRB_DIR, TH1F * hROI, double par1, double par2, int CoordType, short int type, int verbosity) {
+int BackgroundEstimator::FillBackgroundHist(string GRB_DIR, TH1F * hROI_Max, double RA_BURST, double DEC_BURST, short int type, int verbosity, TH1F* hROI_Min, TH1F * hCtsvsEnergy_Est) {
   string ResultsFile = GRB_DIR+"/"+DataClass+"_BackgroundMaps.root";
   TFile * fResults = TFile::Open(ResultsFile.c_str());
   if (!fResults || fResults->GetNkeys()==0) {
@@ -24,33 +24,21 @@ int BackgroundEstimator::FillBackgroundHist(string GRB_DIR, TH1F * hROI, double 
        return -1;
   }
 
-  if (fabs(pow(10,hROI->GetXaxis()->GetXmin())-Energy_Min_user)>0.1 || fabs(pow(10,hROI->GetXaxis()->GetXmax())-Energy_Max_user)>0.1 || hROI->GetNbinsX()!=Energy_Bins_user) {
-     printf("%s: Different energy configuration between hROI (%f/%f/%d) and user-passed values (%f/%f/%d) \n",__FUNCTION__,
-         pow(10,hROI->GetXaxis()->GetXmin()),pow(10,hROI->GetXaxis()->GetXmax()),hROI->GetNbinsX(),Energy_Min_user,Energy_Max_user,Energy_Bins_user);
+  if (fabs(pow(10,hROI_Max->GetXaxis()->GetXmin())-Energy_Min_user)>0.1 || fabs(pow(10,hROI_Max->GetXaxis()->GetXmax())-Energy_Max_user)>0.1 || hROI_Max->GetNbinsX()!=Energy_Bins_user) {
+     printf("%s: Different energy configuration between hROI_Max (%f/%f/%d) and user-passed values (%f/%f/%d) \n",__FUNCTION__,
+         pow(10,hROI_Max->GetXaxis()->GetXmin()),pow(10,hROI_Max->GetXaxis()->GetXmax()),hROI_Max->GetNbinsX(),Energy_Min_user,Energy_Max_user,Energy_Bins_user);
     return -1;
   }
 
 
-  TH1F hBkg = TH1F("hCtsvsEnergy_Est","Background Estimate",hROI->GetNbinsX(),hROI->GetXaxis()->GetXmin(),hROI->GetXaxis()->GetXmax());
+  TH1F hBkg = TH1F("hCtsvsEnergy_Est","Background Estimate",hROI_Max->GetNbinsX(),hROI_Max->GetXaxis()->GetXmin(),hROI_Max->GetXaxis()->GetXmax());
   hBkg.GetXaxis()->SetTitle("log_{10}	(Energy/MeV)");
   hBkg.GetYaxis()->SetTitle("Events/bin");
 
-  double L_BURST,B_BURST,RA_BURST,DEC_BURST;
-  if (CoordType==1)  { //galactic coordinates
-    L_BURST=par1;
-    B_BURST=par2;
-    TOOLS::unGalactic(L_BURST,B_BURST,&RA_BURST,&DEC_BURST);
-    if (verbosity>1) printf("%s: Calculating background around location (L,B)=(%.2f,%.2f)deg\n",__FUNCTION__,L_BURST,B_BURST);
-  }
-  else if (CoordType==2) {//equatorial coordinates
-      RA_BURST =par1;
-      DEC_BURST=par2;
-      TOOLS::Galactic(RA_BURST,DEC_BURST,&L_BURST,&B_BURST);
-      if (verbosity>1) printf("%s: Calculating background around location (RA,Dec)=(%.2f,%.2f)deg\n",__FUNCTION__,RA_BURST,DEC_BURST);
-  }
+  double L_BURST,B_BURST;
+  TOOLS::Galactic(RA_BURST,DEC_BURST,&L_BURST,&B_BURST);
 
   if (L_BURST>180) L_BURST-=360;
-
 
   TH2F * hMap[Energy_Bins_datafiles+2];
 
@@ -82,6 +70,7 @@ int BackgroundEstimator::FillBackgroundHist(string GRB_DIR, TH1F * hROI, double 
   bool OutOfFOV=false;
   TGraph gSpectralTemplate;
   TH1F hBkg_old = TH1F("hbkg_Old","hbkg_old",Energy_Bins_datafiles,log10(Energy_Min_datafiles),log10(Energy_Max_datafiles));
+  if (verbosity>=5) printf("%s: Default binning: %d\n",__FUNCTION__,UsingDefaultBinning);
   if (!UsingDefaultBinning) {
         double BKG_old[Energy_Bins_datafiles],E_old[Energy_Bins_datafiles];
 
@@ -132,7 +121,9 @@ int BackgroundEstimator::FillBackgroundHist(string GRB_DIR, TH1F * hROI, double 
   }
   else if (UsingDefaultBinning) {
       for (int i_new=1;i_new<=hBkg.GetNbinsX();i_new++) {  //Loop over new energy bins
-          double BKG = TOOLS::Integrate(hMap[i_new], L_BURST, B_BURST, hROI->GetBinContent(i_new))*GimmeCorrectionFactor(i_new,MET);
+          double BKG;
+          if (!hROI_Min) BKG = TOOLS::Integrate(hMap[i_new], L_BURST, B_BURST, hROI_Max->GetBinContent(i_new))*GimmeCorrectionFactor(i_new,MET);
+          else           BKG = TOOLS::Integrate(hMap[i_new], L_BURST, B_BURST, hROI_Max->GetBinContent(i_new),hROI_Min->GetBinContent(i_new))*GimmeCorrectionFactor(i_new,MET);
           if (BKG<=0 && type!=1) {
               printf("%s: A bkg bin (%d) was negative or zero. Setting it to the value of the previous bin.\n",__FUNCTION__,i_new);
               BKG=hBkg.GetBinContent(i_new-1);
@@ -154,12 +145,14 @@ int BackgroundEstimator::FillBackgroundHist(string GRB_DIR, TH1F * hROI, double 
 
          for (int ibin_old = bin_min_Old;ibin_old<=bin_max_Old;ibin_old++) {
                //printf("%d %f %f\n",ibin_old,pow(10,bin_lE_min),pow(10,bin_lE_max));
-               double BKG_WHOLE_OLD_BIN = TOOLS::Integrate(hMap[ibin_old], L_BURST, B_BURST, hROI->GetBinContent(i_new));
+               double BKG_WHOLE_OLD_BIN;
+               if (!hROI_Min) BKG_WHOLE_OLD_BIN=TOOLS::Integrate(hMap[ibin_old], L_BURST, B_BURST, hROI_Max->GetBinContent(i_new));
+               else           BKG_WHOLE_OLD_BIN=TOOLS::Integrate(hMap[ibin_old], L_BURST, B_BURST, hROI_Max->GetBinContent(i_new),hROI_Min->GetBinContent(i_new));
                BKG_WHOLE_OLD_BIN*=GimmeCorrectionFactor(ibin_old,MET);
                double bin_lE_min_old = hBkg_old.GetXaxis()->GetBinLowEdge(ibin_old)
                      ,bin_lE_max_old = hBkg_old.GetXaxis()->GetBinUpEdge(ibin_old);
                //printf("ibin_old %d %f %f new :%d %f %f BKG_WHOLE=%e ROI=%.1e\n",ibin_old,bin_lE_min_old,bin_lE_max_old,
-               //                                          i_new,bin_lE_min, bin_lE_max,BKG_WHOLE_OLD_BIN,hROI->GetBinContent(i_new));
+               //                                          i_new,bin_lE_min, bin_lE_max,BKG_WHOLE_OLD_BIN,hROI_Max->GetBinContent(i_new));
             //see if we have a subset or the whole bin
                if (bin_lE_min_old>=bin_lE_min && bin_lE_max_old<=bin_lE_max) {
                    //printf("whole bin\n");
@@ -211,53 +204,58 @@ int BackgroundEstimator::FillBackgroundHist(string GRB_DIR, TH1F * hROI, double 
      }
   }
    
+  if (GRB_DIR!="") {
 
-
-  string bkgtype;
-  if      (type==1) bkgtype="_GALGAMMAS";
-  else if (type==2) bkgtype="_CR_EGAL";
-  else if (type==3) bkgtype="";
-  char OutputFilename[1000];
-  sprintf(OutputFilename,"%s/%s_bkg_%.0f_%.0f%s.root",GRB_DIR.c_str(),DataClass.c_str(),pow(10,hROI->GetXaxis()->GetXmin()),pow(10,hROI->GetXaxis()->GetXmax()),bkgtype.c_str());
+     string bkgtype;
+     if      (type==1) bkgtype="_GALGAMMAS";
+     else if (type==2) bkgtype="_CR_EGAL";
+     else if (type==3) bkgtype="";
+     char OutputFilename[1000];
+     sprintf(OutputFilename,"%s/%s_bkg_%.0f_%.0f%s.root",GRB_DIR.c_str(),DataClass.c_str(),pow(10,hROI_Max->GetXaxis()->GetXmin()),pow(10,hROI_Max->GetXaxis()->GetXmax()),bkgtype.c_str());
    
-  TFile * fBkg = new TFile(OutputFilename,"RECREATE");
-  TH1F * hExposure = (TH1F*)hROI->Clone("hExposure");
-  hExposure->GetXaxis()->SetTitle("log_{10}(Energy/MeV)");
-  hExposure->GetYaxis()->SetTitle("Exposure (cm^{2} sec)");
-  hExposure->SetTitle("Exposure");
-  TOOLS::CalcExposure(fResults, L_BURST,B_BURST, FT1ZenithTheta_Cut, hExposure, GRB_DIR, verbosity);
-  hExposure->Write();
-  hExposure->Delete();
-  hBkg.Write();
-  hROI->Write("hROI");
-  gSpectralTemplate.Write("gSpectralTemplate");
+     TFile * fBkg = new TFile(OutputFilename,"RECREATE");
+     TH1F * hExposure = (TH1F*)hROI_Max->Clone("hExposure");
+     hExposure->GetXaxis()->SetTitle("log_{10}(Energy/MeV)");
+     hExposure->GetYaxis()->SetTitle("Exposure (cm^{2} sec)");
+     hExposure->SetTitle("Exposure");
+     TOOLS::CalcExposure(fResults, L_BURST,B_BURST, FT1ZenithTheta_Cut, hExposure, GRB_DIR, verbosity);
+     hExposure->Write();
+     hExposure->Delete();
+     hBkg.Write();
+     hROI_Max->Write("hROI_Max");
+     gSpectralTemplate.Write("gSpectralTemplate");
 
-  sprintf(name,"RA/DEC %.3f %.3f",RA_BURST,DEC_BURST);
-  TNamed Data = TNamed("Localization_Data",name);
-  Data.Write();
+     sprintf(name,"RA/DEC %.3f %.3f",RA_BURST,DEC_BURST);
+     TNamed Data = TNamed("Localization_Data",name);
+     Data.Write();
 
-  ((TNamed*)fResults->Get("Estimator_Version"))->Write();
-  ((TNamed*)fResults->Get("DataFiles_Version"))->Write();
-  ((TNamed*)fResults->Get("FT1ZenithTheta_Cut"))->Write();
-  ((TNamed*)fResults->Get("Time_Data"))->Write();
-  ((TNamed*)fResults->Get("Energy_Data"))->Write();
+     ((TNamed*)fResults->Get("Estimator_Version"))->Write();
+     ((TNamed*)fResults->Get("DataFiles_Version"))->Write();
+     ((TNamed*)fResults->Get("FT1ZenithTheta_Cut"))->Write();
+     ((TNamed*)fResults->Get("Time_Data"))->Write();
+     ((TNamed*)fResults->Get("Energy_Data"))->Write();
 
-  fBkg->Close();
-  fResults->Close();
+     fBkg->Close();
+  }
+     fResults->Close();
 /*
   //Some diagnostic stuff
   for (int i=1;i<=Energy_Bins_datafiles;i++) {
     sprintf(name,"%s/integratedmap_%d.root",GRB_DIR.c_str(),i);
-    double bkg= Integrate(hMap[i], L_BURST, B_BURST, hROI->GetBinContent(i),string(name));
+    double bkg= Integrate(hMap[i], L_BURST, B_BURST, hROI_Max->GetBinContent(i),string(name));
     hBkg->SetBinContent(i,bkg);
     printf("old %d %f\n",i,bkg);
   }
   sprintf(name,"%s/bkg_orig.root",GRB_DIR.c_str());
   TFile * fbkg_orig = new TFile(name,"RECREATE");
   hBkg.Write();
-  hROI->Write();
+  hROI_Max->Write();
   fbkg_orig->Close();  
 */
+
+ if (hCtsvsEnergy_Est) {
+    for (int i=1;i<=hBkg.GetNbinsX();i++) hCtsvsEnergy_Est->SetBinContent(i,hBkg.GetBinContent(i));
+ }
  return 0;
 
 }

@@ -1,12 +1,12 @@
 // Author: Vlasios Vasileiou <vlasisva@gmail.com>
-// $Header$
+//$Header$
 #include "BackgroundEstimator/BKGE_Tools.h"
 #include "rootIrfLoader/rootIrfLoader/Psf.h"
 #include "rootIrfLoader/rootIrfLoader/Aeff.h"
 #include <algorithm>
 
 void TOOLS::CalculatePSF(TH1F * hROI, double MET, string FT2_FILE, string DATACLASS, float Containment, float MaxRadius) {
-  float theta,phi,ztheta;
+  double theta,phi,ztheta;
   GetThetaPhi(theta,phi,ztheta,MET,FT2_FILE);
   if (theta>70) {
     printf("%s: Theta too high (%f). Calculating PSF for theta=70deg\n",__FUNCTION__,theta);

@@ -1,31 +1,17 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
-// $Header$
+//$Header$
 #include "BackgroundEstimator/BKGE_Tools.h"
 #include "TGraphAsymmErrors.h"
 
-int TOOLS::Make_Burst_Plots(string DataClass, string FT1_FILE, string GRB_DIR, float FT1ZenithTheta_Cut, double par1, double par2, int CoordType, double GRB_t0, double Burst_Dur, TH1F* hROI, short int verbosity ) {
-  const double ENERGY_MIN=hROI->GetXaxis()->GetXmin();
-  const double ENERGY_MAX=hROI->GetXaxis()->GetXmax();
+int TOOLS::Make_Burst_Plots(string DataClass, string FT1_FILE, string GRB_DIR, float FT1ZenithTheta_Cut, double RA_BURST, double DEC_BURST, double GRB_t0, double Burst_Dur, TH1F* hROI_Max, short int verbosity, TH1F* hROI_Min, TH1F * hCtsvsEnergy_copy) {
+  const double ENERGY_MIN=hROI_Max->GetXaxis()->GetXmin();
+  const double ENERGY_MAX=hROI_Max->GetXaxis()->GetXmax();
 
   char name[1000];
   double Burst_t1 = GRB_t0 + Burst_Dur;
   int MinCTBClassLevel  =GetCTBClassLevel(DataClass);
   int ConversionType    =GetConversionType(DataClass);
   string ConversionName = GetConversionName(DataClass);
-
-  double L_BURST,B_BURST,RA_BURST,DEC_BURST;
-  if (CoordType==1)  { //galactic coordinates
-    L_BURST=par1;
-    B_BURST=par2;
-    unGalactic(L_BURST,B_BURST,&RA_BURST,&DEC_BURST);
-    if (verbosity>1) printf("%s: Making plots around location (L,B)=(%.2f,%.2f)deg\n",__FUNCTION__,L_BURST,B_BURST);
-  }
-  else if (CoordType==2) {//equatorial coordinates
-      RA_BURST =par1;
-      DEC_BURST=par2;
-      Galactic(RA_BURST,DEC_BURST,&L_BURST,&B_BURST);
-      if (verbosity>1) printf("%s: Making plots around location (RA,Dec)=(%.2f,%.2f) (L/B)=(%.2f,%.2f)deg\n",__FUNCTION__,par1,par2,L_BURST,B_BURST);
-  }
 
   vector <string> FT1FILES;
   if (FT1_FILE[0] == '@') {
@@ -38,17 +24,22 @@ int TOOLS::Make_Burst_Plots(string DataClass, string FT1_FILE, string GRB_DIR, f
 
   gROOT->cd("/");
   int iebin;
-  const int Energy_Bins_NEW = hROI->GetNbinsX();
-  const double Energy_Min_NEW = hROI->GetXaxis()->GetXmin();
-  const double Energy_Max_NEW = hROI->GetXaxis()->GetXmax();
+  const int Energy_Bins_NEW = hROI_Max->GetNbinsX();
+  const double Energy_Min_NEW = hROI_Max->GetXaxis()->GetXmin();
+  const double Energy_Max_NEW = hROI_Max->GetXaxis()->GetXmax();
 
   int TrueEvents[Energy_Bins_NEW+2];
   memset(TrueEvents,0,sizeof(int)*(Energy_Bins_NEW+2));
   astro::SkyDir SCBurst = astro::SkyDir(RA_BURST, DEC_BURST ,astro::SkyDir::EQUATORIAL);
   astro::SkyDir SCEvent;
 
-  float radius[Energy_Bins_NEW+2];
-  for (int i=1;i<=Energy_Bins_NEW;i++) radius[i] = hROI->GetBinContent(i)* DEG_TO_RAD;
+  float radius_max[Energy_Bins_NEW+2],radius_min[Energy_Bins_NEW+2];
+  for (int i=1;i<=Energy_Bins_NEW;i++) {
+       radius_max[i] = hROI_Max->GetBinContent(i)* DEG_TO_RAD;
+       if (hROI_Min) radius_min[i] = hROI_Min->GetBinContent(i)* DEG_TO_RAD;
+       else radius_min[i]=0;
+       //printf("%d %f-%f\n",i,radius_min[i],radius_max[i]);
+  }
 
   TH1F * hCtsvsEnergy = (TH1F*)gROOT->Get("hCtsvsEnergy_Burst");
   if (hCtsvsEnergy) delete hCtsvsEnergy;
@@ -108,18 +99,24 @@ int TOOLS::Make_Burst_Plots(string DataClass, string FT1_FILE, string GRB_DIR, f
          double EvAngDistance = SCBurst.difference(SCEvent);
          if (EvAngDistance>TMath::Pi()) EvAngDistance=TMath::Pi()-EvAngDistance;
 
-         iebin=hROI->FindBin(FT1Energy);
+         iebin=hROI_Max->FindBin(FT1Energy);
 
          //printf("%f %d %f\n",FT1Energy,iebin,EvAngDistance);
-         //printf("%f \n",radius[iebin]);
-         //printf("time=%.1lf E=%.2f coo=%4.1f/%4.1f \tdistance=%f \tradius=%f\n",PtTime,FT1Energy,FT1L,FT1B,EvAngDistance/DEG_TO_RAD,radius[iebin]/DEG_TO_RAD);
-         if (EvAngDistance>radius[iebin]) continue;
+         //printf("%f \n",radius_max[iebin]);
+         //printf("time=%.1lf E=%.2f coo=%4.1f/%4.1f \tdistance=%f \tradius=%f\n",PtTime,FT1Energy,FT1L,FT1B,EvAngDistance/DEG_TO_RAD,radius_max[iebin]/DEG_TO_RAD);
+         //printf("%f %f %f\n",EvAngDistance,radius_max[iebin],radius_min[iebin]);
+         if (EvAngDistance>radius_max[iebin] || EvAngDistance<radius_min[iebin]) continue; 
 
          TrueEvents[iebin]++;
-         //printf("%f (RA/DEC)=(%3.1f,%3.1f) %f %f ztheta=%f dist=%f rad=%f\n",PtTime,FT1RA,FT1DEC,RA_BURST,DEC_BURST,FT1ZenithTheta,EvAngDistance/DEG_TO_RAD,radius[iebin]/DEG_TO_RAD);
+         //printf("%f (RA/DEC)=(%3.1f,%3.1f) %f %f ztheta=%f dist=%f rad=%f\n",PtTime,FT1RA,FT1DEC,RA_BURST,DEC_BURST,FT1ZenithTheta,EvAngDistance/DEG_TO_RAD,radius_max[iebin]/DEG_TO_RAD);
      }
      fits_close_file(fptr, &status);
   } 
+
+  for (int ie=0;ie<=Energy_Bins_NEW+1;ie++) {
+      hCtsvsEnergy->SetBinContent(ie,TrueEvents[ie]);
+      if (hCtsvsEnergy_copy) hCtsvsEnergy_copy->SetBinContent(ie,TrueEvents[ie]);
+  }
 
   if (GRB_DIR!="") { //Save stuff 
      float SigError[2][Energy_Bins_NEW];
@@ -127,8 +124,6 @@ int TOOLS::Make_Burst_Plots(string DataClass, string FT1_FILE, string GRB_DIR, f
      float EnergyData[3][Energy_Bins_NEW];
      float TrueEvents_middlebins[Energy_Bins_NEW];
      for (int ie=0;ie<Energy_Bins_NEW+2;ie++) {
-        hCtsvsEnergy->SetBinContent(ie,TrueEvents[ie]);
-    
         if (ie>0 && ie<=Energy_Bins_NEW) { //no under/overflows
               TrueEvents_middlebins[ie-1]=TrueEvents[ie];
               EnergyData[0][ie-1]=hCtsvsEnergy->GetXaxis()->GetBinCenter(ie)-hCtsvsEnergy->GetXaxis()->GetBinLowEdge(ie);
@@ -149,7 +144,8 @@ int TOOLS::Make_Burst_Plots(string DataClass, string FT1_FILE, string GRB_DIR, f
      TFile * fResults = new TFile(ResultsFilename,"RECREATE");
 
      gSignal->Write("gSignal");
-     hROI->Write("hROI");
+     hROI_Max->Write("hROI");
+     if (hROI_Min) hROI_Min->Write("hROI_Min");
      hCtsvsEnergy->Write();
 
      sprintf(name,"RA/DEC %.3f %.3f",RA_BURST,DEC_BURST);

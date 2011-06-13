@@ -1,18 +1,17 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
-// $Header$
+//$Header$
 #include "BackgroundEstimator/BKGE_Tools.h"
 
 //Integrate a background map over an ROI
 //hMap is a map of the background per solid angle
-double TOOLS::Integrate(TH2F * hMap, float L_BURST, float B_BURST, float ROI_RADIUS, string MAPNAME) {
+double TOOLS::Integrate(TH2F * hMap, float L_BURST, float B_BURST, float ROI_RADIUS_MAX, float ROI_RADIUS_MIN, string MAPNAME) {
 
   if (!hMap) {printf("%s: hMAP is null!!\n",__FUNCTION__); exit(1);}
   TH2F* hIntegrantMap=NULL;
   TFile * fout = NULL;
   if (MAPNAME!="") {
      fout = new TFile(MAPNAME.c_str(),"RECREATE");
-     hIntegrantMap = new TH2F("hIntegrantMap","hIntegrantMap",hMap->GetNbinsX(),-180,180,hMap->GetNbinsY(),-90,90);
-       
+     hIntegrantMap = new TH2F("hIntegrantMap","hIntegrantMap",hMap->GetNbinsX(),-180,180,hMap->GetNbinsY(),-90,90);       
   }
 
   B_BURST+=90;  //move from latitude theta range (-90,90) to CLHEP theta range (0,180) 
@@ -24,12 +23,13 @@ double TOOLS::Integrate(TH2F * hMap, float L_BURST, float B_BURST, float ROI_RAD
   const CLHEP::Hep3Vector gBurst_Perp = gBurst.orthogonal();
 
   float Integrator_dtheta=0.25;
-  if (ROI_RADIUS<0.5) Integrator_dtheta=0.01;
+  if (ROI_RADIUS_MAX<0.5) Integrator_dtheta=0.01;
 
-  ROI_RADIUS*=DEG_TO_RAD;
+  ROI_RADIUS_MAX*=DEG_TO_RAD;
+  ROI_RADIUS_MIN*=DEG_TO_RAD;
   double sum=0;
-  
-  for (double theta_local=0;theta_local<ROI_RADIUS;theta_local+=Integrator_dtheta*DEG_TO_RAD) {
+
+  for (double theta_local=ROI_RADIUS_MIN;theta_local<ROI_RADIUS_MAX;theta_local+=Integrator_dtheta*DEG_TO_RAD) {
       //dphi step changes with theta so that we don't sample as finely near the pole (theta=0)
       //this can be optimized more
       double dphi = (1 - 0.49*(1.0-pow(cos(theta_local),2))) *DEG_TO_RAD;

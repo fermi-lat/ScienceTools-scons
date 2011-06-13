@@ -1,5 +1,5 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
-// $Header$
+//$Header$
 #include "BackgroundEstimator/GANGSTER.h"
 #include "TGraph.h"
 #include "TPaveText.h"
@@ -161,7 +161,7 @@ string GANGSTER::PlotBackground(string Interval_name, double MET, double DURATIO
               TOOLS::CalculatePSF(hROI[iEst],MET,FT2_FILE,DATACLASS);
           }
           if (hROI[iEst]->GetBinContent(1)<0) { BkgOK=false; break;}
-          if (Est[iEst]->FillBackgroundHist(GRB_DIR, hROI[iEst],RA,DEC,2,3,verbosity)) {BkgOK=false; break; }//both
+          if (Est[iEst]->FillBackgroundHist(GRB_DIR, hROI[iEst],RA,DEC,3,verbosity)) {BkgOK=false; break; }//both
        }
 
        if (ftemp) fclose(ftemp);
@@ -180,7 +180,7 @@ string GANGSTER::PlotBackground(string Interval_name, double MET, double DURATIO
           }
           hExp[iEst] = (TH1F*)fEst[iEst]->Get("hExposure");
 
-          hROIEst[iEst] = (TH1F*)fEst[iEst]->Get("hROI");
+          hROIEst[iEst] = (TH1F*)fEst[iEst]->Get("hROI_Max");
           hEst[iEst] = (TH1F*)fEst[iEst]->Get("hCtsvsEnergy_Est");
           if (!hEst[iEst]) {
              printf("no hCtsvsEnergy histogram in %s\n Delete that file and run again.",name); 
@@ -259,7 +259,7 @@ string GANGSTER::PlotBackground(string Interval_name, double MET, double DURATIO
 	    OverwriteResults=true;
             //Check if we have to make a listfile
             if (FT1_FILE[0]=='^') FT1_FILE="@"+string(GRB_DIR)+"/fitslist.txt";
-            TOOLS::Make_Burst_Plots(DATACLASS, FT1_FILE, GRB_DIR,FT1ZenithTheta_Cut,RA,DEC,2,MET,DURATION,hROIEst[iEst],0);
+            TOOLS::Make_Burst_Plots(DATACLASS, FT1_FILE, GRB_DIR,FT1ZenithTheta_Cut,RA,DEC,MET,DURATION,hROIEst[iEst],0);
        }
        if (ftemp) fclose (ftemp);
 
