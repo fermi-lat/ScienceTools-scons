@@ -739,7 +739,7 @@ class RadialModel(RadialImage):
         return 2*N.pi*(1-N.cos(radius_in_radians))
 
     @staticmethod
-    def get_nside(size,npix,num_points_per_ring=2000):
+    def get_nside(size,npix,num_points_per_ring=200):
         """ Solid angle of each healpix pixel is 4pi/(12*ns^2)
             Solid angel of each ring is pi*(size)^2/npix
             Want size of each ring > num_points_per_ring*size of each healpix (so that
