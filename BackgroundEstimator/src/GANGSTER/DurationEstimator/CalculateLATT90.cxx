@@ -215,7 +215,7 @@ int DurationEstimator::CalculateLATT90(){
 bool DurationEstimator::FindPlateau(TGraph* gIntDiff, TGraph* gIntDet, TGraphErrors *gIntBkg, double &Plateau_start, double & Plateau_stop, const float min_plateau_duration, float GTI_Offset_0, bool quick) {
  double SigmaLim=2.0;
  if (Plateau_start<0) SigmaLim=-Plateau_start;
- #define DRAW
+
  #ifdef DRAW
  TLine l;
  cCoarse->cd(2);
