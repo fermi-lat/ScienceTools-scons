@@ -87,7 +87,7 @@ class SpectralModelFitter(object):
                 xlyl[i] -= xdelt
                 xlyl[j] -= ydelt
 
-                vals = N.asarray([mf(xhyh,m,*args),-mf(xhyl,m,*args),-mf(xlyh,m,*args),mf(xlyl,m,*args)])
+                #vals = N.asarray([mf(xhyh,m,*args),-mf(xhyl,m,*args),-mf(xlyh,m,*args),mf(xlyl,m,*args)])
                 #if i == j:
                 #print (N.abs(vals).max() - N.abs(vals).min())
 
