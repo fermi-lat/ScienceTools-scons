@@ -959,7 +959,7 @@ class ROIAnalysis(object):
 
     @decorate_with(roi_plotting.ROISmoothedModel,append_init=True)
     def plot_model(self,filename="model_counts.png",**kwargs):
-        ROISmoothedModel(self,**kwargs).show(filename=filename)
+        roi_plotting.ROISmoothedModel(self,**kwargs).show(filename=filename)
 
 load=ROIAnalysis.load
 
