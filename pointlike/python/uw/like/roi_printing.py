@@ -42,7 +42,7 @@ def print_summary(roi, sdir=None, galactic=False, maxdist=5, title=None, print_a
     colnames = tuple(colstring.split())
     n = len(colnames)-1
     print ('%-13s'+n*'%10s')% colnames
-    sources = [s for s in self.get_sources() if hasattr(s,'skydir')]
+    sources = self.get_sources()
     sources.sort(key=lambda s:s.skydir.difference(self.roi_dir))
     for ps in sources:
         sdir = ps.skydir
