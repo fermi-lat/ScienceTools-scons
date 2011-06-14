@@ -182,7 +182,7 @@ class ROIAnalysis(object):
                 return self.dsm,which-len(self.psm.models)-1
         elif which is None:
             # Get closest to ROI center.
-            sources=self.get_sources()[0]
+            source=self.get_sources()[0]
             if isinstance(source,PointSource):
                 return self.psm,N.where(self.psm.point_sources==source)[0][0]
             else:
