@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<EventClass version="P7V6">
+  <EventMap mapName="FT1EventClass" altName="EVENT_CLASS">
+    <EventCategory name="Transient" bit="0">
+      <ShortCut>CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1</ShortCut>
+      <Comment>Loose cuts appropriate for transient source analysis</Comment>
+    </EventCategory>
+    <EventCategory name="DoNotUse" bit="1">
+      <ShortCut>CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 2</ShortCut>
+      <Comment>Do not Use this class</Comment>
+    </EventCategory>
+    <EventCategory name="Source" bit="2">
+      <ShortCut>CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1 &amp;&amp; 
+                CalTrackDoca &lt; sqrt(100. + (15000000/max(CTBBestEnergy,10.))) &amp;&amp;
+                CTBAllProb &gt; max(0.7,0.996-1.4e-4*pow(max(5.4-CTBBestLogEnergy,0),5.3)) &amp;&amp;
+                CTBBestEnergyProb &gt; 0.1 &amp;&amp; (CTBWasLkHd==0 || CTBBestEnergyProb &gt; 0.3) &amp;&amp;
+                CTBCALGamProb &gt; 0. &amp;&amp; CTBTKRGamProb &gt; 0. &amp;&amp;
+                CTBCORE &gt; max(0.025,0.025+0.175*(3.-CTBBestLogEnergy)) &amp;&amp;
+                CalTrackAngle * min(1., sqrt(CTBBestEnergy/20000)) &lt; 0.35 &amp;&amp;
+                CalTrSizeTkrT100 &gt; 17.2-8.6342e-7*pow(max(10.83-CTBBestLogEnergy,0),7.229) &amp;&amp;
+                (TkrNumTracks &gt; 1||(Tkr1Chisq &gt; 0.4 &amp;&amp; (CTBBestEnergy &lt; 100 || CalTransRms &gt; 15-12.5*max(2.4-CTBBestLogEnergy,0.))))
+      </ShortCut>
+      <Comment>Cuts appropriate for point source analysis</Comment>
+    </EventCategory>
+    <EventCategory name="Clean" bit="3">
+      <ShortCut>CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1 &amp;&amp; 
+                CalTrackDoca &lt; sqrt(100. + (15000000/max(CTBBestEnergy,10.))) &amp;&amp;
+                CTBAllProb &gt; max(0.7,0.996-1.4e-4*pow(max(5.4-CTBBestLogEnergy,0),5.3)) &amp;&amp;
+                CTBBestEnergyProb &gt; 0.1 &amp;&amp; (CTBWasLkHd==0 || CTBBestEnergyProb &gt; 0.3) &amp;&amp;
+                CTBCALGamProb &gt; 0. &amp;&amp; CTBTKRGamProb &gt; 0. &amp;&amp;
+                CTBCORE &gt; max(0.025,0.025+0.175*(3.-CTBBestLogEnergy)) &amp;&amp;
+                CalTrackAngle * min(1., sqrt(CTBBestEnergy/20000)) &lt; 0.35 &amp;&amp;
+                CalTrSizeTkrT100 &gt; 17.2-8.6342e-7*pow(max(10.83-CTBBestLogEnergy,0),7.229) &amp;&amp;
+                (TkrNumTracks &gt; 1||(Tkr1Chisq &gt; 0.4 &amp;&amp; (CTBBestEnergy &lt; 100 || CalTransRms &gt; 15-12.5*max(2.4-CTBBestLogEnergy,0.)))) &amp;&amp;
+                CalTrSizeTkrT100 &lt; 32+0.349*pow(max(6.0-CTBBestLogEnergy,0),4.27) &amp;&amp;
+                Tkr1ToTTrAve &gt; (0.9+0.143*pow(max(CTBBestLogEnergy-1.0,0.),1.46)) &amp;&amp;
+                Tkr1ToTTrAve &lt; (2.4+0.277*pow(max(CTBBestLogEnergy-1.0,0),2.28)) &amp;&amp;
+                (abs(AcdTkr1ActiveDist-40) &gt; 5 || Tkr1SSDVeto &gt; 0) &amp;&amp;
+                ((AcdTkr1ActiveDist &gt; 0)*AcdTkr1ActDistTileEnergy) &lt; max(0.2,0.2+0.5*(CTBBestLogEnergy-4.0)) &amp;&amp;
+                ((CTBBestLogEnergy &lt; 3||CalCfpTmax &lt; min(11.2,4.5+2.75*max(CTBBestLogEnergy-3.,0.))) &amp;&amp; (CTBBestLogEnergy &lt; 3.5 || CalCfpTmax &gt; 2+2.25*max(CTBBestLogEnergy-3.,0))) &amp;&amp;
+                (Tkr1FirstLayer &gt; 5||CTBBestEnergy &gt; 1000||(1.+0.085*(Tkr1FirstLayer-2))*CalEnergyCorr/CTBBestEnergy &gt; max(0.5,0.85-0.35*max(2.7-CTBBestLogEnergy,0)))
+      </ShortCut>
+      <Comment>Cuts appropriate for diffuse source analysis</Comment>
+    </EventCategory>
+    <EventCategory name="UltraClean" bit="4">
+      <ShortCut>CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1 &amp;&amp; 
+                CalTrackDoca &lt; sqrt(100. + (15000000/max(CTBBestEnergy,10.))) &amp;&amp;
+                CTBAllProb &gt; max(0.7,0.996-1.4e-4*pow(max(5.4-CTBBestLogEnergy,0),5.3)) &amp;&amp;
+                CTBBestEnergyProb &gt; 0.1 &amp;&amp; (CTBWasLkHd==0 || CTBBestEnergyProb &gt; 0.3) &amp;&amp;
+                CTBCALGamProb &gt; 0. &amp;&amp; CTBTKRGamProb &gt; 0. &amp;&amp;
+                CTBCORE &gt; max(0.025,0.025+0.175*(3.-CTBBestLogEnergy)) &amp;&amp;
+                CalTrackAngle * min(1., sqrt(CTBBestEnergy/20000)) &lt; 0.35 &amp;&amp;
+                CalTrSizeTkrT100 &gt; 17.2-8.6342e-7*pow(max(10.83-CTBBestLogEnergy,0),7.229) &amp;&amp;
+                (TkrNumTracks &gt; 1||(Tkr1Chisq &gt; 0.4 &amp;&amp; (CTBBestEnergy &lt; 100 || CalTransRms &gt; 15-12.5*max(2.4-CTBBestLogEnergy,0.)))) &amp;&amp;
+                CalTrSizeTkrT100 &lt; 32+0.349*pow(max(6.0-CTBBestLogEnergy,0),4.27) &amp;&amp;
+                Tkr1ToTTrAve &gt; (0.9+0.143*pow(max(CTBBestLogEnergy-1.0,0.),1.46)) &amp;&amp;
+                Tkr1ToTTrAve &lt; (2.4+0.277*pow(max(CTBBestLogEnergy-1.0,0),2.28)) &amp;&amp;
+                (abs(AcdTkr1ActiveDist-40) &gt; 5 || Tkr1SSDVeto &gt; 0) &amp;&amp;
+                ((AcdTkr1ActiveDist &gt; 0)*AcdTkr1ActDistTileEnergy) &lt; max(0.2,0.2+0.5*(CTBBestLogEnergy-4.0)) &amp;&amp;
+                ((CTBBestLogEnergy &lt; 3||CalCfpTmax &lt; min(11.2,4.5+2.75*max(CTBBestLogEnergy-3.,0.))) &amp;&amp; (CTBBestLogEnergy &lt; 3.5 || CalCfpTmax &gt; 2+2.25*max(CTBBestLogEnergy-3.,0))) &amp;&amp;
+                (Tkr1FirstLayer &gt; 5||CTBBestEnergy &gt; 1000||(1.+0.085*(Tkr1FirstLayer-2))*CalEnergyCorr/CTBBestEnergy &gt; max(0.5,0.85-0.35*max(2.7-CTBBestLogEnergy,0))) &amp;&amp;
+                ((Tkr1FirstLayer &gt; 5 &amp;&amp; (CTBAllProb &gt; 0.996-0.0394*pow(max(3.26-CTBBestLogEnergy,0),1.78)))||(Tkr1FirstLayer &lt;= 5 &amp;&amp; (CTBAllProb &gt; 0.996-0.006*pow(max(4.0-CTBBestLogEnergy,0),3.0))))
+      </ShortCut>
+      <Comment>Cuts appropriate for isotropic analysis</Comment>
+    </EventCategory>
+    <EventCategory name="S2" bit="8">
+      <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 1) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
+      <Comment>Extremely loose cuts appropriate for GRB analysis.</Comment>
+    </EventCategory>
+    <EventCategory name="NoCal" bit="9">
+      <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 2) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
+      <Comment>Events with no calorimeter data.</Comment>
+    </EventCategory>
+    <EventCategory name="S3" bit="10">
+      <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 4) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
+      <Comment>Very loose cuts appropriate for GRB analysis</Comment>
+    </EventCategory>
+    <EventCategory name="CalOnly" bit="11">
+      <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 8) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
+      <Comment>Events where only calorimeter information was used in analysis.</Comment>
+    </EventCategory>
+    <EventCategory name="S3NoCal" bit="12">
+      <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 6) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
+      <Comment>Events in either S3 or NoCal.</Comment>
+    </EventCategory>
+    <EventCategory name="S2NoCal" bit="13">
+      <ShortCut>((TMath::Nint(CTBExtPhotonClassBit) &amp; 7) != 0) || (CTBParticleType==0 &amp;&amp; CTBClassLevel &gt;= 1)</ShortCut>
+      <Comment>Events in either S3, S2 or NoCal.</Comment>
+    </EventCategory>
+    <EventCategory name="LLE" bit="14">
+      <ShortCut>FswGamStatus &gt; 0 &amp;&amp; TkrNumTracks &gt; 0 &amp;&amp; (GltEngine==6 || GltEngine==7)</ShortCut>
+      <Comment>Usable Events for Transient Analysis</Comment>
+    </EventCategory>
+    <EventCategory name="LLESSDVeto" bit="15">
+      <ShortCut>FswGamStatus &gt; 0 &amp;&amp; TkrNumTracks &gt; 0 &amp;&amp; (GltEngine==6 || GltEngine==7) &amp;&amp; Tkr1SSDVeto &gt; 0</ShortCut>
+      <Comment>LLE Selection and least one missing at front of track</Comment>
+    </EventCategory>
+  </EventMap>
+  <EventMap mapName="EvtCREventClass" altName="CR_EVENT_CLASS">
+    <EventCategory name="LEE" bit="0">
+      <ShortCut>CTBParticleType==1 &amp;&amp; CTBClassLevel &lt;= 2</ShortCut>
+      <Comment>Cuts for Low Energy Electron Analysis</Comment>
+    </EventCategory>
+    <EventCategory name="HEE" bit="1">
+      <ShortCut>CTBParticleType==1 &amp;&amp; CTBClassLevel &gt;= 2</ShortCut>
+      <Comment>Cuts for High Electron Analysis</Comment>
+    </EventCategory>
+    <EventCategory name="ProtonHiAccept" bit="8">
+      <ShortCut>CTBParticleType==2 &amp;&amp; CTBClassLevel &gt;= 1</ShortCut>
+      <Comment>High acceptence proton sample</Comment>
+    </EventCategory>
+    <EventCategory name="ProtonHiPure" bit="9">
+      <ShortCut>CTBParticleType==2 &amp;&amp; CTBClassLevel &gt;= 2</ShortCut>
+      <Comment>High purity proton sample</Comment>
+    </EventCategory>
+    <EventCategory name="ProtonHiQual" bit="10">
+      <ShortCut>CTBParticleType==2 &amp;&amp; CTBClassLevel &gt;= 3</ShortCut>
+      <Comment>High purity and high quality reconstruction proton sample</Comment>
+    </EventCategory>
+    <EventCategory name="Alpha" bit="16">
+      <ShortCut>CTBParticleType==3 &amp;&amp; CTBClassLevel &gt;= 1</ShortCut>
+      <Comment>Alpha Particles</Comment>
+    </EventCategory>
+    <EventCategory name="Heavy" bit="20">
+      <ShortCut>CTBParticleType==4 &amp;&amp; CTBClassLevel &gt;= 1</ShortCut>
+      <Comment>Heavy Ions</Comment>
+    </EventCategory>
+  </EventMap>
+</EventClass>
+
+
+
+
+
+
+
+
