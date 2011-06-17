@@ -414,8 +414,7 @@ if not baseEnv.GetOption('help'):
         for name in pruned:
             package = re.compile('-.*$').sub('',name)
             if not name in ['build', 'CVS', 'src', 'cmt', 'mgr', 'data', 'xml',
-                            'pfiles', 'doc', 'bin', 'lib','containerSettings',
-                            baseSettingsDir, supersedeSettingsDir]:
+                            'pfiles', 'doc', 'bin', 'lib']:
                 fullpath = os.path.join(directory,name)
                 if os.path.isdir(fullpath):
                     directories.append(fullpath)
