@@ -46,14 +46,6 @@ def memoize(function):
             return val
     return decorated_function
 
-def defaults_to_kwargs(obj,defaults):
-    """ Take in a defaults list (used by keyword_options) and an object 
-        which recognizes the keyword_options. A dictionary is
-        returned with each of the defaults pointing to the value
-        found in the object. This is useful for recreating 
-        the object. """
-    return dict([[i[0],getattr(obj,i[0])] for i in defaults if isinstance(i,list) or isinstance(i,tuple)])
-
 
 class ROIImage(object):
     """ This object is suitable for creating a SkyImage object
@@ -195,7 +187,7 @@ class ROITSMapImage(ROIImage):
 
     def fill(self):
 
-        tscalc = TSCalc(self.roi,**defaults_to_kwargs(self,TSCalc.defaults))
+        tscalc = TSCalc(self.roi,**keyword_options.defaults_to_kwargs(self,TSCalc))
         temp=TSCalcPySkyFunction(tscalc)
         self.skyimage.fill(temp.get_pyskyfun())
 
@@ -533,8 +525,8 @@ class ResidualImage(ROIImage):
     def __init__(self,roi,**kwargs):
         super(ResidualImage,self).__init__(roi,**kwargs)
 
-        self.model=ModelImage(self.roi,**defaults_to_kwargs(self,ModelImage.defaults))
-        self.counts=CountsImage(self.roi,**defaults_to_kwargs(self,CountsImage.defaults))
+        self.model=ModelImage(self.roi,**keyword_options.defaults_to_kwargs(self,ModelImage))
+        self.counts=CountsImage(self.roi,**keyword_options.defaults_to_kwargs(self,CountsImage))
 
         self.image = self.counts.image - self.model.image
         SmoothedImage.add_to_skyimage(self.skyimage,self.image)
@@ -910,7 +902,7 @@ class SmoothedImage(ROIImage):
 
         # Make an image, bigger then the desired one, by twice
         # the smooth radius in each direction.
-        self.pass_dict=defaults_to_kwargs(self,self.object.defaults)
+        self.pass_dict=keyword_options.defaults_to_kwargs(self,self.object)
         self.pass_dict['size']=self.size+self.kernelsize*self.pixelsize
         self.smoothed=self.object(self.roi,**self.pass_dict)
 
