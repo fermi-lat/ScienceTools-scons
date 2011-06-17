@@ -321,7 +321,8 @@ def sum_ltcubes(files,outputfile = 'summed_ltcube.fits'):
             f = pf.open(file)
             h = f['EXPOSURE'].header
             for key in header.keys():
-                assert(h[key]==header[key])
+                if key not in ['DATE','DATE-OBS','DATE-END','TSTART','TSTOP']:
+                   assert(h[key]==header[key])
             exposures+=[f['EXPOSURE'].data.field('COSBINS')]
         except AssertionError:
             print('Inconsistent header values, file %s, keyword %s'%(file,key))
