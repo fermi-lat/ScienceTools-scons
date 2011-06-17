@@ -90,7 +90,13 @@ def defaults_to_kwargs(obj,default_object):
 def change_defaults(defaults,key,value):
     """ Change a defaults dictionary's key 'key'
         to have a default value 'value'. """
+    if isinstance(defaults,tuple):
+        defaults=list(defaults)
         
     for i,default in enumerate(defaults):
         if default[0] == key:
+            if isinstance(default,tuple): 
+                defaults[i]=list(defaults[i])
+                default=defaults[i]
             default[1] = value
+    return defaults
