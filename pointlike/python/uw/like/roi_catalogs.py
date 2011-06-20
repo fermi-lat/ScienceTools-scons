@@ -7,6 +7,7 @@ author: Joshua Lande
 """
 import os
 import numpy as N
+from textwrap import dedent
 
 from pyfits import open
 from skymaps import SkyDir
@@ -33,6 +34,13 @@ class Catalog2FGL(PointSourceCatalog):
     @keyword_options.decorate(defaults)
     def __init__(self,catalog,**kwargs):
         keyword_options.process(self, kwargs)
+
+        if self.latextdir is None and \
+                (not os.environ.has_key('LATEXTDIR') or not os.path.exists(os.environ['LATEXTDIR'])):
+                    raise Exception(dedent("""
+                            Since environment variable $LATEXTDIR does 
+                            not exist, the paramter latextdir must
+                            be passed into this object."""))
 
         if self.latextdir: os.environ['LATEXTDIR']=self.latextdir
 
