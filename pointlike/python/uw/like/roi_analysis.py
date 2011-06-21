@@ -667,6 +667,11 @@ class ROIAnalysis(object):
         sources.sort(key=lambda s:s.skydir.difference(self.roi_dir))
         return sources
 
+    def get_extended_sources(self):
+        sources=[i for i in self.dsm.diffuse_sources.tolist() if hasattr(i,'skydir')]
+        sources.sort(key=lambda s:s.skydir.difference(self.roi_dir))
+        return sources
+
     def get_names(self):
         return N.append(self.psm.names,self.dsm.names).tolist()
 
