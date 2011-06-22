@@ -437,9 +437,9 @@ class Model_to_XML(object):
             if model.name == 'Constant': my_xml_name='ConstantValue'
             else:
                 for l_xml_name,v in self.x2m.modict.iteritems():
-                    if v == model.name:
+                    if v == type(model):
                         my_xml_name = l_xml_name;break
-                if v != model.name:
+                if v != type(model):
                     raise Exception,'Unable to find an XML model for %s'%(model.name)
         self.update(my_xml_name,scaling=scaling)
 
