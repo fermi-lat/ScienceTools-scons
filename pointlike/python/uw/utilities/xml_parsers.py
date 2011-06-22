@@ -165,7 +165,7 @@ class XML_to_Model(object):
                 # Sanity check on validity of xml 
                 raise Exception('For source %s, %s parameter %s cannot be fit (must be free="0")' % (source_name,specname,p[0]))
 
-            model.__dict__[p[1]] = float(pdict['value'])
+            model.__dict__[p[1]] = float(pdict['value'])*float(pdict['scale'])
 
         return model
 
