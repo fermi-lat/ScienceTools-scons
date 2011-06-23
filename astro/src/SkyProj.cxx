@@ -79,6 +79,9 @@ SkyProj::SkyProj(const std::string & fitsFile, const std::string & extension) {
 
    bool galactic;
    std::string ctype;
+
+   tol=0.00000001;
+
    header["CTYPE1"].get(ctype);
    if (ctype.substr(0, 2) == "RA") {
       galactic = false;
@@ -134,6 +137,8 @@ SkyProj::SkyProj(const std::string &fitsFile, int relax, int ctrl)
        numkeys, // number of keys (cards) in header
        nummore; // number of keys that can be added to header
    char *header(0); // string containing header
+
+   tol=0.00000001;
 
    fits_open_file(&fptr,fitsFile.c_str(),mode,&fstatus);
    fits_report_error(stderr, fstatus);
