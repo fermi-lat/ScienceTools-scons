@@ -270,7 +270,9 @@ Create a new PixelData instance, managing data and livetime.
 
             self._Data_setup(my_bins)
 
-            if not self.quiet: print 'loading %d FT1 file(s) %s...%s' % (len(self.ft1files), self.ft1files[0], self.ft1files[-1])
+            if not self.quiet: 
+                print 'loading %d FT1 file(s) %s...%s' % (len(self.ft1files), self.ft1files[0], self.ft1files[-1])
+                if self.event_class>-1: print 'selecting event_class %d' %self.event_class
             src_id = -1 if 'mc_src_id' not in self.__dict__ else self.mc_src_id
             data = pointlike.Data(self.ft1files,self.conv_type,self.tstart,self.tstop, src_id,'')
 
