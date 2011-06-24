@@ -26,10 +26,9 @@ class HParray(object):
     def getcol(self, type=np.float32): return np.asarray(self.vec, type)
     def skyfun(self, skydir):
         return self[Band(self.nside).index(skydir)]
+        
     def plot(self, title='', axes=None, fignum=30, ait_kw={}, **kwargs):
-        """ make an AIT skyplot of a HEALpix array
-        crec : array
-            must be sorted according to the HEALpix index
+        """ make an AIT skyplot from the array 
         title : string
             set the figure title
         ait_kw : dict
