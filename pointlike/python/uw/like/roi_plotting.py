@@ -1054,6 +1054,9 @@ class ROISignificance(object):
             label_sources=True, show_extension=True, extension_color='white'):
 
         sources = roi.get_sources()
+
+        if len(sources)<1: return
+
         ras = [source.skydir.ra() for source in sources]
         decs = [source.skydir.dec() for source in sources]
         
