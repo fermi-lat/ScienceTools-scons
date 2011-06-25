@@ -38,7 +38,7 @@ def print_summary(roi, sdir=None, galactic=False, maxdist=5, title=None, print_a
     if sdir is None: sdir = self.roi_dir
     if title is None: 
         title = self.name if hasattr(self,'name') else ''
-    print 90*'-', '\n\t Nearby point sources within %.1f degrees %s' % (maxdist,title)
+    print 90*'-', '\n\t Nearby sources within %.1f degrees %s' % (maxdist,title)
     colstring = 'name dist ra dec TS flux8 index beta cutoff'
     if galactic: colstring =colstring.replace('ra dec', 'l b')
     colnames = tuple(colstring.split())
