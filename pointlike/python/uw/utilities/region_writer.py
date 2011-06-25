@@ -46,7 +46,7 @@ def unparse_extension(spatial_model,extension_color=None,r68=False):
             return ["fk5; circle(%.4f, %.4f, %.4f) # %s" % \
                           (ra,dec,_,color) for _ in [frac*sigma,sigma]]
         else:    
-            return ["fk5; circle(%.4f, %.4f, %.4f) # %s Circle contaning 68 percent of the source." % \
+            return ["fk5; circle(%.4f, %.4f, %.4f) # %s Circle containing 68 percent of the source." % \
                           (ra,dec,sm.r68(),extra)]
 
     elif isinstance(sm,EllipticalSpatialModel):
