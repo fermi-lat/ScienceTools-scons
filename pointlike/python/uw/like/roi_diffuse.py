@@ -7,6 +7,8 @@ author: Matthew Kerr
 """
 import sys
 import numpy as N
+import sys
+import numpy as N; np = N
 from uw.utilities.convolution import BackgroundConvolution
 from uw.utilities import keyword_options
 from skymaps import SkyIntegrator,Background,IsotropicSpectrum,DiffuseFunction
