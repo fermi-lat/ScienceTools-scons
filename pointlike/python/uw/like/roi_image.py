@@ -497,7 +497,7 @@ class ModelImage(ROIImage):
         if override_point_sources is None and override_diffuse_sources is None:
             return roi.dsm.bgmodels
         else:
-            mapper=get_default_diffuse_mapper(roi.sa,roi.roi_dir)
+            mapper=get_default_diffuse_mapper(roi.sa,roi.roi_dir,roi.quiet)
             if override_diffuse_sources is None:
                 return []
             elif not isinstance(override_diffuse_sources,collections.Iterable):

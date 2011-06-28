@@ -605,7 +605,7 @@ class ROIAnalysis(object):
 
              # convert DiffuseSource -> ROIDiffuseModel object
              if isinstance(source,DiffuseSource):
-                 diffuse_mapper = get_default_diffuse_mapper(self.sa,self.roi_dir)
+                 diffuse_mapper = get_default_diffuse_mapper(self.sa,self.roi_dir,self.quiet)
                  source=diffuse_mapper(source)
          else:
              raise Exception("Unable to add source %s. Only able to add PointSource, DiffuseSource, or ROIDiffuseModel objects.")
