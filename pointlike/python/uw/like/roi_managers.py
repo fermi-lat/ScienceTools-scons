@@ -10,7 +10,6 @@ import sys
 import numpy as N
 from skymaps import SkyDir,SkyIntegrator,Background
 from pointlike import DoubleVector
-from pointspec_helpers import get_default_diffuse_mapper
 from roi_diffuse import ROIDiffuseModel,DiffuseSource
 from Models import *
 from pypsf import *
