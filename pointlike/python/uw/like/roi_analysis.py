@@ -353,7 +353,7 @@ class ROIAnalysis(object):
 
     def _check_gradient(self):
         """ Determine if it's OK to use the gradient fitter."""
-        for model in self.psm.models + self.dsm.models:
+        for model in N.append(self.psm.models,self.dsm.models):
             if np.any(model.free) and (not hasattr(model,'gradient')):
                 return False
         return True
