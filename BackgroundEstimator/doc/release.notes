@@ -6,6 +6,7 @@
   $Id$
   EOH
 
+ BackgroundEstimator-00-01-01 29-Jun-2011    jrb readjustments in duration estimator for better Plateau finding (for Vlasios)
  BackgroundEstimator-00-01-00 13-Jun-2011    jrb first tag for BackgroundEstimator in its new home
        -- prior to move to GRBAnalysis-scons --
  BackgroundEstimator-00-00-02 04-May-2011 omodei Test to checkout release notes.
