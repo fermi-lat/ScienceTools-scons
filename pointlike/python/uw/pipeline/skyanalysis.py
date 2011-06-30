@@ -149,7 +149,7 @@ class SkyAnalysis(pointspec.SpectralAnalysis):
                     fit_emin=iterable_check(self.fit_emin), 
                     fit_emax=iterable_check(self.fit_emax),
                     quiet=self.quiet, 
-                    fit_kw = self.fit_kw,
+                    #fit_kw = self.fit_kw,
                     roi_kw = roi_kw)
         return r
 
