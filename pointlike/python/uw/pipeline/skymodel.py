@@ -282,8 +282,6 @@ class SkyModel(object):
 
 
         for s in globals:
-            dfile = os.path.expandvars(os.path.join('$FERMI','diffuse', s.name))
-            assert os.path.exists(dfile), 'file %s not found' % dfile
             prefix = s.name.split('_')[0]
             s.name, s.dmodel = prefix, self.diffuse_dict[prefix]
             s.smodel = s.model
