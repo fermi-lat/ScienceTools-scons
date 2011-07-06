@@ -337,10 +337,10 @@ class SpatialModel(object):
         a = eval(self.name+'(iscopy=True, **self.__dict__)') #create instance of same spectral model type
         
         a.p           = N.asarray(self.p,dtype=float).copy() #copy in parameters
-        a.free        = N.asarray(self.free,dtype=float).copy() 
+        a.free        = N.asarray(self.free,dtype=bool).copy() 
         a.param_names = N.asarray(self.param_names).copy() 
         a.limits      = N.asarray(self.limits,dtype=float).copy() 
-        a.log         = N.asarray(self.log,dtype=float).copy() 
+        a.log         = N.asarray(self.log,dtype=bool).copy() 
         a.steps       = N.asarray(self.steps,dtype=float).copy() 
 
         try: a.cov_matrix = self.cov_matrix.__copy__()
