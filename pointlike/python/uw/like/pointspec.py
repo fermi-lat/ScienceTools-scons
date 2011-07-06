@@ -309,14 +309,14 @@ class SpectralAnalysis(object):
             point_sources,diffuse_sources = cat.merge_lists(roi_dir,
                     self.maxROI+5 if catalog_include_radius is None else catalog_include_radius,
                     point_sources,diffuse_sources)
-        if point_sources == []:
+        if point_sources == [] and not self.quiet:
             print 'WARNING!  No point sources are included in the model.'
 
         # process diffuse models
         if diffuse_sources is not None and len(diffuse_sources) == 0:
             # try to use default
             diffuse_sources = get_default_diffuse(diffdir=diffdir)
-            if len(diffuse_sources) == 0:
+            if len(diffuse_sources) == 0 and not self.quiet:
                 print 'WARNING!  No diffuse sources are included in the model.'
         if diffuse_mapper is None:
             diffuse_mapper = get_default_diffuse_mapper(self,roi_dir,self.quiet)
