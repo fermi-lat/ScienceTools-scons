@@ -130,8 +130,7 @@ Optional keyword arguments:
         self.setp(index,value)
         
     def getp(self, i, internal=False):
-        """ get external value for parameter # i
-        """
+        """ get external value for parameter # i """
         i=self.mapper(i)
         return self._p[i] if internal else 10**(self._p[i])
     
@@ -146,11 +145,11 @@ Optional keyword arguments:
         self._p = t if internal else np.log10(t)
 
     def setp(self, i, par, internal=False):
-        """ set internal value, convert unless inte
+        """ set internal value, convert unless internal
         """
+        i=self.mapper(i)
         if not internal: 
             assert par>0, 'Model external parameter cannont be negative'
-        i=self.mapper(i)
         self._p[i] = par if internal else  np.log10(par)
         
     def get_parameters(self):
