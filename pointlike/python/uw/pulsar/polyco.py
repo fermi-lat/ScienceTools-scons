@@ -57,7 +57,7 @@ class PolycoEntry:
 class Polyco:
     def __init__(self, fname, psrname=None, recalc_polycos=True,mjd0=51544):
 
-        if fname.endswith( ".par" ):
+        if fname.endswith( ".par" ) or recalc_polycos:
             fname = self.gen_polycos(fname,recalc_polycos=recalc_polycos,mjd0=mjd0)
         
         VERBOSE= False
