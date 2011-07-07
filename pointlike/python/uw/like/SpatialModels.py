@@ -1044,7 +1044,7 @@ class SpatialMap(SpatialModel):
 
     def __init__(self,**kwargs):
 
-        if not hasattr(self,'kwargs'):
+        if not hasattr(kwargs,'file'):
             raise Exception("Object Template must be initialized with file=template.fits keyword.")
 
         super(SpatialMap,self).__init__(**kwargs)
