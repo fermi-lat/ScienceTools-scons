@@ -1059,11 +1059,13 @@ class ROISignificance(object):
 
         ras = [source.skydir.ra() for source in sources]
         decs = [source.skydir.dec() for source in sources]
-        
-        # plot sources
-        markersize=marker_scale*6
-        if white_edge: ax["fk5"].plot(ras,decs,'x',color='white',markersize=markersize+1,markeredgewidth=2,zorder=4)
-        ax["fk5"].plot(ras,decs,'x',color=color,markersize=markersize,zorder=5)
+
+        if show_sources:
+            
+            # plot sources
+            markersize=marker_scale*6
+            if white_edge: ax["fk5"].plot(ras,decs,'x',color='white',markersize=markersize+1,markeredgewidth=2,zorder=4)
+            ax["fk5"].plot(ras,decs,'x',color=color,markersize=markersize,zorder=5)
 
         if label_sources: 
             from matplotlib.patheffects import withStroke
