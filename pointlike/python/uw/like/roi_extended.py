@@ -332,7 +332,11 @@ Arguments:
 
             # Do the convolution here.
             sm.set_parameters(p=p,absolute=False)
+
+            temp=self.quiet;self.quiet=True
             self.initialize_counts(roi.bands)
+            self.quiet=temp
+
             roi.update_counts()
             # Note: roi.dsm.update_counts called by the fit function.
 
