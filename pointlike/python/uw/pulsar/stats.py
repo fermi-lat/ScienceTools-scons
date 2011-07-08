@@ -120,10 +120,6 @@ def z2mw(phases,weights,m=2):
        The user provides a list of weights.  In the case that they are
        well-distributed or assumed to be fixed, the CLT applies and the
        statistic remains calibrated.  Nice!
-
-       NB -- the phases must be uniformly distributed, i.e., have 0 mean
-       and a variance of 0.5.  Then, the 2nd central moment is just
-       0.5 * the expectation of the square of the weights.
     """
 
    phases = np.asarray(phases)*(2*np.pi) #phase in radians
