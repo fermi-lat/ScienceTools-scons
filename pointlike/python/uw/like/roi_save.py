@@ -70,7 +70,7 @@ def save(roi,filename):
 
     d['LATEXTDIR']=os.environ['LATEXTDIR'] if os.environ.has_key('LATEXTDIR') else None
 
-    cPickle.dump(d,open(filename,'w'))
+    cPickle.dump(d,open(os.path.expandvars(filename),'w'))
 
 def load(filename,**kwargs):
     """ Factory method to return a ROIAnalysis object
@@ -90,7 +90,7 @@ def load(filename,**kwargs):
               hasattr(ds.spatial_model,'skyfun') \
               and ds.spatial_model.skyfun is None 
               for ds in d['diffuse_sources']]):
-        d=cPickle.load(open(filename,'r'))
+        d=cPickle.load(open(os.path.expandvars(filename),'r'))
 
     from . pointspec import DataSpecification,SpectralAnalysis
     from . roi_analysis import ROIAnalysis
