@@ -54,6 +54,13 @@ class DiffuseSource(object):
         self.__dict__ = state
         self.dmodel = [ i[0](i[1]) if type(i)==tuple else i for i in self.dmodel]
 
+    def copy(self):
+        """ Make a copy of a diffuse source. """
+        return DiffuseSource(
+            name = self.name,
+            diffuse_model = self.dmodel,
+            scaling_model = self.smodel.copy())
+
 ###=========================================================================###
 class ROIDiffuseModel(object):
     """ Associate a SkySpectrum with a spectral model.
