@@ -198,6 +198,7 @@ if sys.platform == "win32":
         baseEnv.AppendUnique(CCFLAGS = "/O2")
 
     baseEnv.AppendUnique(LINKFLAGS = "/NODEFAULTLIB")
+    baseEnv.AppendUnique(LINKFLAGS = "/SUBSYSTEM:CONSOLE")
 
     # Disable compiler warning number 4812 having to do with
     # obsolete form of explicit constructor specialization
