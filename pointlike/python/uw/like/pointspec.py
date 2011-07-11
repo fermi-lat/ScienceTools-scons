@@ -290,7 +290,7 @@ class SpectralAnalysis(object):
         if not kwargs.has_key('quiet'): kwargs['quiet']=self.quiet 
         # determine ROI center
         if roi_dir is None:
-            roi_dir = self.roi_dir if len(point_sources)==0 else point_sources[0].skydir
+            roi_dir = self.roi_dir if hasattr(self,'roi_dir') else point_sources[0].skydir
         if roi_dir is None:
             raise Exception,'User must provide an ROI direction!  (See docstring.)'
 
