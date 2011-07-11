@@ -121,6 +121,7 @@ public:
                                  const astro::JulianDate & mission_start
                                  =astro::JulianDate(2001, 1, 1, 0));
 
+#ifndef SWIG
    /// @brief Add SkyDir to pixel index interface to SkyProj
    static void skyDir2pixel(const astro::SkyProj & proj,
                             const astro::SkyDir & dir,
@@ -130,7 +131,6 @@ public:
    static void pixel2SkyDir(const astro::SkyProj & proj, double i, double j,
                             astro::SkyDir & dir);
    
-#ifndef SWIG   
    /// @return The current time ascertained using the <ctime> standard
    /// library.
    static astro::JulianDate currentTime();
