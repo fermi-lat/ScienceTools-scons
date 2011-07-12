@@ -210,8 +210,10 @@ class PointlikeTest(unittest.TestCase):
         roi.fit(use_gradient=True)
 
         self.compare_model(es_fit,es_mc)
-
         compare_spatial_model(es_fit,es_mc,roi.lsigma)
+
+        roi.assertGreater(roi.TS(which='source'),25,'The source should be significant')
+        roi.assertGreater(roi.TS_ext(which='source'),25,'And significantly extended')
 
         es_mc.spatial_model.save_template('$SIMDIR/extended_template.fits')
 
@@ -227,6 +229,9 @@ class PointlikeTest(unittest.TestCase):
         roi.fit()
 
         self.compare_model(template_source,es_mc)
+
+        roi.assertGreater(roi.TS(which='source'),25,'Make sure these functions work similary with spatial_map')
+        roi.assertGreater(roi.TS_ext(which='source'),25,'ditto.')
 
 
     @unittest.skip("skip")
