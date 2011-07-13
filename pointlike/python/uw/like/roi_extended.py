@@ -333,18 +333,13 @@ Arguments:
             if bandfits:
                 ll=roi.bandFit(es)
             else:
-                roi.print_summary()
                 ll=roi.fit(estimate_errors=False,use_gradient=use_gradient)
-
-                roi.print_summary()
 
                 if ll < d['ll_best']:
                     prev_fit=roi.parameters().copy()
                     roi.set_parameters(d['best_spectral'].copy())
                     roi.__update_state__()
                     ll_alt=roi.fit(estimate_errors=False,use_gradient=use_gradient)
-
-                    roi.print_summary()
 
                     if ll_alt > ll: 
                         ll=ll_alt
@@ -357,8 +352,6 @@ Arguments:
                     roi.set_parameters(init_spectral.copy())
                     roi.__update_state__()
                     ll_alt=roi.fit(estimate_errors=False,use_gradient=use_gradient)
-
-                    roi.print_summary()
 
                     if ll_alt > ll: 
                         ll=ll_alt
