@@ -616,8 +616,7 @@ def parse_diffuse_sources(handler,diffdir=None):
                 spectral_model=xtm.get_model(spectral,name)
                 ds.append(ExtendedSource(name=name,
                                          model=spectral_model,
-                                         spatial_model=spatial_model,
-                                         leave_parameters=True))
+                                         spatial_model=spatial_model))
             else:
                 raise Exception('Diffuse spatial model "%s" not recognized' % spatial['type'])
     return list(ds)
