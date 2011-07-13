@@ -246,7 +246,7 @@ class CountsImage(ROIImage):
                    energy > back_emin and energy < back_emax:
                     good_photons.append(skydir)
 
-        return skydirs
+        return good_photons
 
     def fill(self):
         dirs = CountsImage.process_filedata(self.roi,self.selected_bands)
