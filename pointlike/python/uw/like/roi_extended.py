@@ -258,13 +258,13 @@ Arguments:
 
         # keep the roi quiet during fit, so lots of print is supressed during the iteration.
         roi.old_quiet = roi.quiet
-        roi.quiet = False
+        roi.quiet = True
 
         if roi.TS(which=self.name,quick=True,bandfits=bandfits) < 1:
             raise Exception("Unable to localize a source with initial TS<1")
 
         init_spectral = roi.parameters().copy()
-        init_spatial = sm.get_parameters(absolute=False)
+        init_spatial  = sm.get_parameters(absolute=False)
         ll_0 = 0
 
         # Fix scoping issue in likelihood_wrapper
