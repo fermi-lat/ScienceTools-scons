@@ -443,7 +443,7 @@ class DualLocalizer():
         ll=roi.fit(use_gradient=self.use_gradient,estimate_errors=False)
 
         if ll < self.ll_best:
-            prev = roi.parameters()
+            prev = roi.parameters().copy()
 
             roi.set_parameters(self.best_spectral.copy())
             roi.__update_state__()
@@ -453,11 +453,12 @@ class DualLocalizer():
             if ll_alt > ll: 
                 ll=ll_alt
             else: 
-                roi.set_parameters(prev)
+                roi.set_parameters(prev.copy())
                 roi.__update_state__()
 
         if ll < self.ll_0:
-            prev = roi.parameters()
+
+            prev = roi.parameters().copy()
 
             roi.set_parameters(self.init_spectral.copy())
             roi.__update_state__()
@@ -467,12 +468,12 @@ class DualLocalizer():
             if ll_alt > ll: 
                 ll=ll_alt
             else: 
-                roi.set_parameters(prev)
+                roi.set_parameters(prev.copy())
                 roi.__update_state__()
 
         if ll > self.ll_best: 
             self.ll_best = ll
-            self.best_spectral = roi.parameters()
+            self.best_spectral = roi.parameters().copy()
 
         if self.verbose: print 'd=%s f=%.1e, d2=%s, f=%.1e, dist=%.3f logL=%.3f dlogL=%.3f' % \
                 (rot_back_1, DualLocalizer.print_flux(self.p1,roi), 
@@ -511,7 +512,7 @@ class DualLocalizer():
 
         self.ll_0=self.ll_best=-1*roi.logLikelihood(roi.parameters())
 
-        self.init_spectral = self.best_spectral = roi.parameters()
+        self.init_spectral = self.best_spectral = roi.parameters().copy()
 
         old_quiet= roi.quiet
         roi.quiet=True
