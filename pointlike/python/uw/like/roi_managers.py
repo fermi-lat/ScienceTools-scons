@@ -350,6 +350,7 @@ class ROIDiffuseManager(ROIModelManager):
             band.bg_counts = N.delete(band.bg_counts,which)
             band.bg_pix_counts = N.delete(band.bg_pix_counts, which, axis=1)
 
+        self.update_counts(bands)
         return ops
 
     def zero_source(self, which, bands):
