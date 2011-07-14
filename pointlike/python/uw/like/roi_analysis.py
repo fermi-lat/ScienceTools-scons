@@ -125,7 +125,7 @@ class ROIAnalysis(object):
 
         for ct in [0,1]:
             if len([b for b in self.bands if b.ct==ct]) == 0:
-                print "Warning: For ct=%s, no photons are selected." % ct
+                print "Warning: No conversion type %s photons were selected." % ct
                 continue
             actual_emin=min(b.emin for b in self.bands if b.ct==ct)
             actual_emax=max(b.emax for b in self.bands if b.ct==ct)
