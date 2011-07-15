@@ -809,19 +809,49 @@ class CompositeModel(Model):
         self.models = models
         
         self.param_names = reduce(operator.add,[i.param_names for i in self.models])
-        self._p = 10**np.append(*[i._p for i in self.models])
-        self.n = np.asarray([len(i._p) for i in self.models])
         self.pretty_name = self.operator.join([i.pretty_name for i in self.models])
+
+        self.cov_matrix = np.zeros([self.npar,self.npar]) #default covariance matrix
+
+        # seems like a reasonable test
+        self.background  = np.any([i.background for i in self.models])
 
     @abstractmethod
     def __value__(e): 
         pass
 
+    @property
+    def n(self): 
+        return np.asarray([len(i._p) for i in self.models])
+
+    @property
+    def npar(self): 
+        return sum([len(i._p) for i in self.models])
+
+    @property
+    def _p(self): 
+        return np.append(*[i._p for i in self.models])
+
+    @_p.setter
+    def _p(self, value):
+        assert(len(self._p) == len(value))
+        for i in xrange(len(self.n)):
+            self.models[i]._p = value[counter:counter+self.n[i]]
+            counter += self.n[i]
+
+    @property
+    def free(self): 
+        return np.append(*[i.free for i in self.models])
+
+    @free.setter
+    def free(self, value):
+        assert(len(self.free) == len(value))
+        for i in xrange(len(self.n)):
+            self.models[i].free = value[counter:counter+self.n[i]]
+            counter += self.n[i]
+
     def __call__(self,e): 
         counter = 0
-        for i in xrange(len(self.n)):
-            self.models[i]._p = self._p[counter:counter+self.n[i]]
-            counter += self.n[i]
         return self.__value__(e)
 
 #===============================================================================================#
