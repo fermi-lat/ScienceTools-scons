@@ -117,17 +117,12 @@ class LCTemplate(object):
 
     def __call__(self,phases,ignore_cache=False,suppress_bg=False):
         n = self.norm()
-        """
-        if suppress_bg:
-            for prim in self.primitives:
-                prim.p[0] /= n
-        """
         rval = np.zeros_like(phases)
         for prim in self.primitives:
             #rval += prim.cache_vals if (prim.cache and not ignore_cache) else prim(phases)
             rval += prim(phases)
-        if suppress_bg: return rval/self.norm()
-        else          : return (1.-self.norm()) + rval
+        if suppress_bg: return rval/n
+        else          : return (1-n) + rval
         #return (1.-n) + rval
 
     def gradient(self,phases):
@@ -367,8 +362,8 @@ class WeightedLCFitter(UnweightedLCFitter):
          #guard against negative parameters
             return 2e20
         args[0].set_parameters(p)
-        #return -np.log(1+self.weights*(self.template(self.phases)-1)).sum()
-        return -np.log(1+self.weights*(self.template(self.phases,suppress_bg=True)-1)).sum()
+        return -np.log(1+self.weights*(self.template(self.phases)-1)).sum()
+        #return -np.log(1+self.weights*(self.template(self.phases,suppress_bg=True)-1)).sum()
 
 #=======================================================================#
 
