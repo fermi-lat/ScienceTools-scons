@@ -5,7 +5,6 @@
     """
 
 import numpy as N
-import glob
 from skymaps import SkyDir,CompositeSkySpectrum,DiffuseFunction,EffectiveArea,Exposure,IsotropicSpectrum,IsotropicPowerLaw
 from uw.like.Models import Model,Constant,PowerLaw,ExpCutoff,DefaultModelValues,LogParabola
 from roi_diffuse import DiffuseSource,ROIDiffuseModel_OTF
