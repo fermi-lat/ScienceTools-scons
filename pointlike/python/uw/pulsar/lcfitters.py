@@ -50,8 +50,8 @@ def prim_io(template):
 
     toks = [line.strip().split() for line in file(template) if len(line.strip()) > 0]
     if 'gauss' in toks[0]:     return read_gaussian(toks[1:])
-    elif 'kernel' in toks[0]:  return [LCKernelDensity(input_file=toks[0])]
-    elif 'fourier' in toks[0]: return [LCEmpiricalFourier(input_file=toks[0])]
+    elif 'kernel' in toks[0]:  return [LCKernelDensity(input_file=toks[1:])]
+    elif 'fourier' in toks[0]: return [LCEmpiricalFourier(input_file=toks[1:])]
     raise ValueError,'Template format not recognized!'
 
 
