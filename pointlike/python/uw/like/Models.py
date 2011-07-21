@@ -341,7 +341,7 @@ Optional keyword arguments:
 
     def copy(self):
         
-        a = eval(self.name)(iscopy=True, **self.__dict__) #create instance of same spectral model type
+        a = self.__class__(iscopy=True, **self.__dict__) #create instance of same spectral model type
         
         a._p = np.asarray(self._p).copy() #copy in log values
         a.free = np.asarray(self.free).copy()
