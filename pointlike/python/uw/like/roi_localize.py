@@ -245,8 +245,8 @@ def get_ellipse(roi):
         q=roi.qform.par
         d.update(
             ra=float(q[0]), dec=float(q[1]),
-            a=float(q[2]), b=float(q[3]),
-            ang=float(q[4]), qual=float(q[5])
+            a=float(q[3]), b=float(q[4]),
+            ang=float(q[5]), qual=float(q[6])
             )
     if hasattr(roi,'lsigma'): d['lsigma']=roi.lsigma
     return d
