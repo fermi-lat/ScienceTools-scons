@@ -240,7 +240,16 @@ def print_ellipse(roi, label=True, line=True):
 def get_ellipse(roi):
     """ Returns a dictionary specifying the elliptical 
         localiztion parameters. """
-    return dict(zip('ra dec a b ang qual'.split(),roi.qform.par[0:6]))
+    d={}
+    if hasattr(roi,'qform'):
+        q=roi.qform.par
+        d.update(
+            ra=float(q[0]), dec=float(q[1]),
+            a=float(q[2]), b=float(q[3]),
+            ang=float(q[4]), qual=float(q[5])
+            )
+    if hasattr(roi,'lsigma'): d['lsigma']=roi.lsigma
+    return d
 
 class ROILocalizerExtended(ROILocalizer):
 
