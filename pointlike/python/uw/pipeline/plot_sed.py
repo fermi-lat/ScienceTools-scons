@@ -206,7 +206,7 @@ class PlotSED(object):
         ## plot the curve
         axes.plot( dom, energy_flux_factor*m(dom)*dom**2, **kwargs)
         #butterfly if powerlaw
-        if butterfly and m.name=='PowerLaw':
+        if butterfly and m.name=='PowerLaw' or m.name=='LogParabola':
             # 'butterfly' region
             dom_r = np.array([dom[-i-1] for i in range(len(dom))]) #crude reversal.
             a,gamma = stat[0][:2]
@@ -224,11 +224,11 @@ class PlotSED(object):
                
     def __call__(self, model, name,
                 fignum=5, axes=None,
-                axis=None, #(1e2,1e6,1e-8,1e-2),
+                axis=None, #(1e2,1e6,1e-7,1e-2),
                 data_kwargs=dict(linewidth=2, color='k',),
                 fit_kwargs =dict(lw=2,        color='r',),
                 butterfly = True,
-                use_ergs = True,
+                #use_ergs = True,
                 outdir = None,
                 ):
         """Plot the SED
@@ -260,7 +260,7 @@ class PlotSED(object):
         axes.set_xscale('log')
         axes.set_yscale('log')
         if axis is None:
-            axis = (1e2,1e6,1e-13,1e-8) if use_ergs else (1e2,1e6,1e-8,1e-2)
+            axis = (1e2,1e6,1e-13,1e-8) if self.use_ergs else (1e2,1e6,1e-7,1e-2)
         axes.axis(axis)
         axes.grid(True)
         axes.set_autoscale_on(False)
@@ -274,11 +274,8 @@ class PlotSED(object):
 
         # the axis labels
         plt.ylabel(r'$\mathsf{Energy\ Flux\ (%s\ cm^{-2}\ s^{-1})}$' % energy_flux_unit)
-        if use_ergs:
-            plt.xlabel(r'$\mathsf{Energy\ (GeV)}$')
-            axes.set_xticklabels(['','1','10','100', ''])
-        else:
-            plt.xlabel(r'$\mathsf{Energy\ (MeV)}$')
+        plt.xlabel(r'$\mathsf{Energy\ (GeV)}$')
+        axes.set_xticklabels(['','1','10','100', ''])
         plt.title(name)
         
         
