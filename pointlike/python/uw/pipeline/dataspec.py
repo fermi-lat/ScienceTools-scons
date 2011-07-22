@@ -26,8 +26,11 @@ class DataSpecification(object):
                 # need a check, but will fail if need to glob
                 #assert os.path.exists(data[key]), 'DataSpec: file %s not found' % data[key]
         self.__dict__.update(data)
-        print 'data spec:\n', str(self.__dict__)
+        #print 'data spec:\n', str(self.__dict__)
 
+    def __str__(self):
+        return self.data_name
+        
 class DataSpec(object):
     """
     This needs to be made local to an installation
