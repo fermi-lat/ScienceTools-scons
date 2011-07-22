@@ -5,7 +5,7 @@ $Header$
 """
 import os, glob, pickle
 import numpy as np
-from uw.thb_roi import pivot
+from . import pivot
 from skymaps import Band
 
 def hp12_index(skydir):
