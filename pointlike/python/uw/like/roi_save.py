@@ -78,7 +78,7 @@ def load(filename,**kwargs):
         
         Any additional kwargs is used to modify DataSpecification, SpectralAnalysis,
         and ROIAnalysis objects."""
-    d=cPickle.load(open(filename,'r'))
+    d=cPickle.load(open(os.path.expandvars(filename),'r'))
 
     # restore previous LATEXTDIR if it is not already set
     if not os.environ.has_key('LATEXTDIR') and d['LATEXTDIR'] not in [None,{}]:
