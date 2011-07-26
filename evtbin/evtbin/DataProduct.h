@@ -39,6 +39,7 @@ namespace evtbin {
       typedef std::deque<std::string> KeyCont_t;
       typedef std::map<std::string, tip::KeyRecord> KeyValuePairCont_t;
       typedef std::map<std::string, KeyCont_t> StringKeyPairCont_t;
+      typedef std::set<std::string> DefaultKeyCont_t;
 
       /** \brief Construct data product object from the given event and spacecraft file.
       */
@@ -201,6 +202,7 @@ namespace evtbin {
       mutable std::string m_creator; // THB: made mutable since const method createFile modifies
       Gti m_gti;
       Hist * m_hist_ptr;
+      DefaultKeyCont_t m_default_keys;
   };
 
   template <typename T>

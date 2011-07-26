@@ -95,7 +95,7 @@ namespace evtbin {
 
   DataProduct::DataProduct(const std::string & event_file, const std::string & event_table, const Gti & gti):
     m_os("DataProduct", "DataProduct", 2), m_key_value_pairs(), m_history(), m_known_keys(), m_dss_keys(), m_event_file_cont(),
-    m_data_dir(), m_event_file(event_file), m_event_table(event_table), m_creator(), m_gti(gti), m_hist_ptr(0) {
+    m_data_dir(), m_event_file(event_file), m_event_table(event_table), m_creator(), m_gti(gti), m_hist_ptr(0), m_default_keys() {
     using namespace st_facilities;
 
     // Find the directory containing templates.
@@ -125,6 +125,14 @@ namespace evtbin {
     for (FileSys::FileNameCont::iterator itor = file_cont.begin(); itor != file_cont.end(); ++itor, ++index) {
       m_event_file_cont[index] = *itor;
     }
+
+    // Create the required keyword set.
+    // This is a set of keywords that appear in the header of input file, but may not in the
+    // output template file, while the users still want them to be copied to the output
+    // file. Note it could be possible that the keywords apprear in both the template and
+    // this set, in which case nothing extra willl be done.
+    m_default_keys.insert("DETNAM");
+    m_default_keys.insert("TRIGTIME");
   }
 
   DataProduct::~DataProduct() throw() {}
@@ -496,17 +504,28 @@ namespace evtbin {
 
           // Flag to determine whether to update the keyword.
           bool update_key = false;
-          try {
-            // See if keyword is already present by attempting to read it. If it is not present,
-            // keyword.get(...) will throw an exception.
-            std::string dummy;
-            keyword.get(dummy);
 
-            // No exception was thrown, so keyword must be present, so update it.
+          // Check if this keyword is in the default set, m_default_keys
+          DefaultKeyCont_t::iterator default_key_itor;
+          default_key_itor = m_default_keys.find(key_itor->first);
+          if(default_key_itor != m_default_keys.end()) {
+            //This key is in the default list, we need to update it.
             update_key = true;
-          } catch (...) {
-            // Ignore errors. Keywords in the key value pair container may or may not be in any given
-            // extension.
+          }
+          else {
+            //Check if the keyword is in the template
+            try {
+              // See if keyword is already present by attempting to read it. If it is not present,
+              // keyword.get(...) will throw an exception.
+              std::string dummy;
+              keyword.get(dummy);
+
+              // No exception was thrown, so keyword must be present, so update it.
+              update_key = true;
+            } catch (...) {
+              // Ignore errors. Keywords in the key value pair container may or may not be in any given
+              // extension.
+            }
           }
 
           // If keyword is already present, update it with the value from the key-value pair.
@@ -548,7 +567,6 @@ namespace evtbin {
       return exposure;
     }
 
-    // If no spacecraft file is available, return the total ontime.
     if (sc_file.empty()) return m_gti.computeOntime();
 
     // Get container of file names from the supplied input file.
@@ -656,7 +674,9 @@ namespace evtbin {
     double fudge = 0.75;
 
     if (counts <= minCount) {
-      stat_err=std::sqrt(counts+fudge);
+      //stat_err=std::sqrt(counts+fudge);
+      // Formula to calculate the Gehrels error: 
+      stat_err = 1.0 + std::sqrt(fudge + counts);
     } else {
       stat_err=std::sqrt(counts);
     }
