@@ -261,7 +261,7 @@ Arguments:
         roi.quiet = True
 
         if roi.TS(which=self.name,quick=True,bandfits=bandfits) < 1:
-            raise Exception("Unable to localize a source with initial TS<1")
+            print "Warning: initial (point) TS<1 so TS_ext will likely not be trustworthy"
 
         init_spectral = roi.parameters().copy()
         init_spatial  = sm.get_parameters(absolute=False)
