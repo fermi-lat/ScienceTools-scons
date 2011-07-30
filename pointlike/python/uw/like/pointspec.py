@@ -73,11 +73,15 @@ class DataSpecification(object):
         # If string, expand it out
         if isinstance(self.ft1files,types.StringType):
             self.ft1files = [os.path.expandvars(self.ft1files)]
+        elif self.ft1files is None:
+            pass
         else:
             self.ft1files = map(os.path.expandvars,self.ft1files)
 
         if isinstance(self.ft2files,types.StringType):
             self.ft2files = [os.path.expandvars(self.ft2files)]
+        elif self.ft2files is None:
+            pass
         else:
             self.ft2files = map(os.path.expandvars,self.ft2files)
 
