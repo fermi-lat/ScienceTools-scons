@@ -657,7 +657,7 @@ def process_diffuse_source(ds,convert_extended,expand_env_vars,filename):
     dm = ds.dmodel
     if hasattr(dm,'__len__'):  dm = dm[0]
 
-    if isinstance(ds,ExtendedSource) or ds.__dict__.has_key('spatial_model'):
+    if isinstance(ds,ExtendedSource) or hasattr(ds,'spatial_model'):
         m2x.process_model(ds.smodel,scaling=False)
         specxml  = m2x.getXML()
         spatial  = ds.spatial_model
@@ -746,10 +746,8 @@ def writeROI(roi,filename,strict=False,convert_extended=False,expand_env_vars=Fa
         diffuse sources mantain a memory of environment varaibles in their
         pathname, but this would be a nice addition in the future. """
     source_xml = [unparse_point_sources(roi.psm.point_sources, strict=strict)]
-    try:
+    if len(roi.dsm.diffuse_sources)>0:
         source_xml.append(unparse_diffuse_sources(roi.dsm.diffuse_sources,
                                                   convert_extended,expand_env_vars,filename))
-    except AttributeError: 
-        print 'warning: no diffuse sources found to write to xml'
     writeXML(source_xml,filename)
             
