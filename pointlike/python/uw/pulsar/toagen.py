@@ -180,7 +180,7 @@ class UnbinnedTOAGenerator(TOAGenerator):
 
             tau_err = self.__toa_error__(tau,phases,weights)         
             tau -= (self.phi0 + polyco_phase0)
-            self.display: print '(Blind) Peak Shift: %.5f +/- %.5f'%(tau+polyco_phase0,tau_err)
+            if self.display: print '(Blind) Peak Shift: %.5f +/- %.5f'%(tau+polyco_phase0,tau_err)
             self.phases.append(tau+polyco_phase0)        
 
         self.phase_errs.append(tau_err)
