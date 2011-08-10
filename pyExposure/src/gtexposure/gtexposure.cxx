@@ -47,7 +47,7 @@
 #include "Likelihood/ExpCutoff.h"
 #include "Likelihood/FileFunction.h"
 #include "Likelihood/LogParabola.h"
-#include "Likelihood/MapCubeFunction.h"
+#include "Likelihood/MapCubeFunction2.h"
 #include "Likelihood/PowerLaw2.h"
 #include "Likelihood/PowerLawSuperExpCutoff.h"
 
@@ -335,7 +335,7 @@ void GtExposure::prepareFunctionFactory() {
    m_funcFactory->addFunc("LogParabola", new Likelihood::LogParabola(), false);
    m_funcFactory->addFunc("FileFunction", new Likelihood::FileFunction(), 
                           false);
-   m_funcFactory->addFunc("MapCubeFunction", new Likelihood::MapCubeFunction(),
+   m_funcFactory->addFunc("MapCubeFunction", new Likelihood::MapCubeFunction2(),
                           false);
    m_funcFactory->addFunc("PowerLaw2", new Likelihood::PowerLaw2(), false);
    m_funcFactory->addFunc("PLSuperExpCutoff", new Likelihood::PowerLawSuperExpCutoff(), false);
