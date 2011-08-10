@@ -150,7 +150,8 @@ class XML_to_Model(object):
                 else:         scale = -scale
                 value += index_offset
                 model.index_offset = index_offset
-            if value*scale<0: raise Exception('For source %s, %s parameter %s cannot be negative' % (source_name,specname,p))
+	    if value==0 : value=1.e-5
+            if value*scale<=0: raise Exception('For source %s, %s parameter %s cannot be negative' % (source_name,specname,p))
             if N.isnan(value*scale): raise Exception('For source %s, %s parameter %s is NaN' % (source_name,specname,p))
             model.setp(ip, value*scale)
             model.free[ip] = (pdict['free'] == '1')
