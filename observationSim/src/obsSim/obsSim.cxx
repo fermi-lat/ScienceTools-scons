@@ -275,6 +275,15 @@ void ObsSim::createSimulator() {
 
    int id_offset = m_pars["offset"];
    m_simulator->setIdOffset(id_offset);
+
+   if (pointingHistory == "none" || pointingHistory == "") {
+      try {
+         double rocking_angle = m_pars["rockangle"];
+         m_simulator->setRocking(3, rocking_angle);
+      } catch (...) { // rockangle = INDEF
+         // do nothing (i.e., leave at default rocking of 35 deg)
+      }
+   }
 }
 
 void ObsSim::generateData() {

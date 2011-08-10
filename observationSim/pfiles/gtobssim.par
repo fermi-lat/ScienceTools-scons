@@ -14,7 +14,8 @@ tstart,r,h,0,,,Simulation start time (seconds wrt start_date)
 nevents,b,h,no,,,Use simulation time as number of events
 maxtime,r,h,3.155e8,,,Maximum simulation time (seconds)
 startdate,s,a,"2001-01-01 00:00:00",,,"Simulation start date"
-offset,i,h,0,,,"Source ID offset"                           
+offset,i,h,0,,,"Source ID offset"
+rockangle,r,h,INDEF,,,Rocking angle (degrees)
 
 use_ac,b,a,no,,,"Apply acceptance cone?"
 ra,r,a,0,-360,360,"RA of cone center (degrees)"
@@ -25,7 +26,7 @@ emin,r,h,30,,,"Minimum event energy (MeV)"
 emax,r,h,300000,,,"Maximum event energy (MeV)"
 edisp,b,h,yes,,,"Apply energy dispersion?"
 
-irfs,s,a,"P6_V3_DIFFUSE",,,"Response functions"
+irfs,s,a,"P7SOURCE_V6",,,"Response functions"
 area,r,h,1,,,"LAT cross-sectional area"
 
 maxrows,i,h,200000,,,"Maximum number of rows in FITS files"
