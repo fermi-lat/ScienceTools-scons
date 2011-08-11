@@ -78,6 +78,7 @@ class FermiCatalog(SourceCatalog):
 
         self.models = []
         for i,(n0,ind,pen) in enumerate(zip(n0s,inds,pens)):
+            if ind==0:ind=1.e-5
             if cutoffs is not None and not np.isnan(cutoffs[i]) and not np.isinf(cutoffs[i]) :
                 cutoff=cutoffs[i]
                 self.models.append(ExpCutoff(p=[n0,ind,cutoff],e0=pen))
