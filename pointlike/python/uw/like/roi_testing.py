@@ -281,6 +281,6 @@ if __name__ == '__main__':
     print '\nPerforming Automated tests of Pointlike\n'
 
     import numpy as np
-    np.seterr(all='ignore')
+    np.seterr(all='warn')
 
     unittest.main()
