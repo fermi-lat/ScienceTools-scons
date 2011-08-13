@@ -443,9 +443,9 @@ class SpatialModel(object):
             raise Exception("Unable to save template for energy dependent SpatialModel.")
         center=self.center
 
-        # The factor of 6/5 is to add a buffer at the edge of the template, which
-        # is similar to the Catalog recommendations.
-        diameter=2.0*(self.effective_edge()*6./5. if self.has_edge() else self.r99())
+        # The factor of 6/5 is to add a buffer at the edge of the template if
+        # there is a definite edge to it. This is similar to the Catalog recommendations.
+        diameter=2.0*self.effective_edge()*(6./5. if self.has_edge() else 1)
         pixelsize=diameter/npix
         image=SkyImage(center,os.path.expandvars(filename),pixelsize,diameter,1,"ZEA",
                        True if self.coordsystem == SkyDir.GALACTIC else False,False)
@@ -968,7 +968,8 @@ class EllipticalSpatialModel(SpatialModel):
 class EllipticalGaussian(EllipticalSpatialModel):
 
     def effective_edge(self,energy=None):
-        return 5*max(self.sigma_x,self.sigma_y)
+        e68=self.ellipse_68()
+        return 5*max(e68[0],e68[1])
 
     def has_edge(self): return False
 
