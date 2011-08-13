@@ -313,20 +313,10 @@ Arguments:
 
             # Now add the rotated spatial part back to the list.
             if cs == SkyDir.GALACTIC:
-                p[0:2]=new_dir.l(),new_dir.b()
+                roi.modify(which=self.name,l=new_dir.l(),b=new_dir.b())
             elif cs == SkyDir.EQUATORIAL:
+                roi.modify(which=self.name,l=new_dir.ra(),b=new_dir.dec())
                 p[0:2]=new_dir.ra(),new_dir.dec()
-
-            # Do the convolution here.
-            sm.set_parameters(p=p,absolute=False)
-
-            temp=self.quiet;self.quiet=True
-            self.initialize_counts(roi.bands)
-            self.quiet=temp
-
-            roi.update_counts()
-            # Note: roi.dsm.update_counts called by the fit function.
-
 
             if bandfits:
                 ll=roi.bandFit(es)
