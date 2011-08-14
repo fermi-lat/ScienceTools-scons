@@ -1322,8 +1322,6 @@ class ROISmoothedSource(object):
             cbar = P.colorbar(im, cax=cax)
             cbar.ax.set_ylabel(r'$\mathrm{counts}/[\mathrm{deg}]^2$')
 
-        ax.grid()
-
         if self.title is None: 
             self.title = 'Smoothed Counts'
             self.title += ' for %s' % self.source.name
