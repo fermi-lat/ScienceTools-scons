@@ -259,7 +259,7 @@ Arguments:
         roi.quiet = True
 
         if roi.TS(which=self.name,quick=True,bandfits=bandfits) < 1:
-            print "Warning: initial (point) TS<1 so TS_ext will likely not be trustworthy"
+            print "Warning: initial TS<1 (in point hypothesis) so TS_ext will likely not be trustworthy"
 
         init_spectral = roi.parameters().copy()
         init_spatial  = sm.get_parameters(absolute=False)
