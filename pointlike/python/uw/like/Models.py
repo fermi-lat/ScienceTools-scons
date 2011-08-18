@@ -913,7 +913,7 @@ class Constant(Model):
         return (emax-emin)*10**self._p[0]
 
     def gradient(self,e):
-        return np.ones_like(e)
+        return  np.array([np.ones_like(e)])
 
 #===============================================================================================#
 
