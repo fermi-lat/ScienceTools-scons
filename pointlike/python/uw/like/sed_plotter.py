@@ -213,7 +213,7 @@ def plot_sed(roi, which=0, fignum=5, axes=None,
     fignum       [5] if set, use (and clear) this figure. If None, 
                  use current Axes object
     axes         [None] If set use this Axes object
-    axis         None, (1e2, 1e5, 1e-8, 1e-2) depending on use_ergs
+    axis         None, (1e2, 1e5, 1e-7, 1e-2) depending on use_ergs
     data_kwargs  a dict to pass to the data part of the display
     fit_kwargs   a dict to pass to the fit part of the display
     butterfly    [True] plot model with a butterfly outline
@@ -245,7 +245,7 @@ def plot_sed(roi, which=0, fignum=5, axes=None,
     axes.set_xscale('log')
     axes.set_yscale('log')
     if axis is None:
-        axis = (1e2,1e6,1e-13,1e-8) if use_ergs else (1e2,1e6,1e-10,1e-5)
+        axis = (1e2,1e6,1e-13,1e-8) if use_ergs else (1e2,1e6,1e-7,1e-2)
     axes.axis(axis)
     axes.grid(True)
     axes.set_autoscale_on(False)
