@@ -62,7 +62,6 @@ private:
    Cuts m_cuts;
 
    std::string m_passVer;
-   unsigned int m_mask;
    std::string m_evclsFilter;
 
    static CutController * s_instance;

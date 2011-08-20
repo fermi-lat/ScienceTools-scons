@@ -42,7 +42,7 @@ CutController::CutController(st_app::AppParGroup & pars,
                              const std::vector<std::string> & eventFiles,
                              const std::string & evtable) 
    : m_pars(pars), m_cuts(eventFiles, evtable, true, true), 
-     m_passVer(""), m_mask(0), m_evclsFilter("") {
+     m_passVer(""), m_evclsFilter("") {
    checkPassVersion(eventFiles);
    double ra = pars["ra"];
    double dec = pars["dec"];
@@ -63,11 +63,6 @@ CutController::CutController(st_app::AppParGroup & pars,
       try {
          int evclass = pars["evclass"];
          m_cuts.addBitMaskCut("EVENT_CLASS", evclass);
-//          m_mask = 1 << evclass;
-//          std::ostringstream filter;
-// // Equivalent bit-mask from Seth:
-//          filter << "((EVENT_CLASS/" << m_mask << ")%2 == 1)";
-//          m_evclsFilter = filter.str();
       } catch (const hoops::Hexception &) {
          // Assume INDEF is given as the parameter value for evclass,
          // so use default of applying no EVENT_CLASS cut.
@@ -113,13 +108,7 @@ checkPassVersion(const std::vector<std::string> & evfiles) {
 }
 
 bool CutController::accept(tip::ConstTableRecord & row) const {
-   if (m_passVer == "NONE") {
-      return m_cuts.accept(row);
-   }
-   unsigned int evclass;
-   row["EVENT_CLASS"].get(evclass);
-   bool value = (evclass & m_mask) != 0 && m_cuts.accept(row);
-   return value;
+   return m_cuts.accept(row);
 }
 
 void CutController::addRangeCut(const std::string & colname,
