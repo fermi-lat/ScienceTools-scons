@@ -27,6 +27,7 @@
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
+#include "dataSubselector/BitMaskCut.h"
 #include "dataSubselector/Cuts.h"
 #include "dataSubselector/Gti.h"
 
@@ -48,6 +49,8 @@ class DssTests : public CppUnit::TestFixture {
    CPPUNIT_TEST(test_removeRangeCuts);
    CPPUNIT_TEST(test_mergeRangeCuts);
 
+   CPPUNIT_TEST(test_BitMaskCut);
+
    CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -67,6 +70,7 @@ public:
    void test_DssFormatting();
    void test_removeRangeCuts();
    void test_mergeRangeCuts();
+   void test_BitMaskCut();
 
 private:
 
@@ -527,6 +531,23 @@ void DssTests::test_mergeRangeCuts() {
                       dataSubselector::RangeCut::CLOSED, 1);
 
    CPPUNIT_ASSERT(cuts0 == cuts1);
+}
+
+void DssTests::test_BitMaskCut() {
+   dataSubselector::BitMaskCut cut("EVENT_CLASS", 2);
+   std::map<std::string, double> pars;
+   pars["EVENT_CLASS"] = 4;
+   CPPUNIT_ASSERT(cut.accept(pars));
+   pars["EVENT_CLASS"] = 5;
+   CPPUNIT_ASSERT(cut.accept(pars));
+   pars["EVENT_CLASS"] = 6;
+   CPPUNIT_ASSERT(cut.accept(pars));
+   pars["EVENT_CLASS"] = 7;
+   CPPUNIT_ASSERT(cut.accept(pars));
+   pars["EVENT_CLASS"] = 8;
+   CPPUNIT_ASSERT(!cut.accept(pars));
+
+   CPPUNIT_ASSERT(cut.filterString() == "((EVENT_CLASS/4)%2 == 1)");
 }
 
 int main() {

@@ -25,7 +25,6 @@ namespace dataSubselector {
  * @brief Base class for cuts that are applied to FITS data.
  * @author J. Chiang
  * 
- * $Header$
  */
 
 class CutBase {

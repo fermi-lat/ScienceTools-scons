@@ -134,6 +134,15 @@ public:
    /// @param radius Cone half-opening angle (degrees)
    unsigned int addSkyConeCut(double ra, double dec, double radius);
 
+   /// @brief (single) Bit mask cut, usually used to make event
+   /// selection based on bit map in the EVENT_CLASS column
+   /// @return The current number of cuts stored.
+   /// @param colname Name of column to which the bit-mask is applied
+   /// @param bitPosition Position of the bit (corresponding to the
+   /// desired event class)
+   unsigned int addBitMaskCut(const std::string & colname,
+                              unsigned int bitPosition);
+
    unsigned int addCut(const CutBase & newCut) {
       m_cuts.push_back(newCut.clone());
       return m_cuts.size();

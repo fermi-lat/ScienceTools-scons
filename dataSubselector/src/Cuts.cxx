@@ -23,6 +23,7 @@
 #include "tip/Image.h"
 #include "tip/Table.h"
 
+#include "dataSubselector/BitMaskCut.h"
 #include "dataSubselector/Cuts.h"
 #include "dataSubselector/GtiCut.h"
 #include "dataSubselector/RangeCut.h"
@@ -200,6 +201,11 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
          }
       } else if (type == "TIME" && value == "TABLE") {
          m_cuts.push_back(new GtiCut(eventFile));
+      } else if (type.substr(0, 8) == "BIT_MASK") {
+         std::vector<std::string> tokens;
+         facilities::Util::stringTokenize(type, "(),", tokens);
+         unsigned int bit_position = std::atoi(tokens[2].c_str());
+         m_cuts.push_back(new BitMaskCut(tokens[1], bit_position));
       } else {
          std::ostringstream message;
          message << "FITS extension contains an unrecognized DSS filtering "
@@ -307,6 +313,11 @@ unsigned int Cuts::addGtiCut(const Gti & gti) {
 
 unsigned int Cuts::addSkyConeCut(double ra, double dec, double radius) {
    return addCut(new SkyConeCut(ra, dec, radius));
+}
+
+unsigned int Cuts::addBitMaskCut(const std::string & colname,
+                                 unsigned int bitPosition) {
+   return addCut(new BitMaskCut(colname, bitPosition));
 }
 
 unsigned int Cuts::addCut(CutBase * newCut) {
