@@ -730,7 +730,7 @@ class ROIAnalysis(object):
 
     @decorate_with(roi_plotting.ROIRadialIntegral,append_init=True)
     def plot_radial_integral(self,which=None,filename=None,datafile=None,**kwargs):
-        roi_plotting.ROIRadialIntegral(self,which=which,**kwargs).show(filename=filename,datafile=None)
+        roi_plotting.ROIRadialIntegral(self,which=which,**kwargs).show(filename=filename,datafile=datafile)
 
     @decorate_with(roi_plotting.ROISmoothedSource,append_init=True)
     def plot_source(self,which=None,filename=None,**kwargs):
