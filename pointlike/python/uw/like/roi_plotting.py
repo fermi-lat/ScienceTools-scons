@@ -579,7 +579,7 @@ class ROIDisplay(object):
         for ax in [self.ax_model, self.ax_counts, self.ax_res]:
             ax.axis[:].set_zorder(100)
             ROISmoothedSource.overlay_region(self.roi,ax,self.h,label_sources=self.label_sources,
-                                         show_extensions=False, color='k')
+                                         show_extensions=False)
 
         if filename is not None: P.savefig(filename)
 
@@ -1494,7 +1494,7 @@ class ROITSMapPlotter(object):
 
         ax.grid(color='w',linestyle='-')
 
-        ROISmoothedSource.overlay_region(self.roi,ax,h,label_sources=self.label_sources,color='black')
+        ROISmoothedSource.overlay_region(self.roi,ax,h,label_sources=self.label_sources)
 
         if filename is not None: P.savefig(filename)
 
