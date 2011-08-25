@@ -4,7 +4,8 @@ $Header$
 
 
 """
-import os, pyfits, pickle, matplotlib
+import os, pyfits, pickle
+from pylab import mlab
 import numpy as np
 
 def makefits(r, filename=None):
@@ -54,7 +55,7 @@ def textrec(filename, quiet=False, insertname=False, delimiter=' '):
     delim=None if nameline.find(',')<0 else ','
     names = [name.lower().strip() for name in nameline.split(delim)]
     if insertname: names.insert(0,'name')
-    r = matplotlib.mlab.csv2rec(filename, skiprows=1, delimiter=delimiter, names=names)
+    r = mlab.csv2rec(filename, skiprows=1, delimiter=delimiter, names=names)
     if not quiet: 
         print 'loaded file %s, found %d entries' %(filename, len(r))
         print r.dtype
