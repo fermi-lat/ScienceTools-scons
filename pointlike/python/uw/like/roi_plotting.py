@@ -1492,8 +1492,6 @@ class ROITSMapPlotter(object):
 
         ax.set_title(self.title)
 
-        ax.grid(color='w',linestyle='-')
-
         ROISmoothedSource.overlay_region(self.roi,ax,h,label_sources=self.label_sources)
 
         if filename is not None: P.savefig(filename)
