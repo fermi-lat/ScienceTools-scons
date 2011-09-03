@@ -124,7 +124,7 @@ class XML_to_Model(object):
                 FileFunction         = [],
                 LogParabola          = [],
                 DMFitFunction        = [['norm','norm'], ['bratio','bratio'],
-                                        ['channel0','channel0'], ['channel0','channel1']],
+                                        ['channel0','channel0'], ['channel1','channel1']],
                 )
 
     def get_model(self,xml_dict,source_name,index_offset=0):
