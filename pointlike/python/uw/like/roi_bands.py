@@ -78,7 +78,29 @@ class ROIBand(object):
         simps_weights  = (N.log(sp[-1]/sp[0])/(3.*self.nsp_simps)) * \
                               N.asarray([1.] + ([4.,2.]*(self.nsp_simps/2))[:-1] + [1.])
         self.sp_vector = sp * exp_points * simps_weights
-
+     
+    ### the following functions added to for functionality best performed by an ROIband
+    ### they are not used by the (old) likelihood computation
+    def pixels_from_psf(self,  skydir):
+        """ return pixel array of predicted values given the PSF and direction
+        """
+        rvals  = np.empty(len(self.wsdl),dtype=float)
+        self.psf.cpsf.wsdl_val(rvals, skydir, self.wsdl) #from C++: sets rvals
+        return rvals*self.b.pixelArea()
+        
+    def exposure_integral(self, model_function, axis=None):
+        """ return integral over exposure for function of differential flux """
+        return (model_function(self.sp_points)*self.sp_vector).sum(axis=axis)
+        
+    def psf_overlap(self, skydir):
+        """ return the overlap of the associated PSF at the given position with this ROI
+        """
+        return PsfOverlap()(self, self.sd, skydir)  
+        
+    def exposure(self, skydir, energy=None):
+        """ return the exposure at the position and the given energy, or (default) the central energy"""
+        return self.exp.value(skydir, energy if energy is not None else self.e)
+    ################################################################################
 
     def reload_data(self,band):
         """For Monte Carlo, when everything stays same but realization of data."""
