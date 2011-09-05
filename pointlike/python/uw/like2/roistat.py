@@ -92,13 +92,17 @@ class ROIstat(object):
         if freelist is None: freelist = self.sources.free
         map(lambda s: s.initialize(freelist), self.all_bands )
 
-    def select_bands(self, bandsel=lambda b: True):
+    def select_bands(self, bandsel=lambda b: True, indices=None):
         """ select a subset of the bands for analysis
         bandsel : function of a ROIBand that returns bool, like lambda b: b.e<200
         To restore, call with no arg
         Note that one could also replace selected_bands with a subset of all_bands
+        
         """
-        self.selected_bands = np.array([bs for bs in self.all_bands if bandsel(bs.band)])
+        if indices is not None:
+            self.selected_bands = self.all_bands[indices]
+        else:
+            self.selected_bands = np.array([bs for bs in self.all_bands if bandsel(bs.band)])
         if not self.quiet:print 'selected subset of %d bands for likelihood analysis' % len(self.selected_bands)
         
     def update(self, reset=False):
