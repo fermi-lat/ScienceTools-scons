@@ -40,16 +40,18 @@ class SourceList(list):
                 return roi.psm.point_sources[source_index], self.roi.roi_dir
                 
         # note that sources are added in the order diffuse, point to agree with ROIAnalysis
-        # also, add two attributes to ecach source object 
+        # also, add two attributes to ecach source object and define 'spectral_model'
         for i,source in enumerate(roi.dsm.diffuse_sources):
             spatialclassname = roi.dsm.bgmodels[i].__class__.__name__
             source.factory = ExtendedSourceFactory(roi) if spatialclassname=='ROIExtendedModel'\
                 else DiffuseSourceFactory(roi)
             source.manager_index = i
+            source.spectral_model = source.smodel
             self.append(source)
         for i,source in enumerate(roi.psm.point_sources):
             source.manager_index = i
             source.factory = PointSourceFactory(roi)
+            source.spectral_model = source.model
             self.append(source)
         self.source_names = np.array([s.name for s in self])
         self.models= np.array([s.model for s in self])
@@ -63,9 +65,16 @@ class SourceList(list):
             band.bg_counts = np.empty(nm)
             band.bg_pix_counts = np.empty([len(band.wsdl),nm]) if band.has_pixels else 0
 
-
     def __str__(self):
-        return 'SoruceList, with %d sources, %d free parameters' %(len(self), sum(self.free))
+        return 'SourceList, with %d sources, %d free parameters' %(len(self), sum(self.free))
+        
+    def find_source(self, source_name):
+        names = [s.name for s in self]
+        try:
+            return self[names.index(source_name)]
+        except:
+            raise Exception('source %s not found' %source_name)
+
     @property
     def parameter_names(self):
         """ array of free parameter names """
