@@ -11,6 +11,10 @@
 #ifndef _BayesianBlocks_h
 #define _BayesianBlocks_h
 
+#ifdef TRAP_FPE
+#include <fenv.h>
+#endif
+
 #include <deque>
 #include <vector>
 
@@ -61,6 +65,15 @@ public:
    /// @brief ncp_prior calibration for unbinned case as a function of
    /// number of events and false positive fraction.
    static double ncp_prior(double nevents, double fp_frac);
+
+   static void enableFPE() {
+#ifdef TRAP_FPE
+      feenableexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
+#else
+      throw std::runtime_error("FPE handling is disabled "
+                               "on non-linux platforms.");
+#endif
+   }
 
 private:
 
