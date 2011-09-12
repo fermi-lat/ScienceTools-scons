@@ -1295,8 +1295,7 @@ class ROISmoothedSource(object):
             cbar.ax.set_ylabel(r'$\mathrm{counts}\ [\mathrm{deg}]^{-2}$')
 
         if self.title is None: 
-            self.title = 'Smoothed Counts'
-            self.title += ' for %s' % self.source.name
+            self.title = 'Smoothed Counts for %s' % self.source.name
 
         ax.set_title(self.title)
 
