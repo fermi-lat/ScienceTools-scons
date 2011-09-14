@@ -54,12 +54,14 @@ int BackgroundEstimator::FillBackgroundHist(string GRB_DIR, TH1F * hROI_Max, dou
           if (!hMap[ie]){fResults->Close(); printf ("%s: no %s!\n",__FUNCTION__,name);return -1;}
       }
       else if (type==3) {
+          sprintf(name,"hSimulatedSky_%d;1",ie);
+          TH2F* htemp=(TH2F*)fResults->Get(name);
+          if (!htemp){fResults->Close(); printf ("%s: no %s!\n",__FUNCTION__,name);return -1;}
+
           sprintf(name,"hResidualBurst_%d;1",ie);
           hMap[ie]=(TH2F*)fResults->Get(name);
           if (!hMap[ie]){fResults->Close(); printf ("%s: no %s!\n",__FUNCTION__,name);return -1;}
-          sprintf(name,"hSimulatedSky_%d;1",ie);
-          TH2F * htemp = (TH2F*)fResults->Get(name);
-          if (!htemp){fResults->Close(); printf ("%s: no %s!\n",__FUNCTION__,name);return -1;}
+          
           hMap[ie]->Add(htemp);
           htemp->Delete();
       }

@@ -45,7 +45,7 @@ string TOOLS::GetConversionName(string DataClass) {
 string TOOLS::GetDataClassVersion(string DataClass) {
     //see if we have P6 or P7 first
     if (DataClass.find("P7")!=string::npos) { //P7
-       return "P7"+DataClass.substr(DataClass.find("_")+1,2);
+       return DataClass.substr(DataClass.find("_")+1,2);
     }
     else { //P6
        return DataClass.substr(0,DataClass.find("_",3)+1);

@@ -1,7 +1,7 @@
 #include "BackgroundEstimator/BKGE_Tools.h"
 // $Header$
 
-void TOOLS::Run_gtltcube(string GRB_DIR, double TMin, double TMax, string FT2_FILE, float FT1ZenithTheta_Cut, int verbosity) {
+void TOOLS::Run_gtltcube(string GRB_DIR, double TMin, double TMax, string FT2_FILE, float FT1ZenithTheta_Cut, int verbosity, string EventFile, string gtltcube_Filename) {
 
   //gtltcube takes parameter binsize for SCTOOLS v<=r14 and binsz for v>=15
   //Have to choose which parameter to use -- I don't want to rely on parsing the version number of science tools
@@ -14,10 +14,11 @@ void TOOLS::Run_gtltcube(string GRB_DIR, double TMin, double TMax, string FT2_FI
   cha =fgets(buffer,sizeof(buffer),pipe);
   pclose(pipe);
   //printf("--%s--\n",buffer);
-  if (strcmp(buffer,"")) sprintf(buffer,"gtltcube scfile=%s evfile="" outfile=%s/burst_ltCube.fits dcostheta=0.025 binsize=1 zmax=%f chatter=4 phibins=1 tmin=%f tmax=%f",
-     FT2_FILE.c_str(),GRB_DIR.c_str(),FT1ZenithTheta_Cut,TMin,TMax);
-  else                  sprintf(buffer,"gtltcube scfile=%s evfile="" outfile=%s/burst_ltCube.fits dcostheta=0.025 binsz=1 zmax=%f chatter=4 phibins=1 tmin=%f tmax=%f",
-     FT2_FILE.c_str(),GRB_DIR.c_str(),FT1ZenithTheta_Cut,TMin,TMax);
+  if (gtltcube_Filename=="") gtltcube_Filename="burst_ltCube.fits";
+  if (strcmp(buffer,"")) sprintf(buffer,"gtltcube scfile=%s evfile=\"%s\" outfile=%s/%s dcostheta=0.025 binsize=1 zmax=%f chatter=4 phibins=1 tmin=%f tmax=%f",
+     FT2_FILE.c_str(),EventFile.c_str(),GRB_DIR.c_str(),gtltcube_Filename.c_str(),FT1ZenithTheta_Cut,TMin,TMax);
+  else                  sprintf(buffer,"gtltcube scfile=%s evfile=\"%s\" outfile=%s/%s dcostheta=0.025 binsz=1 zmax=%f chatter=4 phibins=1 tmin=%f tmax=%f",
+     FT2_FILE.c_str(),EventFile.c_str(),GRB_DIR.c_str(),gtltcube_Filename.c_str(),FT1ZenithTheta_Cut,TMin,TMax);
  
  if (verbosity>3 ) { 
      pipe = popen(buffer, "r");
@@ -32,13 +33,14 @@ void TOOLS::Run_gtltcube(string GRB_DIR, double TMin, double TMax, string FT2_FI
 
 }
 
-void TOOLS::Run_gtexpcube(string GRB_DIR,  double TMin, double TMax, string FT2_FILE, string DATACLASS, float FT1ZenithTheta_Cut, char * Outfile, float Energy_Min, float Energy_Max, int Energy_Bins, int verbosity) {
+void TOOLS::Run_gtexpcube(string GRB_DIR,  double TMin, double TMax, string FT2_FILE, string DATACLASS, float FT1ZenithTheta_Cut, char * Outfile, float Energy_Min, float Energy_Max, int Energy_Bins, int verbosity, string EventFile, string gtltcube_Filename) {
  //first check if the ltcube exists
   char name[1000];
-  sprintf(name,"%s/burst_ltCube.fits",GRB_DIR.c_str());
+  if (gtltcube_Filename=="") gtltcube_Filename="burst_ltCube.fits";
+  sprintf(name,"%s/%s",GRB_DIR.c_str(),gtltcube_Filename.c_str());
   FILE * ftemp  = fopen(name,"r");
   if (ftemp) fclose(ftemp);
-  else Run_gtltcube(GRB_DIR, TMin, TMax, FT2_FILE, FT1ZenithTheta_Cut, verbosity);
+  else Run_gtltcube(GRB_DIR, TMin, TMax, FT2_FILE, FT1ZenithTheta_Cut, verbosity,EventFile,gtltcube_Filename);
 
   char buffer[1000];
   buffer[0]='\0'; //empty char array
@@ -46,11 +48,11 @@ void TOOLS::Run_gtexpcube(string GRB_DIR,  double TMin, double TMax, string FT2_
   FILE * pipe = popen(name,"r");
   fgets(buffer,sizeof(buffer),pipe);
   pclose(pipe);
-  
-  if (!strcmp(buffer,"")) sprintf(buffer,"gtexpcube infile=%s/burst_ltCube.fits evfile="" cmfile=NONE outfile=%s irfs=%s nxpix=1 nypix=1 pixscale=1 coordsys=GAL xref=0 yref=0 axisrot=0 proj=CAR emin=%f emax=%f enumbins=%d bincalc=CENTER chatter=4  ",
-    	GRB_DIR.c_str(),Outfile,DATACLASS.c_str(),Energy_Min,Energy_Max,Energy_Bins);
-  else                    sprintf(buffer,"gtexpcube infile=%s/burst_ltCube.fits evfile="" cmfile=NONE outfile=%s irfs=%s nxpix=1 nypix=1 pixscale=1 coordsys=GAL xref=0 yref=0 axisrot=0 proj=CAR emin=%f emax=%f enumbins=%d bincalc=CENTER chatter=4 deltaphi=45",
-	GRB_DIR.c_str(),Outfile,DATACLASS.c_str(),Energy_Min,Energy_Max,Energy_Bins);
+     
+  if (!strcmp(buffer,"")) sprintf(buffer,"gtexpcube infile=%s/%s evfile=\"%s\" cmfile=NONE outfile=%s irfs=%s nxpix=1 nypix=1 pixscale=1 coordsys=GAL xref=0 yref=0 axisrot=0 proj=CAR emin=%f emax=%f enumbins=%d bincalc=CENTER chatter=4  ",
+    	GRB_DIR.c_str(),gtltcube_Filename.c_str(),EventFile.c_str(),Outfile,DATACLASS.c_str(),Energy_Min,Energy_Max,Energy_Bins);
+  else                    sprintf(buffer,"gtexpcube infile=%s/%s evfile=\"%s\" cmfile=NONE outfile=%s irfs=%s nxpix=1 nypix=1 pixscale=1 coordsys=GAL xref=0 yref=0 axisrot=0 proj=CAR emin=%f emax=%f enumbins=%d bincalc=CENTER chatter=4 ignorephi=yes",
+	GRB_DIR.c_str(),gtltcube_Filename.c_str(),EventFile.c_str(),Outfile,DATACLASS.c_str(),Energy_Min,Energy_Max,Energy_Bins);
 
   if (verbosity>3) {
         FILE * pipe = popen(buffer, "r");

@@ -23,7 +23,6 @@
 #include "fitsio.h"
 #include <vector>
 #include "TCanvas.h"
-
 const double RAD_TO_DEG=57.2957795130;
 const double DEG_TO_RAD=0.01745329255;
 
@@ -32,6 +31,23 @@ using namespace std;
 /*! \brief Miscellaneous support tools.
 */
 namespace TOOLS{
+
+const float GBMDet_Theta_Azimuth[14][2]={
+   {20.58, 45.89}
+ , {45.31, 45.11}
+ , {90.21, 58.44}
+ , {45.24, 314.87}
+ , {90.27, 303.15}
+ , {89.79, 3.35}
+ , {20.43, 224.93}
+ , {46.18, 224.62}
+ , {89.97, 236.61}
+ , {45.55, 135.19}
+ , {90.42, 123.73}
+ , {90.32, 183.74}
+ , {90.0, 0.00}
+ , {90.0, 180.00}};
+
 
     ///Return a list of fits files that include time from MET to MET+DURATION
     vector<string> MakeFitsList(double MET ///Starting time
@@ -82,7 +98,7 @@ namespace TOOLS{
     //void MakeLightcurve(double par1, double par2, int CoordType, double T_ZERO, float DT, float TimeBinSize, float ROI_RADIUS, string FitsDir, string DataClass);
     ///Average the exposure over an ROI and save it in hExposure
     void CalcExposure(TFile * fResults, float L_BURST, float B_BURST, float FT1ZenithTheta_Cut, TH1F * hExposure, string GRB_DIR, int verbosity);
-    int Make_Burst_Plots(string DataClass, string FT1_FILE, string GRB_DIR, float FT1ZenithTheta_Cut, double RA_BURST, double DEC_BURST, double GRB_t0, double Burst_Dur, TH1F* hROI_Max, short int verbosity=1, TH1F * hROI_Min=0, TH1F * hCtsvsEnergy_copy=0);
+    int Make_Burst_Plots(string DataClass, string FT1_FILE, string GRB_DIR, float FT1ZenithTheta_Cut, double RA_BURST, double DEC_BURST, double GRB_t0, double Burst_Dur, TH1F* hROI_Max, short int verbosity=1, TH1F * hROI_Min=0, TH1F * hCtsvsEnergy_copy=0, bool Save_Earth_Coo_Map=false);
 
 
     ///Integrate a skymap that shows ev/sr over an ROI to produce events in the ROI
@@ -91,7 +107,7 @@ namespace TOOLS{
     void PlotBand(float MinEnergy,float PeakEnergy, float MaxEnergy, float a,float b,double IntFlux);
 
     ///Make Theta,Phi,ZTheta,RockingAngle vs Time plots
-    int Make_Plots(double PreTime, double PostTime, double Burst_t0, string Filename, string FT2_FILE, int verbosity=1);
+    int Make_Plots(double PreTime, double PostTime, double Burst_t0, string Filename, string FT2_FILE, int verbosity=1, float TimeStep=1);
 
     ///Get theta phi and zenith theta coordinates
     void GetThetaPhi(double &theta, double &phi, double &ZTheta, double MET, string FT2_FILE, float RA=-999, float DEC=-999);
@@ -139,12 +155,28 @@ namespace TOOLS{
     ///Feldman-Cousins
     double FeldmanCousins(float CL, int SIG, double BKG, int MuMin=0, int MuMax=40, float dmu=0.01, bool Draw=false);
 
-    void Run_gtltcube(string GRB_DIR,  double TMin, double TMax, string FT2_FILE, float FT1ZenithTheta_Cut, int verbosity);
-    void Run_gtexpcube(string GRB_DIR, double TMin, double TMax, string FT2_FILE, string DATACLASS, float FT1ZenithTheta_Cut, char * Outfile, float Energy_Min,float Energy_Max, int Energy_Bins, int verbosity);
+    void Run_gtltcube(string GRB_DIR,  double TMin, double TMax, string FT2_FILE, float FT1ZenithTheta_Cut, int verbosity, string EventFile="", string gtltcube_Filename="");
+    void Run_gtexpcube(string GRB_DIR, double TMin, double TMax, string FT2_FILE, string DATACLASS, float FT1ZenithTheta_Cut, char * Outfile, float Energy_Min,float Energy_Max, int Energy_Bins, int verbosity, string EventFile="", string gtltcube_Filename="");
 
     double GimmeLumDistance(double z);
     void GetQuantiles(TH1F * h, double CL, double &xmin, double &xmax, double &CL_actual);
 
+    void ReadGTI(vector <double>& GTI_Starts, vector <double>& GTI_Ends, string FitsAllSkyFile, double StartTime, double EndTime);
+
+    //GBM Files IO
+    int ReadCTIME(string CTIME_File, short MinChannel, short MaxChannel, vector <unsigned short>& Counts, vector<double>& Time, vector <double> &Exposure, double &GBM_TSTART, double &GBM_TSTOP, int verbosity=0 );
+    void GetGBM_StartStop(string file, double &GBM_TSTART, double &GBM_TSTOP);
+    //GBM Pointing
+
+    int PlotGBMDet_Angle(int nDet, float RA, float DEC, TH1F* h, string Plots_File);
+    int PlotSolar_Angle(int nDet, TH1F* h, string Plots_File);
+    int PlotGBMDet_ZenithAngle(int nDet, TH1F* h, string Plots_File);
+    int PlotGBMDet_GalCenterAngle(int nDet, TH1F* h, string Plots_File);
+    float GetGBMDet_SolarAngle(double time_met, int nDet, float PtRaz, float PtDecz, float PtRax, float PtDecx);
+    float GetGBMDet_Angle(int nDet, float RA, float DEC, float PtRaz, float PtDecz, float PtRax, float PtDecx);
+    int PlotGBMGal_Coordinates(int nDet, TH1F* hL, TH1F* hB, string Plots_File);
+    void GetGBMDet_GalPt(int nDet, float & PtGBM_L, float & PtGBM_B, float PtRaz, float PtDecz, float PtRax, float PtDecx);
+    void GBM_AppendPointingPlots(string PlotsFile);
 };
 
 #endif

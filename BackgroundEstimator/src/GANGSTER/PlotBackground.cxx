@@ -14,7 +14,7 @@
 #include <vector>
 
 //if Energy_Min_user,Energy_Max_user,Energy_Bins_user<=0 then the default values will be used
-string GANGSTER::PlotBackground(string Interval_name, double MET, double DURATION, string FT1_FILE, string FT2_FILE, string DATACLASS, double Energy_Min_user, double Energy_Max_user, int Energy_Bins_user,  float FT1ZenithTheta_Cut, bool OverwritePlots, int verbosity, double MET_FOR_THETA){
+string GANGSTER::PlotBackground(string Interval_name, double MET, double DURATION, string FT1_FILE, string FT2_FILE, string DATACLASS, double Energy_Min_user, double Energy_Max_user, int Energy_Bins_user,  float FT1ZenithTheta_Cut, bool OverwritePlots, int verbosity, double MET_FOR_THETA, bool Save_Earth_Coo_Map){
  if (MET_FOR_THETA<=0) MET_FOR_THETA=MET;
  
  bool OverwriteResults=false;
@@ -260,7 +260,7 @@ string GANGSTER::PlotBackground(string Interval_name, double MET, double DURATIO
 	    OverwriteResults=true;
             //Check if we have to make a listfile
             if (FT1_FILE[0]=='^') FT1_FILE="@"+string(GRB_DIR)+"/fitslist.txt";
-            TOOLS::Make_Burst_Plots(DATACLASS, FT1_FILE, GRB_DIR,FT1ZenithTheta_Cut,RA,DEC,MET,DURATION,hROIEst[iEst],0);
+            TOOLS::Make_Burst_Plots(DATACLASS, FT1_FILE, GRB_DIR,FT1ZenithTheta_Cut,RA,DEC,MET,DURATION,hROIEst[iEst],0,0,0,Save_Earth_Coo_Map);
        }
        if (ftemp) fclose (ftemp);
 
@@ -432,14 +432,15 @@ string GANGSTER::PlotBackground(string Interval_name, double MET, double DURATIO
     }
 
     //Delete bulky files
+
     int result;
-    sprintf(name,"rm %s/burst_ltCube.fits 2>/dev/null",GRB_DIR);    result=system(name);
-    sprintf(name,"rm %s/Burst_Exposure_user.fits 2>/dev/null",GRB_DIR);    result=system(name);
-    sprintf(name,"rm %s/*_burst_exposure.fits 2>/dev/null",GRB_DIR);    result=system(name);
+//    sprintf(name,"rm %s/burst_ltCube.fits 2>/dev/null",GRB_DIR);    result=system(name);
+//    sprintf(name,"rm %s/Burst_Exposure_user.fits 2>/dev/null",GRB_DIR);    result=system(name);
+//    sprintf(name,"rm %s/*_burst_exposure.fits 2>/dev/null",GRB_DIR);    result=system(name);
     c->Update();
 
-    if (Combine)  sprintf(name,"%s/%s-%s_FRONT+BACK_Results_%.1f_%.1f.png",GRB_DIR,GRB_NAME.c_str(),Est[0]->DataClassName_noConv.c_str(),MET,MET+DURATION);
-    else          sprintf(name,"%s/%s-%s_Results_%.1f_%.1f.png",GRB_DIR,GRB_NAME.c_str(),Est[0]->DataClassName_noConv.c_str(),MET,MET+DURATION);
+    if (Combine)  sprintf(name,"%s/%s-%s_FRONT+BACK_Results_%.1f_%.1f.png",GRB_DIR,GRB_NAME.c_str(),Est[0]->DataClass.c_str(),MET,DURATION);
+    else          sprintf(name,"%s/%s-%s_Results_%.1f_%.1f.png",GRB_DIR,GRB_NAME.c_str(),Est[0]->DataClass.c_str(),MET,DURATION);
     FILE * ff = fopen(name,"r");
 
     if (ff && !OverwritePlots && !OverwriteResults) {fclose(ff); return ResultsFilename;}

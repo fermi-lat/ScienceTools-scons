@@ -7,6 +7,7 @@
 
 void TOOLS::CalculatePSF(TH1F * hROI, double MET, string FT2_FILE, string DATACLASS, float Containment, float MaxRadius) {
   double theta,phi,ztheta;
+
   GetThetaPhi(theta,phi,ztheta,MET,FT2_FILE);
   if (theta>70) {
     printf("%s: Theta too high (%f). Calculating PSF for theta=70deg\n",__FUNCTION__,theta);
@@ -33,7 +34,7 @@ TH1F* TOOLS::CalculatePSF(taClass, float Containment, float theta, float phi, fl
 }
 */
 
-void TOOLS::CalculatePSF_ThetaPhi(TH1F* hROI, float theta, float phi, string DATACLASS, float Containment, float MaxRadius) {
+void TOOLS::CalculatePSF_ThetaPhi(TH1F* hROI, float theta, float phi, string DataClass, float Containment, float MaxRadius) {
 
   if (Containment<0) Containment=Get("ROI_CONTAINMENT");
   if (MaxRadius<0)   MaxRadius  =Get("ROI_MAX_RADIUS");
@@ -42,14 +43,16 @@ void TOOLS::CalculatePSF_ThetaPhi(TH1F* hROI, float theta, float phi, string DAT
   char name[1000];
   if (theta>80) {printf("%s: Theta is >80, can't calculate ROI.\n",__FUNCTION__);exit(1);}
 
-  string DATACLASSVersion     = GetDataClassVersion(DATACLASS);
-  string DATACLASSName_noConv = GetDataClassName_noConv(DATACLASS);
-  int    ConversionType       = GetConversionType(DATACLASS);
+  string DataClassVersion     = GetDataClassVersion(DataClass);
+  string DataClassName_noConv = GetDataClassName_noConv(DataClass);
+  int    ConversionType       = GetConversionType(DataClass);
 
-  sprintf(name,"%s%s::FRONT",DATACLASSVersion.c_str(),DATACLASSName_noConv.c_str());
+  if (DataClass.find("P7")==string::npos) sprintf(name,"%s%s::FRONT",DataClassVersion.c_str(),DataClassName_noConv.c_str());
+  else                                    sprintf(name,"P7%s_%s::FRONT",DataClassName_noConv.c_str(),DataClassVersion.c_str());
   rootIrfLoader::Psf pFront     = rootIrfLoader::Psf(name);
   rootIrfLoader::Aeff AeffFront = rootIrfLoader::Aeff(name);
-  sprintf(name,"%s%s::BACK",DATACLASSVersion.c_str(),DATACLASSName_noConv.c_str());
+  if (DataClass.find("P7")==string::npos) sprintf(name,"%s%s::BACK",DataClassVersion.c_str(),DataClassName_noConv.c_str());
+  else                                    sprintf(name,"P7%s_%s::BACK",DataClassName_noConv.c_str(),DataClassVersion.c_str());
   rootIrfLoader::Psf pBack     =  rootIrfLoader::Psf(name);
   rootIrfLoader::Aeff AeffBack =  rootIrfLoader::Aeff(name);
 

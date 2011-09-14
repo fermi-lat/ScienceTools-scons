@@ -6,7 +6,7 @@
 void Interpolate(TH1F * hist, bool aRA=false);
 void CalculateRockingAngle(TH1F* hRockingAnglevsTime, TH1F* hPtRazvsTime, TH1F* hPtDeczvsTime,  TH1F* hPtRaxvsTime, TH1F* hPtDecxvsTime, TH1F* hRAZenithvsTime, TH1F* hDecZenithvsTime);
 
-int TOOLS::Make_Plots(double PreTime, double PostTime, double GRB_t0, string PlotsFile, string FT2_FILE, int verbosity){
+int TOOLS::Make_Plots(double PreTime, double PostTime, double GRB_t0, string PlotsFile, string FT2_FILE, int verbosity, float TimeStep){
 
  if (PlotsFile=="") PlotsFile= GetS("OUTPUT_DIR")+"/Plots.root";
 /*
@@ -59,8 +59,8 @@ int TOOLS::Make_Plots(double PreTime, double PostTime, double GRB_t0, string Plo
 
  const double StartTime=StartTime_orig-TimeExtension;
  const double StopTime =StopTime_orig+TimeExtension;
- const int TimeBins      = (int)ceil(StopTime-StartTime);
- const int TimeBins_orig = (int)ceil(StopTime_orig-StartTime_orig);
+ const int TimeBins      = (int)ceil((StopTime-StartTime)/TimeStep);
+ const int TimeBins_orig = (int)ceil((StopTime_orig-StartTime_orig)/TimeStep);
  //this assumes we have 1sec time bins, will break otherwise
 
  TH1F hPtRazvsTime =  TH1F("hPtRazvsTime","PtRaz vs Time", TimeBins,StartTime,StopTime);
@@ -92,6 +92,7 @@ int TOOLS::Make_Plots(double PreTime, double PostTime, double GRB_t0, string Plo
  double START,RA_ZENITH,DEC_ZENITH,PTRAZ,PTRAX,PTDECZ,PTDECX,MCILWAINL,STOP,MCILWAINB,LATITUDE,LONGITUDE;
 
  for (long jj = 1; jj < nrows && !status; jj++) {
+     //if (jj%100==0){ printf("%5.2f\r",jj/float(nrows)); fflush(0);}
      fits_read_col (fptr,TDOUBLE,1,jj, 1, 1, NULL,&START, &anynul, &status);
      fits_read_col (fptr,TDOUBLE,2,jj, 1, 1, NULL,&STOP, &anynul, &status);
      int ibin = hRAZenithvsTime.FindBin(START);
@@ -110,6 +111,7 @@ int TOOLS::Make_Plots(double PreTime, double PostTime, double GRB_t0, string Plo
     fits_read_col (fptr,TDOUBLE,14,jj, 1, 1, NULL,&PTDECZ, &anynul, &status);
     fits_read_col (fptr,TDOUBLE,15,jj, 1, 1, NULL,&PTRAX, &anynul, &status);
     fits_read_col (fptr,TDOUBLE,16,jj, 1, 1, NULL,&PTDECX, &anynul, &status);
+    LONGITUDE+=180;
     hPtRazvsTime.SetBinContent(ibin,PTRAZ);
     hPtRaxvsTime.SetBinContent(ibin,PTRAX);
     hPtDeczvsTime.SetBinContent(ibin,PTDECZ);
@@ -177,6 +179,7 @@ int TOOLS::Make_Plots(double PreTime, double PostTime, double GRB_t0, string Plo
    Interpolate(&hDecZenithvsTime);
    Interpolate(&hMcIlwainLvsTime);
    Interpolate(&hMcIlwainBvsTime);
+
 
    hPtRazvsTime.Write("hPtRazvsTime_interpolated");
    hLatitudevsTime.Write("hLatitudeTime_interpolated");
@@ -267,7 +270,7 @@ void Interpolate(TH1F* hist,bool aRA) {
  TGraph g;
 
  for (int i=1;i<=hist->GetNbinsX();i++) {
-
+    //printf("%d\%d \r",i,hist->GetNbinsX()); fflush(0);
     if ((ilast_filled && (i-ilast_filled)>33 && nel<=1))  {  //there is a gap, reset table
         //  printf("long gap nel=%d i,ilast=%d %d %d time=%f %f\n",nel,i,ilast_filled,i-ilast_filled,hist->GetBinCenter(i),hist->GetBinCenter(ilast_filled));
          ilast_filled=0;

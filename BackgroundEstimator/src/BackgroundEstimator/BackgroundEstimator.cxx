@@ -22,7 +22,7 @@ BackgroundEstimator::~BackgroundEstimator()
 BackgroundEstimator::BackgroundEstimator(string aClass, double EMin, double EMax, int EBins, float ZTheta_Cut,  bool initialize, bool ShowLogo):
 Energy_Min_datafiles(0),Energy_Max_datafiles(0),Energy_Bins_datafiles(0),
 Energy_Min_user(EMin),Energy_Max_user(EMax),Energy_Bins_user(EBins),FT1ZenithTheta_Cut(ZTheta_Cut),UsingDefaultBinning(true),
-DataClass(aClass),EstimatorVersion(1.40),Residuals_version(1.3),RateFit_version(1.3),ThetaPhiFits_version(1.3),
+DataClass(aClass),EstimatorVersion(2.00),Residuals_version(2.0),RateFit_version(2.0),ThetaPhiFits_version(2.0),
 StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposure(0),fRateFit(0),fThetaPhiFits(0),fCorrectionFactors(0)
 {
  if (ShowLogo) {
@@ -61,6 +61,11 @@ StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposu
       return;
   }
 
+  EventClassMask=0;
+  if (DataClass.find("P7")!=string::npos) {
+     if (DataClass.find("TRANSIENT")!=string::npos) EventClassMask=int(pow(2.,0.));
+  }
+
   if (ShowLogo) printf("%s: Using %s data class.\n",__FUNCTION__,DataClass.c_str());
   DataClassName_noConv=TOOLS::GetDataClassName_noConv(DataClass);
   ConversionName      =TOOLS::GetConversionName(DataClass);
@@ -75,7 +80,9 @@ StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposu
       fResidualOverExposure = TFile::Open(astring.c_str());
       if (!fResidualOverExposure) {printf("%s: Data file %s cannot be read. Did you get the data files?\n",__FUNCTION__,astring.c_str()); exit(1);}
 
-      sscanf(fResidualOverExposure->Get("Energy_Data")->GetTitle(),"%lf-%lf-%d",&Energy_Min_datafiles,&Energy_Max_datafiles,&Energy_Bins_datafiles);
+      if (sscanf(fResidualOverExposure->Get("Energy_Data")->GetTitle(),"%lf_%lf_%d",&Energy_Min_datafiles,&Energy_Max_datafiles,&Energy_Bins_datafiles)!=3)
+          sscanf(fResidualOverExposure->Get("Energy_Data")->GetTitle(),"%lf-%lf-%d",&Energy_Min_datafiles,&Energy_Max_datafiles,&Energy_Bins_datafiles);
+      
 
       if (Energy_Min_user<=0)  Energy_Min_user=Energy_Min_datafiles;
       else if (fabs(Energy_Min_user-Energy_Min_datafiles)>0.1) {
@@ -114,36 +121,50 @@ StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposu
            Residuals_version = aversion;
       }
 
-      astring = DataDir+"RateFit_"+DataClassName_noConv+"_"+ConversionName+".root";
+      
+      astring = DataDir+"RateFit_"+DataClass+".root";
       fRateFit = TFile::Open(astring.c_str());
       if (!fRateFit) {printf("%s: Data file %s cannot be read. Did you get the data files?\n",__FUNCTION__,astring.c_str()); exit(1);}
-
+      
       aversion=atof(fRateFit->Get("version")->GetTitle());
       if (aversion<RateFit_version) {
            printf("%s: Warning! You are using a RateFit data file that has an older version than the latest (v%.2f) one.\n",__FUNCTION__,RateFit_version);
            RateFit_version = aversion;
-      }
+      }     
       fRateFit->Close();
-
-      astring=DataDir+"ThetaPhi_Fits_"+DataClassName_noConv.c_str()+"_"+ConversionName+".root";
+      
+      astring=DataDir+"ThetaPhi_Fits_"+DataClass+".root";
       fThetaPhiFits = TFile::Open(astring.c_str());
       if (!fThetaPhiFits) {printf("%s: Data file %s cannot be read. Did you get the data files?\n",__FUNCTION__,astring.c_str()); exit(1);}
       aversion=atof(fThetaPhiFits->Get("version")->GetTitle());
+
       if (aversion<RateFit_version) {
            printf("%s: Warning! You are using a ThetaPhiFits data file that has an older version than the latest (v%.2f) one.\n",__FUNCTION__,RateFit_version);
            ThetaPhiFits_version = aversion;
       }
+      if (aversion<2.0) {
+           printf("%s: You cannot use the bkge with such old data files. Please download the new ones.. \n",__FUNCTION__);
+           exit(1);
+      }
+      
       fThetaPhiFits->Close();
 
-
       //Read Correction factors
-      sprintf(name,"%s/TimeCorrectionFactor_%s_%s.root",DataDir.c_str(),DataClassName_noConv.c_str(),ConversionName.c_str());
+      sprintf(name,"%s/TimeCorrectionFactor_%s_%s.root",DataDir.c_str(),DataClass.c_str(),ConversionName.c_str());
       fCorrectionFactors= TFile::Open(name);
-      if (!fCorrectionFactors) {printf("%s: Can't open file %s\n",__FUNCTION__,name); exit(1);}
+      if (!fCorrectionFactors) {printf("%s: Can't open file %s\n",__FUNCTION__,name); }
       
       for (int iE=0;iE<=Energy_Bins_datafiles;iE++) {
-          sprintf(name,"hCorrectionFactor_%d",iE);
-          RatiovsTime.push_back((TH1F*)fCorrectionFactors->Get(name));
+          if (!fCorrectionFactors)  RatiovsTime.push_back(0);
+          else {
+             sprintf(name,"RatiovsTime_%d",iE);
+             TH1F * h = (TH1F*)fCorrectionFactors->Get(name);
+             if (!h) {
+                 sprintf(name,"hCorrectionFactor_%d",iE);
+                 h = (TH1F*)fCorrectionFactors->Get(name);
+             }
+             if (fCorrectionFactors)  RatiovsTime.push_back(h);
+          }
       }
    }
    
@@ -152,7 +173,7 @@ StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposu
 
 //#define DEBUG
 
-void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2_FILE){
+void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2_FILE, double StartTime_user, double EndTime_user){
 
   TimeStep=1.0; //don't change that - left for debugging purposes
   Energy_Min_datafiles=Energy_Min_user;
@@ -169,7 +190,7 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
   int hdutype,res,anynul;
   FILE * ftemp;
   //1. PREPARE FILES
-  char buffer[1024];
+  
   FILE * fOldFitsList = fopen(FitsAllSkyFilesList.c_str(),"r");
   if (!fOldFitsList) {printf("%s: file %s cannot be read.\n",__FUNCTION__,FitsAllSkyFilesList.c_str()); return;}
 
@@ -183,23 +204,32 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
   if (status) fits_report_error(stderr, status);  status=0;
   fits_read_col (fptr,TDOUBLE,10,1, 1, 1, NULL,&StartTime, &anynul, &status);
   if (status) fits_report_error(stderr, status);  status=0;
-  fits_close_file(fptr, &status);
-
-  char aname2[2000];
-  while (fscanf(ftemp,"%s",aname2)==1) sprintf(name,"%s",aname2);
-  status=0;
-  fits_open_file(&fptr, name, READONLY, &status);
-  if (status) fits_report_error(stderr, status);
-  fits_movabs_hdu(fptr, 2, &hdutype, &status);
-  if (status) fits_report_error(stderr, status);  status=0;
   fits_get_num_rows(fptr, &nrows, &status);
   if (status) fits_report_error(stderr, status);  status=0;
   fits_read_col (fptr,TDOUBLE,10,nrows, 1, 1, NULL,&EndTime, &anynul, &status);
   fits_close_file(fptr, &status);
+
+  while (fscanf(ftemp,"%s",name)==1) {
+     status=0;
+     fits_open_file(&fptr, name, READONLY, &status);
+     if (status) fits_report_error(stderr, status);
+     fits_movabs_hdu(fptr, 2, &hdutype, &status);
+     if (status) fits_report_error(stderr, status);  status=0;
+     fits_get_num_rows(fptr, &nrows, &status);
+     if (status) fits_report_error(stderr, status);  status=0;
+     double anEndTime;
+     fits_read_col (fptr,TDOUBLE,10,nrows, 1, 1, NULL,&anEndTime, &anynul, &status);
+     fits_close_file(fptr, &status);
+     if (anEndTime>EndTime) EndTime=anEndTime;
+  }
+  
   fclose (ftemp);
 
-  printf("FT1 StartTime-EndTime %f %f\n",StartTime,EndTime);
+
   if (StartTime==EndTime) {printf("%s:StartTime==EndTime?? \n",__FUNCTION__); exit(1);} //this also includes when they are both zero
+  if (StartTime_user!=0) {StartTime=StartTime_user; printf("%s: Override StartTime to %f\n",__FUNCTION__,StartTime);}
+  if (EndTime_user!=0)   {EndTime=EndTime_user; printf("%s: Override EndTime to %f\n",__FUNCTION__,EndTime);}
+  
 
   TimeBins = int((EndTime-StartTime)/TimeStep);
   StopTime = StartTime + TimeStep*TimeBins;
@@ -212,12 +242,12 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
   if (!ftemp) {
        printf("%s: Making plots...\n",__FUNCTION__);
        double midtime=(StopTime+StartTime)/2;
-       TOOLS::Make_Plots(midtime-StartTime,StopTime-midtime,midtime,name,FT2_FILE);
+       TOOLS::Make_Plots(midtime-StartTime+10,StopTime-midtime+10,midtime,name,FT2_FILE,1,5);
   }
   else  fclose(ftemp);
 
   //4. MAKE THETA/PHI DISTRIBUTIONS
-  sprintf(name,"%s/ThetaPhi_Fits_%s_%s.root",DataDir.c_str(),DataClassName_noConv.c_str(),ConversionName.c_str());
+  sprintf(name,"%s/ThetaPhi_Fits_%s.root",DataDir.c_str(),DataClass.c_str());
   ftemp = fopen(name,"r"); 
   if (!ftemp) { 
     printf("%s: Making Theta & Phi fits...\n",__FUNCTION__); 
@@ -226,7 +256,7 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
   else fclose(ftemp);
 
   //5. MAKE RATE FITS
-  sprintf(name,"%s/RateFit_%s_%s.root",DataDir.c_str(),DataClassName_noConv.c_str(),ConversionName.c_str());
+  sprintf(name,"%s/RateFit_%s.root",DataDir.c_str(),DataClass.c_str());
   ftemp = fopen(name,"r"); 
   if (!ftemp) { 
     printf("%s: Making Rate fit...\n",__FUNCTION__);
@@ -234,60 +264,47 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
   } 
   else fclose(ftemp); 
 
-  if (DataClass!="LLE") {
       //3. RESIDUAL_OVER_EXPOSURE
        sprintf(name,"%s/Residual_Over_Exposure_%s.root",DataDir.c_str(),DataClass.c_str());
        ftemp = fopen(name,"r"); 
        if (!ftemp) {
           //////////////////////////////////////////
           //5.1.Exposure
+
+/*
              sprintf(name,"%s/ltCube_%s.fits",DataDir.c_str(),DataClass.c_str());
-                  ftemp=fopen(name,"r"); 
+             ftemp=fopen(name,"r"); 
              if (!ftemp) {
-                sprintf(buffer,"gtltcube scfile=%s evfile=@%s outfile=%s dcostheta=0.025 binsz=1 zmax=%f clobber=yes phibins=10 2>&1",FT2_FILE.c_str(),FitsAllSkyFilesList.c_str(),name,FT1ZenithTheta_Cut);
-                #ifdef DEBUG
-                FILE *pipe = popen(buffer, "r");
-                printf("%s: Executing command: %s\n",__FUNCTION__,buffer);    
-                while (fgets(buffer,sizeof(buffer),pipe))  printf("	|%s",buffer);
-                pclose(pipe);
-                #else 
-                sprintf(buffer,"%s >/dev/null",buffer);
-                system(buffer);
-                #endif
+                sprintf(name,"ltCube_%s.fits",DataDir.c_str(),DataClass.c_str());
+                TOOLS::Run_gtltcube(Datadir, StartTime, EndTime, FT2_FILE, FT1ZenithTheta_Cut, 2, EventFile, name);
               } 
               else fclose(ftemp);
+*/     
+     
+           //5.1. Calculate exposure maps
+           sprintf(name,"%s/exposure_%s.fits",DataDir.c_str(),DataClass.c_str());
+           ftemp = fopen(name,"r"); 
+           if (!ftemp) { 
+                char gtltcube_Filename[100];
+                sprintf(gtltcube_Filename,"ltCube_%s.fits",DataClass.c_str());
+                printf("%s: Creating exposure map %s...\n",__FUNCTION__,name); 
+                TOOLS::Run_gtexpcube(DataDir, StartTime, EndTime, FT2_FILE, DataClass, FT1ZenithTheta_Cut, name, Energy_Min_datafiles,Energy_Max_datafiles,Energy_Bins_datafiles, 5, "@"+FitsAllSkyFilesList, gtltcube_Filename);
+                //sprintf(buffer,"gtexpcube infile=%s/ltCube_%s.fits evfile=@%s cmfile=NONE outfile=%s irfs=%s nxpix=1 nypix=1 pixscale=1 coordsys=GAL xref=0 yref=0 axisrot=0 proj=CAR emin=%f emax=%f enumbins=%d bincalc=CENTER clobber=yes 2>&1",DataDir.c_str(),DataClass.c_str(),FitsAllSkyFilesList.c_str(),name,DataClass.c_str(),Energy_Min_datafiles,Energy_Max_datafiles,Energy_Bins_datafiles);
+          } 
+          else fclose(ftemp); 
      
      
            //////////////////////////////////////////
            //5.2.Residual
+           
            sprintf(name,"%s/Residual_%s.root",DataDir.c_str(),DataClass.c_str());
-           ftemp = fopen(name,"r"); 
+           ftemp = fopen(name,"r");
            if (!ftemp) { 
               printf("%s: Calculating Residuals...\n",__FUNCTION__); fflush(stdout); 
               CalcResiduals(FitsAllSkyFilesList);
            } 
            else fclose(ftemp); 
           
-           //5.3. Calculate exposure maps
-           sprintf(name,"%s/exposure_%s.fits",DataDir.c_str(),DataClass.c_str());
-           ftemp = fopen(name,"r"); 
-           if (!ftemp) { 
-                printf("%s: Creating exposure map %s...\n",__FUNCTION__,name); 
-                sprintf(buffer,"gtexpcube infile=%s/ltCube_%s.fits evfile=@%s cmfile=NONE outfile=%s irfs=%s nxpix=1 nypix=1 pixscale=1 coordsys=GAL xref=0 yref=0 axisrot=0 proj=CAR emin=%f emax=%f enumbins=%d bincalc=CENTER clobber=yes 2>&1",DataDir.c_str(),DataClass.c_str(),FitsAllSkyFilesList.c_str(),name,DataClass.c_str(),Energy_Min_datafiles,Energy_Max_datafiles,Energy_Bins_datafiles);
-     
-                #ifdef DEBUG
-                FILE *pipe = popen(buffer, "r");
-                printf("%s: Executing command: %s\n",__FUNCTION__,buffer);
-                while (fgets(buffer,sizeof(buffer),pipe))  printf("	|%s",buffer);
-                pclose(pipe);
-                #else 
-                sprintf(buffer,"%s 1>/dev/null",buffer);
-                system(buffer);
-                #endif
-          } 
-          else fclose(ftemp); 
-     
-     
           ///////////////////////////////////////////
           //5.4. Calculate Residual Over Exposure
           TH2F * hExposureAllSky = new TH2F("hExposureAllSky","hExposureAllSky",L_BINS,-180,180,B_BINS,-90,90);
@@ -349,7 +366,6 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
           fExposure->Close();
        }
        else  fclose(ftemp);
-    }
 
 
 };
@@ -379,7 +395,8 @@ bool BackgroundEstimator::PassesCuts(fitsfile * fptr, long int i, int format) {
   if (format==DATA_FORMAT_P7)  {
       static int EventClass=0;
       fits_read_col (fptr,TINT,15,i, 1, 1, NULL,&EventClass, &anynul, &status);
-      if (!EventClassMask&EventClass) return false;
+      //printf ("%d %d %d\n",EventClass,EventClassMask,EventClass%16);
+      if (EventClass%16<EventClassMask) return false;
   }
   else {
     static int CTBClassLevel=0;
@@ -412,6 +429,7 @@ bool BackgroundEstimator::PassesCuts(fitsfile * fptr, long int i, int format) {
 }
 
 double BackgroundEstimator::GimmeCorrectionFactor(short int ie, double MET) {
+
   if (RatiovsTime[ie]==NULL) return 1;
   if (ie<=0 || ie>Energy_Bins_datafiles) {printf("%s: energy bin that is out of bounds %d submitted\n",__FUNCTION__,ie); return 1;}
   double CorrectionCoeff = RatiovsTime[ie]->GetBinContent(RatiovsTime[ie]->FindBin(MET));

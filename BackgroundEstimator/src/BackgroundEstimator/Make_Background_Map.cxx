@@ -4,12 +4,14 @@
 
 ClassImp(BackgroundEstimator)
 
-int BackgroundEstimator::Make_Background_Map(string FT1_FILE, string FT2_FILE, string GRB_DIR, double Burst_t0, double Burst_Dur, const double Iterations, int verbosity, bool Calc_Residual){
+//Return codes 
+//1 NO GTI
+//2 NO EXPOSURE (i.e. burst out of FOV)
+//0 ALL OK or file exists OK 
+int BackgroundEstimator::Make_Background_Map(string FT1_FILE, string FT2_FILE, string GRB_DIR, double Burst_t0, double Burst_Dur,  int verbosity, bool Calc_Residual, bool Save_Earth_Coo_Map){
 
- //Return codes 
- //1 NO GTI
- //2 NO EXPOSURE (i.e. burst out of FOV)
- //0 ALL OK or file exists OK 
+  const double Burst_t1 = Burst_t0+Burst_Dur;
+           
   string ResultsFile = GRB_DIR+"/"+DataClass+"_BackgroundMaps.root";
   FILE * ftemp = fopen(ResultsFile.c_str(),"r");
   bool ZThetaChanged=false;
@@ -54,67 +56,24 @@ int BackgroundEstimator::Make_Background_Map(string FT1_FILE, string FT2_FILE, s
      tries++;
      if (tries>100){ printf("%s: Won't retry more.. exiting\n",__FUNCTION__); exit(1);}
   }
+  
+  
   TH2D* hSolidAngle = (TH2D*)fResidualOverExposure->Get("hSolidAngle");
   if (verbosity>1) printf("%s: Creating Background Map\n",__FUNCTION__);
   ///////////////////////////////////////////////////////
 
-  //Decide on time range to be analyzed
-  //Because it is hard to find events in intervals smaller than 1sec if the user
-  //requests the background for <1sec durations, we make the calculations for an 1sec duration
-  //and then we scale down to the requested duration
-  double Burst_Dur_Used=-1;
-  //Calculate all-sky background
-  int TimeBinsB=-1;
-  if (Burst_Dur<1) {
-    TimeBinsB=1;
-    Burst_Dur_Used=1;
-    if (verbosity>1) {
-        printf("%s: Calculating background for an 1sec interval.\n",__FUNCTION__);
-        printf("%s: Results will be scaled down to the requested %f sec interval\n",__FUNCTION__,Burst_Dur);
-    }
-  }
-  else {
-    TimeBinsB = (int)ceil(Burst_Dur);
-    Burst_Dur_Used = TimeBinsB*1; 
-  }
-  double Burst_t1 = Burst_t0 + Burst_Dur_Used;
-  if (verbosity>2) {
-     printf("%s: Making calculations using %d %.2f sec bins\n",__FUNCTION__,TimeBinsB,Burst_Dur_Used/TimeBinsB);
-  }
-  //////////////////////////////////////////
-  vector <string> FT1FILES;
-  if (FT1_FILE[0] == '@') {
-      ftemp = fopen((FT1_FILE.substr(1,FT1_FILE.length())).c_str(),"r");
-      if (!ftemp) {printf("%s: Can't open list file %s\n",__FUNCTION__,(FT1_FILE.substr(1,FT1_FILE.length())).c_str()); exit(1);}
-      while (fscanf(ftemp,"%s",name)==1) FT1FILES.push_back(string(name));
-      fclose (ftemp);
-  }
-  /* //capability not used any more after joining GRBAnalysis
-  else if (FT1_FILE[0]=='^') {
-     char FITSDIR[2000];
-     sscanf(FT1_FILE.c_str(),"^%s",FITSDIR);
-     FT1FILES = TOOLS::MakeFitsList(Burst_t0,Burst_Dur,FITSDIR);
-     string astring=GRB_DIR+"/fitslist.txt";
-     ftemp = fopen(astring.c_str(),"w");
-     for (unsigned int i=0;i<FT1FILES.size();i++) fprintf(ftemp,"%s\n",FT1FILES[i].c_str());
-     fclose (ftemp);
-     FT1_FILE="@"+astring;
-  }
-  */
-  else FT1FILES.push_back(FT1_FILE);
-
   //Check if data file provided has required data
   fitsfile *fptr;
   int status = 0;
-  int  anynul;
+  
   long nrows;
   int hdutype;
   double File_t0,File_t1;
   //Open first file
   char COMMENT[2000];
-  fits_open_file(&fptr, FT1FILES[0].c_str(), READONLY, &status);
+  fits_open_file(&fptr, FT1_FILE.c_str(), READONLY, &status);
   if (status) {
-	printf("%s: Can't open fits file %s\n",__FUNCTION__,FT1FILES[0].c_str());
+	printf("%s: Can't open fits file %s\n",__FUNCTION__,FT1_FILE.c_str());
         fits_report_error(stderr, status);
 	exit(1);
   }
@@ -126,36 +85,18 @@ int BackgroundEstimator::Make_Background_Map(string FT1_FILE, string FT2_FILE, s
   File_t0=atof(name);
   if (File_t0<1) sscanf(name,"'%lf'",&File_t0); //parsing failed so let's try with '' around the number
 
-  if (FT1FILES.size()==1) { //one file
-     status=0;
-     fits_read_keyword(fptr, (char*)"TSTOP",  name, COMMENT, &status); 
-     File_t1=atof(name);
-     if (File_t1<1)   sscanf(name,"'%lf'",&File_t1); //parsing failed so let's try with '' around the number
-     //printf("%d %s %f\n",status,name,File_t1);
-     //fits_read_col (fptr,TDOUBLE,10,nrows, 1, 1, NULL,&File_t1, &anynul, &status);
-     fits_close_file(fptr, &status);
-  }
-  else { //many files
-     fits_close_file(fptr, &status);
-     status=0;
-     fits_open_file(&fptr, FT1FILES[FT1FILES.size()-1].c_str(), READONLY, &status);
-     fits_movabs_hdu(fptr, 2, &hdutype, &status);
-     //fits_get_num_rows(fptr, &nrows, &status);    
-     fits_read_keyword(fptr, (char*)"TSTOP",  name, COMMENT, &status); File_t1=atof(name);  
-     if (File_t1<1)  sscanf(name,"'%lf'",&File_t1); //parsing failed so let's try with '' around the number
-     //fits_read_col (fptr,TDOUBLE,10,nrows, 1, 1, NULL,&File_t1, &anynul, &status);
-     fits_close_file(fptr, &status);
-  }
+  status=0;
+  fits_read_keyword(fptr, (char*)"TSTOP",  name, COMMENT, &status); 
+  File_t1=atof(name);
+  if (File_t1<1)   sscanf(name,"'%lf'",&File_t1); //parsing failed so let's try with '' around the number
+  //printf("%d %s %f\n",status,name,File_t1);
+  //fits_read_col (fptr,TDOUBLE,10,nrows, 1, 1, NULL,&File_t1, &anynul, &status);
+  fits_close_file(fptr, &status);
+
   if (Burst_t0<File_t0) {printf("%s: data files start at time %f and you requested an estimation for an earlier time (%f).\n",__FUNCTION__,File_t0,Burst_t0); exit(1);}
   if (Burst_t1>File_t1) {
-      if (Burst_Dur!=Burst_Dur_Used) {
-         printf("%s: data files end at time %f and this analysis needs data up to MET %f.\n",__FUNCTION__,File_t1,Burst_t1); 
-         exit(1);
-     }
-     else {
         printf("%s: data files end at time %f and you requested an estimation for a later time (%f).\n",__FUNCTION__,File_t1,Burst_t1);
         exit(1);
-     }
   }
   //////////////////////////////////////////////
 
@@ -180,48 +121,43 @@ int BackgroundEstimator::Make_Background_Map(string FT1_FILE, string FT2_FILE, s
   //////////////////////////////////////////////////////
 
   //READ GTIs
-  vector <double> ALLSTARTGTI;
-  vector <double> ALLENDGTI;
-
-  long GTIs;
-  for (unsigned int ifile=0;ifile<FT1FILES.size();ifile++) {
-      status=0;
-      fits_open_file(&fptr, FT1FILES[ifile].c_str(), READONLY, &status);
-      if (status) {printf("%s: Error opening file %s\n",__FUNCTION__,FT1FILES[ifile].c_str()); exit(1);}
-
-      //READ GTIs 
-      fits_movabs_hdu(fptr, 3, &hdutype, &status);
-      fits_get_num_rows(fptr, &GTIs, &status);
-
-      for (int i=1;i<=GTIs;i++) {
-           double agti_start,agti_end;
-           fits_read_col (fptr,TDOUBLE,1,i, 1, 1, NULL,&agti_start, &anynul, &status);
-           fits_read_col (fptr,TDOUBLE,2,i, 1, 1, NULL,&agti_end, &anynul, &status);
-           if (agti_end<Burst_t0 || agti_start>Burst_t1) continue; //skip external GTIs
-           ALLSTARTGTI.push_back(agti_start);
-           ALLENDGTI.push_back(agti_end);
-           //int ALLGTIs=ALLSTARTGTI.size();
-           //printf("%d %d %f %f\n",ifile,ALLGTIs,ALLSTARTGTI[ALLGTIs],ALLENDGTI[ALLGTIs]);
-      }
-      fits_close_file(fptr, &status);
-  }
-  if (ALLSTARTGTI.size()==0) { 
+  vector <double> GTI_Starts;
+  vector <double> GTI_Ends;
+  TOOLS::ReadGTI( GTI_Starts,GTI_Ends, FT1_FILE, Burst_t0, Burst_t1);
+  
+ 
+  if (GTI_Starts.size()==0) { 
        fResults->cd();
        printf("%s: No GTIs found\n",__FUNCTION__);
        TNamed Data = TNamed("ERROR","NO GTI");
+       fResults->cd();
        Data.Write();
        fResults->Close();
        return 1;
   }
-  ALLSTARTGTI.push_back(0);
-  ALLENDGTI.push_back(0);
-  if (verbosity>1) printf("%s: Read %d GTIs\n",__FUNCTION__,(int)ALLSTARTGTI.size()-1);
+
+  if (verbosity>1) printf("%s: Read %d GTIs\n",__FUNCTION__,(int)GTI_Starts.size());
   /////////////////////////////////////////////////
 
   double SimEvents;
-  TH2F * hSimulatedSky = new TH2F("hSimulatedSky","hSimulatedSky",L_BINS,-180,180,B_BINS,-90,90);
-  hSimulatedSky->SetContour(200);
+  TH2F * hSimulatedSky[Energy_Bins_datafiles+1];
+  TH2F * hSimulatedSky_Earth[Energy_Bins_datafiles+1];
+  hSimulatedSky_Earth[0]=NULL;
+  for (int ie=1;ie<=Energy_Bins_datafiles;ie++) {
 
+     if (Save_Earth_Coo_Map) {
+        sprintf(name,"hSimulatedSky_Earth_%d",ie);
+        hSimulatedSky_Earth[ie] = new TH2F(name,name,30,-110,110,30,-110,110);
+        hSimulatedSky_Earth[ie]->SetContour(256);
+     }
+     else {
+        hSimulatedSky_Earth[ie]=NULL;
+     }
+
+     sprintf(name,"hSimulatedSky_%d",ie);
+     hSimulatedSky[ie] = new TH2F(name,name,L_BINS,-180,180,B_BINS,-90,90);
+     hSimulatedSky[ie]->SetContour(200);
+  }
   TH2F* hExposureBurst=NULL,*hExposureBurst_1deg=NULL,*hFinalBackground=NULL,*hFinalResidual=NULL,*hFinalSimulatedSky=NULL;
   if (Calc_Residual) {
      hExposureBurst = new TH2F("hExposureBurst","hExposureBurst",L_BINS,-180,180,B_BINS,-90,90);
@@ -234,7 +170,9 @@ int BackgroundEstimator::Make_Background_Map(string FT1_FILE, string FT2_FILE, s
      hFinalSimulatedSky->SetContour(200);
   }
 
+
   //EXPOSURE
+  if (verbosity) printf("%s: Calculating exposure\n",__FUNCTION__);
   if (Calc_Residual) {
      sprintf(name,"%s/%s_burst_exposure.fits",GRB_DIR.c_str(),DataClass.c_str());
      ftemp = fopen(name,"r");
@@ -242,10 +180,25 @@ int BackgroundEstimator::Make_Background_Map(string FT1_FILE, string FT2_FILE, s
      else TOOLS::Run_gtexpcube(GRB_DIR, Burst_t0, Burst_t1, FT2_FILE, DataClass, FT1ZenithTheta_Cut, name, Energy_Min_datafiles, Energy_Max_datafiles, Energy_Bins_datafiles,verbosity);
   }
 
-  if (verbosity>1) printf("%s: Simulating CR background\n",__FUNCTION__);
-  for (unsigned short int ie=1;ie<=Energy_Bins_datafiles;ie++) { 
-     if (verbosity>0) TOOLS::ProgressBar(ie-1,Energy_Bins_datafiles);
+  sprintf(name,"%s/Plots.root",GRB_DIR.c_str());
+  TFile * fPlots = TFile::Open(name);
+  Plots_Struct myPlots_Struct;
+  myPlots_Struct.hMcIlwainLvsTime    = (TH1F*)fPlots->Get("hMcIlwainLvsTime");
+  if (!myPlots_Struct.hMcIlwainLvsTime) {printf("%s: Can't read plots from file %s\n",__FUNCTION__,name); exit(1);}
+  myPlots_Struct.hPtRazvsTime        = (TH1F*)fPlots->Get("hPtRazvsTime");
+  myPlots_Struct.hPtDeczvsTime       = (TH1F*)fPlots->Get("hPtDeczvsTime");
+  myPlots_Struct.hPtRaxvsTime        = (TH1F*)fPlots->Get("hPtRaxvsTime");
+  myPlots_Struct.hPtDecxvsTime       = (TH1F*)fPlots->Get("hPtDecxvsTime");
+  myPlots_Struct.hRAZenithvsTime     = (TH1F*)fPlots->Get("hRAZenithvsTime");
+  myPlots_Struct.hDecZenithvsTime    = (TH1F*)fPlots->Get("hDecZenithvsTime");
+  myPlots_Struct.hRockingAnglevsTime = (TH1F*)fPlots->Get("hRockingAnglevsTime");
 
+  if (verbosity>1) printf("%s: Simulating CR background\n",__FUNCTION__);
+  SimulateSky(myPlots_Struct, hSimulatedSky, GTI_Starts,GTI_Ends,Energy_Bins_datafiles, hSimulatedSky_Earth, 0, 0);
+  
+  for (int ie=1;ie<=Energy_Bins_datafiles;ie++) { 
+     if (verbosity>0) TOOLS::ProgressBar(ie-1,Energy_Bins_datafiles);
+     
      //EXPOSURE
      if (Calc_Residual) {
         sprintf(name,"%s/%s_burst_exposure.fits",GRB_DIR.c_str(),DataClass.c_str());
@@ -257,30 +210,16 @@ int BackgroundEstimator::Make_Background_Map(string FT1_FILE, string FT2_FILE, s
     	}
      }
 
-     //SIMULATION
-     sprintf(name,"%s/Plots.root",GRB_DIR.c_str());
 
-     //Because usually for higher energies we use a very small ROI, the statistical error of the bkg estimate gets worse.
-     //for that case, we simulate a big more for E>1GeV to have good statistical error even at HE.
-     int Extra_Iterations_Factor;
-     if (Bin2Energy(ie)>1e3) Extra_Iterations_Factor=5;
-     else                    Extra_Iterations_Factor=1;
-     if (TOOLS::GetS("_DataClassName_noConv")=="DIFFUSE") {
-	Extra_Iterations_Factor*=3;
-	if (Bin2Energy(ie)>1e4) Extra_Iterations_Factor*=2;
-     }
-
-     SimulateSky( name, hSimulatedSky, ALLSTARTGTI,ALLENDGTI,Extra_Iterations_Factor*Iterations, ie);
-     
      fResults->cd();
-     //sprintf(name,"hSimulatedSky_nosolid_%d",ie);
-     //hSimulatedSky->Write(name);
+     //sprintf(name,"hSimulatedSky[ie]_nosolid_%d",ie);
+     //hSimulatedSky[ie]->Write(name);
 
-     SimEvents = hSimulatedSky->GetEntries();
-     if (SimEvents<=0) {printf("%s: Problem simulating sky (return %f)\n",__FUNCTION__,hSimulatedSky->Integral()); exit(1);}
+     SimEvents = hSimulatedSky[ie]->GetEntries();
+     if (SimEvents<=0) {printf("%s: Problem simulating sky (return %f)\n",__FUNCTION__,hSimulatedSky[ie]->Integral()); exit(1);}
  
      /////////////////////////////////////////////////////
-     hSimulatedSky->Divide(hSolidAngle);
+     hSimulatedSky[ie]->Divide(hSolidAngle);
      fResults->cd();
      //RESIDUAL
      if (Calc_Residual) {
@@ -291,17 +230,9 @@ int BackgroundEstimator::Make_Background_Map(string FT1_FILE, string FT2_FILE, s
         htemp->Delete();
         hResidualBurst->SetTitle(name);
         hResidualBurst->Multiply(hExposureBurst);
-        //Scale maps 
-        if (Burst_Dur_Used!=Burst_Dur) {
-           double scalefactor = Burst_Dur/Burst_Dur_Used;
-           //printf("%s: Scaling maps by a factor %.2f/%.2f\n",__FUNCTION__,Burst_Dur,Burst_Dur_Used);
-           hResidualBurst->Scale(scalefactor);
-           hExposureBurst->Scale(scalefactor);
-        }
-        if (ie!=0 && ie!=(Energy_Bins_datafiles+1)) {
-	   hFinalResidual->Add(hResidualBurst);
-    	   hFinalSimulatedSky->Add(hSimulatedSky);
-        }
+        
+	hFinalResidual->Add(hResidualBurst);
+    	hFinalSimulatedSky->Add(hSimulatedSky[ie]);
 	sprintf(name,"hExposure_Burst_%d",ie);
 	hExposureBurst->Write(name);
 	sprintf(name,"hExposure_Burst_1deg_%d",ie);
@@ -311,15 +242,10 @@ int BackgroundEstimator::Make_Background_Map(string FT1_FILE, string FT2_FILE, s
         hResidualBurst->Delete();
     }
 
-    //Scale maps 
-    if (Burst_Dur_Used!=Burst_Dur) {
-       double scalefactor = Burst_Dur/Burst_Dur_Used;
-       //printf("%s: Scaling maps by a factor %.2f/%.2f\n",__FUNCTION__,Burst_Dur,Burst_Dur_Used);
-        hSimulatedSky->Scale(scalefactor);
-    }
     sprintf(name,"hSimulatedSky_%d",ie);
-    hSimulatedSky->SetTitle(name);
-    hSimulatedSky->Write(name);
+    hSimulatedSky[ie]->SetTitle(name);
+    hSimulatedSky[ie]->Write(name);
+    if (hSimulatedSky_Earth[ie]) hSimulatedSky_Earth[ie]->Write(name);
 
   }
   if (Calc_Residual) {
@@ -362,9 +288,13 @@ int BackgroundEstimator::Make_Background_Map(string FT1_FILE, string FT2_FILE, s
     hExposureBurst->Delete();
     hExposureBurst_1deg->Delete();
   }
-  hSimulatedSky->Delete();
+  for (int ie=1;ie<=Energy_Bins_datafiles;ie++) {
+     hSimulatedSky[ie]->Delete();
+     if (hSimulatedSky_Earth[ie]) hSimulatedSky_Earth[ie]->Delete();
+  }
 
   fResults->Close();
+  fPlots->Close();
   return 0;
 }
 

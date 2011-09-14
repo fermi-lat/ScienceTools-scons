@@ -6,15 +6,16 @@ ClassImp(BackgroundEstimator)
 
 void BackgroundEstimator::Make_McIlwainL_Fits(string FitsAllSkyFile){
 
-  sprintf(name,"%s/Plots_%s.root",DataDir.c_str(),DataClassName_noConv.c_str());
+  sprintf(name,"%s/Plots_%s.root",DataDir.c_str(),DataClass.c_str());
   TFile * fPlots = TFile::Open(name);
   TH1F* hPtRazvsTime     = (TH1F*)fPlots->Get("hPtRazvsTime;1");
   TH1F* hPtDeczvsTime    = (TH1F*)fPlots->Get("hPtDeczvsTime;1");
   TH1F* hMcIlwainLvsTime = (TH1F*)fPlots->Get("hMcIlwainLvsTime;1");
   if (!hPtRazvsTime || !hPtDeczvsTime || !hMcIlwainLvsTime) {printf("%s: Can't read plots from file %s\n",__FUNCTION__,name); exit(1);}
 
+  
   TH1F * hTheta_away[Energy_Bins_user+1];
-  sprintf(name,"%s/ThetaPhi_Fits_%s_%s.root",DataDir.c_str(),DataClassName_noConv.c_str(),ConversionName.c_str());
+  sprintf(name,"%s/ThetaPhi_Fits_%s.root",DataDir.c_str(),DataClass.c_str());
   TFile * fThetaPhi_Fits = TFile::Open(name);
   for (int i=1;i<=Energy_Bins_user;i++) {
     sprintf(name,"hTheta_away_%d",i);
@@ -23,19 +24,19 @@ void BackgroundEstimator::Make_McIlwainL_Fits(string FitsAllSkyFile){
   }
   
   //To avoid contamination from galactic-plane gamma-rays, only events when the LAT is pointing at a |GalacticLatitude|>B_Cut are considered.
-  float B_Cut=70;
-  if (DataClass.find("DIFFUSE")!=string::npos)  B_Cut=70; //for DIFFUSE
+  const float B_Cut=70;
   const float McIlwainLMin=0.983,McIlwainLMax=1.735;
 
   //the final rates are produced by upscaling the initially-calculated event rates (corresponding to FT1Theta<MaxTheta)
   //The upscaling factor is the inverse of the fraction of events having a FT1Theta<MaxTheta when looking away from the earth.
   //This factor comes from the ThetaPhi_Fits produced earlier.
 
-  float MaxTheta=60; //for !DIFFUSE
+  //I decreased maxtheta so that MaxTheta+RockAngle<=earth_limb_ztheta
+  float MaxTheta=50; //for !DIFFUSE
   //We can use MaxTheta to also try to avoid the gamma rays from the galactic diffuse
   //A part of the theta>MaxTheta data (for the Phis that point towards the plane) have increased gamma ray contribution
   //By reducing MaxTheta we can reduce the gamma contamination of the McIlwainL fit
-  if (DataClass.find("DIFFUSE")!=string::npos)  MaxTheta=60; //for DIFFUSE
+  if (DataClass.find("DIFFUSE")!=string::npos) MaxTheta=60; //for DIFFUSE
 
   //round up MaxTheta to the upper edge of the correspond bin in hTheta_away. 
   //This will avoid any accuracy problems in calculating the correction factor below.
@@ -49,7 +50,7 @@ void BackgroundEstimator::Make_McIlwainL_Fits(string FitsAllSkyFile){
   //note if you make McIlwainLBins depend in i then it messes up hRateAll but this is OK
 
   TH1F *hEvents[Energy_Bins_user+1],*hEvents_Cut[Energy_Bins_user+1] ,*hRate[Energy_Bins_user+1],*hTime[Energy_Bins_user+1];
-  //first fit is underflow, last is overflow
+  
   TH1F*  hdt = new TH1F("hdt","Spectrum of time intervals between successive events",100,-6,5);
   hdt ->GetXaxis()->SetTitle("log_{10}(dt/sec)");
   hdt ->GetYaxis()->SetTitle("");
@@ -96,7 +97,7 @@ void BackgroundEstimator::Make_McIlwainL_Fits(string FitsAllSkyFile){
      int status=0,hdutype,anynul;
      fits_open_file(&fptr, name, READONLY, &status);
      fits_movabs_hdu(fptr, 2, &hdutype, &status);
-     long nrows;int ncols;
+     long nrows=0;int ncols=0;
      fits_get_num_rows(fptr, &nrows, &status);
      fits_get_num_cols(fptr, &ncols, &status);
      int format;
@@ -107,28 +108,27 @@ void BackgroundEstimator::Make_McIlwainL_Fits(string FitsAllSkyFile){
         else {printf("%s: unknown format file %s ncols=%d class=%s\n",__FUNCTION__,name,ncols,DataClass.c_str()); exit(1);}
      }
      else {printf("%s: Unknown fits file format file %s class=%s\n",__FUNCTION__,name,DataClass.c_str()); exit(1);}
-
+ 
+     if (nrows<=0) {printf("%s: nrows=%ld\n", __FUNCTION__,nrows); exit(1);}
      for (long int i=1;i<=nrows;i++) {
-         if (!PassesCuts(fptr,i,format)) continue;
+         
          double PtTime;
          fits_read_col (fptr,TDOUBLE,10,i, 1, 1, NULL,&PtTime, &anynul, &status);
          dt=PtTime-tlast;
          tlast=PtTime;
-
+         
          itimebin = hPtRazvsTime->FindBin(PtTime);
          if  (hPtRazvsTime->GetBinContent(itimebin)==0) {
             if      (hPtRazvsTime->GetBinContent(itimebin-1)!=0) ibin=itimebin-1;
             else if (hPtRazvsTime->GetBinContent(itimebin+1)!=0) ibin=itimebin+1;
-            else if (hPtRazvsTime->GetBinContent(itimebin+2)!=0) ibin=itimebin+2;
-            else if (hPtRazvsTime->GetBinContent(itimebin-2)!=0) ibin=itimebin-2;
             else    {printf("%s: there is a gap in the plots? %f %d\n",__FUNCTION__,PtTime,itimebin); continue;}
             itimebin=ibin;
          }
 
          TOOLS::Galactic((double)hPtRazvsTime->GetBinContent(itimebin),(double)hPtDeczvsTime->GetBinContent(itimebin),&PtL,&PtB);
          //exclude observations near the galactic plane
-         if (fabs(PtB)<B_Cut) continue;
-
+         if (fabs(PtB)<B_Cut || !PassesCuts(fptr,i,format)) continue;
+         
          Map->Fill(PtL,PtB);
          hdt->Fill(log10(dt));
 
@@ -152,13 +152,13 @@ void BackgroundEstimator::Make_McIlwainL_Fits(string FitsAllSkyFile){
      
   //CALCULATE RATES
   TCanvas * c1[Energy_Bins_user+1];
-  sprintf(name,"%s/RateFit_%s_%s.root",DataDir.c_str(),DataClassName_noConv.c_str(),ConversionName.c_str());
+  sprintf(name,"%s/RateFit_%s.root",DataDir.c_str(),DataClass.c_str());
   TFile * fout = new TFile(name,"RECREATE");
   for (int ie=1;ie<=Energy_Bins_user;ie++) {
      for (int i=1;i<=McIlwainLBins[ie];i++) {
          if (hTime[ie]->GetBinContent(i)) {
             hRate[ie]->SetBinContent(i,hEvents[ie]->GetBinContent(i)/hTime[ie]->GetBinContent(i));
-            hRate[ie]->SetBinError(i,sqrt(hEvents[ie]->GetBinContent(i))/hTime[ie]->GetBinContent(i)); //used for fitting
+            hRate[ie]->SetBinError(i,sqrt(hEvents[ie]->GetBinContent(i))/hTime[ie]->GetBinContent(i)); 
          }
      }
      sprintf(name,"hRate_alltheta_%d",ie);
@@ -203,12 +203,7 @@ void BackgroundEstimator::Make_McIlwainL_Fits(string FitsAllSkyFile){
   }
 
   
-  for (int i=1;i<=McIlwainLBins[1];i++) {
-    double ratesum=0;
-    for (int ie=1;ie<=Energy_Bins_user;ie++) ratesum+=hRate[ie]->GetBinContent(i);
-    hRate_all->SetBinContent(i,ratesum);
-  }
-  
+  for (int ie=1;ie<=Energy_Bins_user;ie++) hRate_all->Add(hRate[ie]);
   hRate_all->Write();
   printf("       \r");
 
@@ -217,7 +212,7 @@ void BackgroundEstimator::Make_McIlwainL_Fits(string FitsAllSkyFile){
   //NOW THAT WE APPLY A ZENITH-THETA CUT (AND WE REJECT A PART OF THE SKY), WE HAVE TO CALCULATE THE FRACTIONAL 
   //DECREASE IN THE ALL-SKY RATE. WE CALCULATE THIS NUMBER FOR DIFFERENT ENERGY_BINS AND ROCKING ANGLES
   TH2F * hScaleFactor = new TH2F("hScaleFactor","hScaleFactor",180,0,180,Energy_Bins_user,1,Energy_Bins_user+1);
-  const double FT1ZenithTheta_Cut_RAD=FT1ZenithTheta_Cut*DEG_TO_RAD;
+  const float FT1ZenithTheta_Cut_RAD=FT1ZenithTheta_Cut*DEG_TO_RAD;
   for (int i=1;i<=hScaleFactor->GetNbinsX();i++) {
      printf("%d\r",i); fflush(0);
      float rock_RAD=hScaleFactor->GetXaxis()->GetBinCenter(i)*DEG_TO_RAD;

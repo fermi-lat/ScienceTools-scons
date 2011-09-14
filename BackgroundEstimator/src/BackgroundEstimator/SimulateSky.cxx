@@ -1,220 +1,364 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
 // $Header$
 #include "BackgroundEstimator/BackgroundEstimator.h"
+#include <cmath>
+#include <ctime>
 
-#include "TRandom2.h"
+//#define NO_EAST_WEST
+//#define SAVE_DEBUG_MAPS
 
-void BackgroundEstimator::SimulateSky(string PlotsFile, TH2F * hSimulatedSky,
-  vector <double> STARTGTI,vector <double> ENDGTI, const double Iterations,  const short int iEnergy) {
+void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimulatedSky[], vector <double> GTI_Start, vector <double> GTI_End, const int nEnergy, TH2F* hSimulatedSky_Earth[], float TimeStep_user, float hSimulatedSky_Earth_Map_Min_B) {
+  //hSimulatedSky_Earth does not have a [0] element
 
-  hSimulatedSky->Reset();
+  const float L_BinWidth=360./L_BINS;
+  const float B_BinWidth=180./B_BINS;
+  
   //Make a temp buffer skymap
-  TH2F htemp = TH2F("htemp","htemp",L_BINS,-180,180,B_BINS,-90,90);
+  TH2F *htemp[nEnergy+1];
+  TH2F *htemp_earth[nEnergy+1];
+  for (int iEnergy=1;iEnergy<=nEnergy;iEnergy++) {
+      sprintf(name,"htemp_%d",iEnergy);
+      htemp[iEnergy] = new TH2F(name,name,L_BINS,-180,180,B_BINS,-90,90);
 
-  char name[2000];
-  TFile * fPlots = TFile::Open(PlotsFile.c_str());
-  TH1F* hPtRazvsTime        = (TH1F*)fPlots->Get("hPtRazvsTime");
-  TH1F* hPtDeczvsTime       = (TH1F*)fPlots->Get("hPtDeczvsTime");
-  TH1F* hPtRaxvsTime        = (TH1F*)fPlots->Get("hPtRaxvsTime");
-  TH1F* hPtDecxvsTime       = (TH1F*)fPlots->Get("hPtDecxvsTime");
-  TH1F* hRAZenithvsTime     = (TH1F*)fPlots->Get("hRAZenithvsTime");
-  TH1F* hDecZenithvsTime    = (TH1F*)fPlots->Get("hDecZenithvsTime");
-  TH1F* hRockingAnglevsTime = (TH1F*)fPlots->Get("hRockingAnglevsTime");
-  TH1F* hMcIlwainLvsTime    = (TH1F*)fPlots->Get("hMcIlwainLvsTime");
-  if (!hMcIlwainLvsTime) {printf("%s: Can't read plots from file %s\n",__FUNCTION__,PlotsFile.c_str()); exit(1);}
-
-  sprintf(name,"%s/EastWest_Correction_%s_%s.root",DataDir.c_str(),DataClassName_noConv.c_str(),ConversionName.c_str());
-  static bool HaveEastWest=true;
-  TH2F * hEastWest=NULL;
-  TFile * fEastWest=NULL;
-  if (HaveEastWest) {
-     fEastWest = TFile::Open(name);
-     if (fEastWest) {
-        sprintf(name,"hSignalBkgRatio_%d",iEnergy);
-        hEastWest = (TH2F*)fEastWest->Get(name);
-     }
-     else {
-         printf("%s: Can't find file %s. Will not apply East West corrections\n",__FUNCTION__,name);
-         HaveEastWest=false;
-     }
+      if (hSimulatedSky_Earth[1]) {
+         sprintf(name,"htemp_earth_%d",iEnergy);
+         htemp_earth[iEnergy] = (TH2F*) hSimulatedSky_Earth[1]->Clone();
+         htemp_earth[iEnergy]->SetTitle(name);
+         htemp_earth[iEnergy]->SetName(name);
+      }
   }
 
-  sprintf(name,"%s/RateFit_%s_%s.root",DataDir.c_str(),DataClassName_noConv.c_str(),ConversionName.c_str());
+  //Get East-West Corrections
+  static bool HaveEastWest=false;
+  TH2F * hEastWest[nEnergy+1];
+  TFile * fEastWest=NULL;
+  sprintf(name,"%s/EastWest_Correction_%s.root",DataDir.c_str(),DataClass.c_str());
+  fEastWest = TFile::Open(name);
+  if (fEastWest) {
+     HaveEastWest=true;
+     for (int iEnergy=1;iEnergy<=nEnergy;iEnergy++) {
+        sprintf(name,"hEW_Correction_TrueOverEst_%d",iEnergy);
+        hEastWest[iEnergy] = (TH2F*)fEastWest->Get(name);
+        if  (!hEastWest[iEnergy]) { printf("%s: Can't find %s. Will not apply East West corrections\n",__FUNCTION__,name); HaveEastWest=false; break;}         
+     }
+  }
+  
+
+  //Get Ratefits
+  sprintf(name,"%s/RateFit_%s.root",DataDir.c_str(),DataClass.c_str());
   TFile * fRates = TFile::Open(name);
-  sprintf(name,"RateFit_%d;1",iEnergy);
-  TF1 * RateFit = (TF1*)fRates->Get(name);
+
+  TF1 * RateFit[nEnergy+1];
+  for (int iEnergy=1;iEnergy<=nEnergy;iEnergy++) {
+     sprintf(name,"RateFit_%d;1",iEnergy);
+     RateFit[iEnergy] = (TF1*)fRates->Get(name);
+  }
   TH1F * hScaleFactor =(TH1F*)fRates->Get("hScaleFactor");
 
-  sprintf(name,"%s/ThetaPhi_Fits_%s_%s.root",DataDir.c_str(),DataClassName_noConv.c_str(),ConversionName.c_str());
+  sprintf(name,"%s/ThetaPhi_Fits_%s.root",DataDir.c_str(),DataClass.c_str());
   TFile * fThetaPhi_Fits = TFile::Open(name);
-
-  bool DIFFUSE_CLASS=false; //for the diffuse class we don't do phi dependence
-  TF1* ThetaFit[7];
-  for (int iphi=0;iphi<7;iphi++) {
-     sprintf(name,"ThetaFit_%d_%d",iEnergy,iphi);
-     ThetaFit[iphi] = (TF1*)fThetaPhi_Fits->Get(name);
-     if (iphi==0 && !ThetaFit[iphi]) {printf("%s: Can't find fit %s\n",__FUNCTION__,name); exit(1);}
-     else if (!ThetaFit[iphi]) {DIFFUSE_CLASS=true; break;}
+  TH1F* hThetaPhi_rescaled[nEnergy+1][5+1];
+  for (int iEnergy=1;iEnergy<=nEnergy;iEnergy++) {
+     for (int iPhi=1;iPhi<=5;iPhi++) {
+        char name2[100];
+        sprintf(name2,"cc_%d",iEnergy);
+        sprintf(name,"hProjection_Coarse_rescaled_%d_%d",iPhi,iEnergy);
+        hThetaPhi_rescaled[iEnergy][iPhi] = (TH1F*)(((TCanvas*)fThetaPhi_Fits->Get(name2))->GetPad(iPhi)->FindObject(name));
+        if (!hThetaPhi_rescaled[iEnergy][iPhi]) {printf("%s: Can't find %s in %s\n",__FUNCTION__,name,name2); exit(1);}
+     }
   }
-  TH2F * hThetaCut = (TH2F*)fThetaPhi_Fits->Get("hThetaCut");
-  float ThetaCut[7]; 
-  int iphimax=7;
-  if (DIFFUSE_CLASS) iphimax=1;
-  for (int i=0;i<iphimax;i++) ThetaCut[i]=hThetaCut->GetBinContent(iEnergy,i);
   
-  sprintf(name,"PhiFit_%d",iEnergy);
-  TF1* PhiFit = (TF1*)fThetaPhi_Fits->Get(name);
-  double PhiFitMax = PhiFit->GetMaximum(0,360);
-  float FT1L;
-
-  const double TimeStep = hMcIlwainLvsTime->GetXaxis()->GetBinWidth(1);
-  double AllSkyRate;
-  float McIlwainL;
-  TRandom2 tRand;
-  tRand.SetSeed(0);
-
-  double rand;
-  float FT1Phi,FT1Theta;
-  astro::SkyDir SCz,SCx,SCZenith;
+    
   CLHEP::HepRotation inverse;
   CLHEP::Hep3Vector LocalDir;
   astro::SkyDir local;
-  float PtRaz,PtRax,PtDecz,PtDecx,RAZenith,DecZenith,FT1ZenithTheta;
-  //float PtL,PtB;
-  const double FT1ZenithTheta_Cut_Rad=FT1ZenithTheta_Cut*DEG_TO_RAD;
-  unsigned short int nev;
-  const long int TimeBins=hMcIlwainLvsTime->GetNbinsX();
-  double IterationsPerSec=Iterations/TimeBins;
-  if (IterationsPerSec==0) IterationsPerSec=1;
+  
+ 
   HepRotation localToCelestial;
   localToCelestial.setTolerance(0.1);
-  double TIME;
+  
+  
   unsigned int igti=0;
-  short int iphibin;
-  float RockingAngle,ScaleFactor;
-  int RockingAngleBin;
-  const int Sec_per_flush=100;
-  for (long long int i=1;i<=TimeBins;i++) { //make sure you go up to i==TimeBins so that the East-West effect is applied for the last chunk
-      //if (i%1000==0) {printf("%.2f\r",i/float(TimeBins));fflush(0);}
-      //1.CHECK IF WE ARE IN A GTI
-      TIME=hMcIlwainLvsTime->GetBinCenter(i);
-      if (TIME>=STARTGTI[igti+1] && TIME<=ENDGTI[igti+1]) igti++; //moved to next gti
+  double TIME_START= myPlots_Struct.hMcIlwainLvsTime->GetXaxis()->GetXmin();
+  double TIME_0  = TIME_START;
+  double TIME_END= myPlots_Struct.hMcIlwainLvsTime->GetXaxis()->GetXmax();
 
-      if (TIME>=STARTGTI[igti] && TIME<=ENDGTI[igti]) {//don't use this with continue because it might miss some flushing
-         //printf("accept i=%ld gti=%d time=%f %f %f\n",i,igti,TIME,STARTGTI[igti],ENDGTI[igti]);
-         if (igti>=STARTGTI.size()) {printf("heyyyy %d %d\n",igti,(int)STARTGTI.size()); exit(1);}
+  float TimeStep;
+  if (TimeStep_user) TimeStep=TimeStep_user;
+  else if ((TIME_END-TIME_START)<200) TimeStep=10;
+  else TimeStep =30;
+  
+  #ifdef SAVE_DEBUG_MAPS
+  TFile * fjunk = new TFile("/tmp/junk.root","RECREATE");
+  #endif 
 
-          //2.CALCULATE RATE    
-          RockingAngle = hRockingAnglevsTime->GetBinContent(i);
-          if (RockingAngle<=0) {
-             printf("%s: rocking angle weird rock=%f i=%lld  iEnergy=%d time=%f\n",__FUNCTION__,RockingAngle, i,iEnergy,TIME); 
-             printf("%s: GTI data start\end: %f %f\n",__FUNCTION__,STARTGTI[igti],ENDGTI[igti]);
+  
+  time_t start,end;
+  double dif;      
+  time (&start);  
+  
+  while (1) {
+       double fraction_done=(TIME_0-TIME_START)/(TIME_END-TIME_START);
+       
+      time (&end);
+
+      dif = difftime (end,start);
+      double remaining = dif/fraction_done-dif;
+      printf("%f dif=%f  %f hrs remaining\r",fraction_done,dif,remaining/60./60.); fflush(0);
+      //Check if TIME_0 is in GTI
+      if (fabs(TIME_0-TIME_END)<0.01) {
+          //printf("TIME_0 reached TIME_END, done!\n");
+          break;
+      }
+
+      if (TIME_0<GTI_Start[igti]) {
+         TIME_0=GTI_Start[igti];
+         //printf("advanced TIME_0 to the start of gti %d %f\n",igti,TIME_0);
+      }
+      bool BailOut=false;
+      while (TIME_0>=GTI_End[igti]) { //TIME_0 not in gti
+         if (igti==GTI_Start.size()-1) {
+             //printf("TIME_0=%f out of GTIs. Current GTI %d %f-%f\n",TIME_0,igti,GTI_Start[igti],GTI_End[igti]);
+             BailOut=true;
+             break;
+         }
+         else {
+            igti++;
+            TIME_0=GTI_Start[igti];
+            //printf("advanced GTI to %d TIME_0=%f GTI=%f-%f\n",igti,TIME_0,GTI_Start[igti],GTI_End[igti]);            
+         }
+      }
+      if (BailOut) break;
+      
+      //find a TIME_1
+      float aTimeStep=TimeStep;
+      double TIME_1=TIME_0+aTimeStep;
+      //printf("tentative TIME_1=%f timestep=%f\n",TIME_1,aTimeStep);
+      if (TIME_1>GTI_End[igti]) {
+         aTimeStep=GTI_End[igti]-TIME_0;
+         TIME_1=TIME_0+aTimeStep;
+         //printf("Adjusted TIME_1 to %f and timestep to %f (GTI_End=%f TIME_END=%f)\n",TIME_1,aTimeStep,GTI_End[igti],TIME_END);
+      }
+      if (aTimeStep<0.1) {
+         TIME_0=TIME_1;
+         continue;
+      }
+      
+      int i_0=myPlots_Struct.hMcIlwainLvsTime->GetXaxis()->FindBin(TIME_0);
+      int i_1=myPlots_Struct.hMcIlwainLvsTime->GetXaxis()->FindBin(TIME_1);
+      int imid=(i_0+i_1)/2;
+      //TOOLS::ProgressBar(int(fraction_done*40),40);
+      
+      //if (i_0%100==0) {printf("%.3f   %f - %f   \r",i_0/float(TimeBins),TIME_1,GTI_End[GTI_End.size()-2]);fflush(0);}
+      //2.CALCULATE RATE    
+      float RockingAngle = myPlots_Struct.hRockingAnglevsTime->GetBinContent(imid);
+      if (RockingAngle<=0) {
+             printf("%s: rocking angle weird rock=%f i_0=%d time=%f\n",__FUNCTION__,RockingAngle, i_0,TIME_0); 
+             printf("%s: GTI data start\end: %f %f\n",__FUNCTION__,GTI_Start[igti],GTI_End[igti]);
              exit(1);
-          }
-          RockingAngleBin=hScaleFactor->GetXaxis()->FindBin(RockingAngle);
-          ScaleFactor = hScaleFactor->GetBinContent(RockingAngleBin,iEnergy);
-          if (ScaleFactor<=0) {printf("%s: Scalefactor=%f, rocking angle=%f\n",__FUNCTION__,ScaleFactor,RockingAngle); exit(1);}
-          McIlwainL=hMcIlwainLvsTime->GetBinContent(i);
-          if (!McIlwainL) {
-              printf("%s: MCIlwainL=0? bin=%lld time=%f\n",__FUNCTION__,i,TIME);
-              exit(1);
-          }
-    
-          AllSkyRate = RateFit->Eval(McIlwainL)*ScaleFactor;
-          //printf("%d %d %f %f\n",i,TimeBins,ScaleFactor,AllSkyRate);
-          //3.PREPARE VECTORS
-          PtRaz =  hPtRazvsTime->GetBinContent(i);
-          PtRax =  hPtRaxvsTime->GetBinContent(i);
-          PtDecz = hPtDeczvsTime->GetBinContent(i);
-          PtDecx = hPtDecxvsTime->GetBinContent(i);
-          //if (PtRaz==0 || PtRax==0 || PtDecz==0 || PtDecx==0){ printf("%s: there is a gap? %d %f %f %f %f \n",__FUNCTION__,i,PtRaz,PtRax,PtDecz,PtDecx); exit(1);}
-    
-          SCz = astro::SkyDir(PtRaz,PtDecz,astro::SkyDir::EQUATORIAL);
-          SCx = astro::SkyDir(PtRax,PtDecx,astro::SkyDir::EQUATORIAL);
-          //printf("mc=%f allskyrate=%f\n",McIlwainL,AllSkyRate);
-          localToCelestial = HepRotation(SCx.dir(),(SCz.dir()).cross(SCx.dir()),SCz.dir());
-    
-          RAZenith = hRAZenithvsTime->GetBinContent(i);
-          DecZenith= hDecZenithvsTime->GetBinContent(i);
-          SCZenith = astro::SkyDir(RAZenith,DecZenith,astro::SkyDir::EQUATORIAL);
-    
-          //float RockingAngle=SCZenith.difference(SCz)/DEG_TO_RAD;
+      }
 
-          if (RAZenith==0 || DecZenith==0) {printf("%s: FT2 has a gap! %lld time=%f %f %f\n",__FUNCTION__,i,hRAZenithvsTime->GetBinCenter(i),RAZenith,DecZenith); exit(1);}
-          for (int iter=0;iter<IterationsPerSec;iter++) {
-             nev = (unsigned short int)tRand.Poisson(AllSkyRate*TimeStep);
-             for (unsigned short int iev=0;iev<nev;iev++) {
-                do {
-                     //Sample a random phi (this depends on just the phi)
-                     //Using acception-rejection method with PhiFit as the PDF
-                     do {
-                         FT1Phi = tRand.Uniform()*360;
-                         rand = tRand.Uniform();
-                     } while (rand>(PhiFit->Eval(FT1Phi)/PhiFitMax));
-                     if (!DIFFUSE_CLASS) {//for !DIFFUSE class
-                     if   (FT1Phi>=350) iphibin=6;
-                        else iphibin = (int)(floor(FT1Phi/50.));
-                     }
-                     else iphibin=0; //TRANSIENT class -- no phi dependence
-                     //Sample a theta (this depends on both the Energy and Phi)
-                     do {
-                         FT1Theta = tRand.Uniform()*ThetaCut[iphibin]; //Only allow theta to go up to thetaCut
-                         rand = tRand.Uniform();
-                         //printf("%f theta=%f bin=%d %d %f\n",rand,FT1Theta,hThetaHist[0]->FindBin(FT1Theta),iphibin,hThetaHist[iphibin]->GetBinContent(hThetaHist[0]->FindBin(FT1Theta)));
-                     } while (rand>(ThetaFit[iphibin]->Eval(FT1Theta)));
-                     LocalDir.setRThetaPhi(1,FT1Theta*DEG_TO_RAD,FT1Phi*DEG_TO_RAD);
-                     //Hep3Vector dir(LocalDir);
-                     local = astro::SkyDir(localToCelestial*LocalDir,astro::SkyDir::EQUATORIAL);
     
-                  } while ((FT1ZenithTheta=SCZenith.difference(local))>FT1ZenithTheta_Cut_Rad);
+      float McIlwainL=myPlots_Struct.hMcIlwainLvsTime->GetBinContent(imid);
+      if (!McIlwainL) {
+          //printf("%s: MCIlwainL=0? bin=%d time=%f\n",__FUNCTION__,i_0,TIME_0);
+          exit(1);
+      }
     
-                  FT1L=local.l();
-                  if (FT1L>180) FT1L-=360;
-                  htemp.Fill(FT1L,local.b());
-                 } //for iev
-          }//for iter
-          //This part of the code applies the East-West effect corrections to the simulated segment and moves the simulated
-          //segment to the final simulated skymap
+      float AllSkyRate[nEnergy+1];
+      for (int iEnergy=1;iEnergy<=nEnergy;iEnergy++) {
+          float ScaleFactor = hScaleFactor->GetBinContent(hScaleFactor->GetXaxis()->FindBin(RockingAngle),iEnergy);
+          if (ScaleFactor<=0 && RockingAngle<170) {printf("%s: Scalefactor=%f, rocking angle=%f TIME_0=%f i_0=%d gti=%d %f/%f\n",__FUNCTION__,ScaleFactor,RockingAngle,TIME_0,i_0,igti,GTI_Start[igti],GTI_End[igti]); exit(1);}
+          //printf("%d ratefit=%f mcilwainl=%f scalefactor=%f rockingangle=%f\n",iEnergy,RateFit[iEnergy]->Eval(McIlwainL),McIlwainL,ScaleFactor,RockingAngle);
+          AllSkyRate[iEnergy] = RateFit[iEnergy]->Eval(McIlwainL)*ScaleFactor;
+      }      
+
+      
+      //printf("%d %d %f %f\n",i_0,TimeBins,ScaleFactor,AllSkyRate);
+      //3.PREPARE VECTORS
+      float PtRaz =  myPlots_Struct.hPtRazvsTime->GetBinContent(imid);
+      float PtRax =  myPlots_Struct.hPtRaxvsTime->GetBinContent(imid);
+      float PtDecz = myPlots_Struct.hPtDeczvsTime->GetBinContent(imid);
+      float PtDecx = myPlots_Struct.hPtDecxvsTime->GetBinContent(imid);
+      if (PtRaz==0 || PtRax==0 || PtDecz==0 || PtDecx==0){ printf("%s: there is a gap? %d %f %f %f %f \n",__FUNCTION__,imid,PtRaz,PtRax,PtDecz,PtDecx); exit(1);}
+    
+      astro::SkyDir SCz = astro::SkyDir(PtRaz,PtDecz,astro::SkyDir::EQUATORIAL);
+      astro::SkyDir SCx = astro::SkyDir(PtRax,PtDecx,astro::SkyDir::EQUATORIAL);
+      float PtBz_rad=SCz.b()*DEG_TO_RAD;          
+      localToCelestial = HepRotation(SCx.dir(),(SCz.dir()).cross(SCx.dir()),SCz.dir());
+          
+      float RAZenith = myPlots_Struct.hRAZenithvsTime->GetBinContent(imid);
+      float DecZenith= myPlots_Struct.hDecZenithvsTime->GetBinContent(imid);
+      astro::SkyDir SCZenith = astro::SkyDir(RAZenith,DecZenith,astro::SkyDir::EQUATORIAL);
+    
+      //float RockingAngle=SCZenith.difference(SCz)/DEG_TO_RAD;
+
+      if (RAZenith==0 || DecZenith==0) {printf("%s: FT2 has a gap! %d time=%f %f %f\n",__FUNCTION__,imid,myPlots_Struct.hRAZenithvsTime->GetBinCenter(imid),RAZenith,DecZenith); exit(1);}
+      
+      const float ThetaMax=80*DEG_TO_RAD;
+      
+      //Because we fill the east west maps using a FT1B>20degs cut, we need to keep a separate sum of the whole sky in this EW_Map_Integral variable
+      //For the galactic coordinates map, there are no FT1B/L cuts, so we normalize them using their integral
+      double EW_Map_Integral_low_lat[nEnergy];
+      if (hSimulatedSky_Earth[1]) {
+         for (int iEnergy=1;iEnergy<=nEnergy;iEnergy++) EW_Map_Integral_low_lat[iEnergy]=0;
       }
-      if (HaveEastWest && i && (i%Sec_per_flush==0 || i==TimeBins)) { //correct and add htemp to simulatedsky
-           //printf("flush htemp i=%ld timebins=%lld\n",i,TimeBins);
-           int imid;
-           if (i!=TimeBins) imid=i-Sec_per_flush/2;
-           else         imid=i;
-           RAZenith = hRAZenithvsTime->GetBinContent(imid);
-           DecZenith= hDecZenithvsTime->GetBinContent(imid);
-           SCZenith = astro::SkyDir(RAZenith,DecZenith,astro::SkyDir::EQUATORIAL);
-           for (int ix=1;ix<=L_BINS;ix++) {
-                float L=htemp.GetXaxis()->GetBinCenter(ix);
-                for (int iy=1;iy<=B_BINS;iy++) {
-                    float bc=htemp.GetBinContent(ix,iy);
-                    if (!bc) continue;
-                    float B=htemp.GetYaxis()->GetBinCenter(iy);
-                    astro::SkyDir dirBin = astro::SkyDir(L,B,astro::SkyDir::GALACTIC);
-                    float ztheta=SCZenith.difference(dirBin);
-                    if (ztheta>FT1ZenithTheta_Cut_Rad) continue;
-                    float rabin,decbin;
-                    TOOLS::unGalactic(L,B, &rabin, &decbin);
-                    float EarthAzimuth=DEG_TO_RAD*TOOLS::GimmeEarthAzimuth(rabin,decbin,RAZenith,DecZenith, astro::SkyDir::EQUATORIAL);
-                    ztheta*=RAD_TO_DEG;
-                    double x=sin(EarthAzimuth)*ztheta;
-                    double y=cos(EarthAzimuth)*ztheta;
-                    int EWBin=hEastWest->FindBin(x,y);
-                    float EWCorrection = hEastWest->GetBinContent(EWBin);
-                    if (EWCorrection==0) EWCorrection=1;
-                    htemp.SetBinContent(ix,iy,bc*EWCorrection);
-                }
-           }
-           hSimulatedSky->Add(&htemp);
-           htemp.Reset();
-           //printf("done\n");
+      
+      for (int iB=1;iB<=B_BINS;iB++) {  
+         float Bin_B=-90+(iB-0.5)*B_BinWidth;
+         //htemp[1]->GetYaxis()->GetBinCenter(iB);
+         
+         if (fabs(Bin_B-SCz.b())>80) continue;
+         int iL_Min,iL_Max;
+             
+         float Bin_B_rad=Bin_B*DEG_TO_RAD;
+         
+         double kernel=sqrt((pow(sin(ThetaMax/2.),2)-pow(sin((Bin_B_rad-PtBz_rad)/2.),2))/(cos(Bin_B_rad)*cos(PtBz_rad)));
+         //printf("Pt %f/%f binB %f k=%f dl=%f\n",SCz.b(),SCz.l(),Bin_B,kernel,2*asin(kernel)/DEG_TO_RAD);
+         if (isnan(kernel)) continue; //out of FOV
+         else if (kernel>1) {        //the whole RA range is covered
+              iL_Min=1;iL_Max=L_BINS;
+         }
+         else {   //in FOV
+             float dd=2*asin(kernel)/DEG_TO_RAD;
+             if (dd>180) {printf("dd>180 %f\n",dd); exit(1);}
+             float L_Min=SCz.l()-dd;
+             float L_Max=SCz.l()+dd;
+
+             
+             if (L_Min<-180)L_Min+=360;
+             if (L_Min>180) L_Min-=360;
+             if (L_Max>180) L_Max-=360;
+             if (L_Max<-180)L_Max+=360;
+             //if (L_Min>L_Max) {float temp=L_Min; L_Min=L_Max; L_Max=temp;}
+             iL_Min=1+int((L_Min+180)/L_BinWidth);
+             //=htemp[1]->GetXaxis()->FindBin(L_Min);
+             iL_Max=1+int((L_Max+180)/L_BinWidth);
+             //=htemp[1]->GetXaxis()->FindBin(L_Max);
+             if (iL_Min>iL_Max) iL_Max+=L_BINS;
+             //printf("%f %f %d %d\n",L_Min,L_Max,iL_Min,iL_Max);
+         }
+         float Bin_SolidAngle=cos(Bin_B*DEG_TO_RAD);
+         for (int aiL=iL_Min;aiL<=iL_Max;aiL++) {
+              //this trick with iL and aiL is for cases where the goodrange passes the L=+180degs border.
+              int iL=aiL;
+              if (iL>L_BINS) iL-=L_BINS;
+                  
+              float Bin_L=-180+(iL-0.5)*L_BinWidth;              
+              //=htemp[1]->GetXaxis()->GetBinCenter(iL);
+
+              astro::SkyDir SCBin = astro::SkyDir(Bin_L,Bin_B,astro::SkyDir::GALACTIC);
+                  
+              float BinZTheta_rad=SCBin.difference(SCZenith);
+              float BinZTheta=BinZTheta_rad/DEG_TO_RAD;
+              
+              if (BinZTheta>FT1ZenithTheta_Cut) continue;
+                            
+              
+              astro::PointingTransform p = astro::PointingTransform(SCz,SCx);
+              //intf("%f %f\n",FT1Theta*DEG_TO_RAD,FT1Phi*DEG_TO_RAD);
+
+              CLHEP::Hep3Vector dir = SCBin();
+              CLHEP::HepRotation inverse = inverseOf(p.localToCelestial());
+              astro::SkyDir LocalDir = astro::SkyDir(inverse*SCBin());
+
+              float yy=LocalDir().y();
+              float xx=LocalDir().x();
+              float BinPhi=atan2(yy,xx)*RAD_TO_DEG;
+              if (BinPhi<0) BinPhi+=360;
+              float BinTheta=acos(LocalDir().z())/DEG_TO_RAD;
+              if (BinTheta>82 || BinPhi<0 || BinPhi>360){  printf("bintheta=%f BinPhi=%f L=%f/%d PtL/B=%f/%f \n",BinTheta,BinPhi,Bin_L,iL,SCz.l(),SCz.b()); exit(1);}
+              /////////////////////////////////////////////////
+                                          
+              //float BinTheta_rad=SCBin.difference(SCz);
+              
+              int iPhi=1+int(((int(BinPhi/45)%2)?45-fmod(BinPhi,45):fmod(BinPhi,45))/9);
+              if (iPhi==6) iPhi=5;
+              if (iPhi<=0 || iPhi>6) {printf("%f %d\n",BinPhi,iPhi); iPhi=1;}
+                           
+              float x=0,y=0;
+              int EW_Bin=0;//This is the bin of the east west map
+
+              if (HaveEastWest || hSimulatedSky_Earth[1]) {
+                  float EarthAzimuth=DEG_TO_RAD*TOOLS::GimmeEarthAzimuth(Bin_L,Bin_B,SCZenith.l(),SCZenith.b(), astro::SkyDir::GALACTIC);
+                  x=sin(EarthAzimuth)*BinZTheta;
+                  y=cos(EarthAzimuth)*BinZTheta;
+                  if (HaveEastWest) EW_Bin = hEastWest[1]->FindBin(x,y);
+              }
+              //The above assumes that hEastWest and hSimulatedSky_Earth have all the same bins in all energies
+            
+              
+              for (int iEnergy=1;iEnergy<=nEnergy;iEnergy++) {
+                       int itheta_phi_bin=hThetaPhi_rescaled[iEnergy][iPhi]->FindBin(BinTheta);
+                       //rate = relative rate 
+                       float rate=hThetaPhi_rescaled[iEnergy][iPhi]->GetBinContent(itheta_phi_bin)*Bin_SolidAngle;
+                       //if (iEnergy==1) printf("L/B=%f/%f rate=%f BinTheta/Phi= %f/%f thetafit=%f phifit=%f area_fac=%f iphibin=%d\n",Bin_L,Bin_B,rate,BinTheta,BinPhi,ThetaFit[iphibin][iEnergy]->Eval(BinTheta),PhiFit[iEnergy]->Eval(BinPhi),cos(Bin_B*DEG_TO_RAD),iphibin);
+                       if (rate<0) continue;
+                       
+                       #ifndef NO_EAST_WEST
+            	       if (HaveEastWest) {      
+                           float EWCorrection = hEastWest[iEnergy]->GetBinContent(EW_Bin);
+                           if (EWCorrection!=0) rate*=EWCorrection;
+                       }
+                       #endif
+                       
+                       //The simulated earth skymap is EW-Corrected (if applicable)
+                       if (hSimulatedSky_Earth[1]) { //fill EW simulated map
+                              if (fabs(Bin_B)> hSimulatedSky_Earth_Map_Min_B) {
+                                  htemp_earth[iEnergy]->Fill(x,y,rate);
+                              }
+                              else EW_Map_Integral_low_lat[iEnergy]+=rate;
+                       }
+                                  
+                       htemp[iEnergy]->SetBinContent(iL,iB,rate);
+                       //htemp[iEnergy]->SetBinContent(iL,iB,iPhi);
+                     
+                       //printf("%d %f %d %d\n",iEnergy,BinTheta,iPhi,itheta_phi_bin);
+             }
+          }
       }
+
+      for (int iEnergy=1;iEnergy<=nEnergy;iEnergy++) {
+          //printf("allskyrate=%f atimestep=%f integral=%f\n",AllSkyRate[iEnergy],aTimeStep,htemp[iEnergy]->Integral());
+          #ifdef SAVE_DEBUG_MAPS
+          sprintf(name,"htemp_%d_%d",iEnergy,i_0); htemp[iEnergy]->Write(name);
+          if (hSimulatedSky_Earth[1]) {sprintf(name,"htemp_earth_%d_%d",iEnergy,i_0); htemp_earth[iEnergy]->Write(name);}
+          #endif
+          htemp[iEnergy]->Scale(AllSkyRate[iEnergy]*aTimeStep/htemp[iEnergy]->Integral());          
+          if (hSimulatedSky_Earth[1]){ htemp_earth[iEnergy]->Scale(AllSkyRate[iEnergy]*aTimeStep/(EW_Map_Integral_low_lat[iEnergy]+htemp_earth[iEnergy]->Integral()));}
+
+          
+          #ifdef SAVE_DEBUG_MAPS
+          sprintf(name,"htemp_scaled_%d_%d",iEnergy,i_0); htemp[iEnergy]->Write(name);
+          if (hSimulatedSky_Earth[1]) {sprintf(name,"htemp_earth_scaled_%d_%d",iEnergy,i_0); htemp_earth[iEnergy]->Write(name);}
+          #endif
+                    
+          hSimulatedSky[iEnergy]->Add(htemp[iEnergy]);
+          if (hSimulatedSky_Earth[1]) hSimulatedSky_Earth[iEnergy]->Add(htemp_earth[iEnergy]);
+          
+          #ifdef SAVE_DEBUG_MAPS
+          sprintf(name,"hsim_%d_%d",iEnergy,i_0); hSimulatedSky[iEnergy]->Write(name);
+          if (hSimulatedSky_Earth[1]) {sprintf(name,"hsim_earth_%d_%d",iEnergy,i_0); hSimulatedSky_Earth[iEnergy]->Write(name);}
+          #endif
+          //printf("hsim integral=%f\n",hSimulatedSky->Integral());
+        
+          htemp[iEnergy]->Reset();
+          if (hSimulatedSky_Earth[1]) htemp_earth[iEnergy]->Reset();
+      }
+      TIME_0=TIME_1;
   } //for timebins
-  fPlots->Close();
+  
+  for (int iEnergy=1;iEnergy<=nEnergy;iEnergy++) {
+     htemp[iEnergy]->Delete();
+     if (hSimulatedSky_Earth[1]) htemp_earth[iEnergy]->Delete();
+  }
   fRates->Close();
   fThetaPhi_Fits->Close();
-  if (HaveEastWest) fEastWest->Close();
-  else hSimulatedSky->Add(&htemp);
-  hSimulatedSky->Scale(1./IterationsPerSec);
+  if (fEastWest) fEastWest->Close();
+  #ifdef SAVE_DEBUG_MAPS
+  fjunk->Close();
+  #endif
 }
+
+
 

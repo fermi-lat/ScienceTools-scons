@@ -10,7 +10,6 @@ int GANGSTER::CalculateBackground(string Interval_name, double MET, double DURAT
  static bool first=true;
  static bool ShowLogo=true;
  if (verbosity==0) ShowLogo=false;
- const double Iterations=TOOLS::Get("ITERATIONS");
 
  string path = TOOLS::GetS("OUTPUT_DIR")+"/Bkg_Estimates/";
  mkdir(path.c_str(),S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -31,10 +30,10 @@ int GANGSTER::CalculateBackground(string Interval_name, double MET, double DURAT
  mkdir(GRB_DIR.c_str(),S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
  if (verbosity>1) printf("%s (MET/DUR)=(%.1f %.1f) \n",Interval_name.c_str(),MET,DURATION);
  if (Combine) {
-    result=EstF->Make_Background_Map(FT1_FILE, FT2_FILE, GRB_DIR, MET, DURATION, Iterations,verbosity,Calc_Residual);
-    EstB->Make_Background_Map(FT1_FILE, FT2_FILE, GRB_DIR, MET, DURATION, Iterations,verbosity,Calc_Residual);
+    result=EstF->Make_Background_Map(FT1_FILE, FT2_FILE, GRB_DIR, MET, DURATION,verbosity,Calc_Residual);
+    EstB->Make_Background_Map(FT1_FILE, FT2_FILE, GRB_DIR, MET, DURATION, verbosity,Calc_Residual);
  }
- else result=Est->Make_Background_Map(FT1_FILE, FT2_FILE, GRB_DIR, MET, DURATION, Iterations,verbosity,Calc_Residual);
+ else result=Est->Make_Background_Map(FT1_FILE, FT2_FILE, GRB_DIR, MET, DURATION, verbosity,Calc_Residual);
  
  delete Est;
  if (EstF) delete EstF;
