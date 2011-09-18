@@ -28,12 +28,16 @@ class SourceList(list):
             def __init__(self, roi):   self.roi = roi
             def __call__(self, source_index, **kwargs):
                 cm = self.roi.dsm.bgmodels[source_index]
-                return cm.__class__(cm.sa, cm.diffuse_source, self.roi.roi_dir, **kwargs)
+                src = cm.__class__(cm.sa, cm.diffuse_source, self.roi.roi_dir, **kwargs)
+                src.spectral_model = src.smodel
+                return src
         class ExtendedSourceFactory(object):
             def __init__(self, roi):   self.roi = roi
             def __call__(self, source_index, **kwargs):
                 cm = self.roi.dsm.bgmodels[source_index]
-                return cm.__class__(cm.sa, cm.extended_source, self.roi.roi_dir, **kwargs)
+                src = cm.__class__(cm.sa, cm.extended_source, self.roi.roi_dir, **kwargs)
+                src.spectral_model = src.smodel
+                return src
         class PointSourceFactory(object):
             def __init__(self, roi):    self.roi =roi
             def __call__(self, source_index):
