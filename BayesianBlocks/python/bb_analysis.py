@@ -11,7 +11,7 @@ import numpy as num
 from BayesianBlocks import BayesianBlocks
 from FitsNTuple import FitsNTuple
 
-def bb_analysis(evfile, lcfile, fp_frac=1e-3, output='change_points.txt'):
+def bb_analysis(evfile, lcfile, fp_frac=1e-3, outfile='change_points.txt'):
     events = FitsNTuple(evfile)
     bb = BayesianBlocks(events.TIME)
 
@@ -43,7 +43,7 @@ def bb_analysis(evfile, lcfile, fp_frac=1e-3, output='change_points.txt'):
         flux.append(item)
         flux.append(item)
 
-    output = open(output, 'w')
+    output = open(outfile, 'w')
     for data in zip(x, y, flux):
         output.write('%.4f  %.4e  %.4e\n' % data)
     output.close()
@@ -57,4 +57,4 @@ if __name__ == '__main__':
     except:
         print "usage: python bb_analysis.py evfile lcfile"
         sys.exit()
-    ncp, ncpPrior, nevents = bb_analysis(fp_frac=fp_frac)
+    ncp, ncpPrior, nevents = bb_analysis(evfile, lcfile)
