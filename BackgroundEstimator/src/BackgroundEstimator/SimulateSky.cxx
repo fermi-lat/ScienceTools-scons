@@ -98,13 +98,16 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
   time (&start);  
   
   while (1) {
-       double fraction_done=(TIME_0-TIME_START)/(TIME_END-TIME_START);
+      double fraction_done=(TIME_0-TIME_START)/(TIME_END-TIME_START);
        
+      /* 
       time (&end);
 
       dif = difftime (end,start);
       double remaining = dif/fraction_done-dif;
       printf("%f dif=%f  %f hrs remaining\r",fraction_done,dif,remaining/60./60.); fflush(0);
+      */
+      
       //Check if TIME_0 is in GTI
       if (fabs(TIME_0-TIME_END)<0.01) {
           //printf("TIME_0 reached TIME_END, done!\n");
@@ -147,7 +150,7 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
       int i_0=myPlots_Struct.hMcIlwainLvsTime->GetXaxis()->FindBin(TIME_0);
       int i_1=myPlots_Struct.hMcIlwainLvsTime->GetXaxis()->FindBin(TIME_1);
       int imid=(i_0+i_1)/2;
-      //TOOLS::ProgressBar(int(fraction_done*40),40);
+      TOOLS::ProgressBar(int(fraction_done*40),40);
       
       //if (i_0%100==0) {printf("%.3f   %f - %f   \r",i_0/float(TimeBins),TIME_1,GTI_End[GTI_End.size()-2]);fflush(0);}
       //2.CALCULATE RATE    
