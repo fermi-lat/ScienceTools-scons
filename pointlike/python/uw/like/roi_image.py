@@ -85,6 +85,10 @@ class ROIImage(object):
         # set up, then create a SkyImage object to perform the projection
         # to a grid and manage an image
         if not isinstance(self.size,collections.Iterable):
+
+            # make sure size and pixelsize are commensurate (helpful for
+            # various downsampling code later).
+            self.size = int(self.size/self.pixelsize + 0.01)*self.pixelsize
             self.skyimage = SkyImage(self.center, '', self.pixelsize, 
                                      self.size, 1, self.proj, self.galactic, False)
         else:
