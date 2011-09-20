@@ -73,7 +73,7 @@ class ROIstat(object):
     @property
     def energies(self):
         """ array of energies for selected bands (may include front and back for a given energy)"""
-        return np.array(set([band.energy for band in self.selected_bands]))
+        return sorted(list(set([band.energy for band in self.selected_bands])))
         
     def initialize(self, freelist=None):
         """ reinitialize a set of sources, setting up angular distributions
