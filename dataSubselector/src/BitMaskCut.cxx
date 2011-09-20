@@ -28,8 +28,9 @@ bool BitMaskCut::accept(tip::ConstTableRecord & row) const {
 }
 
 bool BitMaskCut::accept(const std::map<std::string, double> & params) const {
-   const std::map<std::string, double>::const_iterator value;
-   if ( (value = params.find(m_colname)) != params.end() ) {
+   const std::map<std::string, double>::const_iterator value
+      = params.find(m_colname);
+   if (value != params.end()) {
       return accept(static_cast<unsigned int>(value->second));
    }
    return true;
