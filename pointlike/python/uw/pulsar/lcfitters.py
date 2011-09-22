@@ -107,9 +107,11 @@ class LCTemplate(object):
         self.last_norm = sum( (prim.integrate() for prim in self.primitives) )
         return self.last_norm
 
-    def integrate(self,phi1,phi2):
+    def integrate(self,phi1,phi2, suppress_bg=False):
         norm = self.norm()
         dphi = (phi2-phi1)
+        if suppress_bg: return sum( (prim.integrate(phi1,phi2) for prim in self.primitives) )/norm
+
         return (1-norm)*dphi + sum( (prim.integrate(phi1,phi2) for prim in self.primitives) )
 
     def max(self,resolution=0.01):
