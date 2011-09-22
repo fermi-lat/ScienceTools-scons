@@ -154,6 +154,7 @@ class UnbinnedTOAGenerator(TOAGenerator):
                 for i,(dom,cod,ax) in enumerate(zip([dom1,dom2],[cod1,cod2],[ax1,ax2])):
                     ax.plot(dom,cod)
                     ax.axvline(fit[0][0],color='red')
+                    ax.axvline(self.phi0,color='k',ls='-')
                     ax.axvline(fit[0][0]-tau_err,color='red',ls='--')
                     ax.axvline(fit[0][0]+tau_err,color='red',ls='--')
                     if i==1:
