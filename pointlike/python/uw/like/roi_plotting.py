@@ -1299,6 +1299,8 @@ class ROISmoothedSource(object):
 
         ax.set_title(self.title)
 
+        ax.tick_params(colors='white') # white ticks look nice
+
         if self.overlay_psf:
 
             # Normalize psf to have same maximum pixel scale
