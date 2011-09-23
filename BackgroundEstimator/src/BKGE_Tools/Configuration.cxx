@@ -41,11 +41,14 @@ void TOOLS::Set(string name,string vals) {
   }
   else t->SetTitle(vals.c_str());
   if (name=="DATA_CLASS") {
-       Set("_DataClassName_noConv",GetDataClassName_noConv(vals));
-       Set("_ConversionName",      GetConversionName(vals));
-       Set("_DataClassVersion",    GetDataClassVersion(vals));
-       Set("_CTBClassLevel",    GetCTBClassLevel(vals));
- }
+       //For P7 and !transient continue
+       if (!(vals.find("P7")!=string::npos and vals.find("TRANSIENT")==string::npos )) {
+          Set("_DataClassName_noConv",GetDataClassName_noConv(vals));
+          Set("_ConversionName",      GetConversionName(vals));
+          Set("_DataClassVersion",    GetDataClassVersion(vals));
+          Set("_CTBClassLevel",    GetCTBClassLevel(vals));       
+       }
+  }     
 
 }
 
