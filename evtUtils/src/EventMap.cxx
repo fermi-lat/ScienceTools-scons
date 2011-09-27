@@ -1,5 +1,6 @@
 // -*- Mode: c++ -*-
 
+#include <ostream>
 
 // This Class's header
 #include "evtUtils/EventMap.h"
