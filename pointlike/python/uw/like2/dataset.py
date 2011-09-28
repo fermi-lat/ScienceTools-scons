@@ -116,6 +116,7 @@ class DataSet(object):
         band_kwargs.update(kwargs)
         for band in self.pixeldata.dmap:
             if (band.emin() + 1) >= self.emin and (band.emax() - 1) < self.emax:
+                # note: pass self to ctor for minROI, maxROI, exposure, psf.band_psf
                 self.bands.append(roi_bands.ROIBand(band, self, roi_dir, **band_kwargs))
 
         return np.asarray(self.bands)
