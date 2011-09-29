@@ -752,7 +752,7 @@ class ROIAnalysis(object):
         return i
 
     @decorate_with(roi_plotting.ROITSMapPlotter,append_init=True)
-    def plot_tsmap(self,filename,**kwargs):
+    def plot_tsmap(self,filename=None,**kwargs):
         i=roi_plotting.ROITSMapPlotter(self,**kwargs)
         i.show(filename=filename)
         return i
