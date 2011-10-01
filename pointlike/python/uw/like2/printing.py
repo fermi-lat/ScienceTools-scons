@@ -68,7 +68,7 @@ def print_summary(roi, sdir=None, galactic=False, maxdist=5, title=None, print_a
     print 90*'-','\n\tDiffuse sources\n',90*'-'
     for source in self.sources:
         if  source.skydir is not None: continue
-        par, sigpar = source.smodel.statistical()
+        par, sigpar = source.spectral_model.statistical()
         n= len(par)
         freeflag = map(makefreeflag, source.smodel.free, sigpar)
         fmt ='%-22s' 
