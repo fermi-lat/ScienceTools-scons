@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Id$
 # Authors: Vlasios Vasileiou <vlasisva@slac.stanford.edu>
-# Version: BackgroundEstimator-00-02-00
+# Version: BackgroundEstimator-00-02-01
 import glob, os
 Import('baseEnv')
 Import('listFiles')
