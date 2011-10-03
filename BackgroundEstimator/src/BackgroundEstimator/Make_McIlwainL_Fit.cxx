@@ -15,7 +15,7 @@ void BackgroundEstimator::Make_McIlwainL_Fits(string FitsAllSkyFile){
 
   
   TH1F * hTheta_away[Energy_Bins_user+1];
-  sprintf(name,"%s/ThetaPhi_Fits_%s.root",DataDir.c_str(),DataClass.c_str());
+  sprintf(name,"%s/ThetaPhi_Fits_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),ThetaPhiFits_version);
   TFile * fThetaPhi_Fits = TFile::Open(name);
   for (int i=1;i<=Energy_Bins_user;i++) {
     sprintf(name,"hTheta_away_%d",i);
@@ -152,7 +152,7 @@ void BackgroundEstimator::Make_McIlwainL_Fits(string FitsAllSkyFile){
      
   //CALCULATE RATES
   TCanvas * c1[Energy_Bins_user+1];
-  sprintf(name,"%s/RateFit_%s.root",DataDir.c_str(),DataClass.c_str());
+  sprintf(name,"%s/RateFit_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),RateFit_version);
   TFile * fout = new TFile(name,"RECREATE");
   for (int ie=1;ie<=Energy_Bins_user;ie++) {
      for (int i=1;i<=McIlwainLBins[ie];i++) {

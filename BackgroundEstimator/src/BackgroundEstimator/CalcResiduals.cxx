@@ -201,7 +201,7 @@ void BackgroundEstimator::CalcResiduals(string FitsAllSkyFile){
 
  //////////////////////////////////////////////////////////////
 
- sprintf(name,"%s/EastWest_Correction_%s.root",DataDir.c_str(),DataClass.c_str());
+ sprintf(name,"%s/EastWest_Correction_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),EastWest_version);
  ftemp = fopen(name,"r"); 
  if (ftemp) fclose(ftemp);
  else {

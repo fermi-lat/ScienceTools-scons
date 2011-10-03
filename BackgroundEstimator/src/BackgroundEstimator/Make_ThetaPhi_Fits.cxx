@@ -8,7 +8,7 @@ void MakeFits(string DataDir, string DataDirs, int Energy_Bins_user, int nPhi, T
 
 void BackgroundEstimator::Make_ThetaPhi_Fits(string FitsAllSkyFile){
 
-  sprintf(name,"%s/ThetaPhi_Fits_%s.root",DataDir.c_str(),DataClass.c_str());
+  sprintf(name,"%s/ThetaPhi_Fits_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),ThetaPhiFits_version);
   FILE * ftemp = fopen(name,"r");
   TFile * fout;
   if (ftemp) {

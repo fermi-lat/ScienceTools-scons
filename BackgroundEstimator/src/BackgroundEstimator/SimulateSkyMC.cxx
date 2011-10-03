@@ -14,7 +14,7 @@ void BackgroundEstimator::SimulateSkyMC(Plots_Struct myPlots_Struct, TH2F * hSim
 
   char name[2000];
 
-  sprintf(name,"%s/EastWest_Correction_%s.root",DataDir.c_str(),DataClass.c_str());
+  sprintf(name,"%s/EastWest_Correction_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),EastWest_version);
   static bool HaveEastWest=false;
   TH2F * hEastWest=NULL;
   TFile * fEastWest=NULL;
@@ -27,16 +27,13 @@ void BackgroundEstimator::SimulateSkyMC(Plots_Struct myPlots_Struct, TH2F * hSim
   }
   else  printf("%s: Can't find file %s. Will not apply East West corrections\n",__FUNCTION__,name);
 
-HaveEastWest=false;
-printf("turn off EAAAAAAAA\n");
-
-  sprintf(name,"%s/RateFit_%s.root",DataDir.c_str(),DataClass.c_str());
+  sprintf(name,"%s/RateFit_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),RateFit_version);
   TFile * fRates = TFile::Open(name);
   sprintf(name,"RateFit_%d;1",iEnergy);
   TF1 * RateFit = (TF1*)fRates->Get(name);
   TH1F * hScaleFactor =(TH1F*)fRates->Get("hScaleFactor");
 
-  sprintf(name,"%s/ThetaPhi_Fits_%s.root",DataDir.c_str(),DataClass.c_str());
+  sprintf(name,"%s/ThetaPhi_Fits_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),ThetaPhiFits_version);
   TFile * fThetaPhi_Fits = TFile::Open(name);
 
 

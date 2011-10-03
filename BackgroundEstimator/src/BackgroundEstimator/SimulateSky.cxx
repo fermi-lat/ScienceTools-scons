@@ -32,7 +32,7 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
   static bool HaveEastWest=false;
   TH2F * hEastWest[nEnergy+1];
   TFile * fEastWest=NULL;
-  sprintf(name,"%s/EastWest_Correction_%s.root",DataDir.c_str(),DataClass.c_str());
+  sprintf(name,"%s/EastWest_Correction_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),EastWest_version);
   fEastWest = TFile::Open(name);
   if (fEastWest) {
      HaveEastWest=true;
@@ -45,7 +45,7 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
   
 
   //Get Ratefits
-  sprintf(name,"%s/RateFit_%s.root",DataDir.c_str(),DataClass.c_str());
+  sprintf(name,"%s/RateFit_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),RateFit_version);
   TFile * fRates = TFile::Open(name);
 
   TF1 * RateFit[nEnergy+1];
@@ -55,7 +55,7 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
   }
   TH1F * hScaleFactor =(TH1F*)fRates->Get("hScaleFactor");
 
-  sprintf(name,"%s/ThetaPhi_Fits_%s.root",DataDir.c_str(),DataClass.c_str());
+  sprintf(name,"%s/ThetaPhi_Fits_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),ThetaPhiFits_version);
   TFile * fThetaPhi_Fits = TFile::Open(name);
   TH1F* hThetaPhi_rescaled[nEnergy+1][5+1];
   for (int iEnergy=1;iEnergy<=nEnergy;iEnergy++) {
@@ -93,13 +93,13 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
   #endif 
 
   
-  time_t start,end;
-  double dif;      
-  time (&start);  
+  //time_t start,end;
+  //double dif;      
+  //time (&start);  
   
   while (1) {
       double fraction_done=(TIME_0-TIME_START)/(TIME_END-TIME_START);
-       
+      TOOLS::ProgressBar(int(fraction_done*40),40);
       /* 
       time (&end);
 
@@ -150,7 +150,7 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
       int i_0=myPlots_Struct.hMcIlwainLvsTime->GetXaxis()->FindBin(TIME_0);
       int i_1=myPlots_Struct.hMcIlwainLvsTime->GetXaxis()->FindBin(TIME_1);
       int imid=(i_0+i_1)/2;
-      TOOLS::ProgressBar(int(fraction_done*40),40);
+
       
       //if (i_0%100==0) {printf("%.3f   %f - %f   \r",i_0/float(TimeBins),TIME_1,GTI_End[GTI_End.size()-2]);fflush(0);}
       //2.CALCULATE RATE    
@@ -270,7 +270,7 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
               float BinPhi=atan2(yy,xx)*RAD_TO_DEG;
               if (BinPhi<0) BinPhi+=360;
               float BinTheta=acos(LocalDir().z())/DEG_TO_RAD;
-              if (BinTheta>82 || BinPhi<0 || BinPhi>360){  printf("bintheta=%f BinPhi=%f L=%f/%d PtL/B=%f/%f \n",BinTheta,BinPhi,Bin_L,iL,SCz.l(),SCz.b()); exit(1);}
+              if (BinTheta>84 || BinPhi<0 || BinPhi>360){  printf("bintheta=%f BinPhi=%f L=%f/%d PtL/B=%f/%f \n",BinTheta,BinPhi,Bin_L,iL,SCz.l(),SCz.b()); exit(1);}
               /////////////////////////////////////////////////
                                           
               //float BinTheta_rad=SCBin.difference(SCz);

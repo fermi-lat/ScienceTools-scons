@@ -22,13 +22,13 @@ BackgroundEstimator::~BackgroundEstimator()
 BackgroundEstimator::BackgroundEstimator(string aClass, double EMin, double EMax, int EBins, float ZTheta_Cut,  bool initialize, bool ShowLogo):
 Energy_Min_datafiles(0),Energy_Max_datafiles(0),Energy_Bins_datafiles(0),
 Energy_Min_user(EMin),Energy_Max_user(EMax),Energy_Bins_user(EBins),FT1ZenithTheta_Cut(ZTheta_Cut),UsingDefaultBinning(true),
-DataClass(aClass),EstimatorVersion(2.00),Residuals_version(2.0),RateFit_version(2.0),ThetaPhiFits_version(2.0),
+DataClass(aClass),EstimatorVersion(2.0),Residuals_version(2.0),RateFit_version(2.0),ThetaPhiFits_version(2.0),EastWest_version(2.0),TimeCorrectionFactors_version(2.0),
 StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposure(0),fRateFit(0),fThetaPhiFits(0),fCorrectionFactors(0)
 {
  if (ShowLogo) {
    printf("*----------------------------------------------*\n");
    printf("|               Background Estimator           |\n");
-   printf("|                 v%.2f 25/Apr/2011            |\n",EstimatorVersion);
+   printf("|                 v%.1f 03/Oct/2012             |\n",EstimatorVersion);
    printf("|                                              |\n");
    printf("| contact:     Vlasios Vasileiou               |\n");
    printf("|              vlasios.vasileiou@lupm.in2p3.fr |\n");
@@ -46,8 +46,8 @@ StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposu
   VALID_CLASSES.push_back("P6_V3_DIFFUSE::BACK");
   VALID_CLASSES.push_back("P6_V3_DIFFUSE");
   VALID_CLASSES.push_back("P7TRANSIENT_V6");
-  VALID_CLASSES.push_back("P7TRANSIENT_V6::FRONT");
-  VALID_CLASSES.push_back("P7TRANSIENT_V6::BACK");
+  //VALID_CLASSES.push_back("P7TRANSIENT_V6::FRONT");
+  //VALID_CLASSES.push_back("P7TRANSIENT_V6::BACK");
 
   bool goodClass=false;
   for (unsigned int i=0;i<VALID_CLASSES.size();i++) {
@@ -75,10 +75,9 @@ StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposu
   DataDir             =TOOLS::GetS("BASEDIR")+"/gtgrb_data/Bkg_Estimator/";
 
   if (initialize) { //normal operation
-      string astring;
-      astring=DataDir+"Residual_Over_Exposure_"+DataClass+".root";
-      fResidualOverExposure = TFile::Open(astring.c_str());
-      if (!fResidualOverExposure) {printf("%s: Data file %s cannot be read. Did you get the data files?\n",__FUNCTION__,astring.c_str()); exit(1);}
+      sprintf(name,"%sResidual_Over_Exposure_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),Residuals_version);
+      fResidualOverExposure = TFile::Open(name);
+      if (!fResidualOverExposure) {printf("%s: Data file %s cannot be read. Did you get the data files?\n",__FUNCTION__,name); exit(1);}
 
       if (sscanf(fResidualOverExposure->Get("Energy_Data")->GetTitle(),"%lf_%lf_%d",&Energy_Min_datafiles,&Energy_Max_datafiles,&Energy_Bins_datafiles)!=3)
           sscanf(fResidualOverExposure->Get("Energy_Data")->GetTitle(),"%lf-%lf-%d",&Energy_Min_datafiles,&Energy_Max_datafiles,&Energy_Bins_datafiles);
@@ -121,25 +120,24 @@ StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposu
            Residuals_version = aversion;
       }
 
-      
-      astring = DataDir+"RateFit_"+DataClass+".root";
-      fRateFit = TFile::Open(astring.c_str());
-      if (!fRateFit) {printf("%s: Data file %s cannot be read. Did you get the data files?\n",__FUNCTION__,astring.c_str()); exit(1);}
+      sprintf(name,"%sRateFit_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),RateFit_version);
+      fRateFit = TFile::Open(name);
+      if (!fRateFit) {printf("%s: Data file %s cannot be read. Did you get the data files?\n",__FUNCTION__,name); exit(1);}
       
       aversion=atof(fRateFit->Get("version")->GetTitle());
       if (aversion<RateFit_version) {
-           printf("%s: Warning! You are using a RateFit data file that has an older version than the latest (v%.2f) one.\n",__FUNCTION__,RateFit_version);
+           printf("%s: Warning! You are using a RateFit data file that has an older version than the latest (v%.1f) one.\n",__FUNCTION__,RateFit_version);
            RateFit_version = aversion;
       }     
       fRateFit->Close();
       
-      astring=DataDir+"ThetaPhi_Fits_"+DataClass+".root";
-      fThetaPhiFits = TFile::Open(astring.c_str());
-      if (!fThetaPhiFits) {printf("%s: Data file %s cannot be read. Did you get the data files?\n",__FUNCTION__,astring.c_str()); exit(1);}
+      sprintf(name,"%s/ThetaPhi_Fits_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),ThetaPhiFits_version);
+      fThetaPhiFits = TFile::Open(name);
+      if (!fThetaPhiFits) {printf("%s: Data file %s cannot be read. Did you get the data files?\n",__FUNCTION__,name); exit(1);}
       aversion=atof(fThetaPhiFits->Get("version")->GetTitle());
 
       if (aversion<RateFit_version) {
-           printf("%s: Warning! You are using a ThetaPhiFits data file that has an older version than the latest (v%.2f) one.\n",__FUNCTION__,RateFit_version);
+           printf("%s: Warning! You are using a ThetaPhiFits data file that has an older version than the latest (v%.1f) one.\n",__FUNCTION__,RateFit_version);
            ThetaPhiFits_version = aversion;
       }
       if (aversion<2.0) {
@@ -150,7 +148,7 @@ StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposu
       fThetaPhiFits->Close();
 
       //Read Correction factors
-      sprintf(name,"%s/TimeCorrectionFactor_%s_%s.root",DataDir.c_str(),DataClass.c_str(),ConversionName.c_str());
+      sprintf(name,"%s/TimeCorrectionFactor_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),TimeCorrectionFactors_version);
       fCorrectionFactors= TFile::Open(name);
       if (!fCorrectionFactors) {printf("%s: Can't open file %s\n",__FUNCTION__,name); }
       
@@ -247,7 +245,7 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
   else  fclose(ftemp);
 
   //4. MAKE THETA/PHI DISTRIBUTIONS
-  sprintf(name,"%s/ThetaPhi_Fits_%s.root",DataDir.c_str(),DataClass.c_str());
+  sprintf(name,"%s/ThetaPhi_Fits_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),TimeCorrectionFactors_version);
   ftemp = fopen(name,"r"); 
   if (!ftemp) { 
     printf("%s: Making Theta & Phi fits...\n",__FUNCTION__); 
@@ -256,7 +254,7 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
   else fclose(ftemp);
 
   //5. MAKE RATE FITS
-  sprintf(name,"%s/RateFit_%s.root",DataDir.c_str(),DataClass.c_str());
+  sprintf(name,"%s/RateFit_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),RateFit_version);
   ftemp = fopen(name,"r"); 
   if (!ftemp) { 
     printf("%s: Making Rate fit...\n",__FUNCTION__);
@@ -265,7 +263,7 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
   else fclose(ftemp); 
 
       //3. RESIDUAL_OVER_EXPOSURE
-       sprintf(name,"%s/Residual_Over_Exposure_%s.root",DataDir.c_str(),DataClass.c_str());
+       sprintf(name,"%s/Residual_Over_Exposure_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),Residuals_version);
        ftemp = fopen(name,"r"); 
        if (!ftemp) {
           //////////////////////////////////////////
@@ -310,7 +308,7 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
           TH2F * hExposureAllSky = new TH2F("hExposureAllSky","hExposureAllSky",L_BINS,-180,180,B_BINS,-90,90);
           sprintf(name,"%s/Residual_%s.root",DataDir.c_str(),DataClass.c_str()); 
           TFile * fResidual = TFile::Open(name);
-          sprintf(name,"%s/Residual_Over_Exposure_%s.root",DataDir.c_str(),DataClass.c_str()); 
+          sprintf(name,"%s/Residual_Over_Exposure_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),Residuals_version); 
           TFile * fExposure = new TFile(name,"RECREATE");
      
           TH2D*  hSolidAngle = new TH2D("hSolidAngle","hSolidAngle",L_BINS,-180,180,B_BINS,-90,90); 

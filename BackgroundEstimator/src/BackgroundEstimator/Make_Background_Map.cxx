@@ -275,7 +275,7 @@ int BackgroundEstimator::Make_Background_Map(string FT1_FILE, string FT2_FILE, s
   Data = TNamed("Estimator_Version",name);
   Data.Write();
 
-  sprintf(name,"%.1f %.1f %.1f",Residuals_version,RateFit_version,ThetaPhiFits_version);
+  sprintf(name,"%.1f %.1f %.1f %.1f %.1f",Residuals_version,RateFit_version,ThetaPhiFits_version,TimeCorrectionFactors_version,EastWest_version);
   Data = TNamed("DataFiles_Version",name);
   Data.Write();
 

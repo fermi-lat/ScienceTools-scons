@@ -67,7 +67,7 @@ class BackgroundEstimator{
     ///Correction factors
     vector <TH1F*> RatiovsTime;
 
-    float EstimatorVersion,Residuals_version,RateFit_version,ThetaPhiFits_version;
+    float EstimatorVersion,Residuals_version,RateFit_version,ThetaPhiFits_version,EastWest_version,TimeCorrectionFactors_version;
     double StartTime, EndTime, StopTime;
     long int TimeBins;
     

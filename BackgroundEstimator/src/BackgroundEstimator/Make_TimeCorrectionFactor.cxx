@@ -21,7 +21,7 @@ void BackgroundEstimator::Make_TimeCorrectionFactor(string FitsAllSkyFile, const
   const int TimeBins=int((EndTime-StartTime)/DeltaT);
  
   
-  sprintf(name,"%s/RateFit_%s.root",DataDir.c_str(),DataClass.c_str());
+  sprintf(name,"%s/RateFit_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),RateFit_version);
   TFile * fRate_Fits = TFile::Open(name);
   TF1 * RateFit[Energy_Bins_user+1];
   TH1F * hScaleFactor =(TH1F*)fRate_Fits->Get("hScaleFactor");
@@ -57,7 +57,7 @@ void BackgroundEstimator::Make_TimeCorrectionFactor(string FitsAllSkyFile, const
   double TIME_0  = StartTime;
   int i_0=1;
 
-  sprintf(name,"%s/aTimeCorrectionFactors_%s.root",DataDir.c_str(),DataClass.c_str());
+  sprintf(name,"%s/aTimeCorrectionFactors_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),TimeCorrectionFactors_version);
   TFile * fResults = new TFile(name,"RECREATE");
 
 
