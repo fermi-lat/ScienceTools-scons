@@ -89,7 +89,9 @@ class ROI_user(roistat.ROIstat):
     def get_sources(self):
         return [ s for s in self.sources if s.skydir is not None]
     def get_model(self, name):
-        return self.sources.find_source(name).spectral_model
+        return self.get_source(name).spectral_model
+    def get_source(self, name):
+        return self.sources.find_source(name)
         
     def summary(self, out=None, title=None):
         """ summary table of free parameters, values uncertainties if any"""
@@ -115,7 +117,7 @@ class ROI_user(roistat.ROIstat):
         llzero = self.log_like()
         model[0]=norm; self.update()
         ts= 2*(self.log_like()-llzero)
-        return ts
+        return max(ts, 0)
 
     def band_ts(self, source_name):
         sed = self.get_sed(source_name)
