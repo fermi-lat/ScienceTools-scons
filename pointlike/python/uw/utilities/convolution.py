@@ -398,7 +398,7 @@ class AnalyticConvolution(object):
         """
 
     defaults = (
-        ['num_points',     100, 'Number of points to calculate the PDF at. Interpolation is done in between.'],
+        ['num_points',     200, 'Number of points to calculate the PDF at. Interpolation is done in between.'],
     )
     @staticmethod
     def set_points(psize):
