@@ -158,6 +158,7 @@ class SkyModel(object):
         moved=0
         nfreed = 0
         self.tagged=set()
+        source_names =[]
         for i,file in enumerate(files):
             p = pickle.load(open(file))
             index = int(os.path.splitext(file)[0][-4:])
@@ -166,6 +167,10 @@ class SkyModel(object):
             extended_names = {} if (self.__dict__.get('extended_catalog') is None) else self.extended_catalog.names
             for key,item in roi_sources.items():
                 if key in extended_names: continue
+                if key in source_names:
+                    print 'SkyModel warning: source with name %s in ROI %d duplicates previous entry: ignored'%(key, i)
+                    continue
+                source_names.append(key)
                 skydir = item['skydir']
                 if self.update_positions is not None:
                     ellipse = item.get('ellipse', None)
@@ -177,6 +182,7 @@ class SkyModel(object):
                             skydir = SkyDir(float(fit_ra),float(fit_dec))
                             moved +=1
                             self.tagged.add(i)
+                
                 ps = sources.PointSource(name=self.rename_source(key), 
                     skydir=skydir, model= item['model'],
                     ts=item['ts'],band_ts=item['band_ts'], index=index)
