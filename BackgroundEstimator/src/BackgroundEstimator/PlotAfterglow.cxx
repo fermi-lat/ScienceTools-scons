@@ -1,6 +1,6 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
 // $Header$
-#include "BackgroundEstimator/GANGSTER.h"
+#include "BackgroundEstimator/BackgroundEstimator.h"
 #include "TRolke.h"
 #include "TGraphErrors.h"
 #include "TLine.h"
@@ -12,7 +12,7 @@
 #include "TDirectory.h"
 #include "TArc.h"
 
-void GANGSTER::PlotAfterglow(double GRB_TRIGGER_TIME, string TIMEDATA_FILE, string DATACLASS, int MinBin, int MaxBin, float a){
+void BKGE_NS::PlotAfterglow(double GRB_TRIGGER_TIME, string TIMEDATA_FILE, string DATACLASS, int MinBin, int MaxBin, float a){
 
  const string GRB_NAME  = TOOLS::GetS("GRB_NAME");
  const float MIN_ENERGY = TOOLS::Get("MIN_ENERGY");

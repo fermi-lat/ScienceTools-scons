@@ -1,10 +1,8 @@
 //author vlasisva@gmail.com
 //$Header$
-#include "BackgroundEstimator/GANGSTER.h"
-#include "TFile.h"
-#include "TH1F.h"
+#include "BackgroundEstimator/BackgroundEstimator.h"
 
-int GANGSTER::MakeGtLikeTemplate(float gtlike_ROI, string GRB_DIR, string DATACLASS, float ZTheta_Cut, double &GALGAMMAS_BKG, double &CR_EGAL_BKG, int verbosity) {
+int BKGE_NS::MakeGtLikeTemplate(float gtlike_ROI, string GRB_DIR, string DATACLASS, float ZTheta_Cut, double &GALGAMMAS_BKG, double &CR_EGAL_BKG, int verbosity) {
 
  const float error = TOOLS::Get("BKG_ESTIMATE_ERROR");
 

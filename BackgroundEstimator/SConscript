@@ -1,6 +1,6 @@
 # -*- python -*-
 # $Id$
-# Authors: Vlasios Vasileiou <vlasisva@slac.stanford.edu>
+# Authors: Vlasios Vasileiou <vlasisva@gmail.com>
 # Version: BackgroundEstimator-00-02-01
 import glob, os
 Import('baseEnv')
@@ -21,7 +21,7 @@ BackgroundEstimatorCint = libEnv.Rootcint('BackgroundEstimator/BackgroundEstimat
 
 libEnv['rootcint_node'] = BackgroundEstimatorCint
 
-libsources = listFiles(['src/GANGSTER/*.cxx']) + listFiles(['src/BKGE_Tools/*.cxx']) + listFiles(['src/BackgroundEstimator/*.cxx']) + listFiles(['src/GANGSTER/DurationEstimator/*.cxx']) +  ['BackgroundEstimator/BackgroundEstimator_rootcint.cxx']
+libsources = listFiles(['src/BKGE_Tools/*.cxx']) + listFiles(['src/BackgroundEstimator/*.cxx']) + ['BackgroundEstimator/BackgroundEstimator_rootcint.cxx']
 
 BackgroundEstimatorLib  = libEnv.RootDynamicLibrary('BackgroundEstimator', libsources)
 

@@ -4,6 +4,10 @@ def generate(env, **kw):
         env.Tool('addLibrary', library = ['BackgroundEstimator'], package = 'BackgroundEstimator')
         pass
     env.Tool('astroLib')
+    env.Tool('st_facilitiesLib')
+    env.Tool('LikelihoodLib')
+    env.Tool('irfInterfaceLib')
+    env.Tool('astroLib')
     env.Tool('irfLoaderLib')
     env.Tool('rootIrfLoaderLib')
     env.Tool('addLibrary', library=env['clhepLibs'])

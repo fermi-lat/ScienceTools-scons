@@ -1,6 +1,6 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
 //$Header$
-#include "BackgroundEstimator/GANGSTER.h"
+#include "BackgroundEstimator/BackgroundEstimator.h"
 #include "TGraph.h"
 #include "TPaveText.h"
 #include "TLegend.h"
@@ -14,7 +14,7 @@
 #include <vector>
 
 //if Energy_Min_user,Energy_Max_user,Energy_Bins_user<=0 then the default values will be used
-string GANGSTER::PlotBackground(string Interval_name, double MET, double DURATION, string FT1_FILE, string FT2_FILE, string DATACLASS, double Energy_Min_user, double Energy_Max_user, int Energy_Bins_user,  float FT1ZenithTheta_Cut, bool OverwritePlots, int verbosity, double MET_FOR_THETA, bool Save_Earth_Coo_Map){
+string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION, string FT1_FILE, string FT2_FILE, string DATACLASS, double Energy_Min_user, double Energy_Max_user, int Energy_Bins_user,  float FT1ZenithTheta_Cut, bool OverwritePlots, int verbosity, double MET_FOR_THETA, bool Save_Earth_Coo_Map){
  if (MET_FOR_THETA<=0) MET_FOR_THETA=MET;
  
  bool OverwriteResults=false;

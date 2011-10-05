@@ -1,11 +1,11 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
 // $Header$
-#include "BackgroundEstimator/GANGSTER.h"
+#include "BackgroundEstimator/BackgroundEstimator.h"
 #include <sys/stat.h>
 #include <sys/types.h>
 
 //if Energy_Min_user,Energy_Max_user,Energy_Bins_user<=0 then their default values are used 
-int GANGSTER::CalculateBackground(string Interval_name, double MET, double DURATION, string FT1_FILE, string FT2_FILE, string DATACLASS, double Energy_Min_user, double Energy_Max_user, int Energy_Bins_user, float FT1ZenithTheta_Cut, int verbosity, bool Calc_Residual){
+int BKGE_NS::CalculateBackground(string Interval_name, double MET, double DURATION, string FT1_FILE, string FT2_FILE, string DATACLASS, double Energy_Min_user, double Energy_Max_user, int Energy_Bins_user, float FT1ZenithTheta_Cut, int verbosity, bool Calc_Residual){
 
  static bool first=true;
  static bool ShowLogo=true;

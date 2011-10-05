@@ -27,6 +27,7 @@ const double RAD_TO_DEG=57.2957795130;
 const double DEG_TO_RAD=0.01745329255;
 
 using namespace std;
+using namespace CLHEP;
 
 /*! \brief Miscellaneous support tools.
 */
@@ -174,6 +175,7 @@ const float GBMDet_Theta_Azimuth[14][2]={
     int PlotGBMDet_GalCenterAngle(int nDet, TH1F* h, string Plots_File);
     float GetGBMDet_SolarAngle(double time_met, int nDet, float PtRaz, float PtDecz, float PtRax, float PtDecx);
     float GetGBMDet_Angle(int nDet, float RA, float DEC, float PtRaz, float PtDecz, float PtRax, float PtDecx);
+    void GetGBMDet_EarthCoordinates(int nDet, float RAZenith, float DecZenith, float PtRaz, float PtDecz, float PtRax, float PtDecx, float & EarthZenith, float &EarthAzimuth);
     int PlotGBMGal_Coordinates(int nDet, TH1F* hL, TH1F* hB, string Plots_File);
     void GetGBMDet_GalPt(int nDet, float & PtGBM_L, float & PtGBM_B, float PtRaz, float PtDecz, float PtRax, float PtDecx);
     void GBM_AppendPointingPlots(string PlotsFile);
