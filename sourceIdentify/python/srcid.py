@@ -381,7 +381,7 @@ def attach_counterparts(pars, hdu_lat):
 					name = row.field(cpt_name_key)
 					if name == '':
 						ref  = long(float(row.field('REF'))+1.5)
-						name = '[Row='+str(ref)+']'
+						name = '<Row='+str(ref)+'>'
 				else:
 					name = 'NoNameColumnFound'
 				
