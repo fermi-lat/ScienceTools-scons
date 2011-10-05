@@ -8,7 +8,10 @@ import numpy as np
 from . import processor
 from .. import main, roisetup, skymodel
 from uw.utilities import makerec
-from uw.utilities.assigntasks import setup_mec, AssignTasks, get_mec, kill_mec, free
+try:
+    from uw.utilities.assigntasks import setup_mec, AssignTasks, get_mec, kill_mec, free
+except:
+    print 'assigntasks failed to open'
 
 class Pipe(roisetup.ROIfactory):
     """ This is a subclass of ROIfactory,
@@ -55,6 +58,14 @@ class Pipe(roisetup.ROIfactory):
 
         super(Pipe, self).__init__(indir, dataset, 
             analysis_kw=self.analysis_kw, skymodel_kw=self.skymodel_kw)
+       
+    def __str__(self):
+        s = '%s configuration:\n'% self.__class__.__name__
+        show = """analysis_kw selector skymodel dataset fit_kw convolve_kw process_kw""".split()
+        for key in show:
+            s += '\t%-20s: %s\n' %(key,
+                self.__dict__.get(key,'not in self.__dict__!'))
+        return s
         
     def __call__(self, index):
         """ perform analysis for the ROI
