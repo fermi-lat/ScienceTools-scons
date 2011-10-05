@@ -2424,6 +2424,7 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
     std::vector<std::string> col_id;
     std::vector<std::string> col_name;
     std::vector<double>      col_prob;
+    std::vector<double>      col_ref;
 
     // Debug mode: Entry
     if (par->logDebug())
@@ -2471,6 +2472,12 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
       if (status != STATUS_OK)
         status = STATUS_OK;
 
+      // Read reference column. We use a double array here since the method called
+      // expects a double array. Don't stop on error
+      status = cfits_get_col(fptr, par, OUTCAT_COL_REF_NAME, col_ref, status);
+      if (status != STATUS_OK)
+        status = STATUS_OK;
+
       // Determine number of counterparts for each source
       for (int i = 0; i < (int)col_id.size(); ++i) {
 
@@ -2491,8 +2498,10 @@ Status Catalogue::cfits_collect(fitsfile *fptr, Parameters *par,
           m_cpt_names[iSrc] += ", ";
 
         // If we have a name then add it now
-        if (col_name.size() == col_id.size())
-          m_cpt_names[iSrc] += cid_assign_src_name(col_name[i], iSrc);
+        if (col_name.size() == col_id.size()) {
+          int ref = int(col_ref[i]+0.5);
+          m_cpt_names[iSrc] += cid_assign_src_name(col_name[i], ref);
+        }
         else
           m_cpt_names[iSrc] += "no-name";
 

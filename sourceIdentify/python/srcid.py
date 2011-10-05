@@ -232,7 +232,7 @@ def get_fits_cat(file, catname='GLAST_CAT'):
 	
 	# Open FITS files HDU list
 	hdulist = pyfits.open(file)
-
+	
 	# Search catalogue in HDU list
 	for hdu in hdulist:
 		cards = hdu.header.ascardlist()
@@ -380,9 +380,10 @@ def attach_counterparts(pars, hdu_lat):
 				if cpt_name_key != None:
 					name = row.field(cpt_name_key)
 					if name == '':
-						name = 'CatRow_'+str(irow)
+						ref  = long(float(row.field('REF'))+1.5)
+						name = '[Row='+str(ref)+']'
 				else:
-					name = 'NoSrcIDName'
+					name = 'NoNameColumnFound'
 				
 				# Get probability
 				prob = row.field('PROB')
@@ -674,6 +675,7 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 			while (len(name) < 25):
 				name = name + ' '
 			names = names + name
+#			if nids > 1:
 			if num_cpt > 1:
 				data_prob[i][k] = cpt['prob']
 				data_ra[i][k]   = cpt['ra']
@@ -896,9 +898,6 @@ if __name__ == '__main__':
 	has the names and counterpart probabilities for all identified sources 
 	attached.
 	"""
-	# Preserve case for extension names
-	if 'setExtensionNameCaseSensitive' in dir(pyfits):
-		pyfits.setExtensionNameCaseSensitive()
 	
 	# Verify argument list. We need at least a LAT catalogue name and we allow only
 	# for options '-h' and '-C'
