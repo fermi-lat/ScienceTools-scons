@@ -45,7 +45,7 @@ class ROIstat(object):
         self.name = roi.name
         self.roi_dir = roi.roi_dir
         self.sources = sourcelist.SourceList(roi) 
-        self.all_bands = bandlike.factory(filter(bandsel, roi.bands), self.sources)
+        self.all_bands = bandlike.factory(filter(bandsel, roi.bands), self.sources , quiet=quiet)
         self.selected_bands = self.all_bands # the possible subset to analyze
         self.calls=0
         self.call_limit=1000
