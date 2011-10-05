@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.33  2010/12/20 08:52:00  jurgen
+Adapt to gcc 4.4
+
 Revision 1.32  2009/07/15 23:14:30  jurgen
 Correctly write double precision columns
 
@@ -1675,7 +1678,7 @@ Status Catalogue::cfits_eval_column(fitsfile *fptr, Parameters *par,
 
       // Optionally dump evaluated catalogue quantity information
       if (par->logVerbose()) {
-        Log(Log_2, "  New quantity ....................: %s = %s",
+        Log(Log_2, "    New quantity ..................: %s = %s",
             column.c_str(), formula.c_str());
       }
 

@@ -138,7 +138,7 @@ def set_pars(module, chatter=False):
 	       'cptCatName': "", \
 	       'cptCatPrefix': "CPT", \
 	       'cptCatQty': "*", \
-	       'cptPosError' : 1.0/3600.0, \
+	       'cptPosError' : 0.0, \
 	       'cptDensFile': '', \
 	       'outCatName': "result.fits", \
 	       'outCatQty01': "", \
@@ -232,7 +232,7 @@ def get_fits_cat(file, catname='GLAST_CAT'):
 	
 	# Open FITS files HDU list
 	hdulist = pyfits.open(file)
-	
+
 	# Search catalogue in HDU list
 	for hdu in hdulist:
 		cards = hdu.header.ascardlist()
@@ -284,6 +284,7 @@ def get_name_key(pars, hdu):
 			key = 'TTYPE' + card.key[5:7]
 			try:
 				if cards[key].value.find(prefix) == 0:
+					#print "Name from UCD: "+cards[key].value
 					return cards[key].value
 			except KeyError:
 				pass
@@ -296,9 +297,13 @@ def get_name_key(pars, hdu):
 		if card.key[:5] == 'TTYPE':
 			try:
 				if names.index(card.value.upper()) >= 0:
+					#print "Name from column: "+card.value
 					return card.value
 			except ValueError:
 				pass
+	
+	# No name column found
+	print "WARNING: No name column found."
 	
 	# Return 'None'
 	return
@@ -364,7 +369,7 @@ def attach_counterparts(pars, hdu_lat):
 		array_sep  = [0.0 for i in range(nrows_lat)]
 		
 		# Fill arrays
-		for row in hdu_cpt.data:
+		for irow, row in enumerate(hdu_cpt.data):
 			# Get Array indices
 			lat_index = long(row.field('ID')[3:8])-1     # Array index starts with 0
 			cpt_index = long(row.field('ID')[9:14])-1    # index starts with 0
@@ -374,8 +379,10 @@ def attach_counterparts(pars, hdu_lat):
 				# Get source name
 				if cpt_name_key != None:
 					name = row.field(cpt_name_key)
+					if name == '':
+						name = 'CatRow_'+str(irow)
 				else:
-					name = 'NoName'
+					name = 'NoSrcIDName'
 				
 				# Get probability
 				prob = row.field('PROB')
@@ -391,7 +398,7 @@ def attach_counterparts(pars, hdu_lat):
 				array_sep[lat_index]  = sep
 		
 		# Define columns
-		column_name = pyfits.Column(name=key_name, format='A20', array=array_name)
+		column_name = pyfits.Column(name=key_name, format='A25', array=array_name)
 		column_prob = pyfits.Column(name=key_prob, format='1E',  array=array_prob, \
 		                            unit='probability')
 		column_ra   = pyfits.Column(name=key_ra,   format='1E',  array=array_ra, unit='deg')
@@ -577,8 +584,15 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 			sep   = hdu_srcid.data.field(col_sep)
 			
 			# Loop over all rows and extract information
-			for i, name in enumerate(names):
-				if (name != ''):
+			#for i, name in enumerate(names):
+			#	if (name != ''):
+			for i, prob in enumerate(probs):
+				if (prob > 0.0):
+					# Set name
+					name = names[i]
+					if name == '':
+						name = 'NoSrcName'
+					
 					# Search catalogue number
 					catid = 0
 					for cat in cpt_cats:
@@ -586,7 +600,7 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 						if (col_name.find(pattern) != -1):
 							catid = cat['number']
 					# Build entry
-					entry = {'name': name, 'prob': probs[i], 'ra': ra[i], \
+					entry = {'name': names[i], 'prob': probs[i], 'ra': ra[i], \
 					         'dec': dec[i], 'angsep': sep[i], 'cat': catid}
 					idlist[i].append(entry)
 					if len(idlist[i]) > max_cpt:
@@ -600,7 +614,7 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 	
 	# Set column format strings
 	num_cpt  = max_cpt
-	fmt_name = '%d' % (num_cpt*20) + 'A20'
+	fmt_name = '%d' % (num_cpt*25) + 'A25'
 	fmt_prob = '%d' % num_cpt + 'E'
 	fmt_cat  = '%d' % num_cpt + 'I'
 	
@@ -657,10 +671,9 @@ def create_lat_cat(lat_name, srcid_name, out_name, cpt_cats):
 		names = ''
 		for k, cpt in enumerate(row):
 			name = cpt['name']
-			while (len(name) < 20):
+			while (len(name) < 25):
 				name = name + ' '
 			names = names + name
-#			if nids > 1:
 			if num_cpt > 1:
 				data_prob[i][k] = cpt['prob']
 				data_ra[i][k]   = cpt['ra']
@@ -883,6 +896,9 @@ if __name__ == '__main__':
 	has the names and counterpart probabilities for all identified sources 
 	attached.
 	"""
+	# Preserve case for extension names
+	if 'setExtensionNameCaseSensitive' in dir(pyfits):
+		pyfits.setExtensionNameCaseSensitive()
 	
 	# Verify argument list. We need at least a LAT catalogue name and we allow only
 	# for options '-h' and '-C'

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.56  2011/02/09 08:14:12  jurgen
+Add "Source_Name" to possible names in counterpart catalogues (srcid.py)
+
 Revision 1.55  2010/12/20 08:52:00  jurgen
 Adapt to gcc 4.4
 
@@ -2334,13 +2337,13 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
           n_src_assoc, f_assoc*100.0);
       Log(Log_2, " Number of claimed identifications .............: %10d",
           int(m_num_claimed));
-      Log(Log_2, " Expected number of true associations ..........: %10.1f",
+      Log(Log_2, " Expected number of true associations ..........: %10.1f (sum of posterior probabilities)",
           m_sum_pid);
-      Log(Log_2, " Expected number of correct identifications ....: %10.1f",
+      Log(Log_2, " Expected number of correct identifications ....: %10.1f (sum of posterior probabilities above threshold)",
           m_sum_pid_thr);
-      Log(Log_2, " Expected number of spurious identifications ...: %10.1f",
+      Log(Log_2, " Expected number of spurious identifications ...: %10.1f (sum of 1-posterior probabilitis above threshold)",
           m_sum_pc_thr);
-      Log(Log_2, " Expected number of missed identifications .....: %10.1f",
+      Log(Log_2, " Expected number of missed identifications .....: %10.1f (difference between total posterior sum and sum above threshold)",
           m_sum_pid-m_sum_pid_thr);
       Log(Log_2, " Expected number of non-unique counterparts ....: %10.1f (%.3f%%)",
           m_fract_not_unique*m_num_claimed, m_fract_not_unique*100.0);
@@ -2351,7 +2354,7 @@ Status Catalogue::dump_results(Parameters *par, Status status) {
       Log(Log_2, " Total log likelihood-ratio ....................: %10.3f"
                  " (before threshold: %.3f)", m_sum_lr_thr, m_sum_lr);
       Log(Log_2, " Number of associations with divergent LR ......: %10d",
-          m_num_lr_div);
+          int(m_num_lr_div));
       if (par->m_catch22) {
         Log(Log_2, " Catch-22 converged prior probability ..........: %10.6f%%",
             m_prior*100.0);

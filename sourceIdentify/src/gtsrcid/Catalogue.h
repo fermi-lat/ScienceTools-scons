@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.43  2011/02/11 08:36:16  jurgen
+Increase maximum string length for columns to 8192 characters
+
 Revision 1.42  2010/04/16 21:53:16  jurgen
 Fully implement HEALPix counterpart density maps
 
@@ -313,7 +316,7 @@ const int    c_iter_max       = 10;      //!< Maximum number of catch-22 iterati
 const double c_prob_prior     = 0.1;     //!< Initial catch-22 prior
 const double c_prob_prior_min = 1.0e-20; //!< Minimum catch-22 prior
 const double c_prob_prior_max = 1.00;    //!< Maximum catch-22 prior
-const double c_erposabs       = 0.005;   //!< Default absolute position error
+const double c_erposabs       = 0.0;     //!< Default absolute position error
 
 /* Mathematical constants ___________________________________________________ */
 const double pi          =  3.1415926535897931159979635;
@@ -488,6 +491,7 @@ private:
   Status      cid_filter(Parameters *par, SourceInfo *src, Status status);
   Status      cid_select(Parameters *par, SourceInfo *src, Status status);
   Status      cid_refine(Parameters *par, SourceInfo *src, Status status);
+  Status      cid_reselect(Parameters *par, SourceInfo *src, Status status);
   Status      cid_fom(Parameters *par, SourceInfo *src, Status status);
   Status      cid_prob_pos(Parameters *par, SourceInfo *src, Status status);
   Status      cid_prob_chance(Parameters *par, SourceInfo *src, Status status);

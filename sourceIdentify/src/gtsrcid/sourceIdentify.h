@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.37  2011/02/11 08:36:16  jurgen
+Increase maximum string length for columns to 8192 characters
+
 Revision 1.36  2010/12/20 08:52:00  jurgen
 Adapt to gcc 4.4
 
@@ -124,9 +127,9 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v2r3p3"
+#define TOOL_VERSION  "v2r4p3"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "11-Feb-2011"
+#define TOOL_DATE     " 6-Jun-2011"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"

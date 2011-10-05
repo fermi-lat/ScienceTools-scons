@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.40  2010/10/13 14:19:35  jurgen
+Dump candidates before probability cut in refine step
+
 Revision 1.39  2010/04/16 21:53:16  jurgen
 Fully implement HEALPix counterpart density maps
 
@@ -143,10 +146,11 @@ level.
 #include "Log.h"
 
 /* Definitions ______________________________________________________________ */
-#define CATALOGUE_TIMING     0               // Enables timing measurements
-#define JEAN_BALLET_FORMULA  1               // Uses Jean Ballet's formula
-#define ADAPTIVE_DENSITY     1               // Uses adaptive local density
-#define LOW_LEVEL_DEBUG      0               // Enable low-level debugging
+#define CATALOGUE_TIMING     0             // Enables timing measurements
+#define JEAN_BALLET_FORMULA  1             // Uses Jean Ballet's formula
+#define ADAPTIVE_DENSITY     1             // Uses adaptive local density
+#define LOW_LEVEL_DEBUG      0             // Enable low-level debugging
+#define FOM_IN_NOMINATOR     0             // Uses FOM in probability nominator
 
 
 /* Namespace definition _____________________________________________________ */
@@ -223,7 +227,9 @@ Status Catalogue::cid_source(Parameters *par, SourceInfo *src, Status status) {
         continue;
       }
 
-      // Selection step: Select only relevant counterparts
+      // Selection step: Select only relevant counterparts. At this point we
+      // cannot do any selection that is based on ANGSEP, but we may do any
+      // other downselection that helps reducing the number of counterparts.
       status = cid_select(par, src, status);
       if (status != STATUS_OK) {
         if (par->logTerse())
@@ -237,6 +243,16 @@ Status Catalogue::cid_source(Parameters *par, SourceInfo *src, Status status) {
       if (status != STATUS_OK) {
         if (par->logTerse())
           Log(Error_2, "%d : Unable to perform refine step for source %d.",
+              (Status)status, src->iSrc+1);
+        continue;
+      }
+
+      // Selection step: Select only relevant counterparts. Now we can do selections
+      // based on ANGSEP.
+      status = cid_reselect(par, src, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to perform selection step for source %d.",
               (Status)status, src->iSrc+1);
         continue;
       }
@@ -743,12 +759,13 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
         for (int iCC = 0; iCC < src->numSelect; ++iCC) {
           int         iCpt = src->cc[iCC].index;
           ObjectInfo *cpt  = &(m_cpt.object[iCpt]);
-          Log(Log_2, "    Cpt%5d P=%9.2e Lratio=%9.2e pdf_pos=%9.2e pdf_chance=%9.2e S=%5.1f' PA=%4.0f %20s  RA=%8.4f  DE=%8.4f",
+          Log(Log_2, "    Cpt%5d P=%9.2e Lratio=%9.2e pdf_pos=%9.2e pdf_chance=%9.2e r95=%7.3f' sep=%7.3f' PA=%4.0f %20s  RA=%8.4f  DE=%8.4f",
               iCC+1,
               src->cc[iCC].prob_post_single,
               src->cc[iCC].likrat,
               src->cc[iCC].pdf_pos,
               src->cc[iCC].pdf_chance,
+              src->cc[iCC].psi*60.0,
               src->cc[iCC].angsep*60.0,
               src->cc[iCC].posang,
               cpt->name.c_str(),
@@ -794,6 +811,129 @@ Status Catalogue::cid_refine(Parameters *par, SourceInfo *src, Status status) {
           status);
     #if LOW_LEVEL_DEBUG
     printf(" <== EXIT: Catalogue::cid_refine (status=%d)\n", status);
+    #endif
+
+    // Return status
+    return status;
+
+}
+
+
+/**************************************************************************//**
+ * @brief Second selection step of counterpart identification
+ *
+ * @param[in] par Pointer to gtsrcid parameters.
+ * @param[in] src Pointer to source information.
+ * @param[in] status Error status.
+ *
+ * Selects only relevant counterparts. Non-selected counterparts are considered
+ * to be deleted.
+ *
+ * This method expects src->numRefine counterparts. It sets the number of
+ * selected candidates in src->numRefine.
+ ******************************************************************************/
+Status Catalogue::cid_reselect(Parameters *par, SourceInfo *src, Status status) {
+
+    // Declare local variables
+    std::vector<std::string> col_id;
+
+    // Debug mode: Entry
+    #if LOW_LEVEL_DEBUG
+    printf(" ==> ENTRY: Catalogue::cid_reselect (%d candidates)\n", src->numRefine);
+    #endif
+    if (par->logDebug())
+      Log(Log_0, " ==> ENTRY: Catalogue::cid_reselect (%d candidates)",
+          src->numRefine);
+
+    // Single loop for common exit point
+    do {
+
+      // Fall through in case of an error
+      if (status != STATUS_OK)
+        continue;
+
+      // Fall through if there are no counterpart candidates
+      if (src->numRefine < 1)
+        continue;
+
+      // Set unique counterpart candidate identifier for in-memory catalogue
+      char cid[OUTCAT_MAX_STRING_LEN];
+      for (int iCC = 0; iCC < src->numRefine; ++iCC) {
+        sprintf(cid, "CC_%5.5d_%5.5d", src->iSrc+1, iCC+1);
+        src->cc[iCC].id = cid;
+      }
+
+      // Update in-memory catalogue
+      status = cfits_update(m_memFile, par, src, src->numRefine, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to update counterpart candidates"
+                       " in-memory FITS catalogue.", (Status)status);
+        continue;
+      }
+
+      // Fall through if no selection strings are specified.
+      int m_num_Sel = par->m_select.size();
+      if (m_num_Sel < 1)
+        continue;
+
+      // Select counterparts in memory
+      status = cfits_select(m_memFile, par, src, status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to select catalogue counterparts.",
+              (Status)status);
+        continue;
+      }
+
+      // Get list of counterpart IDs that survived
+      status = cfits_get_col_str(m_memFile, par, OUTCAT_COL_ID_NAME, col_id,
+                                 status);
+      if (status != STATUS_OK) {
+        if (par->logTerse())
+          Log(Error_2, "%d : Unable to read counterpart IDs from memory.",
+              (Status)status);
+        continue;
+      }
+
+      // If list is empty then stop now
+      int nSelected = (int)col_id.size();
+      if (nSelected < 1) {
+        src->numRefine = 0;
+        continue;
+      }
+
+      // Collect all counterparts that survived
+      int inx = 0;
+      for (int iCC = 0; iCC < src->numRefine; ++iCC) {
+        for (int i = 0; i < nSelected; ++i) {
+          if (src->cc[iCC].id == col_id[i]) {
+            src->cc[inx] = src->cc[iCC];
+            inx++;
+          }
+        }
+      }
+
+      // Check that we found everybody
+      if (inx != nSelected) {
+        status = STATUS_CAT_SEL_FAILED;
+        if (par->logTerse())
+          Log(Error_2, "%d : In-memory counterpart selection error (%d/%d).",
+              (Status)status, inx, nSelected);
+        continue;
+      }
+
+      // Set number of remaining counterparts
+      src->numRefine = nSelected;
+
+    } while (0); // End of main do-loop
+
+    // Debug mode: Entry
+    if (par->logDebug())
+      Log(Log_0, " <== EXIT: Catalogue::cid_reselect (status=%d)",
+          status);
+    #if LOW_LEVEL_DEBUG
+    printf(" <== EXIT: Catalogue::cid_reselect (status=%d)\n", status);
     #endif
 
     // Return status
@@ -1364,9 +1504,11 @@ Status Catalogue::cid_prob_post_single(Parameters *par, SourceInfo *src,
 
         // Copute nominator of likelihood ratio
         double lr_nom = src->cc[iCC].pdf_pos;
+        #if FOM_IN_NOMINATOR
         if (par->m_FoM.length() > 0) {
           lr_nom *= (src->cc[iCC].fom > 0.0) ? src->cc[iCC].fom : 0.0;
         }
+        #endif
 
         // Compute log-likelihood ratio. Signal if computation did not succeed
         if (lr_nom > 0.0 && src->cc[iCC].pdf_chance > 0.0)
@@ -1949,9 +2091,10 @@ Status Catalogue::cid_dump(Parameters *par, SourceInfo *src, Status status) {
         if (par->logNormal()) {
           if (cpt->pos_valid) {
             if (src->cc[iCC].likrat_div) {
-              Log(Log_2, "  Cpt%5d[P=%3.0f%%]S=%6.2f' PA=%4.0f: %20s"SRC_FORMAT,
+              Log(Log_2, "  Cpt%5d[P=%3.0f%%] r95=%7.3' sep=%7.3f' PA=%4.0f: %20s"SRC_FORMAT,
                   iCC+1,
                   src->cc[iCC].prob_post_single*100.0,
+                  src->cc[iCC].psi*60.0,
                   src->cc[iCC].angsep*60.0,
                   src->cc[iCC].posang,
                   cpt->name.c_str(),
@@ -1959,9 +2102,10 @@ Status Catalogue::cid_dump(Parameters *par, SourceInfo *src, Status status) {
                   cpt->pos_err_maj, cpt->pos_err_min, cpt->pos_err_ang);
             }
             else {
-              Log(Log_2, "  Cpt%5d P=%3.0f%% S=%6.2f' PA=%4.0f: %20s"SRC_FORMAT,
+              Log(Log_2, "  Cpt%5d P=%3.0f%% r95=%7.3' S=%7.3f' PA=%4.0f: %20s"SRC_FORMAT,
                   iCC+1,
                   src->cc[iCC].prob_post_single*100.0,
+                  src->cc[iCC].psi*60.0,
                   src->cc[iCC].angsep*60.0,
                   src->cc[iCC].posang,
                   cpt->name.c_str(),
