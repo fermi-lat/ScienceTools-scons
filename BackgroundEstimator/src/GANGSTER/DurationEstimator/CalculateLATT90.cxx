@@ -31,7 +31,7 @@ MIN_ENERGY(Emin), MAX_ENERGY(Emax), GRB_TRIGGER_TIME(aGRB_TRIGGER_TIME) {
  cDuration1 = new TCanvas("cDurations",GRB_NAME.c_str(),1024,768);
  cDuration1->Divide(2,3);
  
- sprintf(ResultsRootFilename,"%s/%s_%.0f_%.0f_%d_T90.root",(TOOLS::GetS("OUTPUT_DIR")).c_str(),GRB_NAME.c_str(),MIN_ENERGY,MAX_ENERGY,WeighByExposure);
+ sprintf(ResultsRootFilename,"%s/%s_%s_%.0f_%.0f_%d_T90.root",(TOOLS::GetS("OUTPUT_DIR")).c_str(),DATACLASS.c_str(),GRB_NAME.c_str(),MIN_ENERGY,MAX_ENERGY,WeighByExposure);
  
 }
   
@@ -143,9 +143,9 @@ int DurationEstimator::CalculateLATT90(){
        
        cDuration1->Update(); 
        for (unsigned int i=0;i<fBkg.size();i++) {fBkg[i]->Close();} //close files
-       sprintf(name,"%s/%s_%.0f_%.0f_%d_T90.png",(TOOLS::GetS("OUTPUT_DIR")).c_str(),GRB_NAME.c_str(),MIN_ENERGY,MAX_ENERGY,WeighByExposure);
+       sprintf(name,"%s/%s_%s_%.0f_%.0f_%d_T90.png",(TOOLS::GetS("OUTPUT_DIR")).c_str(),DATACLASS.c_str(),GRB_NAME.c_str(),MIN_ENERGY,MAX_ENERGY,WeighByExposure);
        cDuration1->SaveAs(name);
-       sprintf(name,"%s/%s_%.0f_%.0f_%d_T90.eps",(TOOLS::GetS("OUTPUT_DIR")).c_str(),GRB_NAME.c_str(),MIN_ENERGY,MAX_ENERGY,WeighByExposure);
+       sprintf(name,"%s/%s_%s_%.0f_%.0f_%d_T90.eps",(TOOLS::GetS("OUTPUT_DIR")).c_str(),DATACLASS.c_str(),GRB_NAME.c_str(),MIN_ENERGY,MAX_ENERGY,WeighByExposure);
        cDuration1->SaveAs(name);
             
        fResults->cd();
@@ -198,13 +198,13 @@ int DurationEstimator::CalculateLATT90(){
      Data = TNamed("ProcessedUntilTime",name); Data.Write();
   }
     
-  sprintf(name,"%s/%s_%.0f_%.0f_%d_T90_2.png",(TOOLS::GetS("OUTPUT_DIR")).c_str(),GRB_NAME.c_str(),MIN_ENERGY,MAX_ENERGY,WeighByExposure);
+  sprintf(name,"%s/%s_%s_%.0f_%.0f_%d_T90_2.png",(TOOLS::GetS("OUTPUT_DIR")).c_str(),DATACLASS.c_str(),GRB_NAME.c_str(),MIN_ENERGY,MAX_ENERGY,WeighByExposure);
   cCoarse->SaveAs(name);
-  sprintf(name,"%s/%s_%.0f_%.0f_%d_T90_2.eps",(TOOLS::GetS("OUTPUT_DIR")).c_str(),GRB_NAME.c_str(),MIN_ENERGY,MAX_ENERGY,WeighByExposure);
+  sprintf(name,"%s/%s_%s_%.0f_%.0f_%d_T90_2.eps",(TOOLS::GetS("OUTPUT_DIR")).c_str(),DATACLASS.c_str(),GRB_NAME.c_str(),MIN_ENERGY,MAX_ENERGY,WeighByExposure);
   cCoarse->SaveAs(name);
-  sprintf(name,"%s/%s_%.0f_%.0f_%d_T90_Extras.png",(TOOLS::GetS("OUTPUT_DIR")).c_str(),GRB_NAME.c_str(),MIN_ENERGY,MAX_ENERGY,WeighByExposure);
+  sprintf(name,"%s/%s_%s_%.0f_%.0f_%d_T90_Extras.png",(TOOLS::GetS("OUTPUT_DIR")).c_str(),DATACLASS.c_str(),GRB_NAME.c_str(),MIN_ENERGY,MAX_ENERGY,WeighByExposure);
   cExtras->SaveAs(name);
-  sprintf(name,"%s/%s_%.0f_%.0f_%d_T90_Extras.eps",(TOOLS::GetS("OUTPUT_DIR")).c_str(),GRB_NAME.c_str(),MIN_ENERGY,MAX_ENERGY,WeighByExposure);
+  sprintf(name,"%s/%s_%s_%.0f_%.0f_%d_T90_Extras.eps",(TOOLS::GetS("OUTPUT_DIR")).c_str(),DATACLASS.c_str(),GRB_NAME.c_str(),MIN_ENERGY,MAX_ENERGY,WeighByExposure);
   cExtras->SaveAs(name);
   
   fResults->Close();
