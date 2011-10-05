@@ -75,12 +75,15 @@ class DataSet(object):
         self.psf = pypsf.CALDBPsf(self.CALDBManager)
     
     def __str__(self):
-        s = 'Data selection, class %s\n' %self.__class__.__name__
-        show = """CALDB irf minROI maxROI emin emax""".split()
+        #s = 'Data selection, class %s\n' %self.__class__.__name__
+        show = """data_name irf minROI maxROI emin emax""".split()
+        d = {}
         for key in show:
-            s += '\t%-20s: %s\n' %(key,
-                self.__dict__[key] if key in self.__dict__.keys() else 'not in self.__dict__!')
-        return s
+            d[key] = self.__dict__.get(key, 'not in self.__dict__!')
+        return str(d)
+            #s += '\t%-20s: %s\n' %(key,
+            #    self.__dict__[key] if key in self.__dict__.keys() else 'not in self.__dict__!')
+        #return s
 
     def _process_dataset(self,dataset,month=None):
         """ Parse the dataset as either a DataSpecification object, a dict, or a string lookup key.
