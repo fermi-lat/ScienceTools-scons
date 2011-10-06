@@ -5,7 +5,7 @@ def generate(env, **kw):
         pass
     env.Tool('astroLib')
     env.Tool('st_facilitiesLib')
-    env.Tool('LikelihoodLib')
+    #env.Tool('LikelihoodLib')
     env.Tool('irfInterfaceLib')
     env.Tool('astroLib')
     env.Tool('irfLoaderLib')
