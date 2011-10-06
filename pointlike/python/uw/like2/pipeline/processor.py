@@ -257,11 +257,11 @@ def process(roi, **kwargs):
         print '===================== nothing to fit========================'
     else:
         if dofit:
-            if np.any(roi.prior.gradient()!=0):
-                print 'adjusting parameters beyond limit'
-                print roi.prior.check()
-                roi.prior.limit_pars(True) # adjust parameters to limits
-                roi.prior.enabled=False
+            #if np.any(roi.prior.gradient()!=0):
+            #    print 'adjusting parameters beyond limit'
+            #    print roi.prior.check()
+            #    roi.prior.limit_pars(True) # adjust parameters to limits
+            #roi.prior.enabled=True
             try:
                 roi.fit(ignore_exception=False, use_gradient=True, call_limit=1000)
                 roi.print_summary(title='after global fit, logL=%0.f'% roi.log_like())#print_summary(sdir=roi.roi_dir,)
