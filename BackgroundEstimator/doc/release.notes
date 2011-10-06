@@ -6,6 +6,7 @@
   $Id$
   EOH
 
+ BackgroundEstimator-00-03-00 06-Oct-2011 vlasisva Cleaned version of bkge
  BackgroundEstimator-00-02-01 03-Oct-2011 omodei New version set up and ready to use
  BackgroundEstimator-00-02-00 14-Sep-2011 vlasisva pre-bkge_p7
  BackgroundEstimator-00-01-03 26-Aug-2011 bregeon src/mainpage.h and doc/Doxyfile for Doxygen
