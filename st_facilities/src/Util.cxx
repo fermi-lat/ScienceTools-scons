@@ -101,6 +101,7 @@ namespace st_facilities {
             lines.push_back(line);
          }
       }
+      file.close();
    }
 
    void Util::cleanLine(std::string & line) {
