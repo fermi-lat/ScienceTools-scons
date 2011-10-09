@@ -6,6 +6,7 @@
   $Id$
   EOH
 
+ st_facilities-00-15-02 09-Oct-2011 jchiang retagging because of apparently failed tag for 00-15-01
  st_facilities-00-15-01 09-Oct-2011 jchiang add explicit ifstream::close() as per [STGEN-128@JIRA]
  st_facilities-00-15-00 27-Nov-2010 jchiang add static functions to convert between pixels and SkyDirs for SkyProj objects
  st_facilities-00-14-06 01-Mar-2010    jrb Don't use _declspec for SCons builds
