@@ -149,10 +149,6 @@ class SpatialModel(object):
         parameterized by a a simple geometric function with a list of
         free paraemters.
     
-        All spatial models are assumed to be normalized such that the
-        integral over solid angle (measured in degrees^2) of the intensity
-        (for a given energy) is equal to 1.
-
         All SpatialModel objects must implement the __call__ function,
         which takes a skydir object and returns the intensity at that
         direction. The intensity is defined such that the integral
