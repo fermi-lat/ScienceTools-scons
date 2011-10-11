@@ -124,6 +124,8 @@ class Setup(dict):
                                 #  (ts_map.KdeMap, "kde", dict()),))
                 dampen = 1.0,
                 setup_cmds='',
+                minROI=7,
+                maxROI=7
                 ))
         self.update(kwargs)
         # first-order replace

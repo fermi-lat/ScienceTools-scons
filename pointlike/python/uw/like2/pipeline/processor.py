@@ -289,8 +289,8 @@ def process(roi, **kwargs):
     outdir     = kwargs.pop('outdir', '.')
     associate= kwargs.pop('associate', None)
     if associate is not None and associate!='None':
-        for source in sources:
-            make_association(source, roi.tsmap(which=source.name), associate)
+        for source in fit_sources:
+            make_association(source, roi.tsmap(source.name), associate)
     def getdir(x ):
         if not kwargs.get(x,False): return None
         t = os.path.join(outdir, kwargs.get(x))
