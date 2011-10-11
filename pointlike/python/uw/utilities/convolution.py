@@ -181,7 +181,10 @@ class BackgroundConvolution(Grid):
             conversion type.  The values are stored internally as "cvals".
         """
         if override_skyfun is None and override_vals is None:
-            self.bg.set_skyfun(0, energy) #THB special for back # conversion_type,energy)
+            ## here is where the conversion type is used to define which exposure to use
+            ## isotropic might have only one 
+            ct = conversion_type if conversion_type<self.bg.exposures() else 0
+            self.bg.set_skyfun(ct, energy) 
             self.bg_vals = self.fill(self.bg)
         elif override_vals is None:
             self.bg_vals = self.fill(override_skyfun)
