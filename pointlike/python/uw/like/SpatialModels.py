@@ -815,7 +815,7 @@ class RadialProfile(RadiallySymmetricModel):
 
         r  = np.linspace(0,self.r[-1],10000)
         dr = r[1]-r[0]
-        self.norm = self.interp(r)*2*np.pi*r*dr
+        self.norm = np.sum(self.interp(r)*2*np.pi*r*dr)
         self.pdf /= self.norm
 
         # redo normalized interpolation
