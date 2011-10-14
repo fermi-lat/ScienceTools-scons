@@ -164,11 +164,13 @@ const float GBMDet_Theta_Azimuth[14][2]={
 
     void ReadGTI(vector <double>& GTI_Starts, vector <double>& GTI_Ends, string FitsAllSkyFile, double StartTime, double EndTime);
 
+    /*
     //GBM Files IO
     int ReadCTIME(string CTIME_File, short MinChannel, short MaxChannel, vector <unsigned short>& Counts, vector<double>& Time, vector <double> &Exposure, double &GBM_TSTART, double &GBM_TSTOP, int verbosity=0 );
     void GetGBM_StartStop(string file, double &GBM_TSTART, double &GBM_TSTOP);
     //GBM Pointing
 
+    
     int PlotGBMDet_Angle(int nDet, float RA, float DEC, TH1F* h, string Plots_File);
     int PlotSolar_Angle(int nDet, TH1F* h, string Plots_File);
     int PlotGBMDet_ZenithAngle(int nDet, TH1F* h, string Plots_File);
@@ -179,6 +181,7 @@ const float GBMDet_Theta_Azimuth[14][2]={
     int PlotGBMGal_Coordinates(int nDet, TH1F* hL, TH1F* hB, string Plots_File);
     void GetGBMDet_GalPt(int nDet, float & PtGBM_L, float & PtGBM_B, float PtRaz, float PtDecz, float PtRax, float PtDecx);
     void GBM_AppendPointingPlots(string PlotsFile);
+    */
 };
 
 #endif
