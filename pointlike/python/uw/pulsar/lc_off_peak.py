@@ -205,6 +205,7 @@ class OffPeak(object):
 
         if consistent:
             if not self.quiet: print 'Keeping second region'
+            print 'phase_fraction = %.2f, %.2f' % (self.first_off_peak.phase_fraction, self.second_off_peak.phase_fraction)
             self.off_peak = self.first_off_peak + self.second_off_peak
         else:
             if not self.quiet: print 'Rejecting second region'
