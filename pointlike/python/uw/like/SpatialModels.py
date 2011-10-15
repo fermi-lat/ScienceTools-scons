@@ -786,7 +786,7 @@ class NFW(RadiallySymmetricModel):
         return "%.3fd" % (self.sigma)
 
     def _shrink(self,size=SMALL_ANALYTIC_EXTENSION): 
-        self.p['sigma']=size
+        self['sigma']=size
         self.free[2]=False
     def can_shrink(self): return True
 
@@ -953,9 +953,9 @@ class EllipticalSpatialModel(SpatialModel):
         pass
 
     def _shrink(self,size=SMALL_NUMERIC_EXTENSION): 
-        self.p['Major_Axis']=size
-        self.p['Minor_Axis']=size
-        self.p['Pos_Angle']=0
+        self['Major_Axis']=size
+        self['Minor_Axis']=size
+        self['Pos_Angle']=0
         self.free[2:5]=False
     def can_shrink(self): return True
 
@@ -1072,7 +1072,7 @@ class EllipticalRing(EllipticalSpatialModel):
                  self.theta,self.frac)
 
     def _shrink(self): 
-        self.p['fraction']=0
+        self['fraction']=0
         self.free[5]=False
 
         # this calls the cache function
