@@ -306,6 +306,17 @@ class PhaseRange(object):
         """ True if the two regions have overlaping range. """
         return self.intersect(other).phase_fraction > 0
 
+    def axvspan(self, axes=None, **kwargs):
+        """ Overlay range on matplotlib axes. """
+        import pylab as P
+        if axes is None: axes=P.gca()
+        label=kwargs.pop('label',None)
+        for a,b in self.tolist(dense=False):
+            axes.axvspan(a, b, label=label, **kwargs)
+            label=None
+
+
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
