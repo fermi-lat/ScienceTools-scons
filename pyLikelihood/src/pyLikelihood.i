@@ -38,6 +38,7 @@
 #include "Likelihood/DiffRespIntegrand.h"
 #include "Likelihood/DiffuseSource.h"
 #include "Likelihood/DMFitFunction.h"
+#include "Likelihood/Drm.h"
 #include "Likelihood/EquinoxRotation.h"
 #include "Likelihood/Event.h"
 #include "Likelihood/EventContainer.h"
@@ -167,6 +168,7 @@ using optimizers::Exception;
 %include Likelihood/ScData.h
 %include Likelihood/EventContainer.h
 %include Likelihood/Observation.h
+%include Likelihood/Drm.h
 %include Likelihood/BinnedExposure.h
 %include Likelihood/AppHelpers.h
 %include Likelihood/WcsMap2.h
