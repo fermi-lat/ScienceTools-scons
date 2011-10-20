@@ -11,6 +11,7 @@ import os, types
 import numpy as np
 import pylab as plt
 from uw.utilities import image
+from .. import sedfuns
 
      
 class Plot(object):
@@ -159,7 +160,7 @@ class Plot(object):
             image.galactic_map(galmap, color='lightblue', marker='s', markercolor='r')
 
         if annotate is not None:
-            axes.text(annotate[0],annotate[1], annotate[2],transform=axes.transAxes)
+            axes.text(annotate[0],annotate[1], annotate[2],transform=axes.transAxes, fontsize='small')
         if outdir is not None: 
             if os.path.isdir(outdir):
                 fname = name.replace(' ','_').replace('+','p')
