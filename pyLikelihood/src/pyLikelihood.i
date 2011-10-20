@@ -5,6 +5,7 @@
 #ifdef TRAP_FPE
 #include <fenv.h>
 #endif
+#include "astro/SolarSystem.h"
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_stream/st_stream.h"
@@ -37,6 +38,7 @@
 #include "Likelihood/Source.h"
 #include "Likelihood/DiffRespIntegrand.h"
 #include "Likelihood/DiffuseSource.h"
+#include "Likelihood/Drm.h"
 #include "Likelihood/DMFitFunction.h"
 #include "Likelihood/Drm.h"
 #include "Likelihood/EquinoxRotation.h"
@@ -107,14 +109,14 @@ using optimizers::Function;
 using optimizers::Exception;
 %}
 %include stl.i
-// %exception {
-//    try {
-//       $action
-//    } catch (std::exception & eObj) {
-//       PyErr_SetString(PyExc_RuntimeError, const_cast<char*>(eObj.what()));
-//       return NULL;
-//    }
-// }
+%exception {
+   try {
+      $action
+   } catch (std::exception & eObj) {
+      PyErr_SetString(PyExc_RuntimeError, const_cast<char*>(eObj.what()));
+      return NULL;
+   }
+}
 %template(DoublePair) std::pair<double, double>;
 %template(IntPair) std::pair<int, int>;
 %template(EventVector) std::vector<Likelihood::Event>;
@@ -128,6 +130,8 @@ using optimizers::Exception;
 %include st_app/StApp.h
 %include astro/SkyProj.h
 %include astro/SkyDir.h
+%include astro/JulianDate.h
+%include astro/SolarSystem.h
 %template(SkyDirVector) std::vector<astro::SkyDir>;
 %template(SkyDirPair) std::pair<astro::SkyDir, astro::SkyDir>;
 %feature("autodoc", "1");
