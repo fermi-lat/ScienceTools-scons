@@ -50,6 +50,7 @@
 #include "Likelihood/ExposureMap.h"
 #include "Likelihood/FileFunction.h"
 #include "Likelihood/LogGaussian.h"
+#include "Likelihood/LogNormalLog.h"
 #include "Likelihood/LogParabola.h"
 #include "Likelihood/MapBase.h"
 #include "Likelihood/MapCubeFunction2.h"
