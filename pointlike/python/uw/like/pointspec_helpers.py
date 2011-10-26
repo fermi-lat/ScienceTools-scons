@@ -189,7 +189,7 @@ def get_diffuse_source(spatialModel='ConstantValue',
         else:
             # interpret the Model object as power law
             flux = spectralModel.i_flux(emin=100)
-            index= 10**spectralModel.p[1]
+            index= 10**spectralModel._p[1]
             dmodel = IsotropicPowerLaw(flux,index)
             smodel = PowerLaw(p=[1,1],index_offset=1)
 
