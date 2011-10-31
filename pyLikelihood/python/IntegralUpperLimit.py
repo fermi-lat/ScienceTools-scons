@@ -1,6 +1,6 @@
 # -*-mode:python; mode:font-lock;-*-
 """
-@file IntegralUpperLimits.py
+file IntegralUpperLimits.py
 
 @brief Function to calculate upper limits by integrating Likelihood function
        to given \"probability\" level.
@@ -374,22 +374,9 @@ def _find_interval(like, par, srcName, no_optimizer,
     exact_root_evals += len(optvalue_cache)
     return [xlo, xhi, ylo, yhi, exact_root_evals, approx_root_evals]
 
-def calc(like, srcName, cl=0.95, verbosity=0,
-         skip_global_opt=False, be_very_careful=False, freeze_all=False,
-         delta_log_like_limits = 10.0, profile_optimizer = None,
-         emin=100, emax=3e5, poi_values = []):
-    print "IntegralUpperLimits.calc() is deprecated, use calc_int() instead"
-    return calc_int(like, srcName,
-                    cl=cl,
-                    verbosity= verbosity,
-                    skip_global_opt=skip_global_opt,
-                    be_very_careful=be_very_careful,
-                    freeze_all=freeze_all,
-                    delta_log_like_limits=delta_log_like_limits,
-                    profile_optimizer=profile_optimizer,
-                    emin=emin,
-                    emax=emax,
-                    poi_values=poi_values);
+def calc(like, srcName, *args, **kwargs):
+   print "IntegralUpperLimits.calc() is deprecated, use calc_int() instead"
+   return calc_int(like, srcName, *args,**kwargs)
 
 def calc_int(like, srcName, cl=0.95, verbosity=0,
              skip_global_opt=False, be_very_careful=False, freeze_all=False,
