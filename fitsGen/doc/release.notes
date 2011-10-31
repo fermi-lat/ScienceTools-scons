@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ fitsGen-06-04-03 31-Oct-2011 jchiang add PROC_VER keyword to ft2.tpl PHDU
  fitsGen-06-04-02 27-Sep-2011 jchiang add #include <vector> to MeritFile2.h for gcc4.4.3/Ubuntu
  fitsGen-06-04-01 02-Jun-2011 jchiang bug-fix in ~MeritFile2 for handling m_tree when using it as a TChain
  fitsGen-06-04-00 02-Jun-2011 jchiang add constructor to MeritFile2 that takes a list of input merit files
