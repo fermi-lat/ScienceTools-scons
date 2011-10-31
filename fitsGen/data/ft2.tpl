@@ -24,6 +24,7 @@ ORIGIN      = 'LISOC'                     / name of organization making file
 CREATOR     =                             / software and version creating file
 VERSION     = 1                           / release version of the file
 #SOFTWARE    =                             / version of the processing software
+PROC_VER    = 1                              / processing version of this file 
 END
 
 XTENSION     = 'BINTABLE'                  / binary table extension
