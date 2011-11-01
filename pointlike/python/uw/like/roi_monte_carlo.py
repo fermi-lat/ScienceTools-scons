@@ -155,6 +155,8 @@ class MonteCarlo(object):
         temp=NamedTemporaryFile(dir='.',delete=False)
         energies=np.logspace(np.log10(emin),np.log10(emax),numpoints)
         fluxes=model(energies)
+        # josh's fix to the clipping.../ thanks!
+        fluxes=np.where(fluxes>1e-50,fluxes,1e-50)
         temp.write('\n'.join(['%g\t%g' % (i,j) for i,j in zip(energies,fluxes)]))
         temp.close()
         return temp.name
