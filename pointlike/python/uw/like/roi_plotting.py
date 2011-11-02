@@ -1561,8 +1561,6 @@ class ROITSMapPlotter(object):
                 # See comment for ROISmoothedSources's colobar code.
                 cbar = cax.colorbar(im)
 
-            cbar = cax.colorbar(im)
-
         ax.set_title(self.title)
 
         ROISmoothedSources.overlay_region(self.roi,ax,self.header,
