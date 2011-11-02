@@ -96,7 +96,7 @@ class DataSet(object):
             dataspec.DataSpec.datasets[id(dataset)] = dataset
             return dataspec.DataSpec(id(dataset),month=month)
         # it is a string, check dictionary in ., then $FERMI/data
-        folders = ['.'] + glob.glob( os.path.join(os.path.expandvars('$FERMI'),'data*'))
+        folders = ['.'] + glob.glob( os.path.join(os.path.expandvars('$FERMI'),'data'))
         for folder in folders :
             dict_file=os.path.join(folder, 'dataspec.py')
             if os.path.exists(dict_file):
@@ -106,7 +106,7 @@ class DataSet(object):
                     print 'Data dictionary file %s not valid' % ldict
                     raise
                 if dataset in ldict: 
-                    print 'found dataset %s in $FERMI/data' % dataset
+                    print 'found dataset %s in %s' % (dataset, folder)
                     return dataspec.DataSpecification(folder, **ldict[dataset])
         # not found: this is deprecated, leave for backwards consisency
         raise RuntimeError('dataset name %s not found in %s' % (dataset, folders))
