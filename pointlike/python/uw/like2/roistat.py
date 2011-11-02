@@ -54,6 +54,7 @@ class ROIstat(object):
         self.quiet=quiet
         self.prior= prior.ModelPrior(self.sources, self.sources.free)
         self.prior.enabled=kwargs.pop('enable_prior', False)
+        self.saved_pars = self.get_parameters()
     
     def __str__(self):
         return 'ROIstat for ROI %s: %d bands %d sources (%d free)' \
@@ -93,6 +94,12 @@ class ROIstat(object):
             band.initialize(freelist)
         self.prior.initialize(freelist)
         self.update()
+        self.saved_pars = self.get_parameters()
+        
+    def reset(self):
+        """ restore original set of parameters"""
+        self.set_parameters(self.saved_pars)
+        self.update()
 
     def select_bands(self, bandsel= None): 
         """ select a subset of the bands for analysis
@@ -117,16 +124,19 @@ class ROIstat(object):
         """
         if sourcename is None:
             self.initialize()
-            return
-        source_mask = np.array([source.name==source_name for source in self.sources])
-        if sum(source_mask)!=1:
+            return None
+        self.source_mask = np.array([source.name==sourcename for source in self.sources])
+        if sum(self.source_mask)!=1:
             raise Exception('Localization: source %s not found'%source_name)
         self.initialize(self.source_mask)
+        return np.array(self.sources)[self.source_mask][0]
 
     def update(self, reset=False):
         """ perform update on all selected bands, and variable sources
         if reset is True, assume that must also reinitialize angular dependence of sources
         """
+        if reset:
+            assert sum(self.source_mask)==1, 'expect only one source selected'
         map(lambda s: s.update(reset), self.selected_bands)
         self.prior.update()
         
