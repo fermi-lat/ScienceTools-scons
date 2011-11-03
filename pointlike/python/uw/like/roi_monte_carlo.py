@@ -55,6 +55,7 @@ class MonteCarlo(object):
             ('maxROI',          None, "Maximum ROI Size. Gtobssim will use the use_ac flag if this is specified."),
             ('quiet',          False, "Surpress output."),
             ('mc_energy',      False, "Use MC Energy"),
+            ('store_output',   False, "store temporary output, for debugging"),
     )
 
     @staticmethod
@@ -566,6 +567,11 @@ class MonteCarlo(object):
         else:
             use_ac="no"
             ra,dec,radius=0,0,180
+        # new feature, store_output
+        if self.store_output:
+            theFolder = os.getenv('PWD')+'/'+self.tempdir.replace(self.tempbase,''); # to remove the tempbase
+            shutil.copytree(self.tempdir,theFolder);
+            print '*INFO*: stored output in',theFolder
         
         os.environ['PFILES']=self.tempdir+';'+os.environ['PFILES'].split(';')[-1]; # to set the writing pfiles to the tempdir
         if not self.quiet: print 'current pfile settings',os.getenv('PFILES'); #should add the output for debugging reasons
