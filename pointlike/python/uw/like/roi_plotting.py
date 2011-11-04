@@ -1556,6 +1556,7 @@ class ROITSMapPlotter(object):
                 # add colorbar axes
                 divider = make_axes_locatable(ax)
                 cax = divider.new_horizontal("5%", pad="2%", axes_class=Axes)
+                fig.add_axes(cax)
                 cbar = P.colorbar(im, cax=cax)
             else:
                 # See comment for ROISmoothedSources's colobar code.
