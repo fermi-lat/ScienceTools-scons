@@ -284,6 +284,7 @@ class SpectralAnalysis(object):
             ==========   =============
             fit_emin     [125,125] minimum energies (separate for front and back) to use in spectral fitting.
             fit_emax     [1e5,1e5] maximum energies (separate for front and back) to use in spectral fitting.
+            conv_type    [-1] conversion type selection (0 for front, 1 for back, -1 for all)
             diffdir      [None] a directory to look for the default diffuse models (e.g. gll_iem_v02.fit)
             ==========   =============
         """
