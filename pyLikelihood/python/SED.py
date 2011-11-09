@@ -353,7 +353,7 @@ class SED(object):
             (a) the x-axis is in MeV and (b) that
             the y-axis is E^2 dN/dE (MeV/cm^2/s) """
         low_lim, hi_lim = axes.get_xlim()
-        eneriges = np.logspace(np.log10(low_lim), np.log10(hi_lim), npts)
+        energies = np.logspace(np.log10(low_lim), np.log10(hi_lim), npts)
         axes.plot(energies , energies**2*SED.get_dnde(spectrum,energies), **kwargs)
 
     @staticmethod
