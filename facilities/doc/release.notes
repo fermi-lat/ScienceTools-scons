@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+ facilities-02-20-03 09-Nov-2011    jrb Use stat( ) rather than fstream::open to check if dir exists
  facilities-02-20-02 10-Jun-2011    jrb minor change to SConscript affecting GRBAnalysis-scons only
  facilities-02-20-01 27-May-2011    jrb Support for imminent GRBAnalysis-scons container
  facilities-02-20-00 14-Apr-2011    hmk add in environment vars setting for 
