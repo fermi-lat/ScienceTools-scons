@@ -17,6 +17,7 @@
 #endif
 
 #ifndef WIN32
+#include <sys/stat.h>         // added to check for dir. existence
 #if !defined(SCons) && !defined(HEADAS)
 extern char **environ;
 #endif
@@ -204,18 +205,27 @@ namespace facilities {
     // it fails even when it shouldn't
 #ifdef WIN32
     return true;
-#endif
+#else
     // Check to see if rel path exists first for INST_DIR
     // if that fails, try BASE_DIR
 
-    std::fstream filestr;
-    filestr.open(path.c_str(), std::ios_base::in);
-    if (filestr.is_open()) {  // all is well, just close the file
-      filestr.close();
+    //std::fstream filestr;
+    //if (filestr.is_open()) {  // all is well, just close the file
+    //  filestr.close();
+    //  return true;
+    //}
+
+    struct stat buf;
+    int ret = stat(path.c_str(), &buf);
+    if (ret == 0) {
+      //std::cout << "This path ok: " << path << std::endl;
       return true;
+    } else {
+      //std::cout << "For path " << path << " stat was " << ret << std::endl;
+      return false;
     }
-    return false;
   }
+#endif
 #endif
 
   // Several things are accomplished here.  Only the first is required
