@@ -226,19 +226,13 @@ class ROIPointSourceManager(ROIModelManager):
 
     def zero_source(self, which, bands):
         m = self.models[which]
-        if m.getp(0,internal=True)==-np.inf: return #already zeroed
-        m.old_flux = m.getp(0, internal=True) # get the internal value
-        m.setp(0,  -np.inf, internal=True)
-        m.old_free = m.free.copy()
-        m.free[:] = False
+        m.zero()
         self.cache(bands)
 
     def unzero_source(self, which, bands):
         m = self.models[which]
         try:
-            assert m.old_flux!=-np.inf, 'attempt to unzero non-zeroed source %d ' % which
-            m.setp(0, m.old_flux, internal=True)
-            m.free = m.old_free.copy()
+            m.unzero()
             self.cache(bands)      
         except:
             print 'Source %d indicated was not zeroed in the first place!' %which
@@ -355,17 +349,13 @@ class ROIDiffuseManager(ROIModelManager):
 
     def zero_source(self, which, bands):
         m = self.models[which]
-        m.old_flux = m[0]
-        m.setp(0,  -np.inf, internal=True)
-        m.old_free = m.free.copy()
-        m.free[:] = False
+        m.zero()
         self.update_counts(bands)
 
     def unzero_source(self, which, bands):
         m = self.models[which]
         try:
-            m[0] = m.old_flux
-            m.free = m.old_free.copy()
+            m.unzero()
             self.update_counts(bands)
         except:
             print 'Source indicated was not zeroed in the first place!'
