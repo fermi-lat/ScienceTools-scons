@@ -1324,6 +1324,7 @@ class ROISmoothedSources(object):
                 # without doing this, sidewasy colorbars were not showing up right.
                 cbar = cax.colorbar(im)
 
+            self.cbar = cbar
             cbar.ax.set_ylabel(r'$\mathrm{counts}\ [\mathrm{deg}]^{-2}$')
 
         if self.title is None: 
