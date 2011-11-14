@@ -1205,7 +1205,7 @@ class ROISmoothedSources(object):
             reg = pyregion.parse(extension_string)
             extensionmask = reg.get_mask(pyfits[0])
         else:
-            extensionmask = 0 # no mask
+            extensionmask = False # no mask
 
         # Get the maximum intensity inside the PSF (in lowest bin)
         emin=roi.bin_edges[0]
