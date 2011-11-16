@@ -102,7 +102,6 @@ class SED(object):
         """
         sf = source_flux
         self.scale_factor=scale_factor
-
         rec = makerec.RecArray('elow ehigh flux lflux uflux ts'.split())
         self.loglikes = []
         for i,energy in enumerate(sf.energies):
@@ -257,6 +256,7 @@ def makesed_all(roi, **kwargs):
     other kwargs passed to sed.Plot().__call__
     """
     sedfig_dir = kwargs.pop('sedfig_dir', None)
+    if sedfig_dir is not None and not os.path.exists(sedfig_dir): os.mkdir(sedfig_dir)
     showts = kwargs.pop('showts', True)
     initw = roi.log_like()
 
