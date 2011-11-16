@@ -57,11 +57,11 @@ class DataSpecification(object):
 
         keyword_options.process(self, kwargs)
 
-        if self.binfile is not None: self.binfile = os.path.expandvars(self.binfile)
-        if self.ltcube is not None: self.ltcube = os.path.expandvars(self.ltcube)
-
-        if self.ft1files is None and self.binfile is None:
-            raise Exception,'No event data (FT1 or binfile) provided!  Must pass at least one of these.'
+        if self.binfile is None: raise Exception("binfile must be specified.")
+        if self.ltcube is None: raise Exception("ltcube must be specified.")
+            
+        self.binfile = os.path.expandvars(self.binfile)
+        self.ltcube = os.path.expandvars(self.ltcube)
 
         if self.ft1files is None and not os.path.exists(self.binfile):
             raise Exception,'An FT1 file must be specified if the binfile does not exist.'
