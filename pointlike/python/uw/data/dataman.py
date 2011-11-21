@@ -136,7 +136,7 @@ class DataSpec(object):
         ('livetime_buffer',10,'radius in degrees by which livetime cube cone is larger than ROI cone'),
         ('livetime_pixelsize',1,'pixel size to use for livetime calculation'),
         ('data_name', '', 'descriptive name for the data set'),
-        ('legacy', False,  'relax DSS requirements for legacy files'),
+        ('legacy', False,  'relax DSS requirements for legacy files')
         # keyword controlling livetimecube pixel size? and buffer cone?
     )
     binner = None # static variable for PhotonBinner
@@ -202,6 +202,8 @@ class DataSpec(object):
         return self.__dict__
     def __setstate__(self,dict):
         """ Override default unpickle to perform a few sanity checks."""
+        for t in self.defaults:
+            self.__dict__[t[0]] = self.__dict__.pop(t[0],t[1])
         self.__dict__.update(dict)
         if not self._check_binfile():
             raise ValueError('Binned photon data not compatible!')
