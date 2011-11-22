@@ -223,6 +223,12 @@ class BinnedAnalysis(AnalysisBase):
         zeros = num.zeros(len(self.e_vals))
         self.sourceFitResids[-1].overlay(self.e_vals, zeros, symbol='dotted')
         self.sourceFitResids[-1].setTitle(srcName)
+    def thaw(self, i):
+        AnalysisBase.thaw(self, i)
+        self.logLike.buildFixedModelWts()
+    def freeze(self, i):
+        AnalysisBase.freeze(self, i)
+        self.logLike.buildFixedModelWts()
 
 def binnedAnalysis(mode='ql', ftol=None, **pars):
     """Return a BinnedAnalysis object using the data in gtlike.par."""
