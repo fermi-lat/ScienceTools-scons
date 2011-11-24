@@ -67,8 +67,16 @@ void AddPhoton::operator()(const Photon& gamma)
         // zenith angle cut, unless in Earth coordinates
         if( ! isFinite(gamma.zenith_angle()) ) return; // catch NaN?
         if( use_earth==0 && gamma.zenith_angle()> Data::zenith_angle_cut()) return;
-        int class_level( gamma.class_level() );
-        if( class_level< pointlike::Data::class_level() ) return; // select class level
+        int class_level( gamma.class_level() ); // NB == ctbclasslevel == EVENT_CLASS
+        // For Pass6, EVENT_CLASS is an integer representing a nested scheme
+        // For Pass7, EVENT_CLASS is a bitmask, and we requre the bit(s) corresponding
+        // to EVENT_CLASS be set
+        if( !m_pass7 ) {
+            if( class_level< pointlike::Data::class_level() ) return; // select class level
+        }
+        else {
+            if( class_level & pointlike::Data::class_level() == 0 ) return;
+        }
         m_kept++;
 
 

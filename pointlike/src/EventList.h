@@ -70,12 +70,14 @@ private:
 class AddPhoton: public std::unary_function<astro::Photon, void> {
 public:
     AddPhoton (skymaps::BinnedPhotonData& map, int select, 
-        double start, double stop, int source,  skymaps::Gti gti=skymaps::Gti() )
+        double start, double stop, int source,  skymaps::Gti gti=skymaps::Gti(),
+        bool pass7=true)
         : m_map(map), m_select(select)
         , m_start(start), m_stop(stop), m_source(source)
         , m_found(0), m_kept(0)
         , m_gti(gti)
         , m_use_gti(gti.getNumIntervals()>0)
+        , m_pass7(pass7)
     {}
     void operator()(const Photon& gamma);
 
@@ -87,7 +89,7 @@ public:
     int m_source;
     int m_found, m_kept;
     skymaps::Gti m_gti;
-    bool m_use_gti;
+    bool m_use_gti,m_pass7;
 };
 
 /**
@@ -143,6 +145,7 @@ public:
 
     void close();
     static std::string root_names[];
+    bool pass7() {return m_pass7;}
 
     
 private:

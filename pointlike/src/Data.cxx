@@ -298,8 +298,8 @@ void Data::add(const std::string& inputFile, int event_type, int source_id)
 
     }else {
 
-        AddPhoton adder(*m_data, event_type, m_start, m_stop, source_id, s_gti_mask);
         EventList photons(inputFile, source_id>-1, s_use_mc_energy);
+        AddPhoton adder(*m_data, event_type, m_start, m_stop, source_id, s_gti_mask, photons.pass7());
 
         AddPhoton added =std::for_each(photons.begin(), photons.end(), adder );
         log() 
