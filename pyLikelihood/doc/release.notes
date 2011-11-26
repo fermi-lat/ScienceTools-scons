@@ -7,6 +7,7 @@
    @verbatim
    * EOH *
 
+ pyLikelihood-01-29-02 26-Nov-2011 jchiang mods for plotting requests from Jean
  pyLikelihood-01-29-01 22-Nov-2011 jchiang bug-fix for LK-72@JIRA
  pyLikelihood-01-29-00 08-Nov-2011 jchiang Josh's SED.py
  pyLikelihood-01-28-06 20-Oct-2011 jchiang bug-fix for UnbinnedAnalysis::__init__ when building self.energies
