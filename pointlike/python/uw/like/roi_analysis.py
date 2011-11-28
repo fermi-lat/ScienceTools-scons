@@ -126,7 +126,7 @@ class ROIAnalysis(object):
                 self.bands.append(roi_bands.ROIBand(band,self.sa,
                                                     self.roi_dir,**band_kwargs))
 
-        self.bands = N.asarray(self.bands)
+        self.bands = np.asarray(self.bands)
 
         if not self.skip_setup: self.__setup_counts__()
         
