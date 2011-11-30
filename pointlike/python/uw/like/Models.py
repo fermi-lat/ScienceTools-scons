@@ -1016,6 +1016,10 @@ class DMFitFunction(Model):
             >>> print '%g' % model['mass']
             500
     """
+    def full_name(self):
+        return '%s, norm=%.1f, bratio=%.1f channel0=%d, channel1=%d' % (self.pretty_name,
+                                                                        self.norm, self.bratio, 
+                                                                        self.channel0, self.channel1)
 
     def _update(self):
         """ Update the DMFitFunction internally.
