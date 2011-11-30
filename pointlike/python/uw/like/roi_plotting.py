@@ -31,11 +31,9 @@ from . roi_image import ModelImage,CountsImage,RadialCounts,RadialModel,Smoothed
 from . roi_extended import ExtendedSource
 from . pointspec_helpers import PointSource
 from . Models import PowerLaw
-from . SpatialModels import SpatialMap, PseudoSpatialModel, RadiallySymmetricModel, \
-        EllipticalSpatialModel, Disk, EllipticalDisk, Ring, EllipticalRing
+from . SpatialModels import SpatialMap, PseudoSpatialModel
 from uw.utilities import colormaps
-from uw.utilities.image import ZEA
-from uw.utilities import region_writer 
+from uw.utilities import region_writer
 from uw.utilities import keyword_options
 from skymaps import SkyDir
 
