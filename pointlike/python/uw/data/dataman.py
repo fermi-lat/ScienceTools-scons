@@ -10,6 +10,7 @@ __version__ = '$Revision$'
 import os
 import collections
 import glob
+import warnings
 from cPickle import dump,load
 
 import numpy as np
@@ -534,11 +535,18 @@ class DataManager(object):
         
             ds: a DataSpec instance
         """
+        self.dataspec = ds
         self.bpd = skymaps.BinnedPhotonData(ds.binfile)
         self.lt = skymaps.LivetimeCube(ds.ltcube,weighted=False)
         if ds.weighted_livetime:
             self.weighted_lt = skymaps.LivetimeCube(ds.ltcube,weighted=True)
         self.gti = self.lt.gti() #Just to provide a reference.
+
+    @property
+    def dmap(self):
+        """Alias for backward compatibility"""
+        warnings.warn(DeprecationWarning('DataManager.bpd is the preferred name for the BinnedPhotonData object'))
+        return self.bpd
 
 class DataSet(object):
     """A helper class to manage DataSpecs
