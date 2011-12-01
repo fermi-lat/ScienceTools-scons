@@ -344,8 +344,9 @@ Optional keyword arguments:
                 >>> print '%g' % model.i_flux(emin=1e3, emax=1e5)
                 1e-07
         """
-        new_prefactor = flux*(self.getp(0, internal=False)/self.i_flux(*args,**kwargs))
-        self.setp(0,new_prefactor,internal=False)
+        prefactor = self.getp(0, internal=True) 
+        new_prefactor = prefactor + np.log10(flux/self.i_flux(*args,**kwargs))
+        self.setp(0,new_prefactor,internal=True)
 
     def copy(self):
         
