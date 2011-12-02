@@ -139,8 +139,13 @@ class MonteCarlo(object):
             ]
             return indent+('\n'+indent).join(xml)
         else:
-            flux=ps.model.i_flux(mc_emin,mc_emax,cgs=True)*1e4
-            specfile=self._make_specfile(ps.model,mc_emin,mc_emax)
+            if isinstance(ps.model,FileSpectrum):
+                flux=ps.model.i_flux(self.energy[0],self.energy[-1],cgs=True)*1e4
+                specfile=ps.model.file
+            else:
+                flux=ps.model.i_flux(mc_emin,mc_emax,cgs=True)*1e4
+                specfile=self._make_specfile(ps.model,mc_emin,mc_emax)
+
             xml=[
                 '<source name="%s">' % MonteCarlo.strip(ps.name),
                 '  <spectrum escale="MeV">',
