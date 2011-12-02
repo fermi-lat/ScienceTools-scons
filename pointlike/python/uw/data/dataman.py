@@ -588,8 +588,7 @@ class DataSet(object):
 
         keyword_options.process(self,kwargs)
         self.name = name
-        if name is not None:
-            self.filename = self._parse_name(name)
+        self.filename = self._parse_name(name)
         if name is None or not os.path.exists(self.filename):
             if self.pickle is None and self.dataspec is None:
                 raise DataError("Must specify either pickle files or DataSpecs")
@@ -600,10 +599,12 @@ class DataSet(object):
                 if self.dataspec is not None:
                     raise DataError("Must specify dataspec OR pickle, not both.")
                 self.dataspec = self._load_files(self.pickle)
-            dump(self.dataspec,open(self.filename,'w'))
+            if self.filename is not None:
+                dump(self.dataspec,open(self.filename,'w'))
 
     def _parse_name(self,name):
         """Return the filename corresponding to a DataSet name"""
+        if name is None: return name
         data_dir = os.path.expandvars(self.data_dir)
         if data_dir=="$FERMI/data":
             #$FERMI undefined
