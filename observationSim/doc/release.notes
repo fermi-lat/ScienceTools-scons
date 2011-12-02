@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ observationSim-08-05-00 02-Dec-2011 jchiang apply efficiency corrections if they are in the IRFs
  observationSim-08-04-11 10-Aug-2011 jchiang switch to P7SOURCE_V6 as default irfs; allow the rocking angle to be set from the parfile if no scfile is given
  observationSim-08-04-10 12-Apr-2011 jchiang set DATA_QUAL and LAT_CONFIG columns to 1 so that standard gtmktime filter can be applied
  observationSim-08-04-09 21-Oct-2010 jchiang include <cstdlib> for gcc44
