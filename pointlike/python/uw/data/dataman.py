@@ -592,7 +592,7 @@ class DataSet(object):
         if name is None or not os.path.exists(self.filename):
             if self.pickle is None and self.dataspec is None:
                 raise DataError("Must specify either pickle files or DataSpecs")
-        if os.path.exists(self.filename) and not self.clobber:
+        if os.path.exists(self.filename or '') and not self.clobber:
             self.dataspec = self._load_files(self.filename)
         else:
             if self.pickle is not None:
