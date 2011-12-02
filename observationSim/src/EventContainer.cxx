@@ -59,18 +59,25 @@ namespace {
                                    astro::SkyDir &sourceDir,
                                    astro::SkyDir &zAxis,
                                    astro::SkyDir &xAxis, 
-                                   double time) {
-   
+                                   double time,
+                                   double ltfrac) {
+//
 // Build a vector of effective area accumulated over the vector
 // of response object pointers.
 //
+      double efficiency(1);
+      irfInterface::IEfficiencyFactor * efficiency_factor
+         = respPtrs.front()->efficiencyFactor();
+      if (efficiency_factor) {
+         efficiency = efficiency_factor->value(energy, ltfrac);
+      }
 // First, fill a vector with the individual values.
       std::vector<double> effAreas(respPtrs.size());
       std::vector<double>::iterator eaIt = effAreas.begin();
       std::vector<irfInterface::Irfs *>::iterator respIt = respPtrs.begin();
       while (eaIt != effAreas.end() && respIt != respPtrs.end()) {
-         *eaIt = (*respIt)->aeff()->value(energy, sourceDir, zAxis, xAxis,
-                                          time);
+         *eaIt = (*respIt)->aeff()->value(energy, sourceDir, zAxis, xAxis,time)
+            *efficiency;
          eaIt++;
          respIt++;
       }
@@ -150,14 +157,16 @@ bool EventContainer::addEvent(EventSource * event,
    }
 
    irfInterface::Irfs *respPtr;
+   double ltfrac(spacecraft->livetimeFrac(time));
 
 // Apply the acceptance criteria.
    bool accepted(false);
    if ( (m_prob == 1 || RandFlat::shoot() < m_prob)
-        && RandFlat::shoot() < spacecraft->livetimeFrac(time) 
+        && RandFlat::shoot() < ltfrac
         && !spacecraft->inSaa(time) 
         && (respPtr = ::drawRespPtr(respPtrs, event->totalArea()*1e4, 
-                                    energy, sourceDir, zAxis, xAxis, time)) ) {
+                                    energy, sourceDir, zAxis, xAxis, time,
+                                    ltfrac)) ) {
 
       astro::SkyDir appDir 
          = respPtr->psf()->appDir(energy, sourceDir, zAxis, xAxis, time);
