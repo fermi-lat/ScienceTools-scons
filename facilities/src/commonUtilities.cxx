@@ -224,8 +224,8 @@ namespace facilities {
       //std::cout << "For path " << path << " stat was " << ret << std::endl;
       return false;
     }
-  }
 #endif
+  }
 #endif
 
   // Several things are accomplished here.  Only the first is required
