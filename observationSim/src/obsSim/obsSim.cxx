@@ -389,6 +389,10 @@ double ObsSim::maxEffArea() const {
    for (size_t i=0; i < m_respPtrs.size(); i++) {
       total += m_respPtrs.at(i)->aeff()->upperLimit();
    }
-   total *= 1.5; //head room for efficiency factor corrections at large ltfrac
+   if (m_respPtrs.front()->efficiencyFactor()) {
+// Provide head room for efficiency factor corrections at large
+// ltfrac.
+      total *= 1.5;
+   }
    return total/1e4;
 }
