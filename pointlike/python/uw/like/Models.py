@@ -343,6 +343,14 @@ Optional keyword arguments:
                 >>> model.set_flux(1e-7, emin=1e3, emax=1e5)
                 >>> print '%g' % model.i_flux(emin=1e3, emax=1e5)
                 1e-07
+
+            Note that this implementation is robust even when the source
+            has an initial flux of 0:
+
+                >>> model.setp(0, -np.inf, internal=True)
+                >>> model.set_flux(1e-7)
+                >>> print '%g' % model.i_flux()
+                1e-07
         """
         self.setp(0, 0, internal=True)
         new_prefactor = np.log10(flux/self.i_flux(*args,**kwargs))
