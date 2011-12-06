@@ -636,6 +636,8 @@ class DataSet(object):
         if isinstance(pdat,DataSpec):
             return pdat
         elif hasattr(pdat,'__iter__'):
+            if isinstance(pdat[0],DataSpec):
+                return pdat
             return self._load_files(pdat)
         else:
             #temporary kludge for my local version
