@@ -502,7 +502,7 @@ class ExtendedSourceCatalog(SourceCatalog):
             if spatial is not None:
                 # replace the SpatialMap extended source with an analytic one.
                 analytic_source = ExtendedSource(name=source.name,model=source.model,
-                                                 spatial_model=spatial,leave_parameters=True)
+                                                 spatial_model=spatial)
                 analytic_source.original_template = source.spatial_model.file # for reference
                 sources.append(analytic_source)
             else:
