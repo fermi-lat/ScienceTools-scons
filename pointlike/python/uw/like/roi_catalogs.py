@@ -66,6 +66,7 @@ class FermiCatalog(SourceCatalog):
         inds = f[1].data.field('SPECTRAL_INDEX')
         cutoffs = f[1].data.field('CUTOFF_ENERGY') if 'Cutoff_Energy' in colnames else None
         betas = f[1].data.field('beta') if 'beta' in colnames else None
+        mask = np.ones(ras.shape,dtype='bool')
         try:
             self.ts=np.asarray(f[1].data.field('TEST_STATISTIC'))
         except KeyError, er:
@@ -74,7 +75,6 @@ class FermiCatalog(SourceCatalog):
 
         inds = np.where(inds > 0, inds, -inds)
 
-        self.dirs    = map(SkyDir,np.asarray(ras).astype(float),np.asarray(decs).astype(float))
 
         self.models = []
         for i,(n0,ind,pen) in enumerate(zip(n0s,inds,pens)):
@@ -90,9 +90,11 @@ class FermiCatalog(SourceCatalog):
                     self.models.append(PowerLaw(p=[n0,ind],e0=pen))
                 except AssertionError:
                     print "Something went wrong with %s, discarding"%f[1].data.field(sname)[i]
-        self.models = np.asarray(self.models)
+                    mask[i] = False
 
-        self.names  = np.chararray.strip(f[1].data.field(sname))
+        self.dirs    = map(SkyDir,np.asarray(ras).astype(float)[mask],np.asarray(decs).astype(float)[mask])
+        self.models = np.asarray(self.models)
+        self.names  = np.chararray.strip(f[1].data.field(sname))[mask]
 
         f.close()
 
