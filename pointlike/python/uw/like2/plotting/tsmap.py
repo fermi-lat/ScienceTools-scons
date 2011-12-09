@@ -8,6 +8,7 @@ import math, os
 import numpy as np
 from uw.utilities import image
 import pylab as plt
+from skymaps import SkyDir
 
 def plot(localizer, name=None, center=None, size=0.5, pixelsize=None, outdir=None, 
         which=0, catsig=99, axes=None, fignum=99, 
