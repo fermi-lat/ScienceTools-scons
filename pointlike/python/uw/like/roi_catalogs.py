@@ -178,13 +178,16 @@ class Catalog2FGL(SourceCatalog):
     def __init__(self,catalog,**kwargs):
         keyword_options.process(self, kwargs)
 
-        if self.latextdir is None and \
-                (not os.environ.has_key('LATEXTDIR') or not exists(expandvars(os.environ['LATEXTDIR']))):
+        if self.latextdir is None:
+            if (not os.environ.has_key('LATEXTDIR') or
+                    not exists(expandvars(os.environ['LATEXTDIR']))):
                     raise Exception(dedent("""
                             Since environment variable $LATEXTDIR does 
                             not exist, the paramter latextdir must
                             be passed into this object."""))
 
+            else:
+                self.latextdir=os.environ['LATEXTDIR']
         else:
             os.environ['LATEXTDIR']=expandvars(self.latextdir)
 
