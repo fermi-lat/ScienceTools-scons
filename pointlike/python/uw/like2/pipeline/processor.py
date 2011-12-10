@@ -273,9 +273,6 @@ def process(roi, **kwargs):
         else:
             print 'Refit not requested'
     
-    if tables is not None:
-        tables(roi)
-    
     outdir     = kwargs.pop('outdir', '.')
     associator= kwargs.pop('associate', None)
     def getdir(x ):
@@ -304,6 +301,10 @@ def process(roi, **kwargs):
     except Exception,e:
         print 'Failed to analyze counts for roi %s: %s' %(roi.name,e)
         chisq = -1
+    
+    if tables is not None:
+        tables(roi)
+    
 
     if outdir is None:  return chisq
     
