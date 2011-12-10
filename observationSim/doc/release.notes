@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ observationSim-09-00-00 10-Dec-2011 jchiang make startdate a hidden parameter, tstart a prompted parameter, using INDEF to indicate default behavior: tstart=0 if scfile=none, tstart=TSTART in scfile if scfile is given
  observationSim-08-05-01 03-Dec-2011 jchiang disable max area adjustment in gtobssim if efficiency corrections are not present
  observationSim-08-05-00 02-Dec-2011 jchiang apply efficiency corrections if they are in the IRFs
  observationSim-08-04-11 10-Aug-2011 jchiang switch to P7SOURCE_V6 as default irfs; allow the rocking angle to be set from the parfile if no scfile is given
