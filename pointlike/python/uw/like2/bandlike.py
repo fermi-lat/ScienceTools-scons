@@ -26,7 +26,7 @@ class BandSource(object):
         """
             band : a like.roi_bands.ROIBand object reference
                 depends on: emin,emax,e,radius_in_rad,wsdl,
-                    solid_angle,pixelArea(), 
+                    solid_angle,pixelArea(), pixels_from_psf()
             source : generalized Source 
         """
         self.source= source
@@ -269,7 +269,13 @@ class BandLike(object):
             assert len(sourcemask)==len(self), 'bad input to model_counts'
         t = np.array([s.counts for s in self])
         return sum(t) if sourcemask is None else sum(t[sourcemask])
-    
+
+    def add_source(self, source):
+        """ add a new source """
+        # ugly but compact
+        t = list(self.bandsources)
+        t.append(BandPoint(self.band,source))
+        self.bandsources = np.array(t)
  
 def factory(bands, sources, exposure, quiet=False):
     """ return an array, one per band, of BandLike objects 
