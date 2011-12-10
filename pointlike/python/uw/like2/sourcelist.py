@@ -215,5 +215,10 @@ class SourceList(list):
                 ret.append(plim)
                 
         return ret
-
+        
+    def add_source(self, source):
+        if source.name in self.source_names:
+            raise SourceListException('Attempt to add source "%s": already exists' % source.name)
+        set_point_property(source)
+        self.append(source)
  
