@@ -21,6 +21,10 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
+#include "tip/Header.h"
+#include "tip/IFileSvc.h"
+#include "tip/Table.h"
+
 #include "facilities/Timestamp.h"
 #include "facilities/Util.h"
 
@@ -78,6 +82,7 @@ private:
    std::vector<irfInterface::Irfs *> m_respPtrs;
    observationSim::Simulator * m_simulator;
    st_stream::StreamFormatter * m_formatter;
+   double m_tstart;
 
    void promptForParameters();
    void checkOutputFiles();
@@ -90,6 +95,7 @@ private:
    void generateData();
    void saveEventIds(const observationSim::EventContainer & events) const;
    double maxEffArea() const;
+   void get_tstart(std::string scfile, const std::string & sctable);
 
    static std::string s_cvs_id;
 };
@@ -124,7 +130,7 @@ void ObsSim::promptForParameters() {
    m_pars.Prompt("scfile");
    m_pars.Prompt("evroot");
    m_pars.Prompt("simtime");
-   m_pars.Prompt("startdate");
+   m_pars.Prompt("tstart");
    m_pars.Prompt("use_ac");
    if (m_pars["use_ac"]) {
       m_pars.Prompt("ra");
@@ -253,15 +259,24 @@ void ObsSim::createResponseFuncs() {
 void ObsSim::createSimulator() {
    double totalArea(maxEffArea());
 //   std::cout << "total area: " << totalArea << std::endl;
-   double startTime = m_pars["tstart"];
    std::string pointingHistory = m_pars["scfile"];
-   std::string sc_table = m_pars["sctable"];
+   std::string sctable = m_pars["sctable"];
+   try {
+      double value = m_pars["tstart"];
+      m_tstart = value;
+   } catch (...) { // Assume tstart = INDEF
+      if (pointingHistory == "none") {
+         m_tstart = 0;
+      } else { // Use TSTART from scfile
+         get_tstart(pointingHistory, sctable);
+      }
+   }
    std::string startDate = m_pars["startdate"];
    facilities::Timestamp start(startDate);
    double offset((astro::JulianDate(start.getJulian()) 
                   - astro::JulianDate::missionStart())
                  *astro::JulianDate::secondsPerDay);
-   startTime += offset;
+   m_tstart += offset;
    Spectrum::setStartTime(offset);
    double maxSimTime = 3.155e8;
    try {
@@ -269,7 +284,7 @@ void ObsSim::createSimulator() {
    } catch (std::exception &) {
    }
    m_simulator = new observationSim::Simulator(m_srcNames, m_xmlSourceFiles, 
-                                               totalArea, startTime, 
+                                               totalArea, m_tstart,
                                                pointingHistory, maxSimTime,
                                                offset);
 
@@ -295,7 +310,7 @@ void ObsSim::generateData() {
    if (m_pars["use_ac"]) {
       cuts->addSkyConeCut(m_pars["ra"], m_pars["dec"], m_pars["radius"]);
    }
-   double start_time(m_pars["tstart"]);
+   double start_time(m_tstart);
    double stop_time;
    if (m_pars["nevents"]) {
       stop_time = start_time;
@@ -395,4 +410,12 @@ double ObsSim::maxEffArea() const {
       total *= 1.5;
    }
    return total/1e4;
+}
+
+void ObsSim::get_tstart(std::string scfile, const std::string & sctable) {
+   facilities::Util::expandEnvVar(&scfile);
+   std::auto_ptr<const tip::Table>
+      sc_data(tip::IFileSvc::instance().readTable(scfile, sctable));
+   const tip::Header & header(sc_data->getHeader());
+   header["TSTART"].get(m_tstart);
 }

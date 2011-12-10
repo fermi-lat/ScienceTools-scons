@@ -10,10 +10,10 @@ evtable,s,h,"EVENTS",,,"Event data extension"
 
 simtime,r,a,86400,,,"Simulation time (seconds)"
 ltfrac,r,h,0.9,,,"Livetime fraction"
-tstart,r,h,0,,,Simulation start time (seconds wrt start_date)
+tstart,r,a,INDEF,,,Simulation start time (seconds wrt MET 0)
 nevents,b,h,no,,,Use simulation time as number of events
 maxtime,r,h,3.155e8,,,Maximum simulation time (seconds)
-startdate,s,a,"2001-01-01 00:00:00",,,"Simulation start date"
+startdate,s,h,"2001-01-01 00:00:00",,,"Mission start"
 offset,i,h,0,,,"Source ID offset"
 rockangle,r,h,INDEF,,,Rocking angle (degrees)
 
@@ -22,14 +22,14 @@ ra,r,a,0,-360,360,"RA of cone center (degrees)"
 dec,r,a,0,-90,90,"Dec of cone center (degrees)"
 radius,r,a,20,0,180,"Acceptance cone radius (degrees)"
 
-emin,r,h,30,,,"Minimum event energy (MeV)"
-emax,r,h,300000,,,"Maximum event energy (MeV)"
+emin,r,h,0,,,"Minimum event energy (MeV)"
+emax,r,h,1e6,,,"Maximum event energy (MeV)"
 edisp,b,h,yes,,,"Apply energy dispersion?"
 
 irfs,s,a,"P7SOURCE_V6",,,"Response functions"
 area,r,h,1,,,"LAT cross-sectional area"
 
-maxrows,i,h,200000,,,"Maximum number of rows in FITS files"
+maxrows,i,h,1000000,,,"Maximum number of rows in FITS files"
 seed,i,a,293049,,,"Random number seed"
 
 chatter,        i, h, 2, 0, 4, "Output verbosity"
