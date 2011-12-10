@@ -65,7 +65,7 @@ def get_default(colname,pass7=True):
         if pass7:
             d = dict(TYP='BIT_MASK(EVENT_CLASS,2)',UNI='DIMENSIONLESS',
                      VAL='1:1')
-            return DSSBitMask(d)
+            return dssman.DSSBitMask(d)
         else:
             return SimpleCut(3,None,'dimensionless','EVENT_CLASS')
 
@@ -481,6 +481,8 @@ class DataSpec(object):
             exc = self.check_consistency(other)
             if exc is not None:
                 raise(exc)
+        binfile = os.path.expandvars(binfile)
+        ltcube = os.path.expandvars(ltcube)
         gti = skymaps.Gti(self.gti)
         ft1 = self.ft1files
         ft2 = self.ft2files
