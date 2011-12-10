@@ -64,7 +64,7 @@ def get_default(colname,pass7=True):
     if colname == 'EVENT_CLASS':
         if pass7:
             d = dict(TYP='BIT_MASK(EVENT_CLASS,2)',UNI='DIMENSIONLESS',
-                     VAL='1:1')
+                     VAL='1:1', REF=None)
             return dssman.DSSBitMask(d)
         else:
             return SimpleCut(3,None,'dimensionless','EVENT_CLASS')
