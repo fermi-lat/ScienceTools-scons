@@ -11,6 +11,7 @@
 #endif
 
 #include <cstdlib>
+#include <memory>
 #include <stdexcept>
 
 #include "CLHEP/Random/Random.h"
