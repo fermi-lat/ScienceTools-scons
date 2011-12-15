@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Header$
-# Authors: Navid Golpayegani <golpa@slac.stanford.edu>, Joanne Bogart <jrb@slac.stanford.edu
-# Version: SConsFiles-00-16-01
+# Authors: Navid Golpayegani <golpa@slac.stanford.edu>, Joanne Bogart <jrb@slac.stanford.edu>
+# Version: SConsFiles-00-16-02
 
 import os,platform,SCons,glob,re,atexit,sys,traceback,commands,subprocess
 #########################
@@ -222,6 +222,11 @@ else:
 if baseEnv['PLATFORM'] == "posix":
     baseEnv.AppendUnique(CCFLAGS = "-fPIC")
     baseEnv.AppendUnique(SHLINKFLAGS = "-fPIC")
+#    baseEnv.AppendUnique(CCFLAGS = "-gstabs")
+# for profiling with gprof:
+#    baseEnv.AppendUnique(CCFLAGS = "-pg")
+#    baseEnv.AppendUnique(LINKFLAGS = "-pg")
+    baseEnv.AppendUnique(CPPDEFINES = ['TRAP_FPE'])
 
 if baseEnv['PLATFORM'] == "darwin":
     baseEnv.AppendUnique(SHLINKFLAGS = ["-Wl,-install_name", "-Wl,${TARGET.file}"])
