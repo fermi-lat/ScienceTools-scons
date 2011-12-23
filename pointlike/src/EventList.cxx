@@ -75,7 +75,7 @@ void AddPhoton::operator()(const Photon& gamma)
             if( class_level< pointlike::Data::class_level() ) return; // select class level
         }
         else {
-            if( class_level & pointlike::Data::class_level() == 0 ) return;
+            if(( class_level & (1<<pointlike::Data::class_level()) )== 0 ) return;
         }
         m_kept++;
 
