@@ -7,6 +7,7 @@ $Id$
  --------- -----  --- -----------------------------------------------------------------------
         * EOH *
 
+ map_tools-07-06-00 29-Dec-2011 jchiang remove gtexpcube application
  map_tools-07-05-07 05-Jan-2011 jchiang patch tag to apply current CMT-style tag to files in src subdirectory
  map_tools-07-05-06 20-Dec-2010  cohen fix gcc 4.4 builds
  map_tools-07-05-05 04-Nov-2010 burnett update to phi averaging in gtexpcube: disable it
