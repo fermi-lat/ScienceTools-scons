@@ -900,12 +900,12 @@ class SmoothedImage(ROIImage):
             kernel = np.zeros([kernelsize,kernelsize],dtype=float)
             xx,yy = np.indices(kernel.shape)
             rr = np.sqrt((xx-kernel.shape[0]/2.)**2+(yy-kernel.shape[1]/2.)**2)
-            kernel = np.exp(-(rr**2)/(2*width**2)) / (width**2 * (2*np.pi))
-
+            kernel = np.exp(-(rr**2)/(2*width**2))
 
         else:
             raise Exception("...")
 
+        kernel /= kernel.sum()
         return kernel
 
 
