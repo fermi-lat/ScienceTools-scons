@@ -82,7 +82,16 @@ class DiffuseModel(object):
 
 
 class ConvolvableGrid(convolution.BackgroundConvolution):
-    
+    """ subclass of the basic convolution used by all classes below.
+    It
+      1) changes the default for a bounds error (to check)
+      2) provides useful show method
+      """
+    def __init__(self, *args, **kwargs):
+        defaults=dict(bounds_error=False)
+        defaults.update(kwargs)
+        super(ConvolvableGrid, self).__init__(*args, **defaults)
+        
     def show(self, fignum=None, **kwargs):
         import pylab as plt
         title = kwargs.pop('title', None)
