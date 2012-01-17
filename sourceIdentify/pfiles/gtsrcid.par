@@ -1,17 +1,17 @@
 #######################################################################
 #                                                                     #
-#               Centre d'Etude Spatiale des Rayonnements              #
+#        Institut de Recherche en Astrophysique et Planetologie       #
 #                                                                     #
-#                 GLAST Source Identification Software                #
+#                Fermi/LAT Source Association Software                #
 #                                                                     #
 # ------------------------------------------------------------------- #
 #                                                                     #
 #  File:      gtsrcid.par                                             #
-#  Version:   v2r1p0                                                  #
+#  Version:   v2r3p4                                                  #
 #                                                                     #
 #  Author:    Jurgen Knodlseder                                       #
-#             knodlseder@cesr.fr                                      #
-#             CESR                                                    #
+#             jurgen.knodlseder@irap.omp.eu                           #
+#             IRAP                                                    #
 #                                                                     #
 #  Purpose:   Parameter file for the gtsrcid executable               #
 #                                                                     #

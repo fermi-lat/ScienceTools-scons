@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.38  2011/10/05 20:30:10  jurgen
+Correctly forward row information for missing source names
+
 Revision 1.37  2011/02/11 08:36:16  jurgen
 Increase maximum string length for columns to 8192 characters
 
@@ -127,15 +130,15 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v2r4p3"
+#define TOOL_VERSION  "v2r3p4"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     " 6-Jun-2011"
+#define TOOL_DATE     "12-Jan-2012"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
 #define HD_VERSION    "* Revision : "TOOL_VERSION"                                        *"
 #define HD_DATE       "* Date     : "TOOL_DATE"                                   *"
-#define HD_AUTHOR     "* Author   : Jurgen Knodlseder (CESR)                      *"
+#define HD_AUTHOR     "* Author   : Jurgen Knodlseder (IRAP)                      *"
 #define USE_ST_APP 1
 
 /* Includes _________________________________________________________________ */

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.5  2008/03/21 09:10:12  jurgen
+Enhance code documentation.
+
 Revision 1.4  2007/09/21 14:29:03  jurgen
 Correct memory bug and updated test script
 
@@ -205,15 +208,15 @@ Status Log(MessageType msgType, const char *msgFormat, ...) {
 
       // Get time
       now = time(NULL);
-      #ifdef HAVE_GMTIME_R   
-        gmtime_r(&now, &timeStruct);
+      #ifdef HAVE_GMTIME_R
+      gmtime_r(&now, &timeStruct);
       #else
-        memcpy(&timeStruct, gmtime(&now), sizeof(struct tm));
+      memcpy(&timeStruct, gmtime(&now), sizeof(struct tm));
       #endif
 
       // Write message type, time and task name to log file
       if (fprintf(gLogFilePtr, "%s %04d-%02d-%02dT%02d:%02d:%02d %s: ",
-                  type, 
+                  type,
                   timeStruct.tm_year + 1900,
                   timeStruct.tm_mon + 1,
                   timeStruct.tm_mday,

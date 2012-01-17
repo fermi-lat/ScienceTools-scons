@@ -907,6 +907,10 @@ if __name__ == '__main__':
 		print '     -h              Display this usage message'
 		print '     -C classdir     Specify alternative classes directory'
 		sys.exit()
+
+	# Keep extension cases
+	if 'setExtensionNameCaseSensitive' in dir(pyfits):
+		pyfits.setExtensionNameCaseSensitive()
 	
 	# Extract LAT catalogue filename
 	lat_filename = sys.argv[1]

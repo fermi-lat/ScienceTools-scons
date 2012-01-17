@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.41  2011/10/05 20:30:10  jurgen
+Correctly forward row information for missing source names
+
 Revision 1.40  2010/10/13 14:19:35  jurgen
 Dump candidates before probability cut in refine step
 
@@ -2091,7 +2094,7 @@ Status Catalogue::cid_dump(Parameters *par, SourceInfo *src, Status status) {
         if (par->logNormal()) {
           if (cpt->pos_valid) {
             if (src->cc[iCC].likrat_div) {
-              Log(Log_2, "  Cpt%5d[P=%3.0f%%] r95=%7.3' sep=%7.3f' PA=%4.0f: %20s"SRC_FORMAT,
+              Log(Log_2, "  Cpt%5d[P=%3.0f%%] r95=%7.3f' sep=%7.3f' PA=%4.0f: %20s"SRC_FORMAT,
                   iCC+1,
                   src->cc[iCC].prob_post_single*100.0,
                   src->cc[iCC].psi*60.0,
@@ -2102,7 +2105,7 @@ Status Catalogue::cid_dump(Parameters *par, SourceInfo *src, Status status) {
                   cpt->pos_err_maj, cpt->pos_err_min, cpt->pos_err_ang);
             }
             else {
-              Log(Log_2, "  Cpt%5d P=%3.0f%% r95=%7.3' S=%7.3f' PA=%4.0f: %20s"SRC_FORMAT,
+              Log(Log_2, "  Cpt%5d P=%3.0f%% r95=%7.3f' S=%7.3f' PA=%4.0f: %20s"SRC_FORMAT,
                   iCC+1,
                   src->cc[iCC].prob_post_single*100.0,
                   src->cc[iCC].psi*60.0,
