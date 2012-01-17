@@ -4,7 +4,6 @@
 
 @verbatim
  * EOH *
-
 17-Jan-2012  v2r3p4  JK  Correct format for logging
 11-Feb-2011  v2r3p3  JK  Increase maximum column string length
 20-Dec-2010  v2r3p2  JK  Adapt to gcc 4.4
