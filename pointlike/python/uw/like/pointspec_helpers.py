@@ -9,7 +9,6 @@ from skymaps import SkyDir,CompositeSkySpectrum,DiffuseFunction,EffectiveArea,Ex
 from uw.like.Models import Model,Constant,PowerLaw,ExpCutoff,DefaultModelValues,LogParabola
 from roi_diffuse import DiffuseSource,ROIDiffuseModel_OTF
 from roi_extended import ExtendedSource,ROIExtendedModel
-from SpatialModels import Disk,Gaussian,EllipticalDisk,EllipticalGaussian,SpatialMap,GAUSSIAN_X68
 from os.path import join
 import os
 from abc import abstractmethod
