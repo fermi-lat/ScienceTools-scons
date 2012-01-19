@@ -13,6 +13,19 @@
 #include "optimizers/FunctionTest.h"
 #include "optimizers/Exception.h"
 
+namespace {
+   void do_nothing(double x) {
+      x;
+   }
+
+   double select_delta(double x, double h) {
+      double temp = x + h;
+      do_nothing(temp);
+      h = temp - x;
+      return h;
+   }
+} // anonymous namespace
+
 namespace optimizers {
 
 void FunctionTest::parameters(const std::vector<Parameter> &params) {
@@ -66,8 +79,8 @@ void FunctionTest::parameters(const std::vector<Parameter> &params) {
    for (unsigned int i = 0; i < paramValues.size(); i++) {
       double value = params[i].getValue()/10.;
       if (paramValues[i] != value) {
-         std::cout << paramValues[i] << "  "
-                   << value << std::endl;
+         // std::cout << paramValues[i] << "  "
+         //           << value << std::endl;
       }
       assert(paramValues[i] == value);
       assert(m_func->getParamValue(paramNames[i]) == value);
@@ -168,29 +181,38 @@ void FunctionTest::derivatives(const std::vector<Arg*> &arguments,
       m_func->getFreeDerivs(*my_arg, derivs);
       std::vector<double> params;
       m_func->getFreeParamValues(params);
-//       for (size_t i(0); i < params.size(); i++) {
-//          std::cout << i << "  "
-//                    << params[i] << std::endl;
-//       }
+      for (size_t i(0); i < params.size(); i++) {
+         // std::cout << i << "  "
+         //           << params[i] << std::endl;
+      }
 
       double f0 = m_func->value(*my_arg);
-//       std::cout << dynamic_cast<optimizers::dArg *>(my_arg)->getValue() << "  " 
-//                 << f0 << std::endl;
+      // std::cout << dynamic_cast<optimizers::dArg *>(my_arg)->getValue() << "  " 
+      //           << f0 << std::endl;
       for (unsigned int i = 0; i < params.size(); i++) {
          std::vector<double> new_params = params;
-         double delta = new_params[i]*eps;
-         new_params[i] += delta;
+         double delta1 = new_params[i]*eps;
+         delta1 = ::select_delta(new_params[i], delta1);
+         new_params[i] += delta1;
          m_func->setFreeParamValues(new_params);
          double f1 = m_func->value(*my_arg);
-         double my_deriv = (f1 - f0)/delta;
 
-//          std::cout << i << "  "
-//                    << params[i] << "  "
-//                    << f1 << std::endl;
+         new_params = params;
+         double delta2 = -new_params[i]*eps;
+         delta2 = ::select_delta(new_params[i], delta2);
+         new_params[i] += delta2;
+         m_func->setFreeParamValues(new_params);
+         double f2 = m_func->value(*my_arg);
+
+         double my_deriv = (f1 - f2)/(delta1 - delta2);
+
+         // std::cout << i << "  "
+         //           << params[i] << "  "
+         //           << f1 << std::endl;
 
          if (derivs[i] != 0) {
             double value = fabs(my_deriv/derivs[i] - 1.);
-//             std::cout << value << std::endl;
+            // std::cout << value << std::endl;
             assert(value < eps*10.);
          } else {
             assert(fabs(my_deriv) < eps*10.);
