@@ -977,8 +977,10 @@ class InterpProfile(RadiallySymmetricModel):
         self.r_in_radians = np.radians(self.r_in_degrees)
 
         # Rescale the pdf for the integrator
+        # save the scalefactor for later use.
+        self.scalefactor = 1./max(self.pdf)
         self.pdf /= max(self.pdf)
-
+        
         # Explicitly normalize the RadialProfile.
         self.interp = interp1d(self.r_in_radians,self.pdf,kind=kind,bounds_error=False,fill_value=0)
 
@@ -991,7 +993,7 @@ class InterpProfile(RadiallySymmetricModel):
         # over solid angle (in units of steradians) to 1
         integral = quad(integrand, 0, self.r_in_radians[-1])[0]
         # save the scalefactor for later use.
-        self.scalefactor = 1./integral;
+        self.scalefactor /= integral
         self.normed_pdf = self.pdf/integral
 
         # redo normalized interpolation
