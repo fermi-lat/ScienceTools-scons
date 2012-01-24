@@ -134,10 +134,13 @@ class ROI_user(roistat.ROIstat, fitter.Fitted):
         with localization.Localization(self, source_name, **kwargs) as loc:
             try: 
                 loc.localize()
-                return loc.ellipse
+                t = loc.ellipse
             except Exception, e:
                 print 'Failed localization for source %s: %s' % (source.name, e)
                 return None
+        if kwargs.get('update', True):
+            source.skydir = skymaps.SkyDir(t['ra'], t['dec'])
+        return t
     
     def get_sources(self):
         return [ s for s in self.sources if s.skydir is not None]
@@ -264,8 +267,12 @@ class ROI_user(roistat.ROIstat, fitter.Fitted):
         self.initialize()
         return self.get_source(newsource.name)
         
-    def del_source(self, source, **kwargs):
-        raise Exception('not implemented')
+    def del_source(self, source_name):
+        """ delete the specifiec source (which can be expressed with wildcards """
+        source = self.sources.del_source(source_name)
+        for band in self.all_bands:
+            band.del_source(source)
+        self.initialize()
         
     def zero_source(self, source, **kwargs):
         raise Exception('not implemented')

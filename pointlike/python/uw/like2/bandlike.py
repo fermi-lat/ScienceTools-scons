@@ -76,9 +76,8 @@ class BandDiffuse(BandSource):
     """  Apply diffuse model to an ROIband
     
         Use a ROIDiffuseModel to compute the expected 
-        distribution of pixel counts  for ROIBand
+        distribution of pixel counts for ROIBand
         Convolving is done with 
-        
     """
     def __init__(self,  band, source): 
         """
@@ -138,6 +137,7 @@ class BandDiffuse(BandSource):
  
 class BandDiffuseFB(BandDiffuse):
     """ subclass of BandDiffuse that has different spectral models for front and back
+    (designed for the limb, which apparently only has contributions from the back)
     """
     @property 
     def spectral_model(self):
@@ -276,6 +276,16 @@ class BandLike(object):
         t = list(self.bandsources)
         t.append(BandPoint(self.band,source))
         self.bandsources = np.array(t)
+        
+    def del_source(self, source):
+        """ remove the source """
+        t = list(self.bandsources)
+        for bs in t:
+            if source.name==bs.source.name:
+                t.remove(bs)
+                self.bandsources = np.array(t)
+                return
+        raise Exception('source "%s" not found to delete' % source.name)
  
 def factory(bands, sources, exposure, quiet=False):
     """ return an array, one per band, of BandLike objects 

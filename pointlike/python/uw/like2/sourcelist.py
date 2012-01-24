@@ -1,5 +1,5 @@
 """
-Manage sources: single class SourceList
+Manage sources for likelihood: single class SourceList
 
 $Header$
 Author: T.Burnett <tburnett@uw.edu>
@@ -222,3 +222,8 @@ class SourceList(list):
         set_point_property(source)
         self.append(source)
  
+    def del_source(self, source_name):
+        source = self.find_source(source_name) # first get it
+        self.remove(source)
+        return source
+        
