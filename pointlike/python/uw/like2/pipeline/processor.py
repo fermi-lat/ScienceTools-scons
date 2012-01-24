@@ -367,6 +367,20 @@ def residual_processor(roi, **kwargs):
         [ResidualCounts, "residual_%02d"%iband, dict(iband=iband)] for iband in iband_range])
     table(roi)    
 
+def background_density(roi, source_name):
+    bgsources = [(j,s) for j,s in enumerate(roi.sources) if s.skydir is None]
+    bgdensity = []
+    b0 = roi.selected_bands[0]
+    pti = list(roi.sources.source_names).index(source_name)
+    try:
+        for j, bgsource in bgsources:
+            bgdensity.append(np.array([ 
+                ( band[j].pix_counts * band[pti].pix_counts ).sum() / band[pti].counts\
+                            for band in roi.selected_bands],np.float32) )
+    except Exception, e:
+        print 'failed bgdensity for source %s: %s' % (source.name, e)
+    return bgdensity
+
 def full_sed_processor(roi, **kwargs):
     """ roi processor to include front and back sed info 
     """
