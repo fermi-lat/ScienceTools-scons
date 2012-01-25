@@ -339,9 +339,11 @@ class PhaseRange(object):
         else:
             temp=self
 
+        ret = []
         for a,b in temp.tolist(dense=False):
-            axes.axvspan(a, b, label=label, **kwargs)
+            ret.append(axes.axvspan(a, b, label=label, **kwargs))
             label=None
+        return ret
 
     @property
     def phase_center(self):
