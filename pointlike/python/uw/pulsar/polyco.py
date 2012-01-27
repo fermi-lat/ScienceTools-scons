@@ -58,7 +58,13 @@ class Polyco:
     def __init__(self, fname, psrname=None, recalc_polycos=True,mjd0=51544):
 
         if fname.endswith( ".par" ) or recalc_polycos:
+            from uw.pulsar.parfiles import ParFile
+            pf = ParFile(fname)
+            self.ra = pf.get_ra()
+            self.dec = pf.get_dec()
             fname = self.gen_polycos(fname,recalc_polycos=recalc_polycos,mjd0=mjd0)
+        else:
+            self.ra = self.dec = None
         
         VERBOSE= False
         self.entries = []
