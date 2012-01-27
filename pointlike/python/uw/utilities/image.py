@@ -884,6 +884,7 @@ class TSplot(object):
         nticks     = 4,    # passed to ZEA
         fitsfile   = '', 
         galmap     = True, # determine if overlay a galactic map
+        galpos     = (0.77,0.88), # position if galmap set
         scalebar   = True,
             )
     def __init__(self, tsmap, center, size,  **kwargs):
@@ -906,7 +907,8 @@ class TSplot(object):
         self.tsmap = tsmap
         self.size=size
         if self.pixelsize is None: self.pixelsize=size/10. 
-        self.zea= ZEA(center, size=size, pixelsize=self.pixelsize, axes=self.axes, nticks=self.nticks,fitsfile=self.fitsfile, **kwargs)
+        self.zea= ZEA(center, size=size, pixelsize=self.pixelsize, axes=self.axes, 
+                nticks=self.nticks,fitsfile=self.fitsfile, **kwargs)
         print 'TSplot: filling %d pixels...'% (size/self.pixelsize)**2
         self.zea.fill(tsmap)
         # create new image that is the significance in sigma with respect to local max
@@ -969,7 +971,8 @@ class TSplot(object):
         self.zea.grid(color='gray')
         
         if self.galmap:
-            galactic_map(self.zea.center, color='w', marker='s', markercolor='r');
+            galactic_map(self.zea.center, axes=self.axes, 
+                color='w', marker='s', markercolor='r', pos=self.galpos);
  
 
     def overplot(self, quadfit, sigma=1.0,contours=None, **kwargs):
