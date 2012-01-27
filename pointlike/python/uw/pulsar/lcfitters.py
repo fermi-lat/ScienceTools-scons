@@ -377,8 +377,8 @@ class WeightedLCFitter(UnweightedLCFitter):
         template -- an instance of LCTemplate or a file with a pref-fit Gaussian template
         phases   -- a list or array of phase values
         """
-        self.weights = weights
         super(WeightedLCFitter,self).__init__(template,phases,times=times)
+        self.weights = weights
 
     def unbinned_loglikelihood(self,p,*args):
         if not self.template.shift_mode and np.any(p < 0):
