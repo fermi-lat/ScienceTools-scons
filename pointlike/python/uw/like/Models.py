@@ -204,12 +204,14 @@ class Model(object):
         p = 10**self._p #convert from log format
         z = np.zeros_like(p)
         vars = np.diag(self.cov_matrix)
+        vars[vars<0]=0
         # this check for valid covariance matrix
         if np.all(self.cov_matrix==0) :
             return (p,z,z) if two_sided else (p,z) 
         try: #see if error estimates are present
             if not two_sided:
                 vars = np.diag(self.get_cov_matrix(absolute=False))
+                vars[vars<0]=0
                 errs = vars**0.5 
                 return p,errs*(p if absolute else np.ones_like(p))
             else:
