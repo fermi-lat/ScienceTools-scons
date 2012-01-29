@@ -52,7 +52,8 @@ def plot(localizer, name=None, center=None, size=0.5, pixelsize=None, outdir=Non
     if name is None: name=localizer.source.name
     sdir = center if center is not None else localizer.skydir
     if axes is None: 
-        plt.figure(fignum,figsize=(5,5)); plt.clf()
+        plt.figure(fignum,figsize=(4,4)); 
+        axes = plt.gca()
     
     tsp = image.TSplot(localizer.TSmap, sdir, size, 
                 pixelsize=pixelsize if pixelsize is not None else size/20. , 

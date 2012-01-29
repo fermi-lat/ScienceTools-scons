@@ -140,8 +140,8 @@ class Plot(object):
         self.plot_model(axes, model, dom, butterfly, **fit_kwargs)
         plt.rcParams['axes.linewidth'] = oldlw
 
-        # the axis labels
-        axes.set_ylabel(r'$\mathsf{Energy\ Flux\ (%s\ cm^{-2}\ s^{-1})}$' % self.energy_flux_unit)
+        # the axis labels (note reduced labelpad for y) 
+        axes.set_ylabel(r'$\mathsf{Energy\ Flux\ (%s\ cm^{-2}\ s^{-1})}$' % self.energy_flux_unit, labelpad=0)
         axes.set_xlabel(r'$\mathsf{Energy\ (GeV)}$')
         def gevticklabel(x):
             if x<100 or x>1e5: return ''

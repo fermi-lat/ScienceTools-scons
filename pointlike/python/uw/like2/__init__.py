@@ -26,5 +26,6 @@ contained packages
     plotting
     pub
 """
-
+# for interactive convenience
 from .main import factory
+from skymaps import SkyDir

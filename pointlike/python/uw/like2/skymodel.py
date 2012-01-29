@@ -298,11 +298,12 @@ class SkyModel(object):
             
         return globals, extended
 
-    def toXML(self,filename, ts_min=None, title=None):
+    def toXML(self,filename, ts_min=None, title=None, source_filter=None):
         """ generate a file with the XML version of the sources in the model
+        source_filter: if not None, a function to apply
         """
         catrec = self.source_rec()
-        point_sources = self.point_sources if ts_min is None else filter(lambda s: s.ts>ts_min, self.point_sources)
+        point_sources = filter(source_filter, self.point_sources)
         print 'SkyModel: writing XML representations of %d point sources %s and %d extended sources to %s' \
             %(len(point_sources), ('' if ts_min is None else '(with TS>%.f)'%ts_min), len(self.extended_sources), filename)
         from uw.utilities import  xml_parsers # isolate this import, which brings in full pointlike

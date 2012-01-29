@@ -16,6 +16,7 @@ class DiffuseException(Exception):pass
 
 class Simpson(object):
     """ implement quick simpson integral with log scale """
+    ## not used in this module yet.
     def __init__(self, emin, emax, nsimps=4):
 
         # use a higher nsimps at low energy where effective area is jagged

@@ -100,6 +100,7 @@ class DataSet(dataman.DataSpec):
                 )
         dataspec.update(kwargs)
         super(DataSet,self).__init__( **dataspec)
+        assert self.irf is not None, 'irf was not specifed!'
         self.CALDBManager = pycaldb.CALDBManager(
                 irf=self.irf, 
                 psf_irf=self.psf_irf,
