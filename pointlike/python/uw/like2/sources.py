@@ -32,7 +32,7 @@ class Source(object):
             self.model = eval(self.model)
         if self.model.name=='PowerLaw':
             par,sig = self.model.statistical()
-            self.model = LogParabola(list(par)+[1e-3, self.model.e0])
+            self.model = LogParabola(*(list(par)+[1e-3, self.model.e0]))
             self.model.free[2:]=False
         elif self.model.name=='PLSuperExpCutoff':
             par,sig=self.model.statistical()
@@ -99,6 +99,8 @@ class DiffuseFunction(skymaps.DiffuseFunction):
         self.loaded=True
         print 'loading diffuse file %s' %self.filename
         super(DiffuseFunction,self).__init__(self.filename)
+    def name(self):
+        return self.filename
         
 class DiffuseDict(dict):
     """ create a dictionary of global diffuse objects
