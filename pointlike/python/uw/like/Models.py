@@ -1146,11 +1146,33 @@ class DMFitFunction(Model):
                                                                         self.norm, self.bratio, 
                                                                         self.channel0, self.channel1)
 
+    def copy(self):
+        del sel.fmf
+        c = super(DMFitFunction,self).copy()
+        self._update()
+        c._update()
+        return c
+
+
+    def __getstate__(self):
+        d=copy.copy(self.__dict__)
+        del d['dmf']
+        return d
+
+
+    def __setstate__(self,state):
+        self.__dict__ = state
+        self._update()
+
+
     def _update(self):
         """ Update the DMFitFunction internally.
             This function should be called
             automatically when necessary.
         """
+        if not hasattr(self,'dmf'):
+            self.dmf=pyLikelihood.DMFitFunction()
+
         for i,param_name in enumerate(self.param_names):
             self.dmf.setParam(param_name,self[param_name])
 
