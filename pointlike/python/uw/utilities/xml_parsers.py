@@ -379,7 +379,7 @@ class Model_to_XML(object):
             self.pname  = ['Value']
             self.pfree  = [1]
             self.pscale = [1]
-            self.pmin   = [0.1]
+            self.pmin   = [0.001]
             self.pmax   = [10]
             self.pval   = [1]
             self.perr   = [0]
