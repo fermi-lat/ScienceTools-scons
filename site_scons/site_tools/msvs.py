@@ -821,7 +821,7 @@ class _GenerateV7DSP(_DSPGenerator):
             elif self.linkfileext == "exe":
                 confType = 1
 
-            print "About to write V8DSPConfigure_header"
+            #print "About to write V8DSPConfigure_header"
             self.file.write(self.dspconfiguration_header % locals())
 
 
