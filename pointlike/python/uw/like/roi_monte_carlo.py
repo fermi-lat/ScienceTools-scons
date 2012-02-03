@@ -294,6 +294,16 @@ class MonteCarlo(object):
 
 
     @staticmethod
+    def make_isotropic_not_allsky(filename, skydir, radius):
+        diameter = float(radius*2)
+        img=SkyImage(skydir,filename,diameter/10,diameter,1,"CAR",True)
+
+        one=lambda x: 1
+        skyfun=PySkyFunction(one)
+        img.fill(skyfun)
+        del(img)
+
+    @staticmethod
     def make_isotropic_allsky(filename):
         img=SkyImage(SkyDir(0,0,SkyDir.GALACTIC),filename,6,180,1,"CAR",True)
         
@@ -356,7 +366,14 @@ class MonteCarlo(object):
         flux=MonteCarlo.isotropic_integrator(isotropic_spectrum)
 
         isotropic_allsky=os.path.join(savedir,'isotropic_allsky.fits')
-        MonteCarlo.make_isotropic_allsky(isotropic_allsky)
+
+
+        if self.roi_dir is not None and self.maxROI is not None:
+            radius=self.maxROI+20 
+            MonteCarlo.make_isotropic_not_allsky(isotropic_allsky, self.roi_dir, radius)
+        else:
+            MonteCarlo.make_isotropic_allsky(isotropic_allsky)
+
 
         ds = [ 
             '<source name="%s">' % MonteCarlo.strip(ds.name),
