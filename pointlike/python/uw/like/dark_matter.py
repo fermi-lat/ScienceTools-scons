@@ -55,7 +55,7 @@ class PingNFW(RadiallySymmetricModel):
     def can_shrink(self): return True
 
 
-class PseudoPingNFW(PseudoSpatialModel,NFW):
+class PseudoPingNFW(PseudoSpatialModel,PingNFW):
     """ The Pseudo variant of the NFW profile.
 
             >>> x = PseudoNFW()
