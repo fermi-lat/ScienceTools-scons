@@ -406,8 +406,6 @@ class Model(object):
             hi.setp(i,hi._p[i] + errs[i],internal=True)
             lo.setp(i,lo._p[i] - errs[i],internal=True)
             derivs  += [(hi.i_flux(*args) - lo.i_flux(*args))/(2*errs[i])]
-            lo.setp(i,hi._p[i] - errs[i],internal=True)
-            lo.setp(i,lo._p[i] + errs[i],internal=True)
 
         return np.asarray(derivs)
         
