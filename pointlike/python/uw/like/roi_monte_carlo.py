@@ -363,7 +363,7 @@ class MonteCarlo(object):
         isotropic_filename=os.path.join(savedir,'isotropic.fits')
 
         if self.roi_dir is not None and self.maxROI is not None:
-            radius=maxROI+20 
+            radius=self.maxROI+20 
             flux*=2*np.pi*(1-np.cos(np.radians(radius)))
             MonteCarlo.make_isotropic_fits(isotropic_filename, self.roi_dir, radius)
         else:
