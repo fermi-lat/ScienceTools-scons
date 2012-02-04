@@ -21,7 +21,8 @@ using CLHEP::Hep3Vector;
 namespace {
     static double time_tol(10); // seconds allow beyond the end
     static double max_interval(65); // more than this triggers warning message
-    int max_warning_message_count(100); // suppress messages if more than this  
+//    int max_warning_message_count(100); // suppress messages if more than this  
+    int max_warning_message_count(0); // suppress messages if more than this  
 }
 
 PointingHistory::PointingHistory(const std::string& filename, double offset)
