@@ -299,7 +299,7 @@ class MonteCarlo(object):
         if roi_dir is not None and maxROI is not None:
             radius=maxROI+20 
             diameter = float(radius*2)
-            img=SkyImage(skydir,filename,diameter/10,diameter,1,"CAR",True)
+            img=SkyImage(roi_dir,filename,diameter/10,diameter,1,"CAR",True)
         else:
             img=SkyImage(SkyDir(0,0,SkyDir.GALACTIC),filename,6,180,1,"CAR",True)
 
