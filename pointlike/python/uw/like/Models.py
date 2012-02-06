@@ -887,7 +887,7 @@ class CompositeModel(Model):
         if len(models) < 1:
             raise Exception("CompositeModel must be created with more than one spectral model")
         for m in models:
-            if not isinstance(m,Models.Model):
+            if not isinstance(m,Model):
                 raise Exception("CompositeModel must be created with a list of models.")
 
         self.flux_scale = 1.
