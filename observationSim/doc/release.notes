@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ observationSim-09-01-00 06-Feb-2012 jchiang use START of first entry in scfile for determining the default starting time for the simulation instead of using the unreliable TSTART keyword
  observationSim-09-00-01 12-Dec-2011 jchiang include \<memory\> in obsSim.cxx for gcc4.4
  observationSim-09-00-00 10-Dec-2011 jchiang make startdate a hidden parameter, tstart a prompted parameter, using INDEF to indicate default behavior: tstart=0 if scfile=none, tstart=TSTART in scfile if scfile is given
  observationSim-08-05-01 03-Dec-2011 jchiang disable max area adjustment in gtobssim if efficiency corrections are not present
