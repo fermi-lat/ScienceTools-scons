@@ -13,7 +13,6 @@ from uw.like.pointspec_helpers import PointSource,get_diffuse_source
 from uw.like.roi_diffuse import DiffuseSource
 from uw.like.roi_extended import ExtendedSource
 from uw.like.Models import *
-from uw.like2.models import *
 from uw.like.SpatialModels import *
 from uw.like.dark_matter import *
 from skymaps import SkyDir,DiffuseFunction,IsotropicSpectrum,IsotropicPowerLaw
