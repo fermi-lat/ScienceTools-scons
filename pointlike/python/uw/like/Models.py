@@ -977,7 +977,7 @@ class FrontBackConstant(CompositeModel):
     name = 'FrontBackConstant'
     operator='+'
     def __init__(self, f=1, b=1, **kwargs):
-        super(FrontBackConstant, self).__init__(Models.Constant(),Models.Constant(), **kwargs)
+        super(FrontBackConstant, self).__init__(Constant(),Constant(), **kwargs)
         self.models[0].param_names=['Scale_front']
         self.models[1].param_names=['Scale_back']
         self.models[0][0]=f
