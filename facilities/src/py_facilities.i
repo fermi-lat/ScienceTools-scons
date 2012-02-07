@@ -1,5 +1,6 @@
 %module py_facilities
 %{
+#include <cstddef>
 #include <string>
 #include "facilities/commonUtilities.h"
 %}

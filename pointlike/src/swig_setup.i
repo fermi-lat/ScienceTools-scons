@@ -2,6 +2,7 @@
 // $Header$
 #define PySwigIterator pointlike_PySwigIterator
 %{
+#include <cstddef>
 #include <stdexcept>
 #include <vector>
 #include <utility>
