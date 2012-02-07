@@ -5,6 +5,7 @@
 #ifdef TRAP_FPE
 #include <fenv.h>
 #endif
+#include <cstddef>
 #include "astro/SolarSystem.h"
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
