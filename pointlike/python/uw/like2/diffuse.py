@@ -117,7 +117,10 @@ class DiffuseModelFromCache(DiffuseModel):
         keyword_options.process(self, kwargs)
     
     def setup(self):
-        filename = self.diffuse_source.dmodel[0].filename
+        try:
+            filename = self.diffuse_source.dmodel[0].filename
+        except AttributeError:
+            filename = self.diffuse_source.dmodel[0].name()
         cache_path = os.path.splitext(filename)[0]
         assert os.path.exists(filename), 'oops, %s not found' %filename
         if not os.path.exists(cache_path):
