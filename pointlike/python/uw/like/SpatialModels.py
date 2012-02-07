@@ -953,6 +953,10 @@ class InterpProfile(RadiallySymmetricModel):
             Note that the normalization of the numeric gaussian is wrong, but 
             will be renormalized anyway.
 
+                >>> np.allclose(gauss.at_r_in_deg(r),pdf/numeric_gauss.scalefactor,
+                ...             rtol=1e-5,atol=1e-5)
+                True
+
             Note that spatial model is the same as Gaussian, even for oddly spaced points:
 
                 >>> r_test = np.linspace(0,1,47) # sample oddly
