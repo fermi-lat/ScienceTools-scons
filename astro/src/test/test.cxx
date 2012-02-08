@@ -1,6 +1,7 @@
 // $Header$
 
 #include <cassert>
+#include <cstdlib>
 #include "astro/GPS.h"
 #include "astro/SolarSystem.h"
 #include "astro/EarthCoordinate.h"
