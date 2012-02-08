@@ -66,7 +66,7 @@ namespace {
 // of response object pointers.
 //
       double efficiency(1);
-      irfInterface::IEfficiencyFactor * efficiency_factor
+      const irfInterface::IEfficiencyFactor * efficiency_factor
          = respPtrs.front()->efficiencyFactor();
       if (efficiency_factor) {
          efficiency = efficiency_factor->value(energy, ltfrac);
