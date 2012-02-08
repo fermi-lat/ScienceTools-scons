@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-03-11-16 08-Feb-2012 jchiang missing include in test program
  astro-03-11-15 23-Jun-2011    jrb initialize SkyProj.tol in all constructors
  astro-03-11-14 27-May-2011    jrb Support for imminent GRBAnalysis-scons container
  astro-03-11-13 21-May-2011 hmk     patch requirements file for CLHEP
