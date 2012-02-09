@@ -158,8 +158,6 @@ class BinnedAnalysis(AnalysisBase):
         self.emax = self.energies[kmax]
         self.logLike.set_klims(kmin, kmax)
     def plot(self, oplot=0, color=None, omit=(), symbol='line'):
-        if self.logLike.fixedModelUpdated():
-            self.logLike.buildFixedModelWts()
         AnalysisBase.plot(self, oplot, color, omit, symbol)
         try:
             yrange = self.spectralPlot.getRange('y')
