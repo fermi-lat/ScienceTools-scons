@@ -165,6 +165,7 @@ class AnalysisBase(object):
         return source_attributes
     def Ts(self, srcName, reoptimize=False, approx=True,
            tol=None, MaxIterations=10, verbosity=0):
+        saved_state = LikelihoodState(self)
         if verbosity > 0:
             print "*** Start Ts_dl ***"
         source_attributes = self.getExtraSourceAttributes()
@@ -206,6 +207,8 @@ class AnalysisBase(object):
         self.model = SourceModel(self.logLike)
         for src in source_attributes:
             self.model[src].__dict__.update(source_attributes[src])
+        saved_state.restore()
+        self.logLike.value()
         return Ts_value
     def Ts_old(self, srcName, reoptimize=False, approx=True, tol=None):
         source_attributes = self.getExtraSourceAttributes()
