@@ -12,7 +12,7 @@ $Header$
 #include <stdexcept>
 
 namespace{
-    double pi4( M_PI/4.0), pi2(M_PI/2.);
+    const double pi4( M_PI/4.0), pi2(M_PI/2.);
 
 }
 using namespace healpix;
