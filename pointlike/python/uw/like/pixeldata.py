@@ -51,6 +51,7 @@ class NsideMapper(object):
         nside = N.round(float(mns)/(1+mns*t)).astype(int)
         return N.maximum(nside,nsm.minnside[ct]).tolist()
 
+class PixelDataException(Exception): pass
 
 class PixelData(object):
     """
@@ -119,7 +120,7 @@ Create a new PixelData instance, managing data and livetime.
             if key in self.__dict__:
                 self.__dict__[key] = value
             else:
-                raise Exception, 'keyword %s not recognized' % key
+                raise PixelDataException, 'keyword %s not recognized' % key
         self._binner_set = False
 
         self._setup_files()
@@ -144,7 +145,7 @@ Create a new PixelData instance, managing data and livetime.
         # check explicit files
         for filelist in [self.ft1files, self.ft2files] :
             if filelist is not None and len(filelist)>0 and not os.path.exists(filelist[0]):
-                raise Exception('PixelData setup: file name or path "%s" not found'%filelist[0])
+                raise PixelDataException('PixelData setup: file name or path "%s" not found'%filelist[0])
         if type(self.binfile)==types.StringType:
             self.binfile = os.path.expandvars(self.binfile)
         if type(self.ltcube)==types.StringType:
@@ -169,7 +170,7 @@ Create a new PixelData instance, managing data and livetime.
         self.ft1files = ft1files if type(ft1files)==type([]) or ft1files is None else [ft1files]
         for filelist in  [self.ft1files, self.ft2files] :
             if filelist is not None and len(filelist)>0 and not os.path.exists(filelist[0]):
-                raise Exception('PixelData setup: file name or path "%s" not found'%filelist[0])
+                raise PixelDataException('PixelData setup: file name or path "%s" not found'%filelist[0])
         #self.data = self.get_data()
         #self.dmap = self.data.map()
         self.dmap = self.get_data()
@@ -245,7 +246,7 @@ Create a new PixelData instance, managing data and livetime.
                 if not self.quiet: print('Using gti from %s'%(self.binfile))
                 return skymaps.Gti(self.binfile)
         if len(self.ft1files)==0 or not os.path.exists(self.ft1files[0]):
-            raise Exception('Cannot process GTI: no files found')
+            raise PixelDataException('Cannot process GTI: no ft1 files found, nor %s nor %s'%(self.ltcube,self.binfile))
         gti = skymaps.Gti(self.ft1files[0])
 
         # take the union of the GTI in each FT1 file
