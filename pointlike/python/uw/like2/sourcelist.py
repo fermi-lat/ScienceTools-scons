@@ -217,7 +217,7 @@ class SourceList(list):
                         Index=(-3, 0.6),
                         Norm=(-15, -7),
                         Scale=np.log10(np.array([0.001, 4.0])),
-                        beta=(-3, 1),
+                        beta=(-3, np.log10(5.)),
                         Cutoff=(2,6),
                         )[pname.split('_')[0]]
                 except: pass
