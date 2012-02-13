@@ -133,14 +133,15 @@ private:
 
    class Aeff : public ExposureCubeSun::Aeff {
    public:
-      Aeff(double energy, int evtType, const Observation & observation,
+      Aeff(double energy, const Observation & observation,
            double costhmin, double costhmax) 
-         : ExposureCubeSun::Aeff(energy, evtType, observation),
+         : ExposureCubeSun::Aeff(energy, observation),
            m_costhmin(costhmin), m_costhmax(costhmax) {}
       virtual double operator()(double cosTheta, double phi=0) const;
    private:
       double m_costhmin;
       double m_costhmax;
+			mutable std::map< std::pair<double,double>, double> m_cache;
    };
    
 };

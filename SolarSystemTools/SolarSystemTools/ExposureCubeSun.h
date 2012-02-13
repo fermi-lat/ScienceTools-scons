@@ -125,7 +125,7 @@ public:
 
    class Aeff {
    public:
-      Aeff(double energy, int evtType, const Observation & observation); 
+      Aeff(double energy, const Observation & observation); 
       virtual ~Aeff() {}
       virtual double operator()(double cosTheta, double phi=0) const;
       virtual double integral(double cosTheta, double phi=0) const {
@@ -133,7 +133,6 @@ public:
       }
    protected:
       double m_energy;
-      int m_evtType;
       const Observation & m_observation;
    };
 

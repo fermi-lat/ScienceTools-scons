@@ -77,9 +77,9 @@ bool ExposureCubeSun::phiDependence(const std::string & filename) const {
    return nphibins > 0;
 }
 
-ExposureCubeSun::Aeff::Aeff(double energy, int evtType, 
+ExposureCubeSun::Aeff::Aeff(double energy, 
                          const Observation & observation) 
-   : m_energy(energy), m_evtType(evtType), m_observation(observation) {
+   : m_energy(energy), m_observation(observation) {
 // Turn off phi-dependence if omitted from livetime cube.
    bool phi_dependence(m_observation.expCubeSun().hasPhiDependence());
    if (!phi_dependence) {
@@ -100,13 +100,12 @@ double ExposureCubeSun::Aeff::operator()(double cosTheta, double phi) const {
    // }
    std::map<unsigned int, irfInterface::Irfs *>::const_iterator respIt 
       = m_observation.respFuncs().begin();
+	 double aeff_val(0);
    for ( ; respIt != m_observation.respFuncs().end(); ++respIt) {
-      if (respIt->second->irfID() == m_evtType) {
          irfInterface::IAeff * aeff = respIt->second->aeff();
-         double aeff_val = aeff->value(m_energy, inclination, phi);
-         return aeff_val;
-      }
+         aeff_val += aeff->value(m_energy, inclination, phi);
    }
+   return aeff_val;
    return 0;
 }
 
