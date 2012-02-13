@@ -14,7 +14,7 @@ from uw.like.roi_diffuse import DiffuseSource
 from uw.like.roi_extended import ExtendedSource
 from uw.like.Models import *
 from uw.like.SpatialModels import *
-from uw.like.dark_matter import *
+from uw.darkmatter.spatial import *
 from skymaps import SkyDir,DiffuseFunction,IsotropicSpectrum,IsotropicPowerLaw
 from os.path import join
 import os
