@@ -2,7 +2,7 @@
 # $Id$
 # Authors: T.Burnett <tburnett@u.washington.edu>, Navid Golpayegani <golpa@slac.stanford.edu>
 # Version: facilities-02-20-05
-import os
+import os, os.path
 Import('baseEnv')
 Import('listFiles')
 Import('packages')
@@ -22,7 +22,15 @@ configfile.write('"\n')
 if 'obfLdPath' in libEnv:
     configfile.write('#define REL_OBFLDPATH "')
     rpathNode = Dir(str(libEnv['GLASTEXTvalue'])).rel_path(Dir(str(libEnv['obfLdPath'])))
-    configfile.write(str(rpathNode))
+    rpathStr = str(rpathNode)
+    if baseEnv['PLATFORM'] == "win32":
+        # Change backslashes to forward so they don't get eaten
+        [head, tail] = os.path.split(rpathStr)
+        while head != '':
+            [head, newTail] = os.path.split(head)
+            tail = newTail + "/" + tail
+        rpathStr = tail
+    configfile.write(rpathStr)
     configfile.write('"\n')
                  
 
