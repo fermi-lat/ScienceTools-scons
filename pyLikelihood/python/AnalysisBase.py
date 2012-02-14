@@ -545,7 +545,7 @@ class AnalysisBase(object):
             if not allFrozen :
                 self.optimize(verbosity, tol, optimizer, optObject)
             dlogLike.append(self.__call__() - logLike0)
-            if verbosity < 1:
+            if verbosity > 1:
                 print i, x, dlogLike[-1]
 
         # Restore model parameters to original values
