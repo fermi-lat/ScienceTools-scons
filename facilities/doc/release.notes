@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+ facilities-02-20-06 13-Feb-2012    jrb bug fix to pass obfldpath string correctly on Windows
  facilities-02-20-05 10-Dec-2011    hmk Identical to previous, just trying to
      force a latest build of ST in SCons RM
  facilities-02-20-04 02-Dec-2011    jrb fix typo causing Windows compile failure
