@@ -116,6 +116,10 @@ public:
       return m_hasPhiDependence;
    }
 
+	 healpix::Healpix getHealpix() const {
+		 return m_exposure->data().healpix();
+	 }
+
 	 //Returns the boundaries
 	 void costhetaBinsSun(std::vector<double> &muSunbounds) const;
 

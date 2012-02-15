@@ -1,8 +1,8 @@
 /**
  * @file BinnedExposureSun.cxx
  * @brief Integral of effective area over time for the entire sky at
- * various energies.
- * @author J. Chiang
+ * various energies and binned in angles from the sun.
+ * @author G. Johannesson
  *
  * $Header$
  */

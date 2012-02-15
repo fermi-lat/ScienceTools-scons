@@ -1,5 +1,5 @@
 /**
- * @file BinnedExposureSun.h
+ * @file HealpixExposureSun.h
  * @brief All-Sky exposure map for use by SourceMap for DiffuseSource 
  * integrations
  * @author G. Johannesson
@@ -7,8 +7,8 @@
  * $Header$
  */
 
-#ifndef SolarSystemTools_BinnedExposureSun_h
-#define SolarSystemTools_BinnedExposureSun_h
+#ifndef SolarSystemTools_HealpixExposureSun_h
+#define SolarSystemTools_HealpixExposureSun_h
 
 #include <stdexcept>
 #include <string>
@@ -24,8 +24,9 @@ namespace astro {
    class SkyProj;
 }
 
-namespace Likelihood {
-   class CountsMap;
+namespace healpix {
+	template<typename T>
+	class HealpixArray;
 }
 
 namespace SolarSystemTools {
@@ -33,31 +34,30 @@ namespace SolarSystemTools {
    class Observation;
 
 /**
- * @class BinnedExposureSun
+ * @class HealpixExposureSun
  * @brief This class encapsulates the calculation of and access to 
  * the integral of the effective area over live time.
  *
  * @author G. Johannesson
  */
 
-class BinnedExposureSun {
+class HealpixExposureSun {
 
 public:
 
-   BinnedExposureSun();
+	 class Fun {
+		 public:
+			 virtual double operator() (double costhetasun) const = 0;
+			 virtual ~Fun() {}
+	 };
 
-   BinnedExposureSun(const Likelihood::CountsMap & cmap, 
-                  const Observation & observation, 
-                  bool useEbounds=true,
-                  const st_app::AppParGroup * pars=0);
+   HealpixExposureSun();
 
-   BinnedExposureSun(const std::vector<double> & energies,
+   HealpixExposureSun(const std::vector<double> & energies,
                   const Observation & observation,
                   const st_app::AppParGroup * pars=0);
 
-   BinnedExposureSun(const std::string & filename);
-
-   ~BinnedExposureSun();
+   HealpixExposureSun(const std::string & filename);
 
    /// @return ExposureSun (effective area integrated over time) (cm^2-s)
    /// @param energy True photon energy (MeV)
@@ -65,6 +65,12 @@ public:
    /// @param dec Declination of desired sky location (degrees)
    /// @param costhetasun Cosine of the angle from sun
    double operator()(double energy, double ra, double dec, double costhetasun) const;
+
+   /// @return Integral of function f integrated over solar angle
+   /// @param energy True photon energy (MeV)
+   /// @param ra Right Ascension of desired sky location (degrees)
+   /// @param dec Declination of desired sky location (degrees)
+   double integrate(double energy, double ra, double dec, const Fun &f) const;
 
    void writeOutput(const std::string & filename) const;
 
@@ -80,34 +86,18 @@ public:
       m_enforce_boundaries = enforce_boundaries;
    }
 
-   class Aeff : public ExposureCubeSun::Aeff {
-   public:
-      Aeff(double energy, const Observation & observation,
-           double costhmin, double costhmax) 
-         : ExposureCubeSun::Aeff(energy, observation),
-           m_costhmin(costhmin), m_costhmax(costhmax) {}
-      virtual double operator()(double cosTheta, double phi=0) const;
-   private:
-      double m_costhmin;
-      double m_costhmax;
-			mutable std::map< std::pair<double,double>, double> m_cache;
-   };
-   
-
 protected:
 
 // Disable copy constructor and copy assignment operator
-   BinnedExposureSun(const BinnedExposureSun &) {
-      throw std::runtime_error("BinnedExposureSun copy constructor is disabled");
+   HealpixExposureSun(const HealpixExposureSun &) {
+      throw std::runtime_error("HealpixExposureSun copy constructor is disabled");
    }
 
-   BinnedExposureSun & operator=(const BinnedExposureSun &) {
-      throw std::runtime_error("BinnedExposureSun copy assignment operator "
+   HealpixExposureSun & operator=(const HealpixExposureSun &) {
+      throw std::runtime_error("HealpixExposureSun copy assignment operator "
                                "is disabled");
       return *this;
    }
-
-   void setMapGeometry(const Likelihood::CountsMap & cmap);
 
    void setMapGeometry(const st_app::AppParGroup & pars);
 
@@ -117,24 +107,11 @@ private:
 
    const Observation * m_observation;
 
-   std::vector<float> m_exposureMap;
+   typedef std::map<size_t,float> pixel;
+	 healpix::HealpixArray<pixel> m_exposureMap;
 
    std::vector<double> m_energies;
    std::vector<double> m_costhetasun;
-
-   // Coordinate system parameters to be fed to SkyProj.  These are
-   // either set to all-sky values (CAR, CEL) or to match the geometry
-   // of the input counts map.
-   std::string m_proj_name;
-   double m_crpix[2];
-   double m_crval[2];
-   double m_cdelt[2];
-   double m_crota2;
-   bool m_isGalactic;
-
-   astro::SkyProj * m_proj;
-
-   std::vector<long> m_naxes;
 
    double m_costhmin;
    double m_costhmax;
@@ -149,4 +126,4 @@ private:
 
 } // namespace SolarSystemTools
 
-#endif // SolarSystemTools_BinnedExposure_h
+#endif // SolarSystemTools_HealpixExposureSun_h

@@ -25,10 +25,18 @@ gtltcubesun = progEnv.Program('gtltcubesun',
 gtexpcubesun = progEnv.Program('gtexpcubesun',
                               listFiles(['src/gtexpcubesun/*.cxx']))
 
+gtexphpsun = progEnv.Program('gtexphpsun',
+                              listFiles(['src/gtexphpsun/*.cxx']))
+
+gtsuntemp = progEnv.Program('gtsuntemp',
+                              listFiles(['src/gtsuntemp/*.cxx']))
+
 progEnv.Tool('registerTargets', package = 'SolarSystemTools', 
              staticLibraryCxts = [[SolarSystemToolsLib, libEnv]],
              binaryCxts = [[gtltcubesun, progEnv], 
-                           [gtexpcubesun, progEnv]],
+                           [gtexpcubesun, progEnv],
+                           [gtexphpsun, progEnv],
+                           [gtsuntemp, progEnv]],
 #             testAppCxts = [[test_SolarSystemToolsBin, testEnv]],
              includes = listFiles(['SolarSystemTools/*.h']),
              pfiles = listFiles(['pfiles/*.par']),
