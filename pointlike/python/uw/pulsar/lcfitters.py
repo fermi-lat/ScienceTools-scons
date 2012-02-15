@@ -433,9 +433,10 @@ class WeightedLCFitter(UnweightedLCFitter):
             return 2e100*np.ones_like(x)/len(x)
         args[0].set_parameters(p)
         chi = (bg + (1-bg)*self.template(x,ignore_cache=True) - y)/yerr
-        if self.template.last_norm > 1:
-            return 2e100*np.ones_like(x)/len(x)
-        else: return chi
+        #if self.template.last_norm > 1:
+        #    return 2e100*np.ones_like(x)/len(x)
+        #else: return chi
+        return chi
 
     def unbinned_loglikelihood(self,p,*args):
         if not self.template.shift_mode and np.any(p < 0):
