@@ -5,5 +5,6 @@
     @verbatim
     * EOH *
 
+ SolarSystemTools-00-01-00 14-Feb-2012 gudlaugu Added a tool to create an healpix binned solar exposure map and another tool to create a template for the sun from those maps
     @endverbatim
 */
