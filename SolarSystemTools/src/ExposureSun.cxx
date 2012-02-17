@@ -263,12 +263,14 @@ void ExposureSun::write(const std::string& outputfile, const std::string& tablen
     // now just copy
     for( ; haitor != data().end(); ++haitor, ++itor)
     {
-			  std::vector<double> values((*haitor).size());
-				std::vector<size_t> index((*haitor).size());
+			  std::vector<double> values;
+				std::vector<size_t> index;
         CosineBinner2D::const_iterator it = (*haitor).begin();
 				for (size_t i=0; it != (*haitor).end(); ++it, ++i){
-					index[i] = (*it).first;
-					values[i] = (*it).second;
+					if ( (*it) != 0 ) {
+						index.push_back(i);
+						values.push_back(*it);
+					}
 				}
         (*itor)["Values"].set(values);
         (*itor)["Index"].set(index);
