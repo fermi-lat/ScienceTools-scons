@@ -1184,7 +1184,7 @@ class ROISmoothedSources(object):
         return residual
 
     @staticmethod
-    def get_max_intensity(source,pyfits,roi, colorbar_radius=None):
+    def get_max_intensity(source, pyfits, roi, colorbar_radius=None):
         """ Return the maximum value in the pyfits file either 
             within the extended source's size or otherwise
             within the 68% containment radius of the PSF (at
