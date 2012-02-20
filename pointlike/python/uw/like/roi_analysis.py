@@ -608,7 +608,9 @@ class ROIAnalysis(object):
 
     upper_limit = roi_upper_limits.upper_limit
     upper_limit_quick = roi_upper_limits.upper_limit_quick
-    extension_upper_limit = roi_upper_limits.extension_upper_limit
+    def extension_upper_limit(self, *args, **kwargs):
+        e=roi_upper_limits.ExtensionUpperLimit(self, *args, **kwargs)
+        return e.results()
 
     def add_source(self,source,**kwargs):
          """Add a new source object to the model.
