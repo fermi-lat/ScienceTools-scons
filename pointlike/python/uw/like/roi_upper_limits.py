@@ -253,12 +253,12 @@ class ExtensionUpperLimit(object):
         ll = np.asarray(self.all_ll)
         l = np.exp(ll - ll_0)
 
-        e_middles = 0.5*(e[1:] + e[:-1])
 
         # sort on extension
         indices = np.argsort(e)
         e, l = e[indices], l[indices]
 
+        e_middles = 0.5*(e[1:] + e[:-1])
         cdf = integrate.cumtrapz(x=e,y=l)
         cdf /= cdf[-1]
         self.extension_limit = np.interp(self.confidence, cdf, e_middles)
