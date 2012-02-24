@@ -300,4 +300,5 @@ def plot_sed(roi, which=0, fignum=5, axes=None,
         else :
             plt.savefig(outdir)
 
+    return bf
 
