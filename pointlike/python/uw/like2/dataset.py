@@ -31,8 +31,8 @@ class DataSpecification(object):
         if 'pickle' in data:
             print 'found pickle %s' % data['pickle']
             t = pickle.load(open(data['pickle']))
-            print t.__dict__
-            self.__dict__.update(data)
+            #print t.__dict__
+            self.__dict__.update(t.__dict__)
         else:
             for key in 'ft1files ft2files binfile ltcube'.split():
                 if key in data and data[key] is not None:
@@ -61,7 +61,13 @@ class DataSet(dataman.DataSpec):
         ('zenithcut',105,'Maximum spacecraft pointing angle with respect to zenith to allow'),
         ('thetacut',66.4,'Cut on photon incidence angle'),
         ('use_weighted_livetime',False,'Use the weighted livetime'),
-        
+
+        ('gti',    None, 'good time interval'),
+        ('dss',    None, 'DSS keyword object'),
+        ('version', None, ''),
+        ('binner', None, ''),
+        ('bins',  None,  ''),
+
         ' new feature',
         ('pickle', None, 'pickled dataspec'),
         ('legacy', False, 'set True to read old files'),
@@ -77,7 +83,7 @@ class DataSet(dataman.DataSpec):
         ('emax',1e6,'Maximum energy for selected bands'),
         ('minROI', 7, 'minimum ROI radius'),
         ('maxROI', 7, 'maximum ROI radius'),
-        ('phase_factor', 1.0, 'phase factor for pulsar phase analysis'),
+        #('phase_factor', 1.0, 'phase factor for pulsar phase analysis'),
 
         ('verbose', False, 'more output'),)
     
@@ -95,7 +101,6 @@ class DataSet(dataman.DataSpec):
         dataspec.update(
                 ft1=dataspec.pop('ft1files',None), 
                 ft2=dataspec.pop('ft2files',None),
-                #binsperdec=4,
                 )
         dataspec.update(kwargs)
         super(DataSet,self).__init__( **dataspec)
