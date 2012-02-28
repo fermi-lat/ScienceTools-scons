@@ -9,7 +9,7 @@ from skymaps import SkyDir,CompositeSkySpectrum,DiffuseFunction,EffectiveArea,Ex
 from uw.like.Models import Model,Constant,PowerLaw,ExpCutoff,DefaultModelValues,LogParabola
 from roi_diffuse import DiffuseSource,ROIDiffuseModel_OTF
 from roi_extended import ExtendedSource,ROIExtendedModel
-from os.path import join
+from os.path import join, expandvars
 import os
 from abc import abstractmethod
 from uw.utilities import keyword_options
@@ -221,6 +221,7 @@ def get_default_diffuse(diffdir=None,gfile='gll_iem_v02.fit',ifile='isotropic_ie
          Setting gfile or ifile to None ignores that entry."""
     if diffdir is None:
         diffdir = join(os.environ['EXTFILESSYS'],'galdiffuse')
+    diffdir = expandvars(diffdir)
     dsources = []
     if gfile is not None:
         gfilex = join(diffdir,gfile)
