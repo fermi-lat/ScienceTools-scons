@@ -2,7 +2,7 @@
 # $Id$
 # Authors: T.Burnett <tburnett@u.washington.edu>, Navid Golpayegani <golpa@slac.stanford.edu>
 # Version: facilities-02-20-06
-import os, os.path
+import os, os.path, re
 Import('baseEnv')
 Import('listFiles')
 Import('packages')
@@ -36,17 +36,29 @@ if 'obfLdPath' in libEnv:
 
 configfile.close()
 
+srcFiles = listFiles(['src/*.cxx'])
+XGetopt = 'src/XGetopt.cxx'
+toRemove = ''
+for s in srcFiles:
+    if re.search('XGetopt', str(s)) != None: toRemove = s
+if toRemove != '' : srcFiles.remove(toRemove)
+
 if 'makeStatic' in baseEnv:
     libEnv.Tool('addLinkDeps', package = 'facilities', toBuild = 'static')
-    facilitiesLib = libEnv.StaticLibrary('facilities', listFiles(['src/*.cxx']))
+    facilitiesLib = libEnv.StaticLibrary('facilities', srcFiles)
 else:
     libEnv.Tool('addLinkDeps', package = 'facilities',
                 toBuild = 'shared')
-    facilitiesLib = libEnv.SharedLibrary('facilities', listFiles(['src/*.cxx']))
+    facilitiesLib = libEnv.SharedLibrary('facilities', srcFiles)
 
     swigEnv.Tool('facilitiesLib')
     swigEnv.Tool('addLibrary', library=swigEnv['pythonLibs'])
     lib_pyFacilities = swigEnv.SwigLibrary('_py_facilities', 'src/py_facilities.i')
+
+objList = []
+if baseEnv['PLATFORM'] == 'win32':
+    XGetoptObj = libEnv.Object('src/XGetopt.cxx')
+    objList += [[XGetoptObj, libEnv]]
 
 progEnv.Tool('facilitiesLib')
 test_time = progEnv.Program('test_time', ['src/test/test_time.cxx'])
@@ -58,7 +70,8 @@ if 'makeStatic' in baseEnv:
                  staticLibraryCxts = [[facilitiesLib, libEnv]],
                  testAppCxts = [[test_time, progEnv], [test_env,progEnv],
                                 [test_Util,progEnv]],
-                 includes = listFiles(['facilities/*.h']) )
+                 includes = listFiles(['facilities/*.h']),
+                 objects = objList)
 else:
     progEnv.Tool('registerTargets', package = 'facilities',
                  libraryCxts = [[facilitiesLib, libEnv]],
@@ -66,7 +79,8 @@ else:
                  testAppCxts = [[test_time, progEnv], [test_env,progEnv],
                                 [test_Util,progEnv]],
                  includes = listFiles(['facilities/*.h']),
-                 python = ['python/facilities.py', 'src/py_facilities.py'])
+                 python = ['python/facilities.py', 'src/py_facilities.py'],
+                 objects = objList)
 
 
 
