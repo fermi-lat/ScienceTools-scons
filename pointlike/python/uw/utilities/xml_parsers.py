@@ -473,9 +473,10 @@ class Model_to_XML(object):
             if model.name == 'Constant': my_xml_name='ConstantValue'
             else:
                 for l_xml_name,v in self.x2m.modict.iteritems():
-                    if v == type(model):
+                    #Check the class name instead of the class, to account for FrontBackConstant moving from like2.models to like.Models
+                    if v.__name__ == model.__class__.__name__: 
                         my_xml_name = l_xml_name;break
-                if v != type(model):
+                if v.__name__ != model.__class__.__name__:
                     raise Exception,'Unable to find an XML model for %s'%(model.name)
         self.update(my_xml_name,scaling=scaling)
 
