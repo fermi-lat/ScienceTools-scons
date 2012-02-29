@@ -46,8 +46,8 @@ public:
         bool   weighted=false
         );
 
-		//! add a time interval at the given position, should never be used
-		virtual void fill(const astro::SkyDir& dirz, double deltat);
+    //! add a time interval at the given position, should never be used
+    virtual void fill(const astro::SkyDir& dirz, double deltat);
 
     //! add a time interval at the given position
     virtual void fill(const astro::SkyDir& dirz, const astro::SkyDir& dirsun, double deltat);
@@ -59,20 +59,20 @@ public:
     ExposureSun(const std::string& inputfile, const std::string& tablename="ExposureSun");
     void load(const std::string& inputfile, const std::string& tablename="ExposureSun");
 
-		//! Integral for costhetasun positions
-		template<class F>
-			double operator()(const astro::SkyDir&dir, double costhetasun, const F& fun) const
-			{
-				const SolarSystemTools::CosineBinner2D& binner = data()[dir];
-				return binner(fun,costhetasun);
-			}
+    //! Integral for costhetasun positions
+    template<class F>
+       double operator()(const astro::SkyDir&dir, double costhetasun, const F& fun) const
+       {
+          const SolarSystemTools::CosineBinner2D binner = data()[dir];
+          return binner(fun,costhetasun);
+       }
 
-		template<class F>
-			double integral(const astro::SkyDir&dir, double costhetasun, const F& fun) const
-			{
-				const SolarSystemTools::CosineBinner2D& binner = data()[dir];
-				return binner.integral(fun, costhetasun);
-			}
+    template<class F>
+       double integral(const astro::SkyDir&dir, double costhetasun, const F& fun) const
+       {
+          const SolarSystemTools::CosineBinner2D binner = data()[dir];
+          return binner.integral(fun, costhetasun);
+       }
 
     //! write out to a file.
     void write(const std::string& outputfile, const std::string& tablename="ExposureSun")const;
