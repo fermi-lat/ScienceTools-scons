@@ -1316,6 +1316,12 @@ class EllipticalSpatialModel(SpatialModel):
         self.free[2:5]=False
     def can_shrink(self): return True
 
+    def __getstate__(self):
+        """ Cannot pickle the call_grid object. """
+        d=copy.copy(self.__dict__)
+        if d.has_key('call_grid'): del d['call_grid']
+        return d
+
 
 class EllipticalGaussian(EllipticalSpatialModel):
 
