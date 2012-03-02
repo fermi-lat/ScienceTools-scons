@@ -160,7 +160,8 @@ class ExtensionUpperLimit(object):
 
         else:
 
-            assert self.spatial_model.param_names == [ 'Sigma' ]
+            n = self.spatial_model.param_names
+            assert len(n) == 1 and n[0] == 'Sigma'
 
             self.saved_state = PointlikeState(roi)
 
