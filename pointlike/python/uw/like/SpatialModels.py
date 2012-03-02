@@ -1322,6 +1322,10 @@ class EllipticalSpatialModel(SpatialModel):
         if d.has_key('call_grid'): del d['call_grid']
         return d
 
+    def __setstate__(self,state):
+        """ When unpickling the object, afterwords recreate the skymaps.SkyImage object. """
+        self.__dict__ = state
+        self.call_grid = None
 
 class EllipticalGaussian(EllipticalSpatialModel):
 
