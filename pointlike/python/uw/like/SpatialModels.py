@@ -428,7 +428,7 @@ class SpatialModel(object):
             pure lazieness, since it is not needed elsewhere. """
         return PySkySpectrum(self,None)
 
-    def save_template(self,filename,npix=150):
+    def save_template(self,filename,npix=150, proj='ZEA'):
         """ Saves out a template following the recommendation of
             the page LAT-Detected Extended Sources for Catalog:
 
@@ -442,7 +442,7 @@ class SpatialModel(object):
 
         diameter=self.template_diameter()
         pixelsize=diameter/npix
-        image=SkyImage(center,os.path.expandvars(filename),pixelsize,diameter,1,"ZEA",
+        image=SkyImage(center,os.path.expandvars(filename),pixelsize,diameter,1,proj,
                        True if self.coordsystem == SkyDir.GALACTIC else False,False)
         skyfunction=self.get_PySkyFunction()
         image.fill(skyfunction)
