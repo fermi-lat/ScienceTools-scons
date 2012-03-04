@@ -819,6 +819,9 @@ class MonteCarlo(object):
 
     def simulate(self,**kwargs):
         ''' understands all keywords that GtApp.run() can handle, especially dry_run=True and verbosity=X '''
+
+        if not self.quiet: print 'Simulating in energy range from %g MeV to %g MeV' % (self.emin, self.emax)
+
         old_dir=os.getcwd()
 
         if not self.quiet: print 'working in directory',self.savedir
