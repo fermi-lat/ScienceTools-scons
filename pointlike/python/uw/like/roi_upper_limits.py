@@ -159,9 +159,13 @@ class ExtensionUpperLimit(object):
             self.extension_limit = None
 
         else:
+            if not isinstance(self.spatial_model,type):
+                raise Exception("The spatial model bust be a type, like Gaussian, not an instance, like Gaussian()")
 
+            # Note, since the input is the class, not the instance, the
+            # position parmaeters have not yet been added on.
             n = self.spatial_model.param_names
-            assert len(n) == 3 and n[2] == 'Sigma'
+            assert len(n) == 1 and n[0] == 'Sigma'
 
             self.saved_state = PointlikeState(roi)
 
