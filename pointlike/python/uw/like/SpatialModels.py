@@ -785,7 +785,7 @@ class Disk(RadiallySymmetricModel):
             >>> np.allclose([disk['sigma'], disk['l'], disk['b']], [1.5, 22, 22])
             True
 
-        And when the coordinatsystem is galacitc, you can not read out the RA or dec values
+        And when the coordinatsystem is galactic, you can not read out the RA or dec values
 
             >>> disk['ra']
             Traceback (most recent call last):
