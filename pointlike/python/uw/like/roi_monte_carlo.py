@@ -316,7 +316,7 @@ class MonteCarlo(object):
         return temp
 
     @staticmethod
-    def _make_profile(self,name,spatial_model,numpoints=200):
+    def _make_profile(name,spatial_model,numpoints=200):
         temp='%s_extension_profile_%s.txt' % (name,spatial_model.name)
         radius,pdf = spatial_model.approximate_profile()
         open(temp,'w').write('\n'.join(['%g\t%g' % (i,j) for i,j in zip(radius,pdf)]))
