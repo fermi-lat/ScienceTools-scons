@@ -267,7 +267,7 @@ class MonteCarlo(object):
             (to correct for energy dispersion). """
         return self.energy_pad*self.emin,(1+self.energy_pad)*self.emax
 
-    def _make_ps(self,ps,mc_emin,mc_emax):
+    def _make_ps(self,ps,mc_emin,mc_emax,indent):
 
         assert isinstance(ps,PointSource)
 
