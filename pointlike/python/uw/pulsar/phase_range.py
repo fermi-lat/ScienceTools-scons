@@ -325,7 +325,7 @@ class PhaseRange(object):
         if axes is None: axes=P.gca()
         label=kwargs.pop('label',None)
 
-        if phase_offsets != [0]:
+        if phase_offsets != [0] and phase_offsets !=0:
             # kind of ugly, but create a larger PhaseRange object
             # temporarily with the offsets. This allows for
             # merging needed offsets.
