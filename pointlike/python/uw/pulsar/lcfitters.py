@@ -459,15 +459,18 @@ class UnweightedLCFitter(object):
         pl.grid(True)
 
     def __getstate__(self):
-        """ Cannot pickle self.loglikelihood. 
+        """ Cannot pickle self.loglikelihood and self.gradient since
+            these are instancemethod objects.
             See: http://mail.python.org/pipermail/python-list/2000-October/054610.html """
         result = self.__dict__.copy()
         del result['loglikelihood']
+        del result['gradient']
         return result
 
     def __setstate__(self,state):
         self.__dict__ = state
         self.loglikelihood = self.unbinned_loglikelihood
+        self.gradient = self.unbinned_gradient
 
 class WeightedLCFitter(UnweightedLCFitter):
 
