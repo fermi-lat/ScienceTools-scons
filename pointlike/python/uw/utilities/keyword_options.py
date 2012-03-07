@@ -99,4 +99,12 @@ def change_defaults(defaults,key,value):
                 defaults[i]=list(defaults[i])
                 default=defaults[i]
             default[1] = value
-    return defaults
+            return defaults
+    raise Exception("key %s not found in defaults" % key)
+
+def get_default(*args, **kwargs): return get_row(*args, **kwargs)[1]
+
+def get_row(defaults, key):
+    for i,default in enumerate(defaults):
+        if default[0] == key: return default
+    raise Exception("key %s not found in defaults" % key)
