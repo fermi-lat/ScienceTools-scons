@@ -1112,9 +1112,9 @@ class FileFunction(Model):
         self.interp = interp1d(np.log10(self.energy),np.log10(self.flux),
                 bounds_error=False,fill_value=-np.inf)
 
-    def __init__(self,*args,**kwargs):
+    def __init__(self,**kwargs):
 
-        super(FileFunction,self).__init__(*args,**kwargs)
+        super(FileFunction,self).__init__(**kwargs)
 
         if not hasattr(self,'file'):
             raise Exception("FileFunction must be created with a file.")
