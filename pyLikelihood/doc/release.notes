@@ -7,6 +7,7 @@
    @verbatim
    * EOH *
 
+ pyLikelihood-01-29-04 10-Mar-2012 jchiang add complement functionality to ScaleFactor class
  pyLikelihood-01-29-03 09-Feb-2012 jchiang move fixed model update to plotFixed command; ensure LikelihoodState is restored after computing Ts
  pyLikelihood-01-29-02 26-Nov-2011 jchiang mods for plotting requests from Jean
  pyLikelihood-01-29-01 22-Nov-2011 jchiang bug-fix for LK-72@JIRA
