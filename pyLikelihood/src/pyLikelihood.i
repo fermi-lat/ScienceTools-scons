@@ -64,6 +64,7 @@
 #include "Likelihood/PowerLaw2.h"
 #include "Likelihood/ResponseFunctions.h"
 #include "Likelihood/RoiCuts.h"
+#include "Likelihood/ScaleFactor.h"
 #include "Likelihood/ScData.h"
 #include "Likelihood/SkyDirArg.h"
 #include "Likelihood/SkyDirFunction.h"
@@ -211,6 +212,17 @@ using optimizers::Exception;
 %include Likelihood/SummedLikelihood.h
 %include pyLikelihood/Aeff.h
 %include pyLikelihood/enableFPE.h
+%extend Likelihood::LogLike {
+   static void set_ScaleFactor_complement(optimizers::Function * func, 
+                                          bool use_complement) {
+      Likelihood::ScaleFactor * scaleFactor = 
+         dynamic_cast<Likelihood::ScaleFactor *>(func);
+      if (scaleFactor == 0) {
+         throw std::runtime_error("Cannot cast to ScaleFactor object.");
+      }
+      scaleFactor->set_complement_flag(use_complement);
+   }
+}
 %extend Likelihood::LogLike {
    static void enableFPE() {
       pyLikelihood::enableFPE();
