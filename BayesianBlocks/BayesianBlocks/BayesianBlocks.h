@@ -25,12 +25,12 @@ public:
    BayesianBlocks(const std::vector<double> & arrival_times);
 
    BayesianBlocks(double start_time, 
-                   const std::vector<double> & bin_content,
-                   const std::vector<double> & bin_sizes);
+                  const std::vector<double> & bin_content,
+                  const std::vector<double> & bin_sizes);
 
    BayesianBlocks(const std::vector<double> & xx,
-                   const std::vector<double> & yy,
-                   const std::vector<double> & dy);
+                  const std::vector<double> & yy,
+                  const std::vector<double> & dy);
 
    /// @brief Compute the global optimum reconstruction of the 
    /// piecewise constant function.
