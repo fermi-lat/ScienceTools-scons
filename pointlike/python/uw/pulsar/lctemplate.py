@@ -185,7 +185,7 @@ class LCTemplate(object):
         prims = self.primitives
         def norm_string(i):
             fstring = '' if self.norms.free[i] else ' [FIXED]'
-            return 'P%d : %.4f +\- %.4f%s'%(i,self.norms()[i],0,fstring)
+            return 'P%d : %.4f +\- %.4f%s'%(i+1,self.norms()[i],0,fstring)
         s0 = '\nMixture Amplitudes\n------------------\n'+\
              '\n'.join([norm_string(i) for i in xrange(len(prims))])+\
              '\nDC : %.4f +\- %.4f'%(1-self.norms.get_total(),0)
