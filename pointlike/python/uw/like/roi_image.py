@@ -878,7 +878,7 @@ class SmoothedImage(ROIImage):
 
             xx,yy = np.indices(kernel.shape)
             rr = np.sqrt((xx-kernel.shape[0]/2.)**2+(yy-kernel.shape[1]/2.)**2)
-            kernel[rr<width] = 1
+            kernel[rr<=width] = 1
 
         elif kerneltype == 'gaussian':
             kernelsize = 8*width
