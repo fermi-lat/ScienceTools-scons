@@ -35,6 +35,7 @@ class LCTemplate(object):
         self.norms = NormAngles(norms)
 
     def __getitem__(self,index): return self.primitives[index]
+    def __setitem__(self,index,value): self.primitives[index]=value
 
     def set_parameters(self,p):
         start = 0
