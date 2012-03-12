@@ -222,7 +222,7 @@ class Minimizer(object):
                 full=False
                 
             if not self.quiet: print 'Attempting to invert full hessian...'
-            self.cov_matrix =t = cov_matrix or linalg.inv(hessian)
+            self.cov_matrix =t = cov_matrix if cov_matrix is not None else linalg.inv(hessian)
             if np.any(np.isnan(self.cov_matrix)):
                 if not self.quiet: print 'Found NaN in covariance matrix!'
                 raise Exception('Found NaN in covariance matrix!')
