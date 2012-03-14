@@ -103,6 +103,11 @@ class NormAngles(object):
         """ Return the amplitude of all norms."""
         return sin(self.p[0])**2
 
+    def set_total(self,val):
+        """ Set overall normalization of the represented components."""
+        norms = self()
+        self.p = self._get_angles(norms*(val/norms.sum()))
+
             
 
 
