@@ -164,7 +164,7 @@ class LCTemplate(object):
             between the first and final component locations.
             
             delta [False] -- if True, return the first peak position"""
-        if len(self.primitives)==1: return -1
+        if len(self.primitives)==1: return -1,0
         prim0,prim1 = self[0],self[-1]
         for p in self.primitives:
             if p.get_location() < prim0.get_location(): prim0 = p
