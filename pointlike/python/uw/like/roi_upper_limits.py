@@ -130,7 +130,7 @@ def upper_limit_quick(roi,which = 0,confidence = .95,e_weight = 0,cgs = False):
 
 class ExtensionUpperLimit(object):
     defaults = (
-        ("refit_position",          True, "Refit position of source for each extension"),
+        ("refit_position",         False, "Refit position of source for each extension"),
         ("confidence",              0.95, "Convidence level of bayesian upper limit"),
         ("spatial_model",           None, "Spatial model to use for extnesion upper limit. Default is Disk"),
         ("delta_log_like_limits",   10,   """ delta_log_like_limits has same defintion as the parameter in
