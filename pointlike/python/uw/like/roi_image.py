@@ -888,10 +888,12 @@ class SmoothedImage(ROIImage):
             rr = np.sqrt((xx-kernel.shape[0]/2.)**2+(yy-kernel.shape[1]/2.)**2)
             kernel = np.exp(-(rr**2)/(2*width**2))
 
+            # Gaussian kernels should be normalized so they don't change overall normalization
+            kernel /= kernel.sum()
+
         else:
             raise Exception("...")
 
-        kernel /= kernel.sum()
         return kernel
 
 
