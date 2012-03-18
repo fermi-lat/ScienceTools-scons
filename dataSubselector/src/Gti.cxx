@@ -73,7 +73,7 @@ void Gti::writeExtension(const std::string & filename) const {
    try {
 // Check if the extension exists already. If not, add it.
       std::auto_ptr<const tip::Table> 
-         gtiTable(tip::IFileSvc::instance().readTable(filename, "GTI"));
+         gtiTable(tip::IFileSvc::instance().editTable(filename, "GTI"));
    } catch (tip::TipException & eObj) {
       if (!st_facilities::Util::
           expectedException(eObj, "Could not open FITS extension")) {
