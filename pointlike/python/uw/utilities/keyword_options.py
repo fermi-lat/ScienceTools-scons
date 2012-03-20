@@ -7,6 +7,7 @@ $Header$
 
 Author: T. Burnett <tburnett@uw.edu>
 """
+import copy
 import types 
 import textwrap
 
@@ -90,6 +91,7 @@ def defaults_to_kwargs(obj,default_object):
 def change_defaults(defaults,key,value):
     """ Change a defaults dictionary's key 'key'
         to have a default value 'value'. """
+    defaults = copy.deepcopy(defaults)
     if isinstance(defaults,tuple):
         defaults=list(defaults)
         
