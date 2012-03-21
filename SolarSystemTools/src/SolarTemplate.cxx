@@ -147,7 +147,12 @@ void SolarTemplate::computeMap() {
    st_stream::StreamFormatter formatter("SolarTemplate", "computeMap", 2);
    formatter.warn() << "Computing binned solarTemplate map";
 
-   const std::vector<double> &costhetasun = m_expsun.costhetasun();
+   const std::vector<double> &thetasun = m_expsun.thetasun();
+   std::vector<double> costhetasun(thetasun.size());
+   for (size_t i = 0; i < costhetasun.size(); ++i){
+	   costhetasun[i] = cos(thetasun[i]);
+	 }
+
 	 //Create the average intensity as a function of energy and angle
 	 std::vector<double> intensityCache(m_energies.size()*(costhetasun.size()-1));
    for (unsigned int k = 0; k < m_energies.size(); k++) {

@@ -40,8 +40,9 @@ public:
     //! @param cosbinsize bin size in the cos(theta) binner
     //! @param weighted [false] set true to make a weighted table
     ExposureSun(double pixelsize=1., 
-				double cosbinsize=1./CosineBinner2D::nbins1(), 
-				double cosbinsizesun=1./CosineBinner2D::nbins2(), 
+				double cosbinsize=1./CosineBinner2D::nbins(), 
+			     double thbinsizesun=pow(180./CosineBinner2D::nthbins(),2), 
+			     double thmaxsun=180.,
         double zcut=-1.0,
         bool   weighted=false
         );
@@ -95,6 +96,8 @@ public:
     */
     virtual void fill_zenith(const astro::SkyDir& dirz,const astro::SkyDir& dirx, const astro::SkyDir& dirsun,
         const astro::SkyDir& dirzenith, double deltat);
+
+		ExposureSun& operator += (const ExposureSun &other);
 
 private:
     bool processEntry(const tip::ConstTableRecord & row, const GTIvector& gti);
