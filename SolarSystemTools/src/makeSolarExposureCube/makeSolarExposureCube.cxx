@@ -237,6 +237,7 @@ void ExposureCubeSun::createDataCube() {
                                              m_pars["dcostheta"],
                                              m_pars["dthetasun"],
                                              m_pars["thetasunmax"],
+																						 m_pars["powerbinsun"],
                                              timeCuts, gtis, zmax);
    std::string scFile = m_pars["scfile"];
    st_facilities::Util::file_ok(scFile);

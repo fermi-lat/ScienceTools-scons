@@ -41,8 +41,9 @@ public:
     //! @param weighted [false] set true to make a weighted table
     ExposureSun(double pixelsize=1., 
 				double cosbinsize=1./CosineBinner2D::nbins(), 
-			     double thbinsizesun=pow(180./CosineBinner2D::nthbins(),2), 
+			     double thbinsizesun=pow(180./CosineBinner2D::nbins2(),2), 
 			     double thmaxsun=180.,
+					 double powerbin=2.5,
         double zcut=-1.0,
         bool   weighted=false
         );
@@ -86,6 +87,8 @@ public:
                     bool verbose=true);
 
     double lost()const{return m_lost;}
+
+		bool hasCosthetasun(const astro::SkyDir & dir, double costhetasun) const;
 
     /** @brief  allow horizon cut, possible if FOV includes horizon
         @param dirz direction of z-axis of instrument
