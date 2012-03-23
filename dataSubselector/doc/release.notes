@@ -5,6 +5,7 @@
     @verbatim
     * EOH *
 
+ dataSubselector-08-03-03 22-Mar-2012 jchiang change to DATA_QUAL>0 in default filter string for gtmktime to account for new possible data quality flag values
  dataSubselector-08-03-02 17-Mar-2012 jchiang workaround for readTable(...) bug; see OBS-20@JIRA
  dataSubselector-08-03-01 20-Sep-2011 jchiang try to handle Windows compiler deficiency
  dataSubselector-08-03-00 20-Aug-2011 jchiang add BitMaskCut class: standardize application of Pass 7 style event class cut; write DSS keywords for this cut
