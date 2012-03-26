@@ -142,7 +142,8 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
          TIME_1=TIME_0+aTimeStep;
          //printf("Adjusted TIME_1 to %f and timestep to %f (GTI_End=%f TIME_END=%f)\n",TIME_1,aTimeStep,GTI_End[igti],TIME_END);
       }
-      if (aTimeStep<0.1) {
+      
+      if (aTimeStep<0.001) {
          TIME_0=TIME_1;
          continue;
       }
