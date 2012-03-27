@@ -16,6 +16,8 @@
 
 #include "astro/SkyDir.h"
 
+#include "Likelihood/RoiCuts.h"
+
 #include "irfInterface/IEfficiencyFactor.h"
 
 #include "SolarSystemTools/ExposureSun.h"
@@ -165,7 +167,7 @@ public:
    /// class, but it is not virtual, so we add this method instead to
    /// avoid possible confusion if these classes are used
    /// polymorphically.
-   void writeFile(const std::string & outfile) const;
+   void writeFile(const std::string & outfile, double start, double stop, const Likelihood::RoiCuts &cuts) const;
 
    /// @param start MET start time of interval (seconds)
    /// @param stop MET stop time of interval (seconds)
@@ -207,7 +209,7 @@ private:
       const Aeff & m_aeff;
    };
 #endif
-
+	 void writeKeywords(const std::string &outfile, const std::string &extname, double start, double stop, const Likelihood::RoiCuts &cuts) const;
    double m_costhetabin;
    double m_thetabin;
    double m_thetamax;
@@ -240,8 +242,6 @@ private:
 
    static bool overlaps(const std::pair<double, double> & interval1,
                         std::pair<double, double> & interval2);
-
-   void writeFilename(const std::string & outfile) const;
 
    void writeBins(const std::string & outfile) const;
 

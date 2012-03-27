@@ -131,15 +131,11 @@ void ExposureCubeSun::run() {
       }
    }
    createDataCube();
-   m_exposure->writeFile(output_file);
-   writeTableKeywords(output_file, "EXPOSURESUN");
-   writeTableKeywords(output_file, "WEIGHTED_EXPOSURESUN");
 
-   m_roiCuts->writeGtiExtension(output_file);
-   double tstart(m_roiCuts->minTime());
-   double tstop(m_roiCuts->maxTime());
+   const double tstart(m_roiCuts->minTime());
+   const double tstop(m_roiCuts->maxTime());
 
-   writeDateKeywords(output_file, tstart, tstop);
+   m_exposure->writeFile(output_file, tstart, tstop, *m_roiCuts);
 }
 
 void ExposureCubeSun::writeTableKeywords(const std::string & outfile,

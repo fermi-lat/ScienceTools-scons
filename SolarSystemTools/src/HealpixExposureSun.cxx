@@ -282,8 +282,8 @@ void HealpixExposureSun::writeOutput(const std::string & filename) const {
 	 for( ; haitor != m_exposureMap.end(); ++haitor, ++itor)
 	 {
 		 std::vector<size_t> index = (*haitor).indices();
-		 (*itor)["Values"].set(*haitor);
 		 (*itor)["Index"].set(index);
+		 (*itor)["Values"].set(*haitor);
 	 }
 
 	 tip::Header & header(table->getHeader());
