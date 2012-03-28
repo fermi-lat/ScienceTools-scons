@@ -256,7 +256,7 @@ class SpatialModel(object):
         if self.coordsystem == SkyDir.EQUATORIAL:
             self.param_names = np.append(['RA','DEC'], self.param_names)
         elif self.coordsystem == SkyDir.GALACTIC:
-            self.param_names = np.append(['l','b'], self.param_names)
+            self.param_names = np.append(['L','B'], self.param_names)
 
         # The first two parameters (lon & lat) are forced to have log=False
         # cast to bool, just to be safe
