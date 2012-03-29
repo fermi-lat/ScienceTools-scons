@@ -8,7 +8,7 @@ Authors: Matthew Kerr <matthew.kerr@gmail.com>
 
 import numpy as np
 import pylab as pl
-from lcfitters import get_gauss2,get_gauss1
+#from lcfitters import get_gauss2,get_gauss1
 from scipy.interpolate import interp1d
 from scipy.optimize import fmin
 
