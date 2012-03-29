@@ -193,8 +193,8 @@ def mycov(grad,par,full_output=False,init_step=0.04,min_step=1e-6,max_step=1,max
         cov = np.linalg.inv(hess)
     except Exception:
         print 'Error inverting hessian.'
-        #cov = np.zeros([nparams,nparams])
-        raise
+        cov = np.zeros([nparams,nparams])
+        #raise
     if full_output:
         return cov,hess,step_size,iters,min_flags,max_flags
     else:
