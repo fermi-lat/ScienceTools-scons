@@ -1566,7 +1566,7 @@ class ROISignificance(ROIPlotter):
 class ROISmoothedModel(object):
     """ Plot (on the left) the diffuse subtracted smoothed counts and
         (on the right) the diffuse subtrcted smoothed model predicted
-        counts Useful to see if your model (qualitativly) looks like
+        counts. Useful to see if your model (qualitativly) looks like
         the right source. """
 
     defaults = (
