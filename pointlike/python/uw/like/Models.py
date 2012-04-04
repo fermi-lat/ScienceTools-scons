@@ -1028,6 +1028,15 @@ class CompositeModel(Model):
         pars = self._p
         pars[self.free] = new_vals.astype('f')
         self._p = pars
+
+    def freeze(self,i,freeze=True):
+        free = self.free
+        j=0
+        while i>=len(self.models[j]._p):
+            i-=len(self.models[j]._p)
+            j+=1
+        self.models[j].free[i] = not freeze
+
  
 
 class FrontBackConstant(CompositeModel):
