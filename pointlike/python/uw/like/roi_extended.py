@@ -56,6 +56,15 @@ class ExtendedSource(DiffuseSource):
     @property
     def skydir(self): return self.spatial_model.center
 
+    @property
+    def smodel(self): 
+        """ No reason to keep a model & smodel. """
+        return self.model
+
+    @smodel.setter
+    def smodel(self, value): self.model = value
+
+
     def __str__(self,indent=''):
         return indent+('\n'+indent).join(['\n',
                           '='*60,
