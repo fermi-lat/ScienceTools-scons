@@ -36,8 +36,6 @@ class BinnedObs(object):
         self.irfs = irfs
         pyLike.AppHelpers_checkExposureMap(srcMaps, binnedExpMap)
         self._createObservation(srcMaps, expCube, irfs)
-        if binnedExpMap is not None and binnedExpMap != "":
-            pyLike.SourceMap_setBinnedExposure(binnedExpMap)
         self.countsMap = pyLike.CountsMap(srcMaps)
     def _createObservation(self, srcMaps, expCube, irfs):
         self._respFuncs = pyLike.ResponseFunctions()
@@ -53,9 +51,11 @@ class BinnedObs(object):
         self._eventCont = pyLike.EventContainer(self._respFuncs,
                                                 self._roiCuts,
                                                 self._scData)
+        self._bexpmap = pyLike.BinnedExposure(self.binnedExpMap)
         self.observation = pyLike.Observation(self._respFuncs, self._scData,
                                               self._roiCuts, self._expCube,
-                                              self._expMap, self._eventCont)
+                                              self._expMap, self._eventCont,
+                                              self._bexpmap)
     def __getattr__(self, attrname):
         return getattr(self.observation, attrname)
     def __repr__(self):
