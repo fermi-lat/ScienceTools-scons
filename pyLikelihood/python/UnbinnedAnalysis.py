@@ -146,7 +146,7 @@ class UnbinnedAnalysis(AnalysisBase):
         self.optimizer = optimizer
         self.logLike = pyLike.LogLike(self.observation.observation)
         self.logLike.initOutputStreams()
-        self.logLike.readXml(srcModel, _funcFactory)
+        self.logLike.readXml(srcModel, _funcFactory, True, True, False)
         self.logLike.computeEventResponses()
         self.model = SourceModel(self.logLike, srcModel)
         eMin, eMax = self.observation.roiCuts().getEnergyCuts()
