@@ -257,8 +257,12 @@ def binnedAnalysis(mode='ql', ftol=None, **pars):
     expcube = _null_file(pars['expcube'])
     expmap = _null_file(pars['bexpmap'])
     irfs = pars['irfs']
+    try:
+        phased_expmap = _null_file(pars['phased_expmap'])
+    except KeyError:
+        phased_expmap = None
     obs = BinnedObs(srcMaps=srcmaps, expCube=expcube, binnedExpMap=expmap,
-                    irfs=irfs)
+                    irfs=irfs, phased_expmap=phased_expmap)
     like = BinnedAnalysis(obs, pars['srcmdl'], pars['optimizer'])
     if ftol is not None:
         like.tol = ftol
