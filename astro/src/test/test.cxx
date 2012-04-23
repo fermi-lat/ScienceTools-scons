@@ -22,6 +22,7 @@
 
 
 #include <cstdio>
+#include <algorithm>
 #include <stdexcept>
 #include <iomanip>
 #include <typeinfo>
@@ -225,40 +226,81 @@ void test_insideSAA() {
         throw std::runtime_error("InsideSAA test failed."); 
 }
 
-bool testJD()
-{
-    bool passed = true;
+bool testJD() {
+   bool passed = true;
 
-    {  // test last-second of the day bug, JIRA 
-        //expect
-        //252460800 2008-12-31T23:59:59.0000 <---
-        //252460801 2008-12-31T23:59:59.0000 <---
-        //252460802 2009-01-01T00:00:00.0000 
+   /// JulianDate.cxx code claims that its algorithm gives 0.00004
+   /// second consistency over 2002-2020.  An accuracy better of only
+   /// 0.0001 s appears to be attained with optimized builds on 32-bit
+   /// machines, so we test using multiple outcomes that are within
+   /// this accuracy.
 
-        //double met(252460801); 
-        //std::string ut("2008-12-31T23:59:59.0000"); 
-        double met(276134401.6); 
-        std::string ut("2009-10-01T23:59:59.6000");
+   typedef std::map<double, std::vector<std::string> > Utc_vector_t;
+   Utc_vector_t utc_values;
 
-        //double met(279849601.900 );
-        //std::string UT("2009-11-13T23:59:59.9000");
-         
-        astro::JulianDate JD2000 = astro::JulianDate(astro::JulianDate::missionStart()+met/86400. );
-        std::string td= JD2000.getGregorianDate() ;
-        if( td != ut){
-            std::cout << "Fail MET-UT test for "<< met
-                <<"\n\t got      " << td
-                <<"\n\t expected " << std::fixed << ut <<  std::endl;
-            passed=false;
-        }
+   // Test around leap second at 2009Jan01 at 00:00:00 UTC
+   utc_values[252460800] = std::vector<std::string>();
+   utc_values[252460800].push_back("2008-12-31T23:59:59.0000");
 
-    }
+   utc_values[252460801] = std::vector<std::string>();
+   utc_values[252460801].push_back("2009-01-01T00:00:00.0000");
+   utc_values[252460801].push_back("2008-12-31T23:59:59.9999");
 
-    // test MET conversion
-    double MET(245000000);
-    JulianDate x = JulianDate::missionStart()+MET/86400.;
-    std::cout << "MET = " << int(MET) << " is " << x.getGregorianDate()<<std::endl;
-    std::cout << "Mission start is: "<< astro::JulianDate::missionStart().getGregorianDate() << std::endl;
+   utc_values[252460802] = std::vector<std::string>();
+   utc_values[252460802].push_back("2009-01-01T00:00:00.0000");
+   utc_values[252460802].push_back("2008-12-31T23:59:59.9999");
+
+   utc_values[252460803] = std::vector<std::string>();
+   utc_values[252460803].push_back("2009-01-01T00:00:01.0000");
+   utc_values[252460803].push_back("2009-01-01T00:00:00.9999");
+
+   utc_values[276134401.6] = std::vector<std::string>();
+   utc_values[276134401.6].push_back("2009-10-01T23:59:59.6000");
+   utc_values[276134401.6].push_back("2009-10-01T23:59:59.5999");
+
+   // A random test value from previous implementation.
+   utc_values[279849601.900] = std::vector<std::string>();
+   utc_values[279849601.900].push_back("2009-11-13T23:59:59.9000");
+
+   // Test around leap second introduced 2012Jul01 at 00:00:00 UTC
+   utc_values[362793601] = std::vector<std::string>();
+   utc_values[362793601].push_back("2012-06-30T23:59:59.0000");
+   utc_values[362793601].push_back("2012-06-30T23:59:58.9999");
+
+   utc_values[362793602] = std::vector<std::string>();
+   utc_values[362793602].push_back("2012-07-01T00:00:00.0000");
+   utc_values[362793602].push_back("2012-06-30T23:59:59.9999");
+
+   utc_values[362793603] = std::vector<std::string>();
+   utc_values[362793603].push_back("2012-07-01T00:00:00.0000");
+   utc_values[362793603].push_back("2012-06-30T23:59:59.9999");
+
+   for (Utc_vector_t::const_iterator it(utc_values.begin());
+        it != utc_values.end(); ++it) {
+      astro::JulianDate jd 
+         = astro::JulianDate(astro::JulianDate::missionStart() 
+                             + it->first/86400.);
+      std::string gd = jd.getGregorianDate() ;
+      if (std::count(it->second.begin(), it->second.end(), gd) == 0) {
+         std::cout << "Fail MET-UT test for "<< std::fixed << it->first
+                   <<"\n\t got      " << gd
+                   <<"\n\t expected ";
+         for (size_t i(0); i < it->second.size(); i++) {
+            std::cout << "\n\t\t " << it->second.at(i) << " or ";
+         }
+         std::cout <<  std::endl;
+         passed=false;
+      }
+   }
+
+   // test MET conversion
+   double MET(245000000);
+   JulianDate x = JulianDate::missionStart()+MET/86400.;
+   std::cout << "MET = " << int(MET);
+   std::cout << " is " << x.getGregorianDate() << std::endl;
+   std::cout << "Mission start is: "
+             << astro::JulianDate::missionStart().getGregorianDate() 
+             << std::endl;
 
     astro::JulianDate JD2000 = astro::JulianDate(2000,1,1,12.); //2451545
 
