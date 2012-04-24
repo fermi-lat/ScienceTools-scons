@@ -5,6 +5,7 @@
     @verbatim
     EOH
 
+ optimizers-02-21-03 24-Apr-2012 jchiang move Gaussian.h to public directory so that Likelihood package can apply ScaleFactor decorator
  optimizers-02-21-02 19-Jan-2012 jchiang improve numerical derivatives in FunctionTest class
  optimizers-02-21-01 30-Mar-2011 jchiang disable f2c workaround for DARWIN
  optimizers-02-21-00 01-Feb-2011 jchiang enable specification of priors on individual parameters
