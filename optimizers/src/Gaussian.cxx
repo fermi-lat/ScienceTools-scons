@@ -14,7 +14,7 @@
 
 #include "optimizers/dArg.h"
 #include "optimizers/ParameterNotFound.h"
-#include "Gaussian.h"
+#include "optimizers/Gaussian.h"
 
 namespace optimizers {
 

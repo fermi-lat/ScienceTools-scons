@@ -206,13 +206,17 @@ void FunctionTest::derivatives(const std::vector<Arg*> &arguments,
 
          double my_deriv = (f1 - f2)/(delta1 - delta2);
 
-         // std::cout << i << "  "
-         //           << params[i] << "  "
-         //           << f1 << std::endl;
+//          std::cout << i << "  "
+//                    << params[i] << "  "
+//                    << f1 << "  "
+//                    << f2 << "  "
+//                    << (f1 - f2) << "  "
+//                    << delta1 << "  "
+//                    << delta2 << "  ";
 
          if (derivs[i] != 0) {
             double value = fabs(my_deriv/derivs[i] - 1.);
-            // std::cout << value << std::endl;
+//             std::cout << value << std::endl;
             assert(value < eps*10.);
          } else {
             assert(fabs(my_deriv) < eps*10.);

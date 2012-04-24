@@ -22,10 +22,10 @@
 #include "optimizers/Dom.h"
 #include "optimizers/Exception.h"
 #include "optimizers/FunctionFactory.h"
+#include "optimizers/Gaussian.h"
 
 #include "PowerLaw.h"
 #include "BrokenPowerLaw.h"
-#include "Gaussian.h"
 #include "AbsEdge.h"
 #include "ConstantValue.h"
 

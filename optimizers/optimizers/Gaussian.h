@@ -18,9 +18,6 @@ namespace optimizers {
  *
  * @brief A 1D Gaussian function
  *
- * @author J. Chiang
- *    
- * $Header$
  */
     
 class Gaussian : public Function {
