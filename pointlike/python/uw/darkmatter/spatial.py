@@ -133,7 +133,7 @@ class PingNFW(RadiallySymmetricModel):
 
     default_p = [0.1]
     param_names = ['Sigma']
-    limits = [[SMALL_ANALYTIC_EXTENSION,9]] # constrain r68 to 9 degrees.
+    default_limits = [[SMALL_ANALYTIC_EXTENSION,9]] # constrain r68 to 9 degrees.
     steps = [0.04]
     log = [True]
 
