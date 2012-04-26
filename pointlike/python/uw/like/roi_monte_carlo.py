@@ -412,6 +412,10 @@ class MonteCarlo(object):
             if self.gtifile:
                 raise Exception("gtifile can only be set for existing ft2 files.")
 
+        if self.maxROI is not None and self.roi_dir is None or \
+           self.maxROI is None and self.roi_dir is not None:
+            raise Exception("maxROI and roi_dir must both be set.")
+
     @staticmethod
     def get_time_from_ft2(ft2):
         # Note, get the start & stop times from the actual
