@@ -641,6 +641,7 @@ class ROISlice(object):
             ('black_and_white',False, """ If True, make the plot black and 
                                           white (better for printing and
                                           publishing)                       """),
+            ('legend',         True,  """ Show legend. """),
     )
 
     @staticmethod
@@ -780,7 +781,7 @@ class ROISlice(object):
                  else 'g',dashes=[5,3,1,3]),
         ]
 
-    def plotx(self,axes,legend=True):
+    def plotx(self,axes,legend=False):
 
         ax = axes
 
@@ -870,7 +871,7 @@ class ROISlice(object):
 
         self.ax1, self.ax2 = ax1, ax2
 
-        self.plotx(ax1)
+        self.plotx(ax1, legend=self.legend)
         self.ploty(ax2)
 
         if self.title is None:
