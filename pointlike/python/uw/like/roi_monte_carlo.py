@@ -1215,11 +1215,16 @@ class SpectralAnalysisMC(SpectralAnalysis):
 
         assert len(self.dataspec.ft1files) == 1
 
+        if diffuse_sources is None:
+            sources = point_sources 
+        else:
+            sources = point_sources + diffuse_sources
+
         if not os.path.exists(self.dataspec.ft1files[0]):
             monte_carlo=MonteCarlo(
                 ft1=self.dataspec.ft1files, 
                 gtifile = self.dataspec.ltcube if (os.path.exists(self.dataspec.ltcube) and not self.nogtifile) else None,
-                sources = point_sources + diffuse_sources,
+                sources = sources,
                 seed=self.seed, 
                 tempbase=self.tempbase,
                 tstart=self.tstart,
