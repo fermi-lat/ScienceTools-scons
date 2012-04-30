@@ -153,8 +153,8 @@ class PingNFW(RadiallySymmetricModel):
     def at_r_in_deg(self,r,energy=None):
         return 2/(np.pi*r*self.scaled_sigma*(1+r/self.scaled_sigma)**5)
 
-    def r68(self): return NFW.x68*self.scaled_sigma
-    def r99(self): return NFW.x99*self.scaled_sigma
+    def analytic_r68(self): return NFW.x68*self.scaled_sigma
+    def analytic_r99(self): return NFW.x99*self.scaled_sigma
 
     def has_edge(self): return False
 
