@@ -159,7 +159,7 @@ class SED(object):
     def frequentist_upper_limit(like,name,emin,emax,confidence,verbosity):
         """ Calculate a frequentist upper limit on the prefactor. 
             Returns the unscaled prefactor upper limit. """
-        delta_logl = lambda confidence: chi2.ppf(2*confidence-1,1)/2.
+        delta_logl = chi2.ppf(2*confidence-1,1)/2.
         ul = UpperLimits(like)
         flux_ul, pref_ul = ul[name].compute(emin=emin, emax=emax, 
                                             delta=delta_logl,
