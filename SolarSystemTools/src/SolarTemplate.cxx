@@ -190,14 +190,7 @@ void SolarTemplate::computeMap() {
 					 //Integrate the solar angles
 	         const ProfFun f(costhetasun, m_energies, intensityCache, k);
 					 m_template.at(indx) = m_expsun.integrate(m_energies[k], dir.ra(), dir.dec(), f);
-					 /*
-           for (int l = 0; l < costhetasun.size()-1; ++l) {
-			         const size_t cInd = k*costhetasun.size() + l;
-							 const double exp = m_expsun(m_energies[k], dir.ra(), dir.dec(), 0.5*(costhetasun[l]+costhetasun[l+1]));
-               m_template.at(indx) +=intensityCache[cInd] * exp;
-           }
-					 */
-					 m_template.at(indx) /= avgExp*2;  //The 2 is integration over angle from the source
+					 m_template.at(indx) /= avgExp;  
          }
       }
    }

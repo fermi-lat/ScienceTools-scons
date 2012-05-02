@@ -67,6 +67,10 @@ void ExposureSun::load(const std::string& inputFile, const std::string& tablenam
         hdr["COORDTYPE"].get(check);
     }
 
+		try{
+			hdr["ZENMAX"].get(m_zcut);
+		}catch(const std::exception &){}
+
     astro::SkyDir::CoordSystem coordsys = (check == "GAL")?
         astro::SkyDir::GALACTIC: astro::SkyDir::EQUATORIAL;
 
@@ -297,6 +301,7 @@ void ExposureSun::write(const std::string& outputfile, const std::string& tablen
     hdr["COSMIN2"].set(CosineBinner2D::cosmin2());
 		hdr["POWER2"].set(CosineBinner2D::power2());
     hdr["PHIBINS"].set(CosineBinner2D::nphibins());
+		hdr["ZENMAX"].set(m_zcut);
 
     // need to do this to ensure file is closed when pointer goes out of scope
     delete &table;
@@ -306,6 +311,10 @@ ExposureSun& ExposureSun::operator += (const ExposureSun &other) {
 	//Make sure the sizes agree
 	if ( data().size() != other.data().size() )
 		throw std::runtime_error("ExposureSun::operator+=: sizes don't match");
+
+	//Check for zenith angle cut
+	if (m_zcut != other.m_zcut)
+		throw std::runtime_error("ExposureSun::operator+=: zenith angle cuts don't match");
 
 	//Loop over all the pixels and add them
 	healpix::HealpixArray<CosineBinner2D>::iterator it = data().begin();

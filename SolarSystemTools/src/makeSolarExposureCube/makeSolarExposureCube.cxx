@@ -229,12 +229,15 @@ void ExposureCubeSun::createDataCube() {
       SolarSystemTools::CosineBinner2D::setPhiBins(nphibins);
    }
 
+	 // Set the SolarSystem body
+	 astro::SolarSystem::Body body = SolarSystemTools::ExposureCubeSun::stringToBody(m_pars["body"]);
+
    m_exposure = new SolarSystemTools::ExposureCubeSun(m_pars["binsz"], 
                                              m_pars["dcostheta"],
                                              m_pars["dthetasun"],
                                              m_pars["thetasunmax"],
 																						 m_pars["powerbinsun"],
-                                             timeCuts, gtis, zmax);
+                                             timeCuts, gtis, body, zmax);
    std::string scFile = m_pars["scfile"];
    st_facilities::Util::file_ok(scFile);
    std::vector<std::string> scFiles;

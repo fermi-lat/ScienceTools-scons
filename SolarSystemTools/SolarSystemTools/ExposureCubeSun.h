@@ -53,7 +53,8 @@ public:
    ExposureCubeSun(double skybin, double costhetabin, double thetabinSun, double thetamax, double powerbinsun,
                 const std::vector< std::pair<double, double> > & timeCuts,
                 const std::vector< std::pair<double, double> > & gtis,
-                double zenmax=180.);
+                astro::SolarSystem::Body=astro::SolarSystem::SUN,
+								double zenmax=180.);
 
    ExposureCubeSun(const ExposureCubeSun & other);
 
@@ -184,6 +185,10 @@ public:
    static double overlap(const std::pair<double, double> & interval1,
                          const std::pair<double, double> & interval2);
 
+
+	 static std::string bodyToString(astro::SolarSystem::Body body);
+	 static astro::SolarSystem::Body stringToBody(const std::string &body);
+
 protected:
 
    ExposureCubeSun & operator=(const ExposureCubeSun &) {
@@ -230,7 +235,8 @@ private:
 
 	 /// Start of mission in Julian date
 		static const double s_mjd_missionStart;
-		astro::SolarSystem m_solar_dir;
+		astro::SolarSystem m_source_dir;
+		astro::SolarSystem::Body m_body;
    /// Minimum time to be considered given GTIs (MET s)
    double m_tmin;
 
