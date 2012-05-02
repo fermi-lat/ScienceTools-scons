@@ -7,7 +7,7 @@
 import numpy as np
 import pickle
 from uw.like.SpatialModels import RadiallySymmetricModel, SMALL_ANALYTIC_EXTENSION, PseudoSpatialModel
-from uw.like.SpatialModels import InterpProfile2D, SpatialMap
+from uw.like.SpatialModels import InterpProfile2D, SpatialMap, smart_log
 
 # Degrees, should come from the file...
 
@@ -40,8 +40,8 @@ class NFW(InterpProfile2D):
 
     def _shrink(self,size=None): 
         if size is None: size = min(self.sigmas)
-        self.p[2]=smart_log(size,log=self.log[2])
-        self.free[2]=False
+        self.setp('Sigma',size)
+        self.freeze('Sigma')
 
     def can_shrink(self): return True
 
@@ -76,8 +76,8 @@ class Einasto(InterpProfile2D):
 
     def _shrink(self,size=None): 
         if size is None: size = min(self.sigmas)
-        self.p[2]=smart_log(size,log=self.log[2])
-        self.free[2]=False
+        self.setp('Sigma',smart_log(size,log=self.log[2]))
+        self.freeze('Sigma')
 
     def can_shrink(self): return True
 
@@ -112,8 +112,8 @@ class Burkert(InterpProfile2D):
 
     def _shrink(self,size=None): 
         if size is None: size = min(self.sigmas)
-        self.p[2]=smart_log(size,log=self.log[2])
-        self.free[2]=False
+        self.setp('Sigma',smart_log(size,log=self.log[2]))
+        self.freeze('Sigma')
 
     def can_shrink(self): return True
 
