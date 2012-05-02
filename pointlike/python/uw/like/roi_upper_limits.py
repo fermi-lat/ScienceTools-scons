@@ -297,7 +297,7 @@ class ExtensionUpperLimit(object):
 
     def results(self):
         return dict(extension=self.extension_limit, 
-                    spatial_model = self.spatial_model.name,
+                    spatial_model = self.spatial_model.__name__,
                     confidence=self.confidence,
                     emin=self.roi.bin_edges[0],
                     emax=self.roi.bin_edges[-1],
