@@ -46,6 +46,9 @@ def save(roi,filename):
     d['point_sources']=self.psm.point_sources.tolist()
     d['diffuse_sources']=self.dsm.diffuse_sources.tolist()
 
+    # allow storing extra stuff for custom analysis
+    if hasattr(roi,'extra'): d['extra'] = roi.extra
+
     if self.__dict__.has_key('qform') and \
             self.__dict__.has_key('ldir') and \
             self.__dict__.has_key('lsigma') and \
@@ -128,6 +131,9 @@ def load(filename,**kwargs):
         roi.ldir=d['localization']['ldir']
         roi.lsigma=d['localization']['lsigma']
         roi.delta_loc_logl=d['localization']['delta_loc_logl']
+
+    # load back any potential custom stuff
+    if d.has_key('extra'): roi.extra = d['extra']
 
     # just to be safe
     roi.__update_state__()
