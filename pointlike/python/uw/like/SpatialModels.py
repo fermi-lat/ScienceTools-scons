@@ -1266,8 +1266,7 @@ class InterpProfile(RadiallySymmetricModel):
 
     def effective_edge(self,energy=None):
         """ Interpolation returns 0 outside of rmax, so no need to integrate past it. """
-        return self.quantile(.99)
-        #return self.r_in_degrees[-1]
+        return self.r_in_degrees[-1]
 
     def approximate_profile(self,numpoints=200):
         """ For outputting radial profile with sufficient accuracy. Rapidly varying spatial
