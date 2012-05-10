@@ -491,10 +491,12 @@ if not baseEnv.GetOption('help'):
 	    print "scons: Skipped "+pkg.lstrip(override+os.sep)+" because of exceptions: "+str(inst)
 	    traceback.print_tb(sys.exc_info()[2])
 
-    if sys.platform == "win32":
-        ## call registerTargets for imaginary "all" package in order to 
-        #create target for an "all" sln file
-        baseEnv.Tool('registerTargets', package = '*ALL*')
+    if (sys.platform == "win32") and  ('CONTAINERNAME' in baseEnv):
+        if baseEnv['CONTAINERNAME'] == 'GlastRelease':
+            # call registerTargets for imaginary "all" package in order
+            # to create target for an "all" sln file
+            baseEnv.Tool('registerTargets', package = '*ALL*')
+
 
     if baseEnv.GetOption('clean'):
         baseEnv.Default('test')
