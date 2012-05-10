@@ -215,6 +215,7 @@ private:
    };
 #endif
 	 void writeKeywords(const std::string &outfile, const std::string &extname, double start, double stop, const Likelihood::RoiCuts &cuts) const;
+	 void readKeywords(const std::string &outfile, const std::string &extname);
    double m_costhetabin;
    double m_thetabin;
    double m_thetamax;

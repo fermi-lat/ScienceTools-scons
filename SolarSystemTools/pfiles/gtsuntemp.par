@@ -24,7 +24,7 @@ ebinfile,s,a,NONE,,,"Name of FITS file containing the energy bin definition"
 
 # Hidden parameters.
 bincalc,s,h,"EDGE",EDGE|CENTER,,"Energy values as bounds or logrithmic centers of energy bins"
-irfs,s,h,"P7SOURCE_V6",,,"Response functions to use"
+irfs,s,h,"P7SOURCE_V6",,,"Not really used, only by the apphelpers"
 
 chatter,i,h,2,0,4,Output verbosity
 clobber,        b, h, yes, , , "Overwrite existing output files"

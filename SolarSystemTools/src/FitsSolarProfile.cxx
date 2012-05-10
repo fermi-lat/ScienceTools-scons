@@ -41,7 +41,7 @@ namespace SolarSystemTools {
 
 		delete table;
 
-		table = tip::IFileSvc::instance().readTable(filename, "SPECTRUM_FOR_ANGLES");
+		table = tip::IFileSvc::instance().readTable(filename, "SPECTRUM_FOR_ANGLES_IC_DISK");
 
 		m_profile.resize(m_costheta.size()*m_energies.size());
 
