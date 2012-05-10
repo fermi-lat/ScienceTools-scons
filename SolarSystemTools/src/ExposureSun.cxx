@@ -68,7 +68,9 @@ void ExposureSun::load(const std::string& inputFile, const std::string& tablenam
     }
 
 		try{
-			hdr["ZENMAX"].get(m_zcut);
+			double zenmax;
+			hdr["ZENMAX"].get(zenmax);
+			m_zcut = cos(zenmax*M_PI/180.);
 		}catch(const std::exception &){}
 
     astro::SkyDir::CoordSystem coordsys = (check == "GAL")?
@@ -301,7 +303,7 @@ void ExposureSun::write(const std::string& outputfile, const std::string& tablen
     hdr["COSMIN2"].set(CosineBinner2D::cosmin2());
 		hdr["POWER2"].set(CosineBinner2D::power2());
     hdr["PHIBINS"].set(CosineBinner2D::nphibins());
-		hdr["ZENMAX"].set(m_zcut);
+		hdr["ZENMAX"].set(acos(m_zcut)*180/M_PI);
 
     // need to do this to ensure file is closed when pointer goes out of scope
     delete &table;
