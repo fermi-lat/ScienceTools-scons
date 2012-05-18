@@ -486,7 +486,7 @@ class AnalysisBase(object):
     def freePars(self, srcName):
         pars = pyLike.ParameterVector()
         self[srcName].funcs['Spectrum'].getFreeParams(pars)
-        return pars
+        return tuple([x for x in pars])
     def setFreeFlag(self, srcName, pars, value):
         src_spectrum = self[srcName].funcs['Spectrum']
         for item in pars:

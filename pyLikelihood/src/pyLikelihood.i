@@ -6,6 +6,8 @@
 #include <fenv.h>
 #endif
 #include <cstddef>
+#include "CLHEP/Random/RandFlat.h"
+#include "CLHEP/Random/Random.h"
 #include "astro/SolarSystem.h"
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
@@ -248,6 +250,12 @@ using optimizers::Exception;
       astro::SkyDir dir;
       st_facilities::Util::pixel2SkyDir(proj, i, j, dir);
       return dir;
+   }
+   static void setRandomSeed(long seed) {
+      CLHEP::HepRandom hepRandom(seed);
+   }
+   static double shoot() {
+      return CLHEP::RandFlat::shoot();
    }
 }
 %extend Likelihood::AppHelpers {
