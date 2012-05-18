@@ -40,6 +40,7 @@ import base64
 import hashlib
 import ntpath
 import os
+import os.path
 
 import re
 import string
@@ -543,10 +544,10 @@ class _GenerateV7DSP(_DSPGenerator):
                 
             elif self.targettype == "rootcintlib":
                 self.DoRootcint()
-            #  set additional_includes to be our package root
+            #  set additional_includes to be package-root and package-root/src
             self.additional_includes      = ""
             if env.has_key('packageroot'):
-                self.additional_includes = env['packageroot']
+                self.additional_includes = env['packageroot'] + ";" + os.path.join(str(env['packageroot']), 'src')
 
             #  Do we always want runtimelibrary = 2 ?  Probably not.
             #  It dictates whether we get MSVCRTD, MSVCRT, etc.
