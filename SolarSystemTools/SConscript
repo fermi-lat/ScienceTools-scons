@@ -1,7 +1,7 @@
 # -*- python -*-
 #
 # Authors: Gudlaugur Johannesson <gudlaugu@glast2.stanford.edu>
-# Version: SolarSystemTools-01-00-00
+# Version: SolarSystemTools-01-00-01
 # $Header$
 Import('baseEnv')
 Import('listFiles')
