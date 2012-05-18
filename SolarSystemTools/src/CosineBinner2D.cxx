@@ -13,6 +13,7 @@ $Header$
 #include <stdexcept>
 #include <iostream>
 #include <cassert>
+#include <algorithm>
 
 namespace{
     const double pi4( M_PI/4.0), pi2(M_PI/2.);
