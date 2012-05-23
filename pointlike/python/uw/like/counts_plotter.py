@@ -115,7 +115,7 @@ def plot_counts(roi,fignum=1, outfile=None,
     if outfile is not None: plt.savefig(outfile)
 
 
-def roi_pipeline_counts_plot(roi, counts_dir=None, fignum=6, **kwargs):
+def roi_pipeline_counts_plot(roi, counts_dir=None, fignum=6, title=None, **kwargs):
     """ 
     Code used by the ROI pipeline to make a stacked plot
         
@@ -143,7 +143,10 @@ def roi_pipeline_counts_plot(roi, counts_dir=None, fignum=6, **kwargs):
     axes[0].set_xlabel('') 
     axes[0].set_ylim(ymin=0.3)
     axes[1].set_ylabel('fract. dev')
-    if hasattr(roi,'name'): fig.suptitle(roi.name)
+    if title is not None:
+        fig.suptitle(title)
+    elif hasattr(roi,'name'): 
+        fig.suptitle(roi.name)
     if counts_dir is not None:
         if os.path.isdir(counts_dir) and hasattr(roi,'name'):
             fout = os.path.join(counts_dir, ('%s_counts.png'%roi.name) )
