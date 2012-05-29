@@ -309,7 +309,7 @@ if baseEnv.GetOption('userRelease'):
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['DATADIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['XMLDIR'])
         if baseEnv.GetOption('containerName') == 'GlastRelease':
-	        baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['JODIR'])
+	        baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['JODIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['TOOLDIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['TESTDIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['TESTSCRIPTDIR'])
