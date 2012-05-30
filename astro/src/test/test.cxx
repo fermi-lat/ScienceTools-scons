@@ -6,6 +6,7 @@
 #include "astro/SolarSystem.h"
 #include "astro/EarthCoordinate.h"
 #include "astro/EarthOrbit.h"
+#include "astro/IGRField.h"
 #include "astro/JulianDate.h"
 #include "astro/SkyDir.h"
 #include "astro/PointingTransform.h"
@@ -25,6 +26,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <iomanip>
+#include <fstream>
 #include <typeinfo>
 
 using namespace astro;
@@ -404,6 +406,47 @@ bool test_GPS_readFitsData() {
     return true;
 }
 
+bool test_IGRF() {
+   std::ofstream output("test_IGRF_output.txt");
+   EarthOrbit earthOrbit;
+   for (int year(1985); year < 2015; year++) {
+      for (int month(1); month < 13; month++) {
+         JulianDate jd(year, month, 15, 0);
+         double met(jd.seconds() - JulianDate::missionStart().seconds());
+         EarthCoordinate earthCoord(earthOrbit.position(jd), met);
+         output << month << "  "
+                << year << "  "
+                << met << "  "
+                << earthCoord.L() << "  " 
+                << earthCoord.B() << "  " 
+                << earthCoord.lambda() << "  ";
+         // << earthCoord.magnetic_field()[0] << "  "
+         // << earthCoord.magnetic_field()[1] << "  "
+         // << earthCoord.magnetic_field()[2] << "  ";
+         double longitude(earthCoord.longitude());
+         double latitude(earthCoord.latitude());
+         double altitude(earthCoord.altitude());
+// This line is from EarthCoordinate::computeMagCoords():
+         double approx_year(2001 + met/3.15e7); // year does not need to be very precise
+// The "year" argument is used for interpolation in igrf_sub.cxx, so
+// it does need to be precise!  Here we use this approximation to
+// ensure that R() and verticalRigidityCutoff() are computed at the
+// same point in time as in EarthCoordinate::computeMagCoords(). That
+// code has to be fixed eventually.
+         IGRField::Model().compute(latitude, longitude, altitude, approx_year);
+
+         output 
+            // << "       " 
+            // << IGRField::Model().L() << "  "
+            // << IGRField::Model().B() << "  "
+            // << IGRField::Model().lambda()*180./M_PI << "  "
+            << IGRField::Model().R() << "  "
+            << IGRField::Model().verticalRigidityCutoff() << std::endl;
+      }
+   }
+   output.close();
+   return true;
+}
 
 int main(){
 
@@ -559,6 +602,9 @@ int main(){
 
         if( ! testJD()) rc=1;
 
+        if (!test_IGRF()) {
+           rc = 1;
+        }
 
     }catch( const std::exception& e){
         std::cerr << "Failed test because caught " <<typeid(e).name()<<" \""  

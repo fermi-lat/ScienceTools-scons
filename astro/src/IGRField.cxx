@@ -5,21 +5,19 @@ $Header$
 #include "igrf_sub/igrf_sub.h"
 #include "astro/IGRField.h"
 
-
 namespace {
-	// static instance like singleton 
-	astro::IGRField*  model(0);
+   // static instance like singleton 
+   astro::IGRField*  model(0);
 }
+
 namespace astro {
 
-
 IGRField& IGRField::Model() { 
-	if (model==0) {
-		model = new IGRField();
-	}
-	return *model; 
-	};   
-
+   if (model==0) {
+      model = new IGRField();
+   }
+   return *model; 
+};   
 
 IGRField::IGRField() {
     IGRFf2c::initize_(); 
@@ -30,8 +28,16 @@ IGRField::IGRField() {
 void IGRField::setYear(const float year){
    if(fabs(year-m_year)<0.001) return;
    m_year=year;
-   if (m_year>=2010.) m_year=2010.;
-   if (m_year<=1990.) m_year=1990.;
+   // if (m_year>=2010.) m_year=2010.;
+   // if (m_year<=1990.) m_year=1990.;
+   if (m_year >= 2015.) {
+      /// @todo Throw an exception here.
+      m_year = 2015.;
+   }
+   if (m_year <= 1900.) {
+      /// @todo Throw an exception here.
+      m_year = 1900.;
+   }
    IGRFf2c::feldcof_(&m_year,&m_dipoleMoment);
 }
       
