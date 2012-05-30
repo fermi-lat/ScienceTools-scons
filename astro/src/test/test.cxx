@@ -420,9 +420,10 @@ bool test_IGRF() {
                 << earthCoord.L() << "  " 
                 << earthCoord.B() << "  " 
                 << earthCoord.lambda() << "  ";
-         // << earthCoord.magnetic_field()[0] << "  "
-         // << earthCoord.magnetic_field()[1] << "  "
-         // << earthCoord.magnetic_field()[2] << "  ";
+// The following returns zeros for some reason.
+//                 << earthCoord.magnetic_field().x() << "  "
+//                 << earthCoord.magnetic_field().y() << "  "
+//                 << earthCoord.magnetic_field().z() << "  ";
          double longitude(earthCoord.longitude());
          double latitude(earthCoord.latitude());
          double altitude(earthCoord.altitude());
@@ -440,6 +441,9 @@ bool test_IGRF() {
             // << IGRField::Model().L() << "  "
             // << IGRField::Model().B() << "  "
             // << IGRField::Model().lambda()*180./M_PI << "  "
+            << IGRField::Model().bEast() << "  "
+            << IGRField::Model().bNorth() << "  "
+            << -IGRField::Model().bDown() << "  "
             << IGRField::Model().R() << "  "
             << IGRField::Model().verticalRigidityCutoff() << std::endl;
       }
