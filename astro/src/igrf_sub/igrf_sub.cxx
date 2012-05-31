@@ -93,9 +93,9 @@ union {
 
 /* Table of constant values */
 
-static integer c__1 = 1;
-static integer c__3 = 3;
-static integer c__4 = 4;
+/* static */ integer c__1 = 1;
+/* static */ integer c__3 = 3;
+/* static */ integer c__4 = 4;
 
 /* IGRF_SUB.FOR */
 /* ********************************************************************* */
@@ -136,16 +136,16 @@ static integer c__4 = 4;
 //     double log(), asin(), sqrt();
 
     /* Local variables */
-    static real babs, dimo, lati, alog2;
+    /* static */ real babs, dimo, lati, alog2;
 //     extern /* Subroutine */ int feldg_();
-    static real beast, longi, bdown;
+    /* static */ real beast, longi, bdown;
 //    extern /* Subroutine */ int shellg_();
-    static real bnorth;
-    static integer istart;
+    /* static */ real bnorth;
+    /* static */ integer istart;
 //    extern /* Subroutine */ int feldcof_();
-    static real bab1;
+    /* static */ real bab1;
 //    extern /* Subroutine */ int initize_();
-    static integer ibbb;
+    /* static */ integer ibbb;
 
 /* ---------------------------------------------------------------- */
 /*   INPUT: */
@@ -212,13 +212,13 @@ static integer c__4 = 4;
 //     double r_sign(), sqrt();
 
     /* Local variables */
-    static real bold, bmin, rold, step;
-    static integer irun;
-    static real b;
-    static integer i__, j, n;
-    static real p[32]	/* was [8][4] */, step12;
+    /* static */ real bold, bmin, rold, step;
+    /* static */ integer irun;
+    /* static */ real b;
+    /* static */ integer i__, j, n;
+    /* static */ real p[32]	/* was [8][4] */, step12;
 //    extern /* Subroutine */ int stoer_();
-    static real r1, r2, r3, bdelta, zz, bq1, bq2, bq3;
+    /* static */ real r1, r2, r3, bdelta, zz, bq1, bq2, bq3;
 
 /* -------------------------------------------------------------------- */
 /* FINDS SMALLEST MAGNETIC FIELD STRENGTH ON FIELD LINE */
@@ -343,11 +343,11 @@ L8888:
 {
     /* Initialized data */
 
-    static real rmin = (float).05;
-    static real rmax = (float)1.01;
-    static real step = (float).2;
-    static real steq = (float).03;
-    static real u[9]	/* was [3][3] */ = { (float).3511737,(float)-.9148385,
+    /* static */ real rmin = (float).05;
+    /* static */ real rmax = (float)1.01;
+    /* static */ real step = (float).2;
+    /* static */ real steq = (float).03;
+    /* static */ real u[9]	/* was [3][3] */ = { (float).3511737,(float)-.9148385,
 	    (float)-.1993679,(float).9335804,(float).358368,(float)0.,(float)
 	    .0714471,(float)-.186126,(float).9799247 };
 
@@ -358,14 +358,14 @@ L8888:
 //     double sin(), cos(), sqrt(), r_sign(), log(), exp();
 
     /* Local variables */
-    static real bequ, rlat;
-    static integer iequ;
-    static real term, rlon, step2, d__;
-    static integer i__, n;
-    static real p[800]	/* was [8][100] */, r__, t, z__, radik, step12, c0, 
+    /* static */ real bequ, rlat;
+    /* static */ integer iequ;
+    /* static */ real term, rlon, step2, d__;
+    /* static */ integer i__, n;
+    /* static */ real p[800]	/* was [8][100] */, r__, t, z__, radik, step12, c0, 
 	    c1, c2, oterm, c3, d0, d1, d2, e0;
 //    extern /* Subroutine */ int stoer_();
-    static real e1, e2, r1, r2, r3, dimob0, ff, gg, fi, ct, rq, st, oradik, 
+    /* static */ real e1, e2, r1, r2, r3, dimob0, ff, gg, fi, ct, rq, st, oradik, 
 	    zq, xx, zz, bq1, bq2, bq3, r3h, hli, stp, arg1, arg2;
 
 /* -------------------------------------------------------------------- */
@@ -698,7 +698,7 @@ L30:
 {
     /* Initialized data */
 
-    static real u[9]	/* was [3][3] */ = { (float).3511737,(float)-.9148385,
+    /* static */ real u[9]	/* was [3][3] */ = { (float).3511737,(float)-.9148385,
 	    (float)-.1993679,(float).9335804,(float).358368,(float)0.,(float)
 	    .0714471,(float)-.186126,(float).9799247 };
 
@@ -709,9 +709,9 @@ L30:
 //     double sqrt();
 
     /* Local variables */
-    static real q;
+    /* static */ real q;
 //    extern /* Subroutine */ int feldi_();
-    static real dr, dx, dy, dz, rq, xm, ym, zm, wr, fli, dsq, dxm, dym, dzm;
+    /* static */ real dr, dx, dy, dz, rq, xm, ym, zm, wr, fli, dsq, dxm, dym, dzm;
 
 /* ******************************************************************* */
 /* * SUBROUTINE USED FOR FIELD LINE TRACING IN SHELLG                * */
@@ -774,19 +774,19 @@ L30:
 //     double sin(), cos(), sqrt();
 
     /* Local variables */
-    static real brho;
-    static integer imax;
-    static real rlat;
-    static integer last;
-    static real rlon, bxxx, byyy, bzzz, d__, f;
-    static integer i__, k, m;
-    static real s, t, x, y, z__;
-    static integer ihmax, ih;
-    static real cp;
-    static integer il;
-    static real ct;
-    static integer is;
-    static real sp, rq, st, rho, xxx, yyy, zzz;
+    /* static */ real brho;
+    /* static */ integer imax;
+    /* static */ real rlat;
+    /* static */ integer last;
+    /* static */ real rlon, bxxx, byyy, bzzz, d__, f;
+    /* static */ integer i__, k, m;
+    /* static */ real s, t, x, y, z__;
+    /* static */ integer ihmax, ih;
+    /* static */ real cp;
+    /* static */ integer il;
+    /* static */ real ct;
+    /* static */ integer is;
+    /* static */ real sp, rq, st, rho, xxx, yyy, zzz;
 
 /* ------------------------------------------------------------------- */
 /* CALCULATES EARTH MAGNETIC FIELD FROM SPHERICAL HARMONICS MODEL */
@@ -992,12 +992,12 @@ L7:
 {
     /* Initialized data */
 
-//     static char filmod[13*24+1] = "igrf1900.dat igrf1905.dat igrf1910.dat ig\
+//     /* static */ char filmod[13*24+1] = "igrf1900.dat igrf1905.dat igrf1910.dat ig\
 // rf1915.dat igrf1920.dat igrf1925.dat igrf1930.dat igrf1935.dat igrf1940.dat \
 // dgrf1945.dat dgrf1950.dat dgrf1955.dat dgrf1960.dat dgrf1965.dat dgrf1970.da\
 // t dgrf1975.dat dgrf1980.dat dgrf1985.dat dgrf1990.dat dgrf1995.dat dgrf2000.\
 // dat dgrf2005.dat igrf2010.dat igrf2010s.dat";
-    static char * files = "igrf1900.dat igrf1905.dat igrf1910.dat ig\
+    /* static */ char * files = "igrf1900.dat igrf1905.dat igrf1910.dat ig\
 rf1915.dat igrf1920.dat igrf1925.dat igrf1930.dat igrf1935.dat igrf1940.dat \
 dgrf1945.dat dgrf1950.dat dgrf1955.dat dgrf1960.dat dgrf1965.dat dgrf1970.da\
 t dgrf1975.dat dgrf1980.dat dgrf1985.dat dgrf1990.dat dgrf1995.dat dgrf2000.\
@@ -1009,7 +1009,7 @@ dat dgrf2005.dat igrf2010.dat igrf2010s.dat";
        filmod[i] = facilities::commonUtilities::joinPath(datapath, filmod[i]);
     }
 
-    static real dtemod[24] = { (float)1900.,(float)1905.,(float)1910.,(float)
+    /* static */ real dtemod[24] = { (float)1900.,(float)1905.,(float)1910.,(float)
 	    1915.,(float)1920.,(float)1925.,(float)1930.,(float)1935.,(float)
 	    1940.,(float)1945.,(float)1950.,(float)1955.,(float)1960.,(float)
 	    1965.,(float)1970.,(float)1975.,(float)1980.,(float)1985.,(float)
@@ -1024,20 +1024,20 @@ dat dgrf2005.dat igrf2010.dat igrf2010s.dat";
 //     double sqrt();
 
     /* Local variables */
-    static integer iyea;
+    /* static */ integer iyea;
 //    extern /* Subroutine */ int intershc_(), extrashc_();
-    static integer nmax1, nmax2;
-    static doublereal f;
-    static integer i__, j;
-    static real sqrt2;
-    static integer l, m, n;
-    static doublereal x, f0;
-    static integer numye, istye, is, iu;
+    /* static */ integer nmax1, nmax2;
+    /* static */ doublereal f;
+    /* static */ integer i__, j;
+    /* static */ real sqrt2;
+    /* static */ integer l, m, n;
+    /* static */ doublereal x, f0;
+    /* static */ integer numye, istye, is, iu;
 //    extern /* Subroutine */ int getshc_();
-    static real gh2[196], gha[196];
-    static integer ier;
-    static char fil2[13];
-    static real dte1, dte2;
+    /* static */ real gh2[196], gha[196];
+    /* static */ integer ier;
+    /* static */ char fil2[13];
+    /* static */ real dte1, dte2;
 
 /* ------------------------------------------------------------------------ */
 /*  DETERMINES COEFFICIENTS AND DIPOL MOMENT FROM IGRF MODELS */
@@ -1198,8 +1198,8 @@ int getshc_(integer *iu, char *fspec, integer *nmax,
 // // ftnlen fspec_len;
 // {
 //     /* Format strings */
-//     static char fmt_667[] = "(a13)";
-//     static char fmt_100[] = "(\002Error while reading \002,a13)";
+//     /* static */ char fmt_667[] = "(a13)";
+//     /* static */ char fmt_100[] = "(\002Error while reading \002,a13)";
 
 //     /* System generated locals */
 //     integer i__1;
@@ -1211,17 +1211,17 @@ int getshc_(integer *iu, char *fspec, integer *nmax,
 // // 	    do_lio(), s_wsfe(), e_wsfe(), f_clos();
 
 //     /* Local variables */
-//     static char fout[80];
-//     static integer i__, j, nm;
-//     static real xmyear;
-//     static integer monito;
+//     /* static */ char fout[80];
+//     /* static */ integer i__, j, nm;
+//     /* static */ real xmyear;
+//     /* static */ integer monito;
 
 //     /* Fortran I/O blocks */
-//     static icilist io___157 = { 0, fout, 0, fmt_667, 80, 1 };
-//     static cilist io___158 = { 1, 0, 1, 0, 0 };
-//     static cilist io___159 = { 1, 0, 1, 0, 0 };
-//     static cilist io___162 = { 1, 0, 1, 0, 0 };
-//     static cilist io___165 = { 0, 0, 0, fmt_100, 0 };
+//     /* static */ icilist io___157 = { 0, fout, 0, fmt_667, 80, 1 };
+//     /* static */ cilist io___158 = { 1, 0, 1, 0, 0 };
+//     /* static */ cilist io___159 = { 1, 0, 1, 0, 0 };
+//     /* static */ cilist io___162 = { 1, 0, 1, 0, 0 };
+//     /* static */ cilist io___165 = { 0, 0, 0, fmt_100, 0 };
 
 
 // /* =============================================================== */
@@ -1353,8 +1353,8 @@ int getshc_(integer *iu, char *fspec, integer *nmax,
     integer i__1;
 
     /* Local variables */
-    static integer i__, k, l;
-    static real factor;
+    /* static */ integer i__, k, l;
+    /* static */ real factor;
 
 /* =============================================================== */
 
@@ -1445,8 +1445,8 @@ int getshc_(integer *iu, char *fspec, integer *nmax,
     integer i__1;
 
     /* Local variables */
-    static integer i__, k, l;
-    static real factor;
+    /* static */ integer i__, k, l;
+    /* static */ real factor;
 
 /* =============================================================== */
 
@@ -1527,7 +1527,7 @@ int getshc_(integer *iu, char *fspec, integer *nmax,
 //     double atan();
 
     /* Local variables */
-    static real erequ, erpol;
+    /* static */ real erequ, erpol;
 
 /* ---------------------------------------------------------------- */
 /* Initializes the parameters in COMMON/GENER/ */
