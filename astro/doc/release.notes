@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-03-13-00 31-May-2012 jchiang disable static declarations in all local variables in igrf_sub.cxx so that CRFlux does not need its own copy; add warnings and exceptions to IGRField.cxx if near or beyond end date for IGRF-11
  astro-03-12-00 30-May-2012 jchiang new implementation for IGRF-11
  astro-03-11-17 23-Apr-2012 jchiang add leap second for 2012Jul01 00:00:00; fix JD tests for rhel5-32 optimized
  astro-03-11-16 08-Feb-2012 jchiang missing include in test program
