@@ -2,6 +2,12 @@
 $Header$
 */
 #include <cmath>
+#include <cstdlib>
+
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
+
 #include "igrf_sub/igrf_sub.h"
 #include "astro/IGRField.h"
 
@@ -28,15 +34,26 @@ IGRField::IGRField() {
 void IGRField::setYear(const float year){
    if(fabs(year-m_year)<0.001) return;
    m_year=year;
-   // if (m_year>=2010.) m_year=2010.;
-   // if (m_year<=1990.) m_year=1990.;
+   if (2015. - m_year < 0.5 && m_year < 2015.) {
+      std::cout << "WARNING: Requested year, " << m_year 
+                << ", is within six months of the "
+                << "end of valid range (1900-2015) "
+                << "for the IGRF-11 model." << std::endl;
+   }
    if (m_year >= 2015.) {
-      /// @todo Throw an exception here.
+      if (!std::getenv("IGNORE_IGRF_BOUNDARY")) {
+         std::ostringstream message;
+         message << "Requested year, " << m_year 
+                 << ", is outside the valid range of 1900-2015";
+         throw std::runtime_error(message.str());
+      }
       m_year = 2015.;
    }
    if (m_year <= 1900.) {
-      /// @todo Throw an exception here.
-      m_year = 1900.;
+      std::ostringstream message;
+      message << "Requested year, " << year 
+              << ", is outside the valid range of 1900-2015";
+      throw std::runtime_error(message.str());
    }
    IGRFf2c::feldcof_(&m_year,&m_dipoleMoment);
 }

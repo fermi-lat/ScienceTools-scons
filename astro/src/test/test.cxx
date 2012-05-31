@@ -449,6 +449,22 @@ bool test_IGRF() {
       }
    }
    output.close();
+
+// Test for year request outside of the valid range for IGRF-11.
+   JulianDate jd(2020, 1, 1, 0);
+   double met(jd.seconds() - JulianDate::missionStart().seconds());
+   EarthCoordinate earthCoord(earthOrbit.position(jd), met);
+   try {
+      IGRField::Model().compute(earthCoord.longitude(), earthCoord.latitude(),
+                                earthCoord.altitude(), 2020.);
+      throw std::runtime_error("Expected exception not thrown.");
+   } catch(std::runtime_error & eObj) {
+      std::string message(eObj.what());
+      if (message.find("Requested year, 2020, is outside "
+                       "the valid range of 1900-2015") == std::string::npos) {
+         throw;
+      }
+   }
    return true;
 }
 
