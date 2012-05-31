@@ -105,7 +105,6 @@ void FluxMgr::init(const std::vector<std::string>& fileList){
     DECLARE_SPECTRUM( SurfaceMuons);
     DECLARE_SPECTRUM( VdgGamma);
     DECLARE_SPECTRUM( Earth);
-    DECLARE_SPECTRUM( EarthPhenom);
 }
 
 

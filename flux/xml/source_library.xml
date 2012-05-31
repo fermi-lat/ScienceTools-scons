@@ -274,14 +274,6 @@
       </spectrum>
     </source>
 
-    <!-- Phenomenological Earth Model based on Fermi LAT observations -->
-    <source name="EarthPhenom">
-      <spectrum escale="MeV">
-         <SpectrumClass name="EarthPhenom" params="1.,10.,350000."/>
-         <use_spectrum frame="zenith"/>
-      </spectrum>
-    </source>
-
 </source_library>
 <!-- ************************************************************************** -->
 
