@@ -210,6 +210,7 @@ def plot_sed(roi, which=0, fignum=5, axes=None,
             phase_corr=False,
             printout=False,
             title=None,
+            merge=True,
             ):
     """Plot a SED
     ========     ===================================================
@@ -237,6 +238,7 @@ def plot_sed(roi, which=0, fignum=5, axes=None,
     printout     [False] if True, print the sed points to stdout
     title        [None] Title for the plot, if specified. Otherwise, 
                  use source name
+    merge        merge upper limits on edge.
     ========     ===================================================
     
     """
@@ -262,7 +264,7 @@ def plot_sed(roi, which=0, fignum=5, axes=None,
     axes.set_autoscale_on(False)
    
     #  create a BandFlux, and have it plot the band fluxes, merging adjacent limits at the ends
-    bf = BandFlux(self, which=which, merge=True, scale_factor= energy_flux_factor)
+    bf = BandFlux(self, which=which, merge=merge, scale_factor= energy_flux_factor)
     data_kwargs['printout'] = printout
     bf.plot_data(axes, **data_kwargs)
 
