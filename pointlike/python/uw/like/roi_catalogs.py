@@ -165,7 +165,12 @@ class Catalog2FGL(SourceCatalog):
         Does extended sources, different spectral models.  To create
         the extended soures, this object requires either the LATEXTDIR
         environment variable to be set or the paramter latextdir to be
-        passed into the object. """
+        passed into the object. 
+
+            >>> x=Catalog2FGL('/afs/slac/g/glast/groups/catalog/2FGL/gll_psc_v05.fit',
+            ...               latextdir='/afs/slac/g/glast/groups/catalog/2FGL/gll_psc_v05_templates')
+        
+    """
 
     defaults = (
         ("latextdir",    None, "Directory containing the spatial model templates."),
@@ -534,3 +539,7 @@ class ExtendedSourceCatalog(SourceCatalog):
 
 
 CatalogManager=FermiCatalog # For backwards compatability.
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
