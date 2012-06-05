@@ -726,8 +726,7 @@ class MonteCarlo(object):
         """ Return 1 if model predicts 1 everywhere. """
         if isinstance(model,Constant) and model['scale'] == 1:
             return 1
-        if isinstance(model,PowerLaw) and model['norm'] == 1 and model['index'] == 1 and \
-           hasattr(model,'index_offset') and model.index_offset == 1:
+        if isinstance(model,PowerLaw) and model['norm'] == 1 and model['index'] == 0:
             return 1
         return 0
 

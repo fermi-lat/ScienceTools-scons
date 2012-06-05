@@ -317,8 +317,9 @@ class ROIAnalysis(object):
         # add in diffuse components
         gradient  = N.append(self.bgm.gradient(bands),gradient)
         
-        # transform into log space and return
-        return gradient * 10**parameters * LOG_JACOBIAN
+        # Note, no need to transform gradient into log space because
+        # gradient now returns the gradient with respect to internal parameters.
+        return gradient
          
 
     def parameters(self):

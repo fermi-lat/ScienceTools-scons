@@ -38,10 +38,10 @@ def my_newton(func,x0,fprime,tol=1e-2):
     return x0,False
 
 def get_logflux(model):
-    """ local convenience to get the flux, in internal (log10 for now) representation"""
-    return model.getp(0, internal=True)
+    """ local convenience to get the log of the flux"""
+    return np.log10(model.getp(0))
 def set_logflux(model, value):
-    model.setp(0, value, internal=True)
+    model.setp(0, np.log10(value))
 ###====================================================================================================###
 class TSCalc(object):
     """Extract a TS as a function of position on the sky.
