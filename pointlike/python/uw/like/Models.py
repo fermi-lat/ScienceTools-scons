@@ -40,6 +40,24 @@ class Model(object):
                 >>> model = PowerLaw(e0=100)
                 >>> print model.e0
                 100
+
+            Note that pointlike internally stores parameters using a mapping:
+
+                >>> model = Constant(scale=1, mappers=[LogMapper])
+                >>> model['scale']
+                1.0
+                >>> model.getp('scale',internal=True)
+                0.0
+                >>> model.setp('scale',1,internal=True)
+                >>> model.getp('scale',internal=True)
+                1.0
+                >>> model.getp('scale')
+                10.0
+                >>> model = Constant(scale=1, mappers=[LinearMapper])
+                >>> model['scale']
+                1.0
+                >>> model.getp('scale',internal=True)
+                1.0
         """
         self.background = False
         self.name = self.pretty_name = self.__class__.__name__
