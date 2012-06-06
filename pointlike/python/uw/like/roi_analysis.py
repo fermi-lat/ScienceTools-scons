@@ -32,9 +32,6 @@ from scipy.optimize import fmin,fmin_powell,fmin_bfgs
 from . import roi_plotting 
 from . import counts_plotter
 
-EULER_CONST  = N.exp(1)
-LOG_JACOBIAN = 1./N.log10(EULER_CONST)
-
 # special function to replace or extend a docstring from that of another function
 def decorate_with(other_func, append=False, append_init=False):
     """ append_init: If decorating with an object (which has an __init__ function),
