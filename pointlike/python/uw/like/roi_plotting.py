@@ -745,7 +745,7 @@ class ROISlice(object):
             sources = list(self.roi.psm.point_sources) + \
                     [ i for i in self.roi.dsm.diffuse_sources if isinstance(i,ExtendedSource) ]
             # don't zero already zeroed sources
-            sources = [ i for i in sources if not self.model.iszero() ]
+            sources = [ i for i in sources if not i.model.iszero() ]
 
             ROISlice.cache_roi(self.roi)
 

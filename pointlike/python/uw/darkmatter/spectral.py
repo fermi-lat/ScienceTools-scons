@@ -66,7 +66,7 @@ class DMFitFunction(Model):
     default_extra_params=dict(norm=1, bratio=1.0, channel0=1, channel1=1, 
                               file='$(INST_DIR)/Likelihood/src/dmfit/gammamc_dif.dat')
     param_names=['sigmav','mass']
-    mappers=[LogMapper,LogMapper]
+    default_mappers=[LogMapper,LogMapper]
 
     def full_name(self):
         return '%s, norm=%.1f, bratio=%.1f channel0=%d, channel1=%d' % (self.pretty_name,
