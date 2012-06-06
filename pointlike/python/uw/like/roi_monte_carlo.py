@@ -453,10 +453,12 @@ class MonteCarlo(object):
             ]
             return indent+('\n'+indent).join(xml)
         else:
-            flux=model.i_flux(mc_emin,mc_emax,cgs=True)*1e4
             if isinstance(model,FileFunction):
                 spectral_filename=model.file
+                energies,spectra=np.genfromtxt(spectral_filename,unpack=True)[0:2]
+                flux=model.i_flux(energies[0],energies[-1],cgs=True)*1e4
             else:
+                flux=model.i_flux(mc_emin,mc_emax,cgs=True)*1e4
 
                 spectral_filename = '%s_spectra_%s.txt' % (MonteCarlo.strip(ps.name),model.name)
                 model.save_profile(filename=spectral_filename, emin=mc_emin, emax=mc_emax)
