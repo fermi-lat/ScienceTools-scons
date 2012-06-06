@@ -6,6 +6,7 @@ $Header$
 author: Matthew Kerr, Toby Burnett, Joshua Lande
 """
 import os
+from os.path import expandvars
 import sys
 import unittest
 
@@ -87,7 +88,7 @@ class PointlikeTest(unittest.TestCase):
                               quiet=not PointlikeTest.VERBOSE,
                               roi_dir=center,
                               maxROI=5, minROI=5,
-                             )
+                              savedir=expandvars('$SIMDIR/gtobssim_%s' % name))
 
 
         roi=sa.roi(roi_dir=center,
@@ -250,6 +251,10 @@ class PointlikeTest(unittest.TestCase):
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
+
+    # Make sure not to open plots to screen
+    from matplotlib import rcParams
+    rcParams['backend'] = 'Agg'
 
     parser = ArgumentParser()
     parser.add_argument("-v", "--verbose", action="store_true", default=False,help="Output more verbosely")
