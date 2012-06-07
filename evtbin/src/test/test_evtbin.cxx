@@ -510,7 +510,7 @@ void EvtBinTest::testLightCurve() {
   gbm_gti.insertInterval(m_gbm_t_start, m_gbm_t_stop);
 
   // Create light curve object for GBM data.
-  LightCurve gbm_lc(m_gbm_file, "EVENTS", "", "Ext1",
+  LightCurve gbm_lc(m_gbm_file, "EVENTS", "", "SC_DATA",
     LinearBinner(m_gbm_t_start, m_gbm_t_stop, (m_gbm_t_stop - m_gbm_t_start) * .01, "TIME"), gbm_gti);
 
   // Fill the light curve.
@@ -549,7 +549,7 @@ void EvtBinTest::testSingleSpectrum() {
   std::auto_ptr<Binner> gbm_ebounds(config->createEbounds(pars));
   std::auto_ptr<Gti> gbm_gti(config->createGti(pars));
 
-  SingleSpec gbm_spectrum(m_gbm_file, "EVENTS", "", "Ext1", *gbm_energy_binner, *gbm_ebounds, *gbm_gti);
+  SingleSpec gbm_spectrum(m_gbm_file, "EVENTS", "", "SC_DATA", *gbm_energy_binner, *gbm_ebounds, *gbm_gti);
 
   // Fill the spectrum.
   gbm_spectrum.binInput();
