@@ -117,12 +117,21 @@ class EvtBinAppBase : public st_app::StApp {
 
   protected:
     std::string getScFileName(const std::string & sc_file) const {
-      std::string real_sc_file = sc_file;
+      // Find end of trailing whitespace.
+      std::string::const_iterator end = sc_file.end();
+      for (std::string::const_iterator itor = end; itor != sc_file.begin() && isspace(*(itor-1)); --itor) {}
+
+      // Make a copy significant portion of sc_file.
+      std::string real_sc_file(sc_file.begin(), end);
+
       // Convert whole string to lowercase for purposes of comparison to special string "none"..
       for (std::string::iterator itor = real_sc_file.begin(); itor != real_sc_file.end(); ++itor) *itor = tolower(*itor);
       // Replace "none" with blank, and otherwise use original file name.
       if (real_sc_file == "none") real_sc_file = "";
-      else real_sc_file = sc_file;
+
+      // Check whether the data being handled requires a spacecraft file.
+      if (m_bin_config->requireScFile() && real_sc_file.empty())
+        throw std::runtime_error("getScFileName: spacecraft file name \"" + sc_file + "\" is invalid");
 
       return real_sc_file;
     }
