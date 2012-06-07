@@ -19,6 +19,8 @@ namespace evtbin {
       static void load();
 
       virtual GlastLatBinConfig * clone() const;
+
+      virtual bool requireScFile() const { return true; }
   };
 
 }

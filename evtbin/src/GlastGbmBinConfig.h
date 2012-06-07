@@ -27,6 +27,8 @@ namespace evtbin {
       virtual Binner * createEbounds(const st_app::AppParGroup & par_group) const;
 
       virtual Gti * createGti(const st_app::AppParGroup & par_group) const;
+
+      virtual bool requireScFile() const { return false; }
   };
 
 }

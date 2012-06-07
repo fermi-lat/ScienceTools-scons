@@ -56,6 +56,8 @@ namespace evtbin {
         const std::string & stop_field, const std::string & sn_ratio = "", const std::string & lc_emin = "",
         const std::string & lc_emax = "") const;
 
+      virtual bool requireScFile() const = 0;
+
     protected:
       typedef std::map<std::string, BinConfig *> ConfigCont;
       static ConfigCont s_config_cont;
