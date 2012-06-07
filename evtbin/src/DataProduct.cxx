@@ -567,7 +567,10 @@ namespace evtbin {
       return exposure;
     }
 
-    if (sc_file.empty()) return m_gti.computeOntime();
+    if (sc_file.empty()) {
+      m_os.warn() << st_stream::prefix << "No spacecraft file: EXPOSURE keyword will be set equal to ontime." << std::endl;
+      return m_gti.computeOntime();
+    }
 
     // Get container of file names from the supplied input file.
     FileSys::FileNameCont file_name_cont = FileSys::expandFileList(sc_file);
