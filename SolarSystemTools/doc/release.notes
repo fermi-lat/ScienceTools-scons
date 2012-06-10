@@ -5,6 +5,7 @@
     @verbatim
     * EOH *
 
+ SolarSystemTools-01-00-03 10-Jun-2012 gudlaugu Patch release for a typo in a table name
  SolarSystemTools-01-00-02 18-May-2012 gudlaugu Bug fix to make it compile on windows
  SolarSystemTools-01-00-01 18-May-2012 gudlaugu Bug fix to make it compile on windows
  SolarSystemTools-01-00-00 10-May-2012 gudlaugu First release, has gone trough testing
