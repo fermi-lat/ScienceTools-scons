@@ -732,6 +732,8 @@ class MonteCarlo(object):
         return 0
 
     def _make_isotropic_diffuse(self,ds,*args, **kwargs):
+        dm=ds.dmodel[0]
+        sm=ds.smodel
 
         if not MonteCarlo.isone(sm):
             raise Exception("Can only run gtobssim with IsotropicSpectrum diffuse models if model predicts 1.")
