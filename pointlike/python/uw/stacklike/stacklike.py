@@ -1362,7 +1362,7 @@ class StackLoader(object):
             py.ylabel(r'$dN/d\theta$')
         py.grid()
         clas = ['front','back']
-        py.suptitle('%s: Energy(MeV): [%1.0f,%1.0f]\nClass: %s    Costh: [%1.1f,%1.1f]\nChisq: %1.1f / %1.0f dof'%(self.lis,self.emin,self.emax,clas[self.cls],self.ctmin,self.ctmax,self.chisq,len(be2)-1))
+        py.suptitle('%s: Energy(MeV): [%1.0f,%1.0f]\nClass: %s    Costh: [%1.1f,%1.1f]\nChisq: %1.1f / %1.0f dof'%(self.name,self.emin,self.emax,clas[self.cls],self.ctmin,self.ctmax,self.chisq,len(be2)-1))
         if stats:
             py.subplot(2,2,3)
         else:
