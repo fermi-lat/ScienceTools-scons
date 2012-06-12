@@ -126,8 +126,8 @@ class EvtBinAppBase : public st_app::StApp {
 
       // Convert whole string to lowercase for purposes of comparison to special string "none"..
       for (std::string::iterator itor = real_sc_file.begin(); itor != real_sc_file.end(); ++itor) *itor = tolower(*itor);
-      // Replace "none" with blank, and otherwise use original file name.
-      if (real_sc_file == "none") real_sc_file = "";
+      // Replace "none" with blank, and otherwise use original file name (preserving case sensitivity).
+      if (real_sc_file == "none") real_sc_file = ""; else real_sc_file = sc_file;
 
       // Check whether the data being handled requires a spacecraft file.
       if (m_bin_config->requireScFile() && real_sc_file.empty())
