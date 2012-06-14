@@ -223,6 +223,11 @@ class UnbinnedAnalysis(AnalysisBase):
         self.e_vals = num.sqrt(self.energies[:-1]*self.energies[1:])
         self.nobs = self._Nobs()
     def setEnergyRange(self, emin, emax):
+        roi_ebounds = self.observation.roiCuts().getEnergyCuts()
+        if emin < roi_ebounds[0] or emax > roi_ebounds[1]:
+            raise RuntimeError("UnbinnedAnalysis.setEnergyRange: " +
+                               "attempt to set energy bound outside of " +
+                               "data range of %.2f %.2f" % roi_ebounds)
         self.logLike.set_ebounds(emin, emax)
         npts = int(len(self.energies)*(num.log(emax) - num.log(emin))
                    /(num.log(self.energies[-1]) - num.log(self.energies[0])))
