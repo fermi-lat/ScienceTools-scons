@@ -4,6 +4,7 @@
 
     author: Alex Drlica-Wagner, Joshua Lande
 """
+import copy
 import collections
 
 import numpy as np
