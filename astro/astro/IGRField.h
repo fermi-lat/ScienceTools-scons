@@ -104,7 +104,9 @@ class IGRField {
 #endif
       float _lambda() const { return m_lambda;};
 
+#ifndef SWIG
    const IGRF_data & igrf_data(const std::string & filename);
+#endif
 
 private:
 
