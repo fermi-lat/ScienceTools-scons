@@ -27,19 +27,19 @@ IGRField& IGRField::Model() {
 
 IGRField::IGRField() {
     IGRFf2c::initize_(); 
-    setYear(2005.); 
-    compute(0.,0.,0.);
+    // setYear(2005.); 
+    // compute(0.,0.,0.);
 }
 
 void IGRField::setYear(const float year){
    if(fabs(year-m_year)<0.001) return;
    m_year=year;
-   if (2015. - m_year < 0.5 && m_year < 2015.) {
-      std::cout << "WARNING: Requested year, " << m_year 
-                << ", is within six months of the "
-                << "end of valid range (1900-2015) "
-                << "for the IGRF-11 model." << std::endl;
-   }
+   // if (2015. - m_year < 0.5 && m_year < 2015.) {
+   //    std::cout << "WARNING: Requested year, " << m_year 
+   //              << ", is within six months of the "
+   //              << "end of valid range (1900-2015) "
+   //              << "for the IGRF-11 model." << std::endl;
+   // }
    if (m_year >= 2015.) {
       if (!std::getenv("IGNORE_IGRF_BOUNDARY")) {
          std::ostringstream message;
@@ -104,6 +104,16 @@ int IGRField::compute(const float latitude,const float longitude,const float alt
 
    return icode;
 
+}
+
+const IGRF_data & IGRField::igrf_data(const std::string & filename) {
+   std::map<std::string, astro::IGRF_data>::const_iterator it 
+      = m_IGRF_data_map.find(filename);
+   if (it != m_IGRF_data_map.end()) {
+      return it->second;
+   }
+   m_IGRF_data_map.insert(std::make_pair(filename, IGRF_data(filename)));
+   return m_IGRF_data_map[filename];
 }
 
 

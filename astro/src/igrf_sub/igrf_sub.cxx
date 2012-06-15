@@ -18,6 +18,9 @@
 #include "facilities/commonUtilities.h"
 #include "facilities/Util.h"
 
+#include "astro/IGRField.h"
+#include "astro/IGRF_data.h"
+
 #include "igrf_sub.h"
 
 #define abs(x) ((x) >= 0 ? (x) : -(x))
@@ -1155,6 +1158,7 @@ dat dgrf2005.dat igrf2010.dat igrf2010s.dat";
 int getshc_(integer *iu, char *fspec, integer *nmax, 
             real *erad, real *gh, integer *ier, 
             ftnlen fspec_len) {
+#if 0
    for (integer j=0; j < 196; j++) {
       gh[j] = 0.;
    }
@@ -1182,6 +1186,14 @@ int getshc_(integer *iu, char *fspec, integer *nmax,
       facilities::Util::stringTokenize(lines.at(j), " ", tokens, true);
       gh[i] = static_cast<real>(std::atof(tokens.at(0).c_str()));
    }
+#else
+   const astro::IGRF_data & foo(astro::IGRField::Model().igrf_data(fspec));
+   *nmax = foo.nmax();
+   *erad = foo.erad();
+   for (integer i(0); i < foo.gh().size(); i++) {
+      gh[i] = foo.gh()[i];
+   }
+#endif
    *ier = 0;
    return *ier;
 }

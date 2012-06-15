@@ -7,6 +7,10 @@ $Header$
 #ifndef IGRFIELD_HH
 #define IGRFIELD_HH
 
+#include <map>
+#include <string>
+#include "astro/IGRF_data.h"
+
 namespace astro {
 
 /** 
@@ -99,6 +103,13 @@ class IGRField {
       float lambda() const { return m_lambda;};
 #endif
       float _lambda() const { return m_lambda;};
+
+   const IGRF_data & igrf_data(const std::string & filename);
+
+private:
+
+   std::map<std::string, astro::IGRF_data> m_IGRF_data_map;
+
 };
 
 }
