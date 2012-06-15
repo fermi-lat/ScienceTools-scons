@@ -27,19 +27,17 @@ IGRField& IGRField::Model() {
 
 IGRField::IGRField() {
     IGRFf2c::initize_(); 
-    // setYear(2005.); 
-    // compute(0.,0.,0.);
 }
 
 void IGRField::setYear(const float year){
    if(fabs(year-m_year)<0.001) return;
    m_year=year;
-   // if (2015. - m_year < 0.5 && m_year < 2015.) {
-   //    std::cout << "WARNING: Requested year, " << m_year 
-   //              << ", is within six months of the "
-   //              << "end of valid range (1900-2015) "
-   //              << "for the IGRF-11 model." << std::endl;
-   // }
+   if (2015. - m_year < 0.5 && m_year < 2015.) {
+      std::cout << "WARNING: Requested year, " << m_year 
+                << ", is within six months of the "
+                << "end of valid range (1900-2015) "
+                << "for the IGRF-11 model." << std::endl;
+   }
    if (m_year >= 2015.) {
       if (!std::getenv("IGNORE_IGRF_BOUNDARY")) {
          std::ostringstream message;
