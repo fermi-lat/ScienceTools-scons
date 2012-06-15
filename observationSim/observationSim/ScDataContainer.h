@@ -26,9 +26,6 @@ namespace observationSim {
  * @class ScDataContainer
  * @brief Stores and writes ScData to a FITS file.
  *
- * @author J. Chiang
- *
- * $Header$
  */
 
 class ScDataContainer : public ContainerBase {
@@ -40,8 +37,9 @@ public:
    ///        buffer before a FITS file is written.
    ScDataContainer(const std::string & filename, 
                    const std::string & tablename,
-                   int maxNumEntries=20000, bool writeData=true) : 
-      ContainerBase(filename, tablename, maxNumEntries),
+                   int maxNumEntries=20000, bool writeData=true,
+                   const st_app::AppParGroup * pars=0) : 
+      ContainerBase(filename, tablename, maxNumEntries, pars),
       m_writeData(writeData) {
       init();
    }

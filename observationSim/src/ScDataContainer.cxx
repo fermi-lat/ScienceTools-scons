@@ -35,7 +35,9 @@ namespace {
 namespace observationSim {
 
 ScDataContainer::~ScDataContainer() {
-   if (m_scData.size() > 0) writeScData();
+   if (m_scData.size() > 0) {
+      writeScData();
+   }
 }
 
 void ScDataContainer::init() {
@@ -76,7 +78,9 @@ void ScDataContainer::addScData(double time, Spacecraft * spacecraft,
          throw;
       }
    }
-   if (flush || m_scData.size() >= m_maxNumEntries) writeScData();
+   if (flush || m_scData.size() >= m_maxNumEntries) {
+      writeScData();
+   }
 }
 
 void ScDataContainer::writeScData() {
@@ -122,6 +126,8 @@ void ScDataContainer::writeScData() {
       ft2.setPhduKeyword("FILENAME", ft2File);
       ft2.setPhduKeyword("VERSION", 1);
       ft2.setPhduKeyword("CREATOR", creator());
+
+      writeParFileParams(ft2.header());
 
       ft2.close();
 

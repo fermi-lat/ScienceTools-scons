@@ -301,6 +301,8 @@ void EventContainer::writeEvents(double obsStopTime) {
    ft1.setPhduKeyword("VERSION", 1);
    ft1.setPhduKeyword("CREATOR", creator());
 
+   writeParFileParams(ft1.header());
+
    ft1.close();
 
    cuts->writeGtiExtension(ft1File);
