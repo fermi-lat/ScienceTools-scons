@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ observationSim-09-02-00 14-Jun-2012 jchiang write gtobssim par values to EVENTS and SC_DATA headers
  observationSim-09-01-01 08-Feb-2012 jchiang const correctness fixes
  observationSim-09-01-00 06-Feb-2012 jchiang use START of first entry in scfile for determining the default starting time for the simulation instead of using the unreliable TSTART keyword
  observationSim-09-00-01 12-Dec-2011 jchiang include \<memory\> in obsSim.cxx for gcc4.4
