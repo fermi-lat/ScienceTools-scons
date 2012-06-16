@@ -13,6 +13,7 @@
 #include <sstream>
 #include <memory>
 #include <stdexcept>
+#include <cstdio>
 
 #include "st_stream/StreamFormatter.h"
 
