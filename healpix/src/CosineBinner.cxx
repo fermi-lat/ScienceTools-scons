@@ -60,6 +60,9 @@ size_t CosineBinner::fill(double costheta, double phi, double value)
 {
     if( costheta<=s_cosmin ) return std::string::npos;
     size_t ci ( cosine_index(costheta) );
+    if (ci >= s_nbins) {
+       ci = s_nbins - 1;
+    }
     this->at(ci)+= value;
     // get the phi index and index into the array
     size_t pi ( ( phi_index(phi)+1) * s_nbins + ci ) ;
