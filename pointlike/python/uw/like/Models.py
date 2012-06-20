@@ -1527,9 +1527,11 @@ class GaussianSpectrum(Model):
             http://fermi.gsfc.nasa.gov/ssc/data/analysis/scitools/source_models.html#Gaussian
 
 
-        >>> g = Gaussian(prefactor=1, mean=0, sigma=1)
+        >>> from scipy.stats import norm
+        >>> g = GaussianSpectrum(prefactor=1, mean=0, sigma=1)
         >>> e = np.logspace(1,10,11)
         >>> np.allclose(g(e),norm.pdf(e))
+        True
     """
     default_p = [1e-9, 7e4, 1e3]
     default_extra_params = dict()
