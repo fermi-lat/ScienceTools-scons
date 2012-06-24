@@ -86,7 +86,8 @@ class Publish(object):
         self.mec=mec
         self.get_config()
         self.skymodel = skymodel.SkyModel(outdir)#, extended_catalog_name=self.config['extended'])
-        self.rois = self.skymodel.roi_rec()
+        # get the records, perhaps regenerating
+        self.rois = self.skymodel.roi_rec(overwrite)
         self.sources = self.skymodel.source_rec()
         if ts_min is not None:
             s = self.sources

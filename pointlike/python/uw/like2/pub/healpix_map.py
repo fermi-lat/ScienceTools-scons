@@ -45,6 +45,7 @@ class HParray(object):
         if axes is None:
             plt.close(fignum)
             fig = plt.figure(fignum, figsize=(12,6))
+            axes = plt.gca()
         ait=image.AIT(PySkyFunction(skyplotfun) ,axes=axes, **ait_kw)
         ait.imshow(title=title, **kwargs)
         return ait
