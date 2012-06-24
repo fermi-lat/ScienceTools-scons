@@ -10,8 +10,7 @@ $Header$
 """
 version = '$Revision$'.split()[1]
 
-import pylab
-import types
+import sys, pylab, types
 import math
 import numpy as np
 import pylab as pl
@@ -910,6 +909,7 @@ class TSplot(object):
         self.zea= ZEA(center, size=size, pixelsize=self.pixelsize, axes=self.axes, 
                 nticks=self.nticks,fitsfile=self.fitsfile, **kwargs)
         print 'TSplot: filling %d pixels...'% (size/self.pixelsize)**2
+        sys.stdout.flush()
         self.zea.fill(tsmap)
         # create new image that is the significance in sigma with respect to local max
         self.tsmaxpos=tsmaxpos = find_local_maximum(tsmap, center) # get local maximum, then check that is in the image
