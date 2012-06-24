@@ -177,11 +177,11 @@ class ROItables(object):
             self.process_table(skyfun(roi, **fun[2]), fun[1], pos_list, 
                 os.path.join(self.subdirs[i], roi.name+'.pickle'))
 
-def countmaps(g, outdir=None, nside=256, dom=range(1728)):
+def countmaps(g, outdir=None, nside=256, dom=range(1728), emin=1000):
     """ generate all the roi tables for CountsMap """
     if outdir is None: outdir = g.process_kw['outdir']
     if not os.path.exists(outdir): os.mkdir(outdir)
-    table = ROItables(outdir, nside, skyfuns= [[CountsMap, "counts", dict()]])
+    table = ROItables(outdir, nside, skyfuns= [[CountsMap, "counts", dict(emin=emin)]])
     quiet, g.quiet = g.quiet, True
     map(lambda i: table(g.roi(i)), dom)
     g.quiet=quiet    
