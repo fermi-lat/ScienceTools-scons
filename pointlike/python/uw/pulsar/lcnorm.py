@@ -28,11 +28,13 @@ class NormAngles(object):
         self.p = self._get_angles(norms)
         self.free = np.asarray([True] * len(norms))
 
-    def _check_norms(self,norms):
+    def _check_norms(self,norms,eps=1e-15):
         ok = True
         for n in norms:
-            ok = ok and ((n > 0) and (n <= 1))
-        return ok and (sum(norms)<=1)
+            print n
+            #ok = ok and ((n > eps) and (n <= (1+eps)))
+            ok = ok and (n <= (1+eps))
+        return ok and (sum(norms)<=(1+eps))
 
     def _get_angles(self,norms):
         """ Determine the n-sphere angles from a set of normalizations."""
