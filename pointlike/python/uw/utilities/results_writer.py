@@ -33,7 +33,7 @@ def unparse_point_sources(roi,point_sources,emin,emax,**kwargs):
         name = str(ps.name)
         point_dict[name]={'TS value':'%g' % roi.TS(which=ps,**kwargs)}
         point_dict[name].update(unparse_spectral(ps.model,scaling=False))
-        if not N.all(ps.model.cov_matrix==0):
+        if ps.model.has_errors():
             point_dict[name]['Flux']='%g +/- %g' % ps.model.i_flux(emin,emax,cgs=True,two_sided=False,error=True)
         else:
             point_dict[name]['Flux']='%g' % ps.model.i_flux(emin,emax,cgs=True,two_sided=False,error=False)
