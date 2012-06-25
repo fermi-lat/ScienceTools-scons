@@ -6,8 +6,9 @@
 """
 import numpy as np
 import pickle
+from uw.like.Models import FileFunction
 from uw.like.SpatialModels import RadiallySymmetricModel, SMALL_ANALYTIC_EXTENSION, PseudoSpatialModel
-from uw.like.SpatialModels import InterpProfile2D, SpatialMap, smart_log
+from uw.like.SpatialModels import InterpProfile2D, smart_log
 
 # Degrees, should come from the file...
 
@@ -30,7 +31,7 @@ class NFW(InterpProfile2D):
            [  3.46679557e+01   2.73145672e+00   1.51607416e-01   6.68125546e-03]
         """
 
-        infile = SpatialMap.expand(file)
+        infile = FileFunction.expand(file)
         data = pickle.load(open(infile,'r'))
         r_in_degrees = data['psi']
         sigmas = data['sigma']
@@ -70,7 +71,7 @@ class Einasto(InterpProfile2D):
         
         """
 
-        infile = SpatialMap.expand(file)
+        infile = FileFunction.expand(file)
         data = pickle.load(open(infile,'r'))
         r_in_degrees = data['psi']
         sigmas = data['sigma']
@@ -110,7 +111,7 @@ class Burkert(InterpProfile2D):
             
         """
 
-        infile = SpatialMap.expand(file)
+        infile = FileFunction.expand(file)
         data = pickle.load(open(infile,'r'))
         r_in_degrees = data['psi']
         sigmas = data['sigma']
