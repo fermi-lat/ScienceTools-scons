@@ -262,10 +262,7 @@ class Catalog2FGL(SourceCatalog):
                 raise Exception("Unkown spectral model %s for source %s" % (stype,name))
 
             if self.limit_parameters:
-                if isinstance(model,(PowerLaw,PowerLawFlux,LogParabola,ExpCutoff)):
-                    model.set_limits('index',0,5)
-                if isinstance(model,LogParabola):
-                    model.set_limits('beta',-1,1)
+                model.set_default_limits(oomp_limits=True)
 
             if extended_source_name:
                 spatial_model=self.__get_spatial_model__(extended_source_name)
