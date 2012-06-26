@@ -114,6 +114,14 @@ namespace evtbin {
     par_group.Prompt("proj");
   }
 
+  void BinConfig::healpixParPrompt(st_app::AppParGroup & par_group) const {
+    par_group.Prompt("hpx_ordering_scheme");
+    par_group.Prompt("hpx_order");
+    par_group.Prompt("coordsys");
+    par_group.Prompt("hpx_ebin");
+   
+  }
+
   void BinConfig::timeParPrompt(st_app::AppParGroup & par_group) const {
     parPrompt(par_group, "tbinalg", "tfield", "tstart", "tstop", "dtime", "ntimebins", "tbinfile", "snratio",
       "lcemin", "lcemax");

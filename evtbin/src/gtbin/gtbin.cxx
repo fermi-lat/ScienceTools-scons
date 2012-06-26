@@ -30,6 +30,7 @@
 // Data product support classes.
 #include "evtbin/CountCube.h"
 #include "evtbin/CountMap.h"
+#include "evtbin/HealpixMap.h"
 #include "evtbin/DataProduct.h"
 #include "evtbin/LightCurve.h"
 #include "evtbin/MultiSpec.h"
@@ -265,6 +266,57 @@ class CountMapApp : public EvtBinAppBase {
     }
 };
 
+/** \class HealpixMapApp
+    \brief Manages the creation of a healpix based countmap or countcube
+*/
+class HealpixMapApp : public EvtBinAppBase {
+  public:
+    HealpixMapApp(const std::string & app_name): EvtBinAppBase(app_name) {}
+
+    virtual void parPrompt(st_app::AppParGroup & pars) {
+      // Call base class prompter for standard universal parameters.
+      EvtBinAppBase::parPrompt(pars);
+      // Call configuration object to prompt for Healpix related parameters.
+      m_bin_config->healpixParPrompt(pars);
+      if(pars["hpx_ebin"]){
+	//count cube case : ask the user for energy binning
+	m_bin_config->energyParPrompt(pars);
+      } else {
+	//count map case : only one energy bin
+	//this is necessary, because the EBOUNDS extension in the fits template
+	//needs to be correctly filled.
+	//default emin and emax below is UGLY : it would be better to introspect
+	//the fits file and extract the correct information at a later stage.
+	pars["enumbins"]=1;
+	pars["emin"]=1.;
+	pars["emax"]=1.e10;
+      }
+    }
+
+    virtual evtbin::DataProduct * createDataProduct(const st_app::AppParGroup & pars) {
+      using namespace evtbin;
+
+      // Create configuration-specific GTI.
+      std::auto_ptr<Gti>gti(m_bin_config->createGti(pars));
+      
+      // Get binner for energy from energy application object.
+      std::auto_ptr<Binner> energy_binner(m_bin_config->createEnergyBinner(pars));
+
+      // Get a binner for energy bounds.
+      std::auto_ptr<Binner> ebounds(m_bin_config->createEbounds(pars));
+
+     // Get the coordsys parameter and use it to determine what type coordinate system to use.
+      bool use_lb = false;
+      std::string coord_sys = pars["coordsys"];
+      for (std::string::iterator itor = coord_sys.begin(); itor != coord_sys.end(); ++itor) *itor = tolower(*itor);
+      if (coord_sys == "cel") use_lb = false;
+      else if (coord_sys == "gal") use_lb = true;
+      else throw std::logic_error(
+        "HealpixMapApp::createDataProduct does not understand \"" + pars["coordsys"].Value() + "\" coordinates");
+       return new evtbin::HealpixMap(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), pars["sctable"],pars["hpx_ordering_scheme"], pars["hpx_order"], pars["hpx_ebin"], *energy_binner, *ebounds, use_lb, *gti);
+    }
+};
+
 /** \class LightCurveApp
     \brief Light curve specific binning application.
 */
@@ -378,6 +430,7 @@ class MultiSpectraApp : public EvtBinAppBase {
       // Create data product.
       return new MultiSpec(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), pars["sctable"], *time_binner,
         *energy_binner, *ebounds, *gti);
+
     }
 };
 
@@ -471,6 +524,7 @@ class GtBinApp : public st_app::StApp {
       else if (0 == algorithm.compare("LC")) app.reset(new LightCurveApp("gtbin"));
       else if (0 == algorithm.compare("PHA1")) app.reset(new SingleSpectrumApp("gtbin"));
       else if (0 == algorithm.compare("PHA2")) app.reset(new MultiSpectraApp("gtbin"));
+      else if (0 == algorithm.compare("HEALPIX")) app.reset(new HealpixMapApp("gtbin"));
       else throw std::logic_error(std::string("Algorithm ") + pars["algorithm"].Value() + " is not supported");
 
       // Pass on all parameter settings to the real app. (Needed for unlearned parameters.)

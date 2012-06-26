@@ -7,6 +7,7 @@ def generate(env, **kw):
     env.Tool('st_facilitiesLib')
     env.Tool('st_streamLib')
     env.Tool('tipLib')
+    env.Tool('healpixLib')
 
 def exists(env):
     return 1

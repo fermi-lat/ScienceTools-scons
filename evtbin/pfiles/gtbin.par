@@ -3,7 +3,7 @@
 evfile,        f, a, , , , "Event data file name"
 scfile,        f, a, NONE, , , "Spacecraft data file name"
 outfile,       f, a, , , , "Output file name"
-algorithm,     s, a, "PHA2", CCUBE|CMAP|LC|PHA1|PHA2, , "Type of output file"
+algorithm,     s, a, "PHA2", CCUBE|CMAP|LC|PHA1|PHA2|HEALPIX, , "Type of output file"
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -41,6 +41,13 @@ rafield,       s, h, "RA", , ,"First coordinate field to bin"
 decfield,      s, h, "DEC", , ,"Second coordinate field to bin"
 proj,          s, a, "AIT", , , "Projection method e.g. AIT|ARC|CAR|GLS|MER|NCP|SIN|STG|TAN:"
 #-------------------------------------------------------------------------------
+
+#--------------------------------------------------------------------------------
+# Healpix parameters.
+hpx_ordering_scheme,    s, a, "RING", RING|NESTED, ,"Ordering Scheme"
+hpx_order,              i, a, 3, , , "Order of the map (int between 0 and 13)"
+hpx_ebin,               b, a, yes, , , "Do you want Energy binning ?"
+#--------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
 # Hidden parameters.

@@ -32,7 +32,9 @@ namespace evtbin {
       virtual void energyParPrompt(st_app::AppParGroup & par_group) const;
   
       virtual void spatialParPrompt(st_app::AppParGroup & par_group) const;
-  
+
+      virtual void healpixParPrompt(st_app::AppParGroup & par_group) const;  
+     
       virtual void timeParPrompt(st_app::AppParGroup & par_group) const;
   
       virtual Binner * createEnergyBinner(const st_app::AppParGroup & par_group) const;
