@@ -91,6 +91,8 @@ private:
    mutable bool m_haveMagCoords;
 
    void computeMagCoords()const ;
+   
+   int getHemisphere(double longitude, double latitude)const ;
 
    /**
      * GetGMST returns the Greenwich sideral time in degrees, 
