@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-03-13-03 25-Jun-2012  lsrea update calc. of magnetic hemisphere; remove sign from geomaglat
  astro-03-13-02 15-Jun-2012 jchiang enclose igrf_data member in ifndef to avoid missing IGRF_data declaration in swig build of skymaps
  astro-03-13-01 15-Jun-2012 jchiang speed up IGRF-11 by caching spherical coefficients
  astro-03-13-00 31-May-2012 jchiang disable static declarations in all local variables in igrf_sub.cxx so that CRFlux does not need its own copy; add warnings and exceptions to IGRField.cxx if near or beyond end date for IGRF-11
