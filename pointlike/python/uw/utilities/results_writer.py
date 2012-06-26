@@ -50,7 +50,7 @@ def unparse_diffuse_sources(roi,diffuse_sources,emin,emax,**kwargs):
         if isinstance(ds,ExtendedSource):
             diffuse_dict[name].update(unparse_spatial(ds.spatial_model))
 
-            if not N.all(ds.smodel.cov_matrix==0):
+            if not ds.smodel.has_errors():
                 diffuse_dict[name]['Flux']='%g +/- %g' % ds.smodel.i_flux(emin,emax,cgs=True,two_sided=False,error=True)
             else:
                 diffuse_dict[name]['Flux']='%g' % ds.smodel.i_flux(emin,emax,cgs=True,two_sided=False,error=False)
