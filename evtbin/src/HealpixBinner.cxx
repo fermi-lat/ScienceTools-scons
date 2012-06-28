@@ -30,12 +30,12 @@ using namespace healpix;
 
 namespace evtbin {
 
- HealpixBinner::HealpixBinner(std::string ordering, int order, bool lb, const std::string & name):
-    Binner(name),
-    m_ordering(ordering),
-    m_order(order),
-    m_num_bins(12*pow(2,order)*pow(2,order)),
-    m_lb(lb) {}
+  HealpixBinner::HealpixBinner(std::string ordering, int order, bool lb, const std::string & name):
+    Binner(name), m_ordering(ordering), m_order(order),
+    m_num_bins(12*pow(2,order)*pow(2,order)), m_lb(lb) 
+  {
+    if(order<0||order>12) throw std::runtime_error("Order needs to be positive and <=12");
+  }
    
   long HealpixBinner::computeIndex(double coord1, double coord2) const
      {

@@ -11,6 +11,7 @@
 #include <utility>
 #include <vector>
 
+#include "evtbin/LinearBinner.h"
 #include "evtbin/HealpixMap.h"
 #include "evtbin/HealpixBinner.h"
 
@@ -27,10 +28,11 @@ namespace evtbin {
 			  const Binner & energy_binner, const Binner & ebounds, bool use_lb, const Gti & gti)
   : DataProduct(event_file, event_table, gti), 
     m_ebinner(energy_binner.clone()), 
-    m_hpx_ordering_scheme(hpx_ordering_scheme), m_hpx_order(hpx_order), m_hpx_ebin(hpx_ebin), m_use_lb(use_lb), m_ebounds(ebounds.clone()) {    
+    m_hpx_ordering_scheme(hpx_ordering_scheme), m_hpx_order(hpx_order), m_hpx_ebin(hpx_ebin), m_use_lb(use_lb), m_ebounds(ebounds.clone()), m_emin(0.),m_emax(0.) {    
      m_hpx_binner = new HealpixBinner(hpx_ordering_scheme, hpx_order, use_lb);
      // Set initial size of data array : m_data sized to the number of energy bin
-     m_data.resize(m_ebinner->getNumBins()) ;
+     // m_ebinner->getNumBins() returns 0 if no energy binning is requested, which needs to default to 1 bin.
+     m_data.resize(m_ebinner->getNumBins()?m_ebinner->getNumBins():1) ;
      for (Cont_t::iterator itor = m_data.begin(); itor != m_data.end(); ++itor) {
        //each element of m_data sized to the number of healpix requested.
        itor->resize(m_hpx_binner->getNumBins(), 0);
@@ -76,6 +78,8 @@ void HealpixMap::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIter
     std::string energy_field = m_ebinner->getName();
     std::string healpix_field = m_hpx_binner->getName();
 
+    //initialize m_emin
+    m_emin=(*begin)[energy_field].get();
     // Fill histogram, converting each coord to pix number on the fly:
     for (tip::Table::ConstIterator itor = begin; itor != end; ++itor)
       {
@@ -92,7 +96,9 @@ void HealpixMap::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIter
 	if (m_use_lb) fillBin(l, b, energy);
         else       fillBin(ra, dec, energy);
 
-      
+	//this is bookkeeping for EBOUNDS in case of no ebinning request
+	m_emax=energy>m_emax?energy:m_emax;
+	m_emin=energy<m_emin?energy:m_emin;
     }//end for
 } //end binInput
 
@@ -116,7 +122,8 @@ void HealpixMap::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIter
 
     // Write the EBOUNDS extension.
     if(m_hpx_ebin){ writeEbounds(out_file, m_ebounds);}
-
+    else {
+      writeEbounds(out_file, &LinearBinner(m_emin,m_emax,m_emax-m_emin));}
     // Write the GTI extension.
     writeGti(out_file);
   
@@ -129,7 +136,7 @@ void HealpixMap::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIter
     output_table->setNumRecords(m_hpx_binner->getNumBins());
     
     //now iterate over the healpixels
-    for (long e_index = 0; e_index != m_ebinner->getNumBins(); ++e_index) {
+    for (long e_index = 0; e_index != (m_ebinner->getNumBins()==0?1:m_ebinner->getNumBins()); ++e_index) {
       std::ostringstream e_channel;
       e_channel<<"CHANNEL"<<e_index+1;
       //create new column
@@ -163,7 +170,9 @@ void HealpixMap::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIter
 
   void HealpixMap::fillBin(const double coord1, const double coord2, const double energy, double weight)
   {
-    long index1 = m_ebinner->computeIndex(energy);
+    //computeIndex returns -1 if m_ebinner has 0 bin, 
+    //which is the case if no energy binning is requested by the user.
+    long index1 = m_ebinner->getNumBins()?m_ebinner->computeIndex(energy):0;
     long index2 = m_hpx_binner->computeIndex(coord1,coord2);
    
     // Make sure indices are valid:

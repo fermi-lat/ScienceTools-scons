@@ -45,7 +45,7 @@ proj,          s, a, "AIT", , , "Projection method e.g. AIT|ARC|CAR|GLS|MER|NCP|
 #--------------------------------------------------------------------------------
 # Healpix parameters.
 hpx_ordering_scheme,    s, a, "RING", RING|NESTED, ,"Ordering Scheme"
-hpx_order,              i, a, 3, , , "Order of the map (int between 0 and 13)"
+hpx_order,              i, a, 3, , , "Order of the map (int between 0 and 12, included)"
 hpx_ebin,               b, a, yes, , , "Do you want Energy binning ?"
 #--------------------------------------------------------------------------------
 

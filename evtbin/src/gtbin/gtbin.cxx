@@ -283,13 +283,13 @@ class HealpixMapApp : public EvtBinAppBase {
 	m_bin_config->energyParPrompt(pars);
       } else {
 	//count map case : only one energy bin
-	//this is necessary, because the EBOUNDS extension in the fits template
-	//needs to be correctly filled.
-	//default emin and emax below is UGLY : it would be better to introspect
-	//the fits file and extract the correct information at a later stage.
+	//emin=emax collapses the binner to 0 bin, so there is a need
+	//to take this into account separately in the code.
+	//Note that with no energy binning request, the EBOUNDS 
+	//extension will not be written out anyway.
 	pars["enumbins"]=1;
-	pars["emin"]=1.;
-	pars["emax"]=1.e10;
+	pars["emin"]=0.;
+	pars["emax"]=0.;
       }
     }
 

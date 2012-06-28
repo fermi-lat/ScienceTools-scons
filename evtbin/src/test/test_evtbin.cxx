@@ -37,6 +37,8 @@
 #include "evtbin/LogBinner.h"
 // Class encapsulating description of a binner with ordered but otherwise arbitrary bins.
 #include "evtbin/OrderedBinner.h"
+// Class encapsulating description of a HEALPIX binner 
+#include "evtbin/HealpixBinner.h"
 // Class for binning into Hist objects from tip objects:
 #include "evtbin/RecordBinFiller.h"
 // Multiple spectra abstractions.
@@ -86,6 +88,8 @@ class EvtBinTest : public st_app::StApp {
     void testLogBinner();
 
     void testOrderedBinner();
+
+    void testHealpixBinner();
 
     void testHist1D();
 
@@ -150,6 +154,8 @@ void EvtBinTest::run() {
   testLogBinner();
   // Test ordered binner:
   testOrderedBinner();
+  // Test healpix binner:
+  testHealpixBinner();
   // Test one dimensional histogram:
   testHist1D();
   // Test two dimensional histogram:
@@ -428,6 +434,29 @@ void EvtBinTest::testOrderedBinner() {
   } catch (const std::exception &) {
     std::cerr << msg << " threw when given a set of intervals which are legal (i.e. in order)" << std::endl;
     m_failed = true;
+  }
+}
+
+void EvtBinTest::testHealpixBinner() {
+  std::string msg = "HealpixBinner::HealpixBinner(...)";
+
+  //test computation of number of bins, for a given order
+  for(int order=0;order!=13;order++){
+    HealpixBinner binner("NESTED", order, true, "Binner");
+    long nbins= binner.getNumBins();
+    long true_nbins=12*pow(2,order)*pow(2,order);
+    if(nbins!=true_nbins) {
+      m_failed=true;
+      std::cerr << msg << order << ") returned " << nbins << ", instead of " <<true_nbins<< std::endl;
+    }
+  }
+  try { HealpixBinner binner("NESTED", -1, true, "Binner");}
+  catch(const std::exception & x) {
+    m_os.info() << "Expected: failed to create a Healpix Binner with order -1 : " << x.what() << std::endl;
+  }
+  try { HealpixBinner binner("NESTED", 13, true, "Binner");}
+  catch(const std::exception & x) {
+    m_os.info() << "Expected: failed to create a Healpix Binner with order 13 : " << x.what() << std::endl;
   }
 }
 

@@ -62,6 +62,8 @@ namespace evtbin {
       Binner * m_ebounds;
       Cont_t m_data;
       HealpixBinner* m_hpx_binner;
+      int m_emin;
+      int m_emax;
   };
 
 }
