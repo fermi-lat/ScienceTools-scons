@@ -39,6 +39,8 @@
 #include "evtbin/OrderedBinner.h"
 // Class encapsulating description of a HEALPIX binner 
 #include "evtbin/HealpixBinner.h"
+// Class encapsulating description of a HEALPIX map
+#include "evtbin/HealpixMap.h"
 // Class for binning into Hist objects from tip objects:
 #include "evtbin/RecordBinFiller.h"
 // Multiple spectra abstractions.
@@ -90,6 +92,8 @@ class EvtBinTest : public st_app::StApp {
     void testOrderedBinner();
 
     void testHealpixBinner();
+
+    void testHealpixMap();
 
     void testHist1D();
 
@@ -156,6 +160,8 @@ void EvtBinTest::run() {
   testOrderedBinner();
   // Test healpix binner:
   testHealpixBinner();
+  // Test healpix map:
+  testHealpixMap();
   // Test one dimensional histogram:
   testHist1D();
   // Test two dimensional histogram:
@@ -458,6 +464,25 @@ void EvtBinTest::testHealpixBinner() {
   catch(const std::exception & x) {
     m_os.info() << "Expected: failed to create a Healpix Binner with order 13 : " << x.what() << std::endl;
   }
+}
+
+void EvtBinTest::testHealpixMap() {
+  Gti gti(m_ft1_file);
+  //no energy binning case:
+  LogBinner energy_binner(m_e_min, m_e_max, 0., "ENERGY");
+  HealpixMap healpix_map(m_ft1_file, "EVENTS", m_ft2_file, "SC_DATA",
+			 "RING", 3, false, energy_binner, energy_binner, true,gti);
+  healpix_map.binInput();
+  healpix_map.writeOutput("test_evtbin", "test.healmap");
+
+  //energy binning case:
+  LogBinner energy_binner2(m_e_min, m_e_max, 10, "ENERGY");
+  HealpixMap healpix_cube(m_ft1_file, "EVENTS", m_ft2_file, "SC_DATA",
+			 "RING", 3, true, energy_binner2, energy_binner2, true,gti);
+  healpix_cube.binInput();
+  healpix_cube.writeOutput("test_evtbin", "test.healcube");
+
+
 }
 
 void EvtBinTest::testHist1D() {

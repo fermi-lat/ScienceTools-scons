@@ -69,7 +69,7 @@ namespace evtbin {
   }
 
  
-     void HealpixMap::binInput() {
+  void HealpixMap::binInput() {
     DataProduct::binInput();
   }
 
