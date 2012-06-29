@@ -445,7 +445,9 @@ class PhaseRange(object):
             a,b=map(formatter,[a,b])
             return a+range_symbol+b
         
-        return separator.join([a.pretty_format() for a in self.split_ranges()])
+        return separator.join([a.pretty_format(formatter=formatter, 
+                                               range_symbol=range_symbol,
+                                               separator=separator) for a in self.split_ranges()])
 
 
 if __name__ == "__main__":
