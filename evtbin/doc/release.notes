@@ -113,3 +113,4 @@ file.
  evtbin-02-04-02 25-Apr-2011 jchiang add Gti::intervals member function
  evtbin-02-05-00 26-Jul-2011 jpeachey STGEN 119 112 114 117
  evtbin-02-06-00 29-Jun-2012  cohen First tag including the HEALPIX extension to evtbin
+ evtbin-02-06-01 01-Jul-2012  cohen Try to fix windows error messages
