@@ -450,7 +450,8 @@ void EvtBinTest::testHealpixBinner() {
   for(int order=0;order!=13;order++){
     HealpixBinner binner("NESTED", order, true, "Binner");
     long nbins= binner.getNumBins();
-    long true_nbins=12*pow(2,order)*pow(2,order);
+    long int nside = pow((long int)2,order);
+    long true_nbins=12*nside*nside;
     if(nbins!=true_nbins) {
       m_failed=true;
       std::cerr << msg << order << ") returned " << nbins << ", instead of " <<true_nbins<< std::endl;
