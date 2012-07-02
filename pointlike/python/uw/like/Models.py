@@ -1124,6 +1124,12 @@ class Model(object):
                 >>> model.get_mapper('Norm')
                 LimitMapper(1e-15,1e-05,1e-09)
 
+            Nicely, this code crashes on bad input:
+
+                >>> model = PowerLaw.from_gtlike(bad_input=True)
+                Traceback (most recent call last):
+                    ...
+                ModelException: Unable to set parameter unknown parameter bad_input
         """
         gtlike_params=dict()
         for k in kwargs.keys():
