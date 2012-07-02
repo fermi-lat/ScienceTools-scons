@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+ facilities-02-20-08 02-Jul-2012  cohen fix empty delimiter case
  facilities-02-20-07 28-Feb-2012    jrb on Windows install XGetopt.obj
  facilities-02-20-06 13-Feb-2012    jrb bug fix to pass obfldpath string correctly on Windows
  facilities-02-20-05 10-Dec-2011    hmk Identical to previous, just trying to
