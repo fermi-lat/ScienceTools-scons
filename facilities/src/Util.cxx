@@ -32,10 +32,10 @@ namespace facilities {
     unsigned clLen = closeDel.size();
     int nSuccess = 0;
         
-    int envStart = toExpand->find(openDel.c_str());
+    int envStart = openDel.empty()? 0 : toExpand->find(openDel.c_str());
     while (envStart != -1) {
-      int envEnd = toExpand->find(closeDel.c_str());
-            
+      int envEnd = closeDel.empty()?toExpand->size():toExpand->find(closeDel.c_str());
+      
       // add  characters to account for opening delimiter
       int afterBracket = envStart + opLen;
             
@@ -49,12 +49,10 @@ namespace facilities {
           if (nSuccess > -1) nSuccess++;
         }
         else {
-          std::cerr << "Util::expandEnvVar unable to translate " 
-                    << envVariable << std::endl;
           throw Untranslatable(envVariable);
         }
       }
-      envStart = toExpand->find(openDel.c_str());
+      envStart = openDel.empty()?-1:toExpand->find(openDel.c_str());
     }
     return nSuccess;
   }
