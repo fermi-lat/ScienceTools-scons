@@ -882,6 +882,8 @@ def parse_diffuse_sources(handler,diffdir=None):
             1.0
             >>> print model['index']
             0.0
+            >>> print model.background
+            True
             >>> print model.get_limits('norm')
             [0.1, 10.0]
             >>> print model.get_limits('index')
