@@ -179,7 +179,7 @@ class Catalog2FGL(SourceCatalog):
         ("prune_radius",         0.10, "[deg] consider sources closer than this duplicates"),
         ("free_radius",             2, "[deg] sources within this distance have free spectral parameters"),
         ("max_free",             None, "Maximum number of sources to free (if there are more than that many sources within free_radius)."),
-        ("limit_parameters",    False, "Maximum number of sources to free (if there are more than that many sources within free_radius)."),
+        ("limit_parameters",    False, "Limit fit parameters with default values"),
     )
 
     @keyword_options.decorate(defaults)
