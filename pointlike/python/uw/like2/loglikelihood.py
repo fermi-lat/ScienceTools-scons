@@ -7,7 +7,7 @@ __version__ = "$Revision$"
 
 import numpy as np
 from scipy import optimize, special
-from uw.utilities import decorators
+#from uw.utilities import decorators
 
 class PoissonLogLikelihood(object):
     """A class representing a parametrized log likelihood curve.
