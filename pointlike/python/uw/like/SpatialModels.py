@@ -345,8 +345,10 @@ class SpatialModel(object):
         i=self.mapper(i)
         return np.where((not internal) & self.log,10**self.p,self.p)[i]
 
-    def numeric_r68(self, *args, **kwargs): return SpatialQuantile(self, *args, **kwargs).r68()
-    def numeric_r99(self, *args, **kwargs): return SpatialQuantile(self, *args, **kwargs).r99()
+    def numeric_r68(self, *args, **kwargs): return self.numeric_quantile(.68, *args, **kwargs)
+    def numeric_r99(self, *args, **kwargs): return self.numeric_quantile(.99, *args, **kwargs)
+    def numeric_quantile(self, quantile, *args, **kwargs): 
+        return SpatialQuantile(self, *args, **kwargs)(quantile)
 
 
     def error(self,i, internal=False):
