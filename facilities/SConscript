@@ -43,6 +43,7 @@ for s in srcFiles:
     if re.search('XGetopt', str(s)) != None: toRemove = s
 if toRemove != '' : srcFiles.remove(toRemove)
 
+makeWrapper = False
 if 'makeStatic' in baseEnv:
     libEnv.Tool('addLinkDeps', package = 'facilities', toBuild = 'static')
     facilitiesLib = libEnv.StaticLibrary('facilities', srcFiles)
@@ -51,9 +52,12 @@ else:
                 toBuild = 'shared')
     facilitiesLib = libEnv.SharedLibrary('facilities', srcFiles)
 
-    swigEnv.Tool('facilitiesLib')
-    swigEnv.Tool('addLibrary', library=swigEnv['pythonLibs'])
-    lib_pyFacilities = swigEnv.SwigLibrary('_py_facilities', 'src/py_facilities.i')
+    if baseEnv['CONTAINERNAME'] != 'GlastRelease':
+        makeWrapper = True
+        swigEnv.Tool('facilitiesLib') 
+        swigEnv.Tool('addLibrary', library=swigEnv['pythonLibs'])
+        lib_pyFacilities = swigEnv.SwigLibrary('_py_facilities', 
+                                               'src/py_facilities.i')
 
 objList = []
 if baseEnv['PLATFORM'] == 'win32':
@@ -72,7 +76,7 @@ if 'makeStatic' in baseEnv:
                                 [test_Util,progEnv]],
                  includes = listFiles(['facilities/*.h']),
                  objects = objList)
-else:
+elif makeWrapper == True:
     progEnv.Tool('registerTargets', package = 'facilities',
                  libraryCxts = [[facilitiesLib, libEnv]],
                  swigLibraryCxts = [[lib_pyFacilities, swigEnv]],
@@ -80,6 +84,13 @@ else:
                                 [test_Util,progEnv]],
                  includes = listFiles(['facilities/*.h']),
                  python = ['python/facilities.py', 'src/py_facilities.py'],
+                 objects = objList)
+else:
+    progEnv.Tool('registerTargets', package = 'facilities',
+                 libraryCxts = [[facilitiesLib, libEnv]],
+                 testAppCxts = [[test_time, progEnv], [test_env,progEnv],
+                                [test_Util,progEnv]],
+                 includes = listFiles(['facilities/*.h']),
                  objects = objList)
 
 
