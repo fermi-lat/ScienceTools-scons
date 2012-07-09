@@ -43,7 +43,7 @@ for s in srcFiles:
     if re.search('XGetopt', str(s)) != None: toRemove = s
 if toRemove != '' : srcFiles.remove(toRemove)
 
-makeWrapper = False
+makeWrapper = True
 if 'makeStatic' in baseEnv:
     libEnv.Tool('addLinkDeps', package = 'facilities', toBuild = 'static')
     facilitiesLib = libEnv.StaticLibrary('facilities', srcFiles)
@@ -52,8 +52,10 @@ else:
                 toBuild = 'shared')
     facilitiesLib = libEnv.SharedLibrary('facilities', srcFiles)
 
-    if baseEnv['CONTAINERNAME'] != 'GlastRelease':
-        makeWrapper = True
+    if 'CONTAINERNAME' in baseEnv:
+        if baseEnv['CONTAINERNAME'] == 'GlastRelease':
+            makeWrapper = False
+    if makeWrapper:
         swigEnv.Tool('facilitiesLib') 
         swigEnv.Tool('addLibrary', library=swigEnv['pythonLibs'])
         lib_pyFacilities = swigEnv.SwigLibrary('_py_facilities', 
