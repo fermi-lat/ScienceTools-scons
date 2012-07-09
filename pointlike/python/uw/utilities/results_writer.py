@@ -12,7 +12,7 @@ from skymaps import IsotropicSpectrum
 def unparse_spectral(model,**kwargs):
     """ Convert a Model object to a gtlike style dictionary. """
     return {n:'%g +/- %g' % (model[n],model.error(n)) \
-            if model.has_errors() else '%g' % model[n] 
+            if model.has_errors() else '%g' % model[n] \
             for n in model.param_names}
 
 def unparse_spatial(model):
@@ -50,7 +50,7 @@ def unparse_diffuse_sources(roi,diffuse_sources,emin,emax,**kwargs):
         if isinstance(ds,ExtendedSource):
             diffuse_dict[name].update(unparse_spatial(ds.spatial_model))
 
-            if not ds.smodel.has_errors():
+            if ds.smodel.has_errors():
                 diffuse_dict[name]['Flux']='%g +/- %g' % ds.smodel.i_flux(emin,emax,cgs=True,two_sided=False,error=True)
             else:
                 diffuse_dict[name]['Flux']='%g' % ds.smodel.i_flux(emin,emax,cgs=True,two_sided=False,error=False)
