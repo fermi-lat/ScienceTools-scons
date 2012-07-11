@@ -1807,9 +1807,10 @@ class PLSuperExpCutoff(Model):
 
     def external_gradient(self,e):
         n0,gamma,cutoff,b=self.get_all_parameters()
-        f = n0*(self.e0/e)**gamma*np.exp(-(e/cutoff)**b)
+        f = self(e)
         return np.asarray([f/n0,f*np.log(self.e0/e),
-                     f*(b/cutoff)*(er)**b, -f * (er)**b * np.log(er)])
+                           f*(b/cutoff)*(e/cutoff)**b,f*(e/cutoff)**b*np.log(cutoff/e)])
+
 
     #def pivot_energy(self):
     #    """  
