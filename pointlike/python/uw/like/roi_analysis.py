@@ -722,6 +722,8 @@ class ROIAnalysis(object):
 
     @decorate_with(sed_plotter.plot_sed)
     def plot_sed(self,which=None,filename=None,**kwargs):
+        if 'outdir' in kwargs: 
+            raise Exception('Use filename, not outdir')
         return sed_plotter.plot_sed(self,which=which,outdir=filename,**kwargs)
 
     @decorate_with(roi_plotting.ROIDisplay,append_init=True)
