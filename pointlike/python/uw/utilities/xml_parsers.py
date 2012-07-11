@@ -1103,7 +1103,12 @@ def parse_sources(xmlfile,diffdir=None,roi_dir=None,max_roi=None):
             >>> [i.name for i in ds]
             ['2FGL J0617.2+2234e']
     """
-    handler = parse_sourcelib(Models.FileFunction.expand(xmlfile))
+    if isinstance(xmlfile, basestring):
+        xmlfile=Models.FileFunction.expand(xmlfile)
+    else:
+        xmlfile=map(Models.FileFunction.expand,xmlfile)
+
+    handler = parse_sourcelib(xmlfile)
     ps = parse_point_sources(handler,roi_dir,max_roi)
     ds = parse_diffuse_sources(handler,roi_dir,max_roi,diffdir=diffdir)
     return ps,ds
