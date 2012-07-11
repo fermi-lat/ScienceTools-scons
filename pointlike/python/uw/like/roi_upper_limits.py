@@ -302,4 +302,4 @@ class ExtensionUpperLimit(object):
                     emin=self.roi.bin_edges[0],
                     emax=self.roi.bin_edges[-1],
                     delta_log_like_limits=self.delta_log_like_limits,
-                    extension_units = 'degree')
+                    extension_units = 'degrees')
