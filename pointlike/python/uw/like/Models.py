@@ -1673,7 +1673,7 @@ class ExpCutoff(Model):
 
     default_limits = dict(
         Norm=LimitMapper(1e-13,1e-5,1e-9),
-        Index=LimitMapper(-5,5,1),
+        Index=LimitMapper(0,5,1),
         Cutoff=LimitMapper(100,3e8,1000),
         )
     default_oomp_limits=['Norm','Cutoff']
@@ -1794,7 +1794,7 @@ class PLSuperExpCutoff(Model):
 
     default_limits = dict(
         Norm=LimitMapper(1e-13,1e-5,1e-9),
-        Index=LimitMapper(-5,5,1),
+        Index=LimitMapper(0,5,1),
         Cutoff=LimitMapper(100,3e8,1000),
         b=LimitMapper(-5,5,1)
         )
