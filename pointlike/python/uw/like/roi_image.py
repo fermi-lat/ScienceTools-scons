@@ -815,7 +815,7 @@ class SmoothedImage(ROIImage):
 
         SmoothedCounts -> CountsImage
         SmoothedModel -> ModelImage
-        SmoothedResdiual -> ResidualImage
+        SmoothedResidual -> ResidualImage
 
         Note, after smoothing, the image is normalized to represent
         
