@@ -10,6 +10,8 @@ import cPickle
 import collections
 import numpy as N
 
+from uw.utilities import path
+
 class Empty: pass
 
 def save(roi,filename):
@@ -73,7 +75,7 @@ def save(roi,filename):
 
     d['LATEXTDIR']=os.environ['LATEXTDIR'] if os.environ.has_key('LATEXTDIR') else None
 
-    cPickle.dump(d,open(os.path.expandvars(filename),'w'))
+    cPickle.dump(d,open(path.expand(filename),'w'))
 
 def load(filename,**kwargs):
     """ Factory method to return a ROIAnalysis object
@@ -81,7 +83,12 @@ def load(filename,**kwargs):
         
         Any additional kwargs is used to modify DataSpecification, SpectralAnalysis,
         and ROIAnalysis objects."""
-    d=cPickle.load(open(os.path.expandvars(filename),'r'))
+    if isinstance(filename, basestring):
+        d=cPickle.load(open(path.expand(filename),'r'))
+    elif isinstance(filename, dict):
+        d=filename
+    else:
+        raise Exception("Unknown ROI file %s" % filename)
 
     # restore previous LATEXTDIR if it is not already set
     if not os.environ.has_key('LATEXTDIR') and d['LATEXTDIR'] not in [None,{}]:
@@ -93,7 +100,7 @@ def load(filename,**kwargs):
               hasattr(ds.spatial_model,'skyfun') \
               and ds.spatial_model.skyfun is None 
               for ds in d['diffuse_sources']]):
-        d=cPickle.load(open(os.path.expandvars(filename),'r'))
+        d=cPickle.load(open(path.expand(filename),'r'))
 
     from . pointspec import DataSpecification,SpectralAnalysis
     from . roi_analysis import ROIAnalysis

@@ -27,6 +27,7 @@ from uw.utilities.fitstools import merge_bpd,merge_lt
 from uw.utilities.fermitime import MET,utc_to_met
 from uw.utilities.utils import get_data
 from uw.utilities import keyword_options
+from uw.utilities import path
 import numpy as N
 
 class DataSpecification(object):
@@ -61,8 +62,8 @@ class DataSpecification(object):
         if self.binfile is None: raise Exception("binfile must be specified.")
         if self.ltcube is None: raise Exception("ltcube must be specified.")
             
-        self.binfile = os.path.expandvars(self.binfile)
-        self.ltcube = os.path.expandvars(self.ltcube)
+        self.binfile = path.expand(self.binfile)
+        self.ltcube = path.expand(self.ltcube)
 
         if self.ft1files is None and not os.path.exists(self.binfile):
             raise Exception,'An FT1 file must be specified if the binfile does not exist.'
@@ -73,18 +74,18 @@ class DataSpecification(object):
 
         # If string, expand it out
         if isinstance(self.ft1files,types.StringType):
-            self.ft1files = [os.path.expandvars(self.ft1files)]
+            self.ft1files = [path.expand(self.ft1files)]
         elif self.ft1files is None:
             pass
         else:
-            self.ft1files = map(os.path.expandvars,self.ft1files)
+            self.ft1files = map(path.expand,self.ft1files)
 
         if isinstance(self.ft2files,types.StringType):
-            self.ft2files = [os.path.expandvars(self.ft2files)]
+            self.ft2files = [path.expand(self.ft2files)]
         elif self.ft2files is None:
             pass
         else:
-            self.ft2files = map(os.path.expandvars,self.ft2files)
+            self.ft2files = map(path.expand,self.ft2files)
 
 
 class SavedData(DataSpecification):

@@ -48,13 +48,13 @@ class DiffuseSource(object):
 
                 >>> import pickle
                 >>> import os
-                >>> from uw.like.Models import Constant
+                >>> from uw.utilities import path
+                >>> from uw.like.Models import Constant, FileFunction
                 >>> from skymaps import IsotropicPowerLaw
-                >>> from os.path import expandvars
 
             Pickle isotropic:
 
-                >>> iso = expandvars('$GLAST_EXT/diffuseModels/v2r0p1/isotrop_2year_P76_source_v1.txt')
+                >>> iso = path.expand('$GLAST_EXT/diffuseModels/v2r0p1/isotrop_2year_P76_source_v1.txt')
                 >>> ds = DiffuseSource(IsotropicSpectrum(iso),Constant())
                 >>> pickle.dump(ds, open(os.devnull,'w'))
 
@@ -65,7 +65,7 @@ class DiffuseSource(object):
             
             Pickle galactic diffuse:
 
-                >>> gal = expandvars('$GLAST_EXT/diffuseModels/v2r0p1/ring_2year_P76_v0.fits')
+                >>> gal = path.expand('$GLAST_EXT/diffuseModels/v2r0p1/ring_2year_P76_v0.fits')
                 >>> ds = DiffuseSource(DiffuseFunction(gal),Constant())
                 >>> pickle.dump(ds, open(os.devnull,'w'))
             

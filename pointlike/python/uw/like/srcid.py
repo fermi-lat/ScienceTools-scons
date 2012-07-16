@@ -16,7 +16,7 @@ import numpy as np
 import pyfits as pf
 
 import skymaps
-from uw.utilities import fitstools,keyword_options
+from uw.utilities import fitstools,keyword_options,path
 
 
 class SrcidError(Exception): pass
@@ -50,13 +50,13 @@ class SourceAssociation(object):
            quiet: bool, deprecated, set verbosity = 0
         """
         keyword_options.process(self,kwargs)
-        self.srcid_dir = os.path.expandvars(srcid_dir)
+        self.srcid_dir = path.expand(srcid_dir)
         if self.catalog_dir is not None:
-            self.catalog_dir = os.path.expandvars(self.catalog_dir)
+            self.catalog_dir = path.expand(self.catalog_dir)
         else:
             self.catalog_dir = os.path.join(self.srcid_dir,'cat')
         if self.class_dir is not None:
-            self.class_dir = os.path.expandvars(self.class_dir)
+            self.class_dir = path.expand(self.class_dir)
         else:
             self.class_dir = os.path.join(self.srcid_dir,'cat')
         if self.quiet: self.verbosity=0
