@@ -645,7 +645,7 @@ class MCModelBuilder(object):
         dm=ds.dmodel[0]
         sm=ds.smodel
 
-        if not MonteCarlo.isone(sm):
+        if not MCModelBuilder.isone(sm):
             raise Exception("Can only run gtobssim with IsotropicSpectrum diffuse models if model predicts 1.")
 
         spectral_file=dm.name()
@@ -660,7 +660,7 @@ class MCModelBuilder(object):
         dm=ds.dmodel[0]
         sm=ds.smodel
 
-        if not MonteCarlo.isone(sm):
+        if not MCModelBuilder.isone(sm):
             raise Exception("Can only run gtobssim with DiffuseFunction diffuse models if model predicts 1.")
 
         # flux in ph/cm^2/s/sr b/n 100MeV & infinity
@@ -855,7 +855,7 @@ class MCModelBuilder(object):
         sm=ds.smodel
 
         # galactic diffuse
-        if not MonteCarlo.isone(sm):
+        if not MCModelBuilder.isone(sm):
             raise Exception("Can only run gtobssim with DiffuseFunction diffuse models where the spectral model is a PowerLaw with norm and index 1.")
 
         allsky_filename=dm.name()
