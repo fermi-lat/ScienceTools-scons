@@ -475,8 +475,8 @@ class MCModelBuilder(object):
             ]
 
         else:
-
-            spectral_filename = '%s/%s_spectra_%s.txt' % (self.env_var,MCModelBuilder.strip(ps.name),model.name)
+            #it was ps
+            spectral_filename = '%s/%s_spectra_%s.txt' % (self.env_var,MCModelBuilder.strip(es.name),model.name)
 
             model.save_profile(filename=spectral_filename, emin=mc_emin, emax=mc_emax)
 
