@@ -794,7 +794,7 @@ class RadiallySymmetricModel(SpatialModel):
 
             """
         radius,pdf = self.approximate_profile(*args, **kwarsg)
-        open(filename,'w').write('\n'.join(['%g\t%g' % (i,j) for i,j in zip(radius,pdf)]))
+        open(path.expand(filename),'w').write('\n'.join(['%g\t%g' % (i,j) for i,j in zip(radius,pdf)]))
 
 class PseudoSpatialModel(SpatialModel):
     """ PseudoSpatialModel are point-like SpatialModels.
