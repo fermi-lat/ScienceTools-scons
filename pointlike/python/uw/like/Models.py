@@ -746,7 +746,7 @@ class Model(object):
         # Paranoid check:
         if np.any(fluxes==0): raise ModelException("Error: 0s found in differential flux")
 
-        open(filename,'w').write('\n'.join(['%g\t%g' % (i,j) for i,j in zip(energies,fluxes)]))
+        open(path.expand(filename),'w').write('\n'.join(['%g\t%g' % (i,j) for i,j in zip(energies,fluxes)]))
 
     def set_flux(self,flux,*args,**kwargs):
         """ Set the flux of the source. 
