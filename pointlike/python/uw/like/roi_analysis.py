@@ -304,12 +304,12 @@ class ROIAnalysis(object):
 
             for ind,model in zip(indices,models[indices]):
                 grad    = b.gradient(model)[model.free]*b.er[ind] # correct for exposure
-                np      = nparams[ind]
+                npar   = nparams[ind]
                 apterm = b.phase_factor*b.overlaps[ind]
                 if b.has_pixels:
                     pixterm = (pix_weights*b.ps_pix_counts[:,ind]).sum()
-                gradient[cp:cp+np] += grad * (apterm - pixterm)
-                cp += np
+                gradient[cp:cp+npar] += grad * (apterm - pixterm)
+                cp += npar
 
         # add in diffuse components
         gradient  = np.append(self.bgm.gradient(bands),gradient)
