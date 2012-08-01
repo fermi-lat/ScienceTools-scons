@@ -153,7 +153,7 @@ void HealpixMap::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIter
     } else {
       coordsys = "EQU"; 
     }
-    int long Nside=pow((int long)2,m_hpx_order);
+    int long Nside=pow((long double)2,m_hpx_order);
     int long lastpix=12*Nside*Nside-1;
    // int long nbrbins= nbchannel;
     

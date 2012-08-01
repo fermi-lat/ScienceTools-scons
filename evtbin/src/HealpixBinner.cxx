@@ -36,7 +36,7 @@ namespace evtbin {
   {
     if(order<0||order>12) {
       throw std::runtime_error("Order needs to be positive and <=12"); } else {
-    int long Nside=pow((int long)2,order);
+    int long Nside=pow((long double)2,order);
     m_num_bins = 12*Nside*Nside; 
     }
   }
