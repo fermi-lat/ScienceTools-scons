@@ -114,3 +114,4 @@ file.
  evtbin-02-05-00 26-Jul-2011 jpeachey STGEN 119 112 114 117
  evtbin-02-06-00 29-Jun-2012  cohen First tag including the HEALPIX extension to evtbin
  evtbin-02-06-01 01-Jul-2012  cohen Try to fix windows error messages
+ evtbin-02-06-02 01-Aug-2012  cohen fix to bug JIRA STGEN-131 windows builds
