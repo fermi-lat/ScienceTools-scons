@@ -483,8 +483,13 @@ namespace tip {
         U * src_tmp(new U[src.size()]);
         for (std::size_t ii = 0; ii != src.size(); ++ii) src_tmp[ii] = src[ii];
 
-        fits_write_colnull(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
-          src_tmp, &FitsPrimProps<U>::undefined(), &status);
+        if (m_var_length) {
+          fits_write_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
+            src_tmp, &status);
+        } else {
+          fits_write_colnull(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
+            src_tmp, &FitsPrimProps<U>::undefined(), &status);
+        }
         delete [] src_tmp;
         if (0 != status) throw TipException(status, "FitsColumn::setVector failed to write vector cell value");
       }
