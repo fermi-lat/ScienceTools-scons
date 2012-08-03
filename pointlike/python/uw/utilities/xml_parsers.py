@@ -1356,7 +1356,7 @@ def process_diffuse_source(ds,strict=False,convert_extended=False,expand_env_var
             elif isinstance(m,IsotropicPowerLaw):
                 flux,index=m.flux(),m.index()
                 pl=PowerLawFlux(index=index)
-                pl.set_flux(flux,100,np.inf)
+                pl.set_flux(flux,emin=100,emax=np.inf)
 
                 if isinstance(ds.smodel,Constant):
                     pl['Int_Flux'] *= ds.smodel['Scale']
