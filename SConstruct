@@ -387,7 +387,6 @@ else:
     pkgScons = os.path.join(baseSettingsDir, 'package.scons')
     SConscript(pkgScons, exports='pkgScons')
 
-
 def listFiles(files, **kw):
     allFiles = []
     for file in files:
@@ -444,7 +443,7 @@ if not baseEnv.GetOption('help'):
         SCons.Tool.DefaultToolpath.append(os.path.abspath(str(Dir('.').Dir('sconsTools'))))
 
     Export('packages')
-
+    baseEnv['packageNameList'] = packages
 
 # To create _setup anad wrappers
     if sys.platform == 'win32':
