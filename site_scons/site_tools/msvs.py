@@ -550,6 +550,12 @@ class _GenerateV7DSP(_DSPGenerator):
             # Take out $CXXFLAGS since options accumulated here will be applied
             # to all compiles and may not be appropriate for .c
             self.moreCompileOptions = self.env.subst('$CCFLAGS $_CCCOMCOM')
+
+            # Replace all instances of /I#  with /I..\..\ (/I..\ if no variant)
+            if 'NO_VARIANT' in self.env: incString = "/I..\\"
+            else: incString = "/I..\\..\\"
+            self.moreCompileOptions = (self.moreCompileOptions).replace("/I#", 
+                                                                      incString)
 	    varCmps = str(env['VISUAL_VARIANT']).split("-")
 	    if "Debug" in varCmps: 
                 self.rt_number="3"
