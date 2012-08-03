@@ -595,8 +595,6 @@ class ROIAnalysis(object):
 
         return self.dsm.bgmodels[index].fit_extension(self,*args,**kwargs)
 
-    fit_extension_fast = roi_extended.fit_extension_fast
-
     @decorate_with(ROIExtendedModel.TS_ext)
     def TS_ext(self,which,*args,**kwargs):
 
