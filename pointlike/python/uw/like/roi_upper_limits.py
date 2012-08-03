@@ -12,6 +12,7 @@ from scipy.optimize import fmin, fminbound, brentq
 
 from uw.utilities import keyword_options
 from uw.utilities.quantile import Quantile
+from uw.utilities.parmap import LinearMapper
 
 from uw.like.roi_state import PointlikeState
 from uw.like.roi_extended import ExtendedSource
