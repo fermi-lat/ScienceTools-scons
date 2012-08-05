@@ -652,9 +652,11 @@ class MCModelBuilder(object):
     @staticmethod
     def isone(model):
         """ Return 1 if model predicts 1 everywhere. """
-        if isinstance(model,Constant) and model['scale'] == 1:
+        if isinstance(model,Constant) and np.allclose(model['scale'],1):
             return 1
-        if isinstance(model,PowerLaw) and model['norm'] == 1 and model['index'] == 0:
+        if isinstance(model,PowerLaw) and np.allclose(model['norm'],1) and np.allclose(model['index'],0):
+            return 1
+        if isinstance(model,FileFunction) and np.allclose(model['Normalization'],1):
             return 1
         return 0
 
@@ -816,7 +818,7 @@ class MCModelBuilder(object):
             ]
         elif isinstance(sm,FileFunction):
 
-            if sm['Normalization'] != 1:
+            if not MCModelBuilder.isone(sm):
                 raise Exception("When simulationg IsotropicConstant source with FileFunction spectrum, the constant must be 1")
 
             spectral_file=sm.file
