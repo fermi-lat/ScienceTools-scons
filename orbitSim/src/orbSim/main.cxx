@@ -320,9 +320,9 @@ void orbitSimApp::run() {
   }
 
   // Get template file using facilities
-  std::string orbitsimroot = facilities::commonUtilities::getDataPath("orbitSim");
+  std::string fitsgenroot = facilities::commonUtilities::getDataPath("fitsGen");
   std::string ifname("ft2.tpl");
-  std::string sfname = facilities::commonUtilities::joinPath(orbitsimroot, ifname);
+  std::string sfname = facilities::commonUtilities::joinPath(fitsgenroot, ifname);
   
   osf.info(2) <<"OutPut File template is "<<sfname.c_str()<<"\n";
 
