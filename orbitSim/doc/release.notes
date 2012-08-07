@@ -6,6 +6,7 @@
 --------------------------------------------------------------------------------
 EOH 
 
+ orbitSim-02-00-08 07-Aug-2012 jchiang have gtorbsim use ft2.tpl file in fitsGen
  orbitSim-02-00-07 20-Dec-2010  cohen fix gcc 4.4 builds
  orbitSim-02-00-06 16-Aug-2010 vernaleo Replace JV with Eric Winter as
  		   	       		 package author.
