@@ -5,6 +5,7 @@
 @verbatim
  * EOH *
 
+ tip-02-17-03 07-Aug-2012 jchiang Gulli's fix for null values in variable length arrays
  tip-02-17-02 03-Aug-2012 jchiang Gulli's fix for STGEN-129
  tip-02-17-01 12-May-2011 jpeachey Fix bugs in STARCH-16
  tip-02-17-00 15-Feb-2011 jchiang revert to using a temporary file in RootTable.cxx
