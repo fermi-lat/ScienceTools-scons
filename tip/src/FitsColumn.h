@@ -486,6 +486,14 @@ namespace tip {
         if (m_var_length) {
           fits_write_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
             src_tmp, &status);
+					
+					// Fix null values
+					for (std::size_t ii = 0; ii < src.size(); ++ii) {
+						if ( src[ii] == FitsPrimProps<U>::undefined() ) {
+							fits_write_col_null(m_ext->getFp(), m_field_index, record_index + 1, ii + 1, 1, &status);
+						}
+					}
+
         } else {
           fits_write_colnull(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
             src_tmp, &FitsPrimProps<U>::undefined(), &status);
