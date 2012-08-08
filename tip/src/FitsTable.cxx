@@ -119,6 +119,10 @@ namespace tip {
     // Get the address of the TNULL value for the correct primitive type.
     void * value = 0;
 //    int bool_value = FitsPrimProps<char>::undefined();
+
+    // Handle variable-length column specifiers.
+    if (0 > type_code) type_code *= -1;
+
     switch (type_code) {
 // Fermi LAT Team JIRA issue STGEN-88: only integer columns use TNULL, according to the FITS standard.
 //      case TSTRING: value = FitsPrimProps<char *>::undefined(); break;
