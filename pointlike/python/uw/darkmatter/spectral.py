@@ -12,7 +12,8 @@ from collections import OrderedDict
 import numpy as np
 from scipy.optimize.minpack import check_gradient
 
-from uw.like.Models import Model,CompositeModel,Constant,FileFunction
+from uw.like.Models import Model,CompositeModel,Constant
+from uw.utilities import path
 
 from uw.utilities.parmap import LogMapper,LimitMapper
 
@@ -127,7 +128,7 @@ class DMFitFunction(Model):
         for n in np.append(self.param_names,['norm','bratio','channel0','channel1']):
             self.dmf.getParam(n).setBounds(-float('inf'),float('inf'))
 
-        self.dmf.readFunction(FileFunction.expand(self.file))
+        self.dmf.readFunction(path.expand(self.file))
         self._update() # update all parameters in DMFitFunction
 
     def setp(self, *args, **kwargs):
