@@ -36,7 +36,7 @@ class Engines(object):
         self.results=dict()
 
         try:
-            self.rc = parallel.Client(profile=profile)
+            self.rc = parallel.Client(profile=profile, **kwargs)
         except:
             raise Exception( 'No controller available: you must run ipcluster')
         if not self.quiet: print '%d engines available' %len(self.rc)
