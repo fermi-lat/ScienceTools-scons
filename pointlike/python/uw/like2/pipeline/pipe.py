@@ -410,6 +410,7 @@ class Tables(Update):
     skyfuns=[("CountsMap", "counts", {}), ("KdeMap", "kde", {}), ("ResidualTS", "ts", dict(photon_index=2.2))]
     def defaults(self):
         return dict(dampen=0,
+            processor="processor.table_processor",
             tables="""maps.ROItables("%(outdir)s", nside=512, skyfuns=%(skyfuns)s)""" %\
                         dict(skyfuns=Tables.skyfuns, outdir=self.outdir),
             setup_cmds= 'from uw.like2.pipeline import maps', quiet=True
