@@ -26,6 +26,28 @@ def set_point_property(psource) :
 
 class SourceListException(Exception):pass
 
+def set_default_bounds( model, force=False):
+    """
+    Handy utility to set bounds for a model from like.Models
+    """
+    if not force and hasattr(model, 'bounds'): return
+    bounds=[]
+    def to_internal(fun, values):
+        return [fun(value) if value is not None else None for value in values]
+    for pname, mp in zip(model.param_names, model.mappers):
+        plim = (None,None)
+        try:
+            plim = dict(
+                Index=(-0.5, 5), 
+                Norm=(10**-15, 10**-7),
+                Scale=(0.001, 4.0),
+                beta=(0, 5.), 
+                Cutoff=(100., 1e5),
+                )[pname]
+        except: pass
+        bounds.append( to_internal(mp.tointernal, plim) )
+    model.bounds = np.array(bounds) # convert to array so can mask with free
+
   
 class SourceList(list):
     """ manage properties of the list of sources
