@@ -23,6 +23,8 @@ def generate(env, **kw):
     toBuild = kw.get('toBuild','program')
 
     if toBuild == 'static':
+        if env['PLATFORM'] == "win32" and env.get('CONTAINERNAME','') == 'GlastRelease':
+            env.Tool(toolname, incsOnly = 1, depsOnly = 1)
         return
     elif toBuild == 'shared':
         if env['PLATFORM'] == "posix":
