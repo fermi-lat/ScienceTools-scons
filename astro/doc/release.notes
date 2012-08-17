@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-03-14-00 16-Aug-2012    jrb support for Windows no-installed-headers
  astro-03-13-03 25-Jun-2012  lsrea update calc. of magnetic hemisphere; remove sign from geomaglat
  astro-03-13-02 15-Jun-2012 jchiang enclose igrf_data member in ifndef to avoid missing IGRF_data declaration in swig build of skymaps
  astro-03-13-01 15-Jun-2012 jchiang speed up IGRF-11 by caching spherical coefficients
