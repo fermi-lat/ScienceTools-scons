@@ -83,6 +83,19 @@ class SourceFlux(object):
         self.emax = np.max([bandlike.band.emax for bandlike in self.rs.selected_bands])
         w = tools.LogLikelihood(self)
         return w
+        
+    def __enter__(self):
+        """ supports the 'with' construction, guarantees that restore is called to restore the ROI
+        example:
+        -------
+        with SourceFlux(roi, name) as sf:
+            # use sf ...
+        """
+        return self
+        
+    def __exit__(self, type, value, traceback):
+        self.restore()
+
 
         
 class SED(object):
