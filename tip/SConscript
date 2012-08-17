@@ -8,6 +8,7 @@ progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 test2Env = baseEnv.Clone()
 
+libEnv.Tool('addLinkDeps', package = 'tip', toBuild='static')
 tipLib = libEnv.StaticLibrary('tip', listFiles(['src/*.cxx']))
 
 progEnv.Tool('tipLib')
