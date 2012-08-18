@@ -35,7 +35,7 @@ else:
 progEnv.Tool('registerTargets', package = 'tip',
              staticLibraryCxts = [[tipLib, libEnv]],
              binaryCxts = [[sampleProg, progEnv]],
-             testAppCxts = [[test_tipBin, progEnv]],
+             testAppCxts = [[test_tipBin, testEnv]],
              includes = listFiles(['tip/*.h']),
              data = listFiles(['data/*'], recursive = True))
 
