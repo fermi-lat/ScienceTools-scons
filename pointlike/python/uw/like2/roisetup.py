@@ -117,8 +117,8 @@ class ROIfactory(object):
         input_config = eval(open(os.path.expandvars(modeldir+'/config.txt')).read())
         for key in 'extended diffuse irf'.split():
             if self.__dict__[key] is None: 
+                #print '%s: %s replace from skymodel: "%s"' %(key, kwargs.get(key,None), input_config[key])
                 self.__dict__[key]=input_config[key]
-                print 'Using %s from skymodel: "%s"' %(key, self.__dict__[key])
 
         self.skymodel = skymodel.SkyModel(modeldir, diffuse=self.diffuse,  **self.skymodel_kw)
 
