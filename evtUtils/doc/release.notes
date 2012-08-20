@@ -19,3 +19,4 @@
  evtUtils-00-01-10 04-Oct-2010 echarles Strip line breaks from formulae to allow for formating long formualae in the xml file
  evtUtils-00-01-11 16-Jun-2011 hmk       add in EvtClassDefs_V7P6.xml from evtClassDefs package
  evtUtils-00-01-12 27-Sep-2011 jchiang add #include <ostream> to EventMap.cxx for gcc4.4.3
+ evtUtils-00-02-00 20-Aug-2012    jrb for Windows no-install-headers

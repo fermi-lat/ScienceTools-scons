@@ -9,6 +9,7 @@ $Id$
 
       * EOH *
 
+ embed_python-01-06-00 20-Aug-2012    jrb for Windows no-install-headers
  embed_python-01-05-05 05-Oct-2010    jrb Add -rdynamic link flag to environment of users (Linux only)
  embed_python-01-05-04 22-Feb-2010    jrb correct use of xxLib for libEnv
   v1r5p3   15-jul-09  jrb 1. Update SConscript 2. Mods to get test program to run
