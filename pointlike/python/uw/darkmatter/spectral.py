@@ -76,8 +76,8 @@ class DMFitFunction(Model):
         name='DMFitFunction',
         param_names=['sigmav','mass'],
         extra_param_names=dict(norm='norm', bratio='bratio', channel0='channel0', channel1='channel1'),
-        topointlike=[operator.pos,operator.neg],
-        togtlike=[operator.pos,operator.neg])
+        topointlike=[operator.pos,operator.pos],
+        togtlike=[operator.pos,operator.pos])
 
     default_limits = dict(
         sigmav=LimitMapper(0,1e-19,1e-25),
