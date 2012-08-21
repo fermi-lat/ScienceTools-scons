@@ -304,7 +304,8 @@ if baseEnv.GetOption('userRelease'):
         baseEnv.Default(baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['LIBDIR']))
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['BINDIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['SCRIPTDIR'])
-        baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['INCDIR'])
+        if (baseEnv.GetOption('containerName') != 'GlastRelease'):
+            baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['INCDIR'])
         if (baseEnv.GetOption('containerName') != 'GlastRelease') and (baseEnv.GetOption('containerName') != 'TMineExt'):
             baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['PFILESDIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['DATADIR'])
