@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Id$
 # Authors: Eric Charles <echarles@slac.stanford.edu>
-# Version: evtUtils-00-02-00
+# Version: evtUtils-00-02-01
 Import('baseEnv')
 Import('listFiles')
 Import('packages')
@@ -20,5 +20,6 @@ evtUtilsApp_MakeEventClassHtml = progEnv.Program('MakeEventClassHtml', ['apps/Ma
 progEnv.Tool('registerTargets',
              package = 'evtUtils',
              libraryCxts = [[evtUtilsLib, libEnv]],
+             xml = listFiles(['xml/*.xml']),
              testAppsCxts = [evtUtilsApp_MakeEventClass,evtUtilsApp_MakeEventClassPyDict,evtUtilsApp_MakeEventClassHtml,progEnv],
              includes = listFiles(['evtUtils/*.h']))
