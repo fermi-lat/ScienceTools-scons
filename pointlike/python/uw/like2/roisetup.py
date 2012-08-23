@@ -116,7 +116,7 @@ class ROIfactory(object):
         # extract parameters used by skymodel for defaults
         input_config = eval(open(os.path.expandvars(modeldir+'/config.txt')).read())
         for key in 'extended diffuse irf'.split():
-            if self.__dict__[key] is None: 
+            if self.__dict__[key] is None or self.__dict__[key]=='None': 
                 #print '%s: %s replace from skymodel: "%s"' %(key, kwargs.get(key,None), input_config[key])
                 self.__dict__[key]=input_config[key]
 
