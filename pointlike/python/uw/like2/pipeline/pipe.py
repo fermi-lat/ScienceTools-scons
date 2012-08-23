@@ -359,7 +359,9 @@ class NotebookPipe(object):
 
   
 class Update(NotebookPipe):
-    """ Update a model """
+    """ Update a model 
+        Note that dampen=0.5; may need adjustment
+    """
     def __init__(self, analysisdir, indir, outdir=None, **kwargs):
         """
         
@@ -375,7 +377,7 @@ class Update(NotebookPipe):
         self.setup = Setup(self.indir, outdir=self.outdir, **kw)
      
     def defaults(self):
-        return dict(sedfig_dir='"sedfig"', quiet=True)
+        return dict(sedfig_dir='"sedfig"', dampen=0.5, quiet=True)
     
      
     def __call__(self): return self.setup
