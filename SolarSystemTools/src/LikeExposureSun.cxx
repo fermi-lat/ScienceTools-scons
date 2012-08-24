@@ -70,6 +70,7 @@ LikeExposureSun(double skybin, double costhetabin, double costhetabinSun,
    }
 }
 
+/*
 void LikeExposureSun::load(const tip::Table * scData, bool verbose) {
    st_stream::StreamFormatter formatter("LikeExposureSun", "load", 2);
    
@@ -160,6 +161,7 @@ void LikeExposureSun::load(const tip::Table * scData, bool verbose) {
       formatter.warn() << "!" << std::endl;
    }
 }
+*/
 
 void LikeExposureSun::writeFile(const std::string & outfile) const {
    std::string dataPath = 

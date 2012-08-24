@@ -35,6 +35,8 @@ public:
 	 //! Return the average intensity over the theta range,  costhmin < costhmax
 	 double average (double costhmin, double costhmax, double energy) const;
 
+	 double avgDist () const { return m_avgDist; }
+
 
 protected:
 
@@ -46,6 +48,10 @@ protected:
 	 //! ascending
 	 std::vector<double> m_costheta;
 	 std::vector<double> m_energies;
+
+	 //! The average distance to the source used in the profile squared in units
+	 //! of lightseconds
+	 double m_avgDist;
 
 };
 

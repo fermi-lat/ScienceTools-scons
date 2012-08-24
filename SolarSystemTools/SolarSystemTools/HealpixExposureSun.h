@@ -82,6 +82,14 @@ public:
       return m_thetasun;
    }
 
+	 double distCosCut() const {
+		 return m_distCosCut;
+	 }
+
+	 double avgDist() const {
+		 return m_avgDist;
+	 }
+
    void setBoundaryFlag(bool enforce_boundaries) {
       m_enforce_boundaries = enforce_boundaries;
    }
@@ -135,6 +143,9 @@ private:
 
    double m_costhmin;
    double m_costhmax;
+
+	 double m_distCosCut;
+	 double m_avgDist;
 
    bool m_enforce_boundaries;
 

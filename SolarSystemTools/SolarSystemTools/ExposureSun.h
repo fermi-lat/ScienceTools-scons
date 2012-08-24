@@ -53,9 +53,10 @@ public:
 
     //! add a time interval at the given position
     virtual void fill(const astro::SkyDir& dirz, const astro::SkyDir& dirsun, double deltat);
+    virtual void fill(const astro::SkyDir& dirz, const astro::SkyDir& dirsun, double deltat, double invDistSquare, double distCosCut);
 
     //! add a time interval at the given position
-    virtual void fill(const astro::SkyDir& dirz, const astro::SkyDir& dirsun, const astro::SkyDir& dirzenith, double deltat);
+    virtual void fill(const astro::SkyDir& dirz, const astro::SkyDir& dirsun, const astro::SkyDir& dirzenith, double deltat, double invDistSquare, double distCosCut);
 
     //! create object from the data file (FITS for now)
     ExposureSun(const std::string& inputfile, const std::string& tablename="ExposureSun");
@@ -98,7 +99,7 @@ public:
         @param fraction livetime fractio
     */
     virtual void fill_zenith(const astro::SkyDir& dirz,const astro::SkyDir& dirx, const astro::SkyDir& dirsun,
-        const astro::SkyDir& dirzenith, double deltat);
+        const astro::SkyDir& dirzenith, double deltat, double invDistSquare, double distCosCut);
 
 		ExposureSun& operator += (const ExposureSun &other);
 
