@@ -340,10 +340,11 @@ void ExposureSun::write(const std::string& outputfile, const std::string& tablen
     {
 			std::vector<double> values((*haitor).size());
 			std::vector<unsigned int> indices((*haitor).size());
+			std::vector<size_t> index = (*haitor).indices();
 			size_t j(0);
 			for ( size_t i(0); i < (*haitor).size(); ++i) {
 				if ( (*haitor)[i] != 0 ) {
-					indices[j] = (*haitor).indices()[i];
+					indices[j] = index[i];
 					values[j] = (*haitor)[i];
 					++j;
 				}
