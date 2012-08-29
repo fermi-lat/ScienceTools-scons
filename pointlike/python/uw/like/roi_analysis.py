@@ -605,7 +605,10 @@ class ROIAnalysis(object):
 
         return self.dsm.bgmodels[index].TS_ext(self,*args,**kwargs)
 
-    upper_limit = roi_upper_limits.upper_limit
+    def upper_limit(self, which, *args, **kwargs):
+        f=roi_upper_limits.FluxUpperLimit(self, which, *args, **kwargs)
+        return f.get_limit()
+
     upper_limit_quick = roi_upper_limits.upper_limit_quick
     def extension_upper_limit(self, *args, **kwargs):
         e=roi_upper_limits.ExtensionUpperLimit(self, *args, **kwargs)
