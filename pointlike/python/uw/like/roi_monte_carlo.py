@@ -1099,7 +1099,7 @@ class MonteCarlo(object):
         """ Apply the GTIs from gtifile to the file evfile. """
 
 
-        # Note, add on gtis to 'evfile'. This is a big distructive,
+        # Note, add on gtis to 'evfile'. This is a bit distructive,
         # but should cause no real harm.
         e = pyfits.open(path.expand(evfile), mode='update')
 
@@ -1109,6 +1109,12 @@ class MonteCarlo(object):
         
         g = pyfits.open(path.expand(gtifile))
         e['GTI'] = g['GTI']
+
+        # And re-write header info (inaccuracy due to pil conversion float to str)
+        for ehdu, ghdu in zip(e,g):
+            ehdu.header['TSTART'] = ghdu.header['TSTART']
+            ehdu.header['TSTOP'] = ghdu.header['TSTOP']
+
         e.flush()
 
         app=GtApp('gtmktime')
