@@ -1724,7 +1724,7 @@ class SpatialMap(SpatialModel):
         def dir(x,y): return SkyDir(x,y,projection)
 
         # Set the source center to the center of the image.
-        self.center=SkyDir((naxis1-1)/2,(naxis2-1)/2,p)
+        self.center=SkyDir((naxis1+1.0)/2.0,(naxis2+1.0)/2.0,p)
 
         # the spatial parameters are just the center of the image.
         if self.coordsystem == SkyDir.EQUATORIAL:
