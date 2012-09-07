@@ -527,7 +527,6 @@ class Model_to_XML(object):
         self.x2m = XML_to_Model()
         self.debug = debug
         self.strict = strict
-        self.extra_attrs=' '
 
     @staticmethod
     def prepare_model_for_xml(model, scaling, strict):
@@ -578,6 +577,7 @@ class Model_to_XML(object):
         self.pscale = []
         self.perr = []
         self.pfree = []
+        self.extra_attrs = ''
 
         for pointlike_name,gtlike_name in zip(model.param_names, model.gtlike['param_names']):
 
