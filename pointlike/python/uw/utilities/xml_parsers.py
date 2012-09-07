@@ -577,7 +577,7 @@ class Model_to_XML(object):
         self.pscale = []
         self.perr = []
         self.pfree = []
-        self.extra_attrs = ''
+        self.extra_attrs = ' '
 
         for pointlike_name,gtlike_name in zip(model.param_names, model.gtlike['param_names']):
 
