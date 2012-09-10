@@ -346,15 +346,14 @@ class SED(object):
         return pformat(results)
 
     @staticmethod
-    def spectrum_to_dict(spectrum, errors=False):
+    def spectrum_to_dict(spectrum):
         """ Convert a pyLikelihood object to a python 
             dictionary which can be easily saved to a file. """
         parameters=ParameterVector()
         spectrum.getParams(parameters)
-        d = dict(name = spectrum.genericName())
+        d = dict(name = spectrum.genericName(), method='gtlike')
         for p in parameters: 
             d[p.getName()]= p.getTrueValue()
-            if errors: d['%s_err' % p.getName()]= p.error()*p.getScale()
         return d
 
     def save(self,filename,**kwargs):
@@ -435,8 +434,8 @@ class SED(object):
             in the x and y direciton by a fraction
             'extra' in log-space. """
         l,h=np.log10(lower),np.log10(upper)
-        low_lim=10**(l - 0.1*(h-l))
-        hi_lim =10**(h + 0.1*(h-l))
+        low_lim=10**(l - extra*(h-l))
+        hi_lim =10**(h + extra*(h-l))
         axes.set_xlim(low_lim,hi_lim)
 
     def plot(self,
