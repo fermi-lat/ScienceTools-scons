@@ -172,7 +172,7 @@ void HealpixMap::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIter
   {
     //computeIndex returns -1 if m_ebinner has 0 bin, 
     //which is the case if no energy binning is requested by the user.
-    long index1 = m_ebinner->getNumBins()?m_ebinner->computeIndex(energy):0;
+    long index1 = m_ebinner->getNumBins()>1?m_ebinner->computeIndex(energy):0;
     long index2 = m_hpx_binner->computeIndex(coord1,coord2);
    
     // Make sure indices are valid:

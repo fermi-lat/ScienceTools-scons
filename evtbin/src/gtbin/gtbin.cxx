@@ -285,8 +285,6 @@ class HealpixMapApp : public EvtBinAppBase {
 	//count map case : only one energy bin
 	//emin=emax collapses the binner to 0 bin, so there is a need
 	//to take this into account separately in the code.
-	//Note that with no energy binning request, the EBOUNDS 
-	//extension will not be written out anyway.
 	pars["enumbins"]=1;
 	pars["emin"]=0.;
 	pars["emax"]=0.;
