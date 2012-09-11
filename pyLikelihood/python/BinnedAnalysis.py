@@ -213,7 +213,7 @@ class BinnedAnalysis(AnalysisBase):
         return model_counts
     def plotSourceFit(self, srcName, color='black'):
         self._importPlotter()
-        nobs = num.array(self.logLike.countsSpectrum(srcName))
+        nobs = num.array(self.logLike.countsSpectrum(srcName, False))
         errors = []
         for ntilde, nsq in zip(nobs, num.sqrt(self.nobs)):
             if nsq == 0:
