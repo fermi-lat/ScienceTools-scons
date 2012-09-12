@@ -27,7 +27,7 @@ class Model(object):
         Default units are ph/cm^2/s/MeV.
     """
     
-    def __init__(self, p=None, free=None, set_default_limits=True, set_default_oomp_limits=False, **kwargs):
+    def __init__(self, p=None, free=None, set_default_limits=False, set_default_oomp_limits=False, **kwargs):
         """ 
 
          Optional keyword arguments:
@@ -2528,7 +2528,7 @@ class FileFunction(Model):
         return self['Normalization']*10**self.interp(np.log10(e))
 
     def external_gradient(self,e):
-        return  np.array([np.ones_like(e)])
+        return 10**self.interp(np.log10(e))
 
     def __getstate__(self):
         """ You cannot pickle an interp1d object. """
