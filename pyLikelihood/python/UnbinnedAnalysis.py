@@ -233,8 +233,12 @@ class UnbinnedAnalysis(AnalysisBase):
 #                               "attempt to set energy bound outside of " +
 #                               "data range of %.2f %.2f" % roi_ebounds)
         self.logLike.set_ebounds(emin, emax)
-        npts = int(len(self.energies)*(num.log(emax) - num.log(emin))
-                   /(num.log(self.energies[-1]) - num.log(self.energies[0])))
+#        npts = int(len(self.energies)*(num.log(emax) - num.log(emin))
+#                   /(num.log(self.energies[-1]) - num.log(self.energies[0])))
+        nee = 21
+        eMin_roi, eMax_roi = self.observation.roiCuts().getEnergyCuts()
+        npts = int(nee*(num.log(emax) - num.log(emin))
+                   /(num.log(eMax_roi) - num.log(eMin_roi)))
         if npts < 2:
             npts = 5
         energies = num.logspace(num.log10(emin), num.log10(emax), npts)
