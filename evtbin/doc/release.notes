@@ -115,3 +115,4 @@ file.
  evtbin-02-06-00 29-Jun-2012  cohen First tag including the HEALPIX extension to evtbin
  evtbin-02-06-01 01-Jul-2012  cohen Try to fix windows error messages
  evtbin-02-06-02 01-Aug-2012  cohen fix to bug JIRA STGEN-131 windows builds
+ evtbin-02-06-03 12-Sep-2012  cohen fix a bug when no energy binning is requested but the ebinalg is LIN in the par files
