@@ -148,7 +148,7 @@ def get_diffuse_source(spatialModel='ConstantValue',
         if (spectralModelFile is not None):
             if not os.path.exists(path.expand(spectralModelFile)):
                 raise Exception('Could not find the ASCII file specified for FileFunction')
-        elif spectralModel != 'PowerLaw':
+        elif not (spectralModel == 'PowerLaw' or spectralModel == 'Constant'):
             raise NotImplementedError,'Must provide one of the understood spectral models.'
         else:
             pass
