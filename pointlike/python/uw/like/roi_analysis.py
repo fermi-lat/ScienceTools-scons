@@ -356,7 +356,7 @@ class ROIAnalysis(object):
 
     def set_parameters(self,parameters):
         """Support for hessian calculation in specfitter module."""
-        assert len(parameters)==len(self.psm.parameters())+len(self.bgm.parameters()), 'bad parameter length'
+        assert len(parameters)==len(self.psm.parameters())+len(self.bgm.parameters()), 'bad parameter length, %s!=%s+%s' % (len(parameters),len(self.psm.parameters()),len(self.bgm.parameters()))
         self.bgm.set_parameters(parameters,current_position=0)
         self.psm.set_parameters(parameters,current_position=len(self.bgm.parameters()))
         self.fit_parameters = parameters
