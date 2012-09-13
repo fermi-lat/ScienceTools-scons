@@ -59,6 +59,7 @@
 #include "Likelihood/MapBase.h"
 #include "Likelihood/MapCubeFunction2.h"
 #include "Likelihood/MeanPsf.h"
+#include "Likelihood/ModelMap.h"
 #include "Likelihood/Npred.h"
 #include "Likelihood/OneSourceFunc.h"
 #include "Likelihood/OptEM.h"
@@ -198,6 +199,7 @@ using optimizers::Exception;
 %include Likelihood/MeanPsf.h
 %include Likelihood/BinnedLikelihood.h
 %include Likelihood/BinnedLikelihood2.h
+%include Likelihood/ModelMap.h
 %include Likelihood/Npred.h
 %include Likelihood/OneSourceFunc.h
 %include Likelihood/OptEM.h

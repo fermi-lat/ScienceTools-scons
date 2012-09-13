@@ -239,6 +239,9 @@ class BinnedAnalysis(AnalysisBase):
         zeros = num.zeros(len(self.e_vals))
         self.sourceFitResids[-1].overlay(self.e_vals, zeros, symbol='dotted')
         self.sourceFitResids[-1].setTitle(srcName)
+    def writeModelMap(self, outfile, outtype='CCUBE'):
+        model_map = pyLike.ModelMap(self.logLike)
+        model_map.writeOutputMap(outfile, outtype)
 
 def binnedAnalysis(mode='ql', ftol=None, **pars):
     """Return a BinnedAnalysis object using the data in gtlike.par."""
