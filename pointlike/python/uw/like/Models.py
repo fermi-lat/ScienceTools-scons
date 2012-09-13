@@ -2533,7 +2533,7 @@ class FileFunction(Model):
         return self['Normalization']*10**self.interp(np.log10(e))
 
     def external_gradient(self,e):
-        return 10**self.interp(np.log10(e))
+        return np.asarray([10**self.interp(np.log10(e))])
 
     def __getstate__(self):
         """ You cannot pickle an interp1d object. """
