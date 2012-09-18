@@ -5,6 +5,7 @@ $Header$
 
 author:  Eric Wallace <ewallace@uw.edu>, Joshua Lande <joshualande@gmail.com>
 """
+import math
 import numpy as np
 from scipy import integrate
 from scipy.stats.distributions import chi2
@@ -105,7 +106,7 @@ class FluxUpperLimit(object):
         def like(norm):
             model.setp(0,norm)
             return np.exp(ll_0-roi.logLikelihood(roi.parameters()))
-        npoints = self.simps_points * (np.log10(integral_max) - np.log10(integral_min))
+        npoints = int(math.ceil(self.simps_points * (np.log10(integral_max) - np.log10(integral_min))))
         points = np.logspace(np.log10(integral_min), np.log10(integral_max),npoints*2+1)
         y = np.array([like(x)*10**x for x in points])
         trapz1 = integrate.cumtrapz(y[::2])
