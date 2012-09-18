@@ -2510,7 +2510,7 @@ class FileFunction(Model):
         togtlike=[operator.pos])
 
     default_limits = dict(
-        Normalization=LimitMapper(0.1,10,1))
+        Normalization=LimitMapper(1e-4,1e4,1))
     default_oomp_limits=[]
 
     def __init__(self,**kwargs):
