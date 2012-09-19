@@ -100,6 +100,7 @@ Cuts::Cuts(const std::vector<std::string> & eventFiles,
    if (!my_cuts.empty()) {
       *this = mergeGtis(my_cuts);
    }
+   set_irfName(eventFiles.at(0), extname);
 }
 
 Cuts Cuts::mergeGtis(std::vector<Cuts> & cuts_vector) {
@@ -220,6 +221,7 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
       }
    }
    delete ext;
+   set_irfName(eventFile, extname);
 }
 
 unsigned int Cuts::parseColname(const std::string & colname,
@@ -517,6 +519,59 @@ std::string Cuts::filterString() const {
       }
    }
    return filter;
+}
+
+const std::string & Cuts::irfName() const {
+   return m_irfName;
+}
+
+void Cuts::set_irfName(const std::string & infile, 
+                       const std::string & ext) {
+/// @todo The mapping of bit position to IRF name should be read from
+/// some file in CALDB rather than hard-coded here.
+   std::map<unsigned int, std::string> irfs;
+   irfs[0] = "TRANSIENT";
+   irfs[2] = "SOURCE";
+   irfs[3] = "CLEAN";
+   irfs[4] = "ULTRACLEAN";
+
+   std::ostringstream irf_name;
+
+/// @todo Add error handling when PASS_VER does not exist or does not
+/// have "P#V#" format.
+   const tip::Table * events(tip::IFileSvc::instance().readTable(infile, ext));
+   std::string passver;
+   events->getHeader()["PASS_VER"].get(passver);
+   delete events;
+
+   std::vector<std::string> tokens;
+   facilities::Util::stringTokenize(passver, "V", tokens);
+   irf_name << tokens[0];
+
+   for (size_t i(0); i < m_cuts.size(); i++) {
+      dataSubselector::BitMaskCut * bit_mask_cut 
+         = dynamic_cast<dataSubselector::BitMaskCut *>(
+            const_cast<dataSubselector::CutBase *>(m_cuts[i]));
+      if (bit_mask_cut) {
+         irf_name << irfs[bit_mask_cut->bitPosition()];
+         irf_name << "_V" << tokens[1];
+         continue;
+      }
+
+      dataSubselector::RangeCut * convtype_cut
+         = dynamic_cast<dataSubselector::RangeCut *>(
+            const_cast<dataSubselector::CutBase *>(m_cuts[i]));
+      if (convtype_cut && convtype_cut->colname() == "CONVERSION_TYPE") {
+         if (convtype_cut->minVal() == 0 && 
+             convtype_cut->maxVal() == 0) {
+            irf_name << "::FRONT";
+         } else if (convtype_cut->minVal() == 1 && 
+                    convtype_cut->maxVal() == 1) {
+            irf_name << "::BACK";
+         }
+      }
+   }
+   m_irfName = irf_name.str();
 }
 
 } // namespace dataSubselector

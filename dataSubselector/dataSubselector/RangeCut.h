@@ -18,7 +18,6 @@ namespace dataSubselector {
  * @brief Cut on FITS binary table column values.
  * @author J. Chiang
  *
- * $Header$
  */
 
 class RangeCut : public CutBase {

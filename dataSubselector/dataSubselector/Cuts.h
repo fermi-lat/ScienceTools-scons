@@ -35,7 +35,6 @@ class GtiCuts;
  * packages outside of dataSubselector.
  * @author J. Chiang
  *
- * $Header$
  */
 
 class Cuts {
@@ -212,6 +211,8 @@ public:
    /// @return A vector of pointers to the GtiCuts that are present.
    void getGtiCuts(std::vector<const GtiCut *> & gtiCuts);
 
+   const std::string & irfName() const;
+
    /// @return A new Cuts object. This static function checks that all
    /// of the non-GtiCuts are the same in each element of the input
    /// vector, copies those, then merges the GtiCuts.  The returned
@@ -225,6 +226,8 @@ public:
 private:
 
    std::vector<CutBase *> m_cuts;
+
+   std::string m_irfName;
 
    unsigned int parseColname(const std::string & colname,
                              std::string & col) const;
@@ -241,6 +244,9 @@ private:
    /// @brief Remove all DSS keywords (and NDSKEYS) from
    ///        the header.
    void removeDssKeywords(tip::Header & header) const;
+
+   void set_irfName(const std::string & infile,
+                    const std::string & ext);
 
 };
 

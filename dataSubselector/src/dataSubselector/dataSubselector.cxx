@@ -33,9 +33,6 @@ using dataSubselector::Gti;
 
 /**
  * @class DataFilter
- * @author J. Chiang
- *
- * $Header$
  */
 
 class DataFilter : public st_app::StApp {
