@@ -115,11 +115,16 @@ class LCTemplate(object):
 
         return (1-t)*dphi + sum( (n*prim.integrate(phi1,phi2) for n,prim in zip(norms,self.primitives)) )
 
+    def cdf(self,x):
+        return self.integrate(0,x,suppress_bg=False) 
+
     def max(self,resolution=0.01):
         return self(np.arange(0,1,resolution)).max()
 
     def __call__(self,phases,suppress_bg=False):
         norms = self.norms()
+        if (not hasattr(phases,'shape')):
+            phases = np.asarray([phases])
         rval = np.zeros_like(phases)
         for n,prim in zip(norms,self.primitives):
             rval += n*prim(phases)
