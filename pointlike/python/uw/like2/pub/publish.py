@@ -3,7 +3,11 @@ manage publishing
 $Header$
 """
 import sys, os, pickle, glob, types, time
-import Image
+#import Image
+# workaround for PIL not being nice?
+# symptom: accessinit-hash-collision-3-both-1-and-1
+import PIL.Image
+sys.modules['Image']=PIL.Image
 import pyfits
 import numpy as np
 import pylab as plt
