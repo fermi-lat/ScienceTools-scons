@@ -137,18 +137,17 @@ class ResidualLikelihood(ResidualTS):
     def tsfun(self, skydir):
         self.source.skydir = skydir
         self.roi.update(True)
-        print 'Studying source %s at %s' % (self.sourcename, skydir) ,
+        #print 'Studying source %s at %s' % (self.sourcename, skydir) ,
 
         with sedfuns.SourceFlux(self.roi, self.sourcename) as sf:
             sf.select_band(None)
             try:
                 pf = loglikelihood.PoissonFitter(sf, tol=1.0)
                 p = pf.poiss.p+ [pf.maxdev]
-                print 'TS, maxdev: %.2f %.2f' % (pf.poiss.ts, pf.maxdev)
+                #print 'TS, maxdev: %.2f %.2f' % (pf.poiss.ts, pf.maxdev)
             except Exception, msg:
                 p = [0,0,0, 1.0]
-                print 'Failed: %s' % msg
-        p = pf.poiss.p+ [pf.maxdev]
+                print 'Failed at %s: %s' % (skydir,msg)
         return p 
 
 
