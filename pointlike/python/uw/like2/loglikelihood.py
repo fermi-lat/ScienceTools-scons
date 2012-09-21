@@ -243,6 +243,10 @@ class Poisson(object):
     def errors(self):
         return self.find_delta()
         
+    @property
+    def ts(self):
+        return 0 if self.flux<=0 else (self(self.flux)-self(0))*2.0
+        
     def find_delta(self,delta_logl=.5):
         """Find points where the function decreases by delta from the max"""
         smax = max(0,self.p[0])
@@ -293,6 +297,9 @@ class Poisson(object):
         if abs(f(ret))>1e-2:
             raise Exception('percentile failed fit: %s %.1f %.1f %.1e' % (self.p,ret, f(ret), xmax))
         return ret/e
+        
+    def pts(self):
+        return 0 if self.flux<=0 else (self(self.flux)-self(0))*2.0
  
 class LogLikelihood(object):
     """ manage a 1-dimensional likelihood function """
