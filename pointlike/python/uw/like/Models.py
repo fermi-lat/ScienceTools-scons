@@ -1783,7 +1783,7 @@ class ExpCutoff(Model):
  
     @property
     def eflux(self):
-        n0 = self['n0']
+        n0 = self['norm']
         return n0 * self.e0**2
 
     def create_super_cutoff(self, free_b=False):
