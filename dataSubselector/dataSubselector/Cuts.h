@@ -245,6 +245,9 @@ private:
    ///        the header.
    void removeDssKeywords(tip::Header & header) const;
 
+   void read_bitmask_mapping(const std::string & pass_ver,
+                             std::map<unsigned int, std::string> & irfs) const;
+
    void set_irfName(const std::string & infile,
                     const std::string & ext);
 

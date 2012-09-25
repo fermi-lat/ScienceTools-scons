@@ -15,6 +15,7 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "facilities/commonUtilities.h"
 #include "facilities/Util.h"
 
 #include "st_facilities/Util.h"
@@ -75,6 +76,25 @@ mergeRangeCuts(const std::vector<dataSubselector::RangeCut *> & cuts) {
                                         cuts.at(0)->unit(),
                                         minValue, maxValue, type,
                                         cuts.at(0)->index());
+}
+
+void joinPaths(const std::string & components,
+               std::string & final_path) {
+   std::vector<std::string> tokens; 
+   facilities::Util::stringTokenize(components, " ", tokens);
+   if (tokens.size() == 0) {
+      throw std::runtime_error("dataSubselector::Cuts: joinPaths: "
+                               "empty string input");
+   }
+   if (tokens.size() == 1) {
+      final_path = tokens[0];
+      return;
+   }
+   final_path = facilities::commonUtilities::joinPath(tokens[0], tokens[1]);
+   for (size_t i(2); i < tokens.size(); i++) {
+      final_path = facilities::commonUtilities::joinPath(final_path,tokens[i]);
+   }
+   return;
 }
 
 } // anonymous namespace
@@ -525,28 +545,53 @@ const std::string & Cuts::irfName() const {
    return m_irfName;
 }
 
+void Cuts::
+read_bitmask_mapping(const std::string & pass_ver,
+                     std::map<unsigned int, std::string> & irfs) const{
+   irfs.clear();
+   std::string sub_path;
+   ::joinPaths("data glast lat irf_index.fits", sub_path);
+   std::string irf_index = facilities::commonUtilities::joinPath(
+      facilities::commonUtilities::getEnvironment("CALDB"), sub_path);
+   const tip::Table * irf_map 
+      = tip::IFileSvc::instance().readTable(irf_index, "BITMASK_MAPPING");
+   tip::Table::ConstIterator it(irf_map->begin());
+   tip::ConstTableRecord & row = *it;
+   for ( ; it != irf_map->end(); ++it) {
+      std::string event_class;
+      int bitpos;
+      row["event_class"].get(event_class);
+      row["bitposition"].get(bitpos);
+      size_t evlen(event_class.length() - 1);   // neglect termination char
+      std::string my_pass_ver(event_class.substr(0, 2) + 
+                              event_class.substr(evlen-1, 2));
+      if (my_pass_ver == pass_ver) {
+         irfs[bitpos] = event_class;
+      }
+   }
+   delete irf_map;
+   if (irfs.size() == 0) {
+      std::ostringstream message;
+      message << "dataSubselector::Cuts::read_bitmask_mapping: "
+              << "PASS_VER not found in irf_index.fits: "
+              << pass_ver;
+      throw std::runtime_error(message.str());
+   }
+}
+
 void Cuts::set_irfName(const std::string & infile, 
                        const std::string & ext) {
-/// @todo The mapping of bit position to IRF name should be read from
-/// some file in CALDB rather than hard-coded here.
-   std::map<unsigned int, std::string> irfs;
-   irfs[0] = "TRANSIENT";
-   irfs[2] = "SOURCE";
-   irfs[3] = "CLEAN";
-   irfs[4] = "ULTRACLEAN";
-
-   std::ostringstream irf_name;
-
 /// @todo Add error handling when PASS_VER does not exist or does not
 /// have "P#V#" format.
    const tip::Table * events(tip::IFileSvc::instance().readTable(infile, ext));
-   std::string passver;
-   events->getHeader()["PASS_VER"].get(passver);
+   std::string pass_ver;
+   events->getHeader()["PASS_VER"].get(pass_ver);
    delete events;
 
-   std::vector<std::string> tokens;
-   facilities::Util::stringTokenize(passver, "V", tokens);
-   irf_name << tokens[0];
+   std::map<unsigned int, std::string> irfs;
+   read_bitmask_mapping(pass_ver, irfs);
+
+   std::ostringstream irf_name;
 
    for (size_t i(0); i < m_cuts.size(); i++) {
       dataSubselector::BitMaskCut * bit_mask_cut 
@@ -554,7 +599,6 @@ void Cuts::set_irfName(const std::string & infile,
             const_cast<dataSubselector::CutBase *>(m_cuts[i]));
       if (bit_mask_cut) {
          irf_name << irfs[bit_mask_cut->bitPosition()];
-         irf_name << "_V" << tokens[1];
          continue;
       }
 
