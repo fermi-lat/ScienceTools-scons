@@ -581,12 +581,23 @@ read_bitmask_mapping(const std::string & pass_ver,
 
 void Cuts::set_irfName(const std::string & infile, 
                        const std::string & ext) {
-/// @todo Add error handling when PASS_VER does not exist or does not
+/// @todo Improve error handling when PASS_VER does not exist or does not
 /// have "P#V#" format.
-   const tip::Table * events(tip::IFileSvc::instance().readTable(infile, ext));
+   std::auto_ptr<const tip::Extension> 
+      events(tip::IFileSvc::instance().readExtension(infile, ext));
    std::string pass_ver;
-   events->getHeader()["PASS_VER"].get(pass_ver);
-   delete events;
+   try {
+      events->getHeader()["PASS_VER"].get(pass_ver);
+   } catch (tip::TipException & eObj) {
+      if (st_facilities::Util::expectedException(eObj,"Cannot read keyword")) {
+         // Do nothing for now.
+         return;
+      }
+   }
+   if (pass_ver == "NONE") {
+      // Do nothing for now.
+      return;
+   }
 
    std::map<unsigned int, std::string> irfs;
    read_bitmask_mapping(pass_ver, irfs);
