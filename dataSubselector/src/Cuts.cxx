@@ -546,8 +546,7 @@ const std::string & Cuts::irfName() const {
 }
 
 void Cuts::
-read_bitmask_mapping(const std::string & pass_ver,
-                     std::map<unsigned int, std::string> & irfs) const{
+read_bitmask_mapping(std::map<unsigned int, std::string> & irfs) const {
    irfs.clear();
    std::string sub_path;
    ::joinPaths("data glast lat irf_index.fits", sub_path);
@@ -562,10 +561,14 @@ read_bitmask_mapping(const std::string & pass_ver,
       int bitpos;
       row["event_class"].get(event_class);
       row["bitposition"].get(bitpos);
-      size_t evlen(event_class.length() - 1);   // neglect termination char
+      size_t evlen(event_class.length());
+      size_t v_pos(event_class.find_last_of('V'));
+      // Since we lack delimiters in irf names to signify the pass
+      // number part of the IRF name, just take the first two and hope
+      // we don't have a Pass 10 or later.
       std::string my_pass_ver(event_class.substr(0, 2) + 
-                              event_class.substr(evlen-1, 2));
-      if (my_pass_ver == pass_ver) {
+                              event_class.substr(v_pos, evlen - v_pos));
+      if (my_pass_ver == m_pass_ver) {
          irfs[bitpos] = event_class;
       }
    }
@@ -574,7 +577,7 @@ read_bitmask_mapping(const std::string & pass_ver,
       std::ostringstream message;
       message << "dataSubselector::Cuts::read_bitmask_mapping: "
               << "PASS_VER not found in irf_index.fits: "
-              << pass_ver;
+              << m_pass_ver;
       throw std::runtime_error(message.str());
    }
 }
@@ -585,37 +588,34 @@ void Cuts::set_irfName(const std::string & infile,
 /// have "P#V#" format.
    std::auto_ptr<const tip::Extension> 
       events(tip::IFileSvc::instance().readExtension(infile, ext));
-   std::string pass_ver;
    try {
-      events->getHeader()["PASS_VER"].get(pass_ver);
+      events->getHeader()["PASS_VER"].get(m_pass_ver);
    } catch (tip::TipException & eObj) {
       if (st_facilities::Util::expectedException(eObj,"Cannot read keyword")) {
          // Do nothing for now.
          return;
       }
    }
-   if (pass_ver == "NONE") {
+   if (m_pass_ver == "NONE") {
       // Do nothing for now.
       return;
    }
 
    std::map<unsigned int, std::string> irfs;
-   read_bitmask_mapping(pass_ver, irfs);
+   read_bitmask_mapping(irfs);
 
    std::ostringstream irf_name;
 
    for (size_t i(0); i < m_cuts.size(); i++) {
-      dataSubselector::BitMaskCut * bit_mask_cut 
-         = dynamic_cast<dataSubselector::BitMaskCut *>(
-            const_cast<dataSubselector::CutBase *>(m_cuts[i]));
+      BitMaskCut * bit_mask_cut 
+         = dynamic_cast<BitMaskCut *>(const_cast<CutBase *>(m_cuts[i]));
       if (bit_mask_cut) {
          irf_name << irfs[bit_mask_cut->bitPosition()];
          continue;
       }
 
-      dataSubselector::RangeCut * convtype_cut
-         = dynamic_cast<dataSubselector::RangeCut *>(
-            const_cast<dataSubselector::CutBase *>(m_cuts[i]));
+      RangeCut * convtype_cut 
+         = dynamic_cast<RangeCut *>(const_cast<CutBase *>(m_cuts[i]));
       if (convtype_cut && convtype_cut->colname() == "CONVERSION_TYPE") {
          if (convtype_cut->minVal() == 0 && 
              convtype_cut->maxVal() == 0) {
@@ -627,6 +627,88 @@ void Cuts::set_irfName(const std::string & infile,
       }
    }
    m_irfName = irf_name.str();
+}
+
+void Cuts::setIrfs(const std::string & irfName) {
+   if (bitMaskCut()) {
+      throw std::runtime_error("dataSubselector::Cuts::setIrfs: "
+                               "Bit mask cut already set");
+   }
+   m_irfName = irfName;
+   size_t delim_pos = irfName.find_last_of(":");
+   if (delim_pos != std::string::npos) { 
+      // Have a CONVERSION_TYPE selection, so check against existing
+      // selection.
+      std::string section(irfName.substr(delim_pos - 1,
+                                         irfName.length() - delim_pos + 1));
+      RangeCut * convtype_cut(0);
+      for (size_t i(0); i < m_cuts.size(); i++) {
+         convtype_cut 
+            = dynamic_cast<RangeCut *>(const_cast<CutBase *>(m_cuts[i]));
+         if (convtype_cut && convtype_cut->colname() == "CONVERSION_TYPE") {
+            if ((convtype_cut->minVal() == 0 && 
+                 convtype_cut->maxVal() == 0 &&
+                 section != "::FRONT") ||
+                (convtype_cut->minVal() == 1 && 
+                 convtype_cut->maxVal() == 1 &&
+                 section != "::BACK")) {
+               throw std::runtime_error("dataSubselector::Cuts::setIrfs: "
+                                        "Inconsistent FRONT/BACK selection");
+            }
+         }
+      }
+      if (!convtype_cut) {
+         // Add a CONVERSION_TYPE selection based in irfName.
+         if (section == "::FRONT") {
+            addRangeCut("CONVERSION_TYPE", "dimensionless", 0, 0);
+         } else if (section == "::BACK") {
+            addRangeCut("CONVERSION_TYPE", "dimensionless", 1, 1);
+         } else {
+            throw std::runtime_error("invalid section: " + section);
+         }
+      }
+   }
+
+   std::string event_class(irfName.substr(0, delim_pos - 1));
+   // Extract PASS_VER
+   size_t evlen(event_class.length());
+   size_t v_pos(event_class.find_last_of('V'));
+   // Since we lack delimiters in irf names to signify the pass
+   // number part of the IRF name, just take the first two and hope
+   // we don't have a Pass 10 or later.
+   m_pass_ver = (event_class.substr(0, 2) + 
+                 event_class.substr(v_pos, evlen - v_pos));
+   
+   std::map<unsigned int, std::string> irfs;
+   read_bitmask_mapping(irfs);
+   std::map<unsigned int, std::string>::const_iterator it(irfs.begin());
+   for ( ; it != irfs.end(); ++it) {
+      if (it->second == event_class) {
+         addBitMaskCut("EVENT_CLASS", it->first);
+      }
+   }
+}
+
+BitMaskCut * Cuts::bitMaskCut() const {
+   for (size_t i(0); i < m_cuts.size(); i++) {
+      BitMaskCut * bit_mask_cut 
+         = dynamic_cast<BitMaskCut *>(const_cast<CutBase *>(m_cuts[i]));
+      if (bit_mask_cut) {
+         return bit_mask_cut;
+      }
+   }
+   return 0;
+}
+
+RangeCut * Cuts::conversionTypeCut() const {
+   for (size_t i(0); i < m_cuts.size(); i++) {
+      RangeCut * range_cut 
+         = dynamic_cast<RangeCut *>(const_cast<CutBase *>(m_cuts[i]));
+      if (range_cut && range_cut->colname() == "CONVERSION_TYPE") {
+         return range_cut;
+      }
+   }
+   return 0;
 }
 
 } // namespace dataSubselector

@@ -26,6 +26,7 @@ namespace tip {
 
 namespace dataSubselector {
 
+class BitMaskCut;
 class Gti;
 class GtiCuts;
 
@@ -213,6 +214,11 @@ public:
 
    const std::string & irfName() const;
 
+   /// This will set the BitMaskCut and m_pass_ver value based 
+   /// on the IRF name (assuming it is Pass 7 or later).
+   /// If BitMaskCut is already set, this will throw an exception.
+   void setIrfs(const std::string & irfName);
+
    /// @return A new Cuts object. This static function checks that all
    /// of the non-GtiCuts are the same in each element of the input
    /// vector, copies those, then merges the GtiCuts.  The returned
@@ -223,11 +229,17 @@ public:
    /// @return True if the cut is a time range or GTI cut.
    static bool isTimeCut(const CutBase & cut);
 
+   BitMaskCut * bitMaskCut() const;
+
+   RangeCut * conversionTypeCut() const;
+
 private:
 
    std::vector<CutBase *> m_cuts;
 
    std::string m_irfName;
+
+   std::string m_pass_ver;
 
    unsigned int parseColname(const std::string & colname,
                              std::string & col) const;
@@ -245,8 +257,7 @@ private:
    ///        the header.
    void removeDssKeywords(tip::Header & header) const;
 
-   void read_bitmask_mapping(const std::string & pass_ver,
-                             std::map<unsigned int, std::string> & irfs) const;
+   void read_bitmask_mapping(std::map<unsigned int, std::string> & irfs) const;
 
    void set_irfName(const std::string & infile,
                     const std::string & ext);

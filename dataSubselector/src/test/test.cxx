@@ -51,6 +51,8 @@ class DssTests : public CppUnit::TestFixture {
 
    CPPUNIT_TEST(test_BitMaskCut);
 
+   CPPUNIT_TEST(test_irfName);
+
    CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -71,6 +73,7 @@ public:
    void test_removeRangeCuts();
    void test_mergeRangeCuts();
    void test_BitMaskCut();
+   void test_irfName();
 
 private:
 
@@ -550,16 +553,40 @@ void DssTests::test_BitMaskCut() {
    CPPUNIT_ASSERT(cut.filterString() == "((EVENT_CLASS/4)%2 == 1)");
 }
 
-int main() {
+void DssTests::test_irfName() {
+   dataSubselector::Cuts cuts1;
+   cuts1.setIrfs("P7SOURCE_V6::BACK");
+   CPPUNIT_ASSERT(cuts1.bitMaskCut()->bitPosition() == 2);
+   try {
+      cuts1.setIrfs("P7TRANSIENT_V6");
+   } catch (std::runtime_error & eObj) {
+      st_facilities::Util::expectedException(eObj, "Bit mask cut already set");
+   }
 
-   CppUnit::TextTestRunner runner;
-   
-   runner.addTest(DssTests::suite());
-    
-   bool result = runner.run();
-   if (result) {
-      return 0;
+   CPPUNIT_ASSERT(cuts1.conversionTypeCut()->minVal() == 1);
+   CPPUNIT_ASSERT(cuts1.conversionTypeCut()->maxVal() == 1);
+
+   dataSubselector::Cuts cuts2;
+   cuts2.setIrfs("P7TRANSIENT_V6");
+   CPPUNIT_ASSERT(cuts2.bitMaskCut()->bitPosition() == 0);
+   CPPUNIT_ASSERT(cuts2.conversionTypeCut() == 0);
+}
+
+int main(int iargc, char * argv[]) {
+
+   if (iargc > 1 && std::string(argv[1]) == "-d") {
+      DssTests testObj;
+      testObj.setUp();
+      testObj.test_irfName();
+      testObj.tearDown();
    } else {
-      return 1;
+      CppUnit::TextTestRunner runner;
+      runner.addTest(DssTests::suite());
+      bool result = runner.run();
+      if (result) {
+         return 0;
+      } else {
+         return 1;
+      }
    }
 }
