@@ -329,6 +329,20 @@ class PhaseRange(object):
         """ True if the two regions have overlaping range. """
         return self.intersect(other).phase_fraction > 0
 
+    def offset(self, offset):
+        """ Offset by value:
+
+                >>> print PhaseRange(0.25, 0.5).offset(0.25)
+                [0.5, 0.75]
+
+                >>> print PhaseRange(0.0, 0.5).offset(0.75)
+                [0, 0.25] U [0.75, 1]
+
+                >>> print PhaseRange([[0,0.1],[0.9,1]]).offset(0.5)
+                [0.4, 0.6]
+        """
+        return reduce(add,[PhaseRange(a+offset,b+offset) for a,b in self.tolist(dense=False)])
+
     def axvspan(self, axes=None, phase_offsets=[0], **kwargs):
         """ Overlay range on matplotlib axes. 
             N.B. set phase_offsets=[0,1] to overlay on
