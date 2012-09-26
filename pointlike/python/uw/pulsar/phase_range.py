@@ -332,8 +332,13 @@ class PhaseRange(object):
     def offset(self, offset):
         """ Offset by value:
 
-                >>> print PhaseRange(0.25, 0.5).offset(0.25)
+                >>> pr=PhaseRange(0.25, 0.5)
+                >>> print pr
+                [0.25, 0.5]
+                >>> print pr.offset(0.25)
                 [0.5, 0.75]
+                >>> print pr
+                [0.25, 0.5]
 
                 >>> print PhaseRange(0.0, 0.5).offset(0.75)
                 [0, 0.25] U [0.75, 1]
