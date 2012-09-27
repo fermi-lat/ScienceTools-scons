@@ -98,6 +98,8 @@ class SpatialQuantile(object):
 
 
 
+class SpatialModelException(Exception): 
+    pass
 
 class SpatialModel(object):
     """ This class represents a normalized spatial model which 
@@ -1332,6 +1334,10 @@ class InterpProfile2D(InterpProfile):
 
     def cache(self):
         self.sigma=self.extension()
+        if self.sigma < self.default_limits[-1][0]:
+            raise SpatialModelException("sigma=%s is lower than the lower limit=%s:" % (self.sigma,self.default_limits[-1][0]))
+        if self.sigma > self.default_limits[-1][-1]:
+            raise SpatialModelException("sigma=%s is larger than the upper limit=%s:" % (self.sigma,self.default_limits[-1][-1]))
         self.pdf = self.interp(self.r_in_degrees,self.sigma)
         super(InterpProfile2D,self).cache()
 
