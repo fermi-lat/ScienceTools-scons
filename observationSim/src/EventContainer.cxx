@@ -116,6 +116,9 @@ EventContainer::~EventContainer() {
 
 void EventContainer::init() {
    m_events.clear();
+   if (!m_cuts) {
+      return;
+   }
    dataSubselector::BitMaskCut * bitMaskCut = m_cuts->bitMaskCut();
    if (bitMaskCut) {
       m_eventClass = 1 << bitMaskCut->bitPosition();
