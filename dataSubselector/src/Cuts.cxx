@@ -673,18 +673,29 @@ void Cuts::setIrfs(const std::string & irfName) {
    // Extract PASS_VER
    size_t evlen(event_class.length());
    size_t v_pos(event_class.find_last_of('V'));
-   // Since we lack delimiters in irf names to signify the pass
-   // number part of the IRF name, just take the first two and hope
-   // we don't have a Pass 10 or later.
-   m_pass_ver = (event_class.substr(0, 2) + 
-                 event_class.substr(v_pos, evlen - v_pos));
+   if (v_pos == std::string::npos) {
+      m_pass_ver = "NONE";
+   } else {
+      // Since we lack delimiters in irf names to signify the pass
+      // number part of the IRF name, just take the first two and hope
+      // we don't have a Pass 10 or later.
+      m_pass_ver = (event_class.substr(0, 2) + 
+                    event_class.substr(v_pos, evlen - v_pos));
+   }
    
    std::map<unsigned int, std::string> irfs;
-   read_bitmask_mapping(irfs);
-   std::map<unsigned int, std::string>::const_iterator it(irfs.begin());
-   for ( ; it != irfs.end(); ++it) {
-      if (it->second == event_class) {
-         addBitMaskCut("EVENT_CLASS", it->first);
+   try {
+      read_bitmask_mapping(irfs);
+      std::map<unsigned int, std::string>::const_iterator it(irfs.begin());
+      for ( ; it != irfs.end(); ++it) {
+         if (it->second == event_class) {
+            addBitMaskCut("EVENT_CLASS", it->first);
+         }
+      }
+   } catch (std::runtime_error & eObj) {
+      if (!st_facilities::Util::expectedException(eObj,
+                                                  "read_bitmask_mapping")) {
+         throw;
       }
    }
 }
