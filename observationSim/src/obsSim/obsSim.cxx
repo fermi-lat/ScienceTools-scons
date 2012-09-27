@@ -308,6 +308,12 @@ void ObsSim::generateData() {
    std::string ev_table = m_pars["evtable"];
    dataSubselector::Cuts * cuts = new dataSubselector::Cuts;
    cuts->addRangeCut("ENERGY", "MeV", m_pars["emin"], m_pars["emax"]);
+
+   // Setting the irfs also sets the cut on CONVERSION_TYPE and the 
+   // bit that is set in the EVENT_CLASS variable.
+   std::string irfs = m_pars["irfs"];
+   cuts->setIrfs(irfs);
+
    if (m_pars["use_ac"]) {
       cuts->addSkyConeCut(m_pars["ra"], m_pars["dec"], m_pars["radius"]);
    }

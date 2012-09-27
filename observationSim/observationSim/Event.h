@@ -60,11 +60,12 @@ public:
    /// Event type (for ascertaining which set of IRFs to use).
    int eventType() const {return m_eventType;}
 
-   /// Event class (0, 1, 2,...)
-   /// Computed from m_eventType assuming IRFs are ordered front, back, 
-   /// front, back,....
+   void setEventClass(int eventClass) {
+      m_eventClass = eventClass;
+   }
+
    int eventClass() const {
-      return m_eventType/2;
+      return m_eventClass;
    }
 
    /// Conversion type (0=front, 1=back), 
@@ -126,6 +127,7 @@ private:
    astro::SkyDir m_zenith;
 
    int m_eventType;
+   int m_eventClass;
 
    double m_trueEnergy;
    double m_flux_theta;

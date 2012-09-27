@@ -110,6 +110,10 @@ private:
                          const std::string & keyword,
                          const std::string & parname) const;
 
+   void write_par_as_long(tip::Header & header,
+                          const std::string & keyword,
+                          const std::string & parname) const;
+
    void write_par_as_bool(tip::Header & header,
                           const std::string & keyword,
                           const std::string & parname) const;

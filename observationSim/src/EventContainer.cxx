@@ -37,6 +37,7 @@ using CLHEP::HepRotation;
 
 #include "irfInterface/Irfs.h"
 
+#include "dataSubselector/BitMaskCut.h"
 #include "dataSubselector/Cuts.h"
 #include "dataSubselector/Gti.h"
 
@@ -115,6 +116,12 @@ EventContainer::~EventContainer() {
 
 void EventContainer::init() {
    m_events.clear();
+   dataSubselector::BitMaskCut * bitMaskCut = m_cuts->bitMaskCut();
+   if (bitMaskCut) {
+      m_eventClass = 1 << bitMaskCut->bitPosition();
+   } else {
+      m_eventClass = 0;
+   }
 }
 
 bool EventContainer::addEvent(EventSource * event, 
@@ -180,6 +187,7 @@ bool EventContainer::addEvent(EventSource * event,
       evtParams["ENERGY"] = appEnergy;
       evtParams["RA"] = appDir.ra();
       evtParams["DEC"] = appDir.dec();
+      evtParams["CONVERSION_TYPE"] = respPtr->irfID() % 2;
       if (m_cuts == 0 || m_cuts->accept(evtParams)) {
          double lat_deadtime(2.6e-5);
          if (m_events.size() > 0 &&
@@ -199,6 +207,7 @@ bool EventContainer::addEvent(EventSource * event,
                                       ScZenith(time), respPtr->irfID(), 
                                       energy, flux_theta, flux_phi,
                                       m_srcSummaries[srcName].id) );
+            m_events.back().setEventClass(m_eventClass);
             accepted = true;
          }
       }

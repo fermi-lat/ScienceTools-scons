@@ -119,6 +119,8 @@ private:
 
    /// The Event buffer.
    std::vector<Event> m_events;
+   
+   int m_eventClass;
 
    /// Event summaries keyed by source name.
    std::map<std::string, SourceSummary> m_srcSummaries;
