@@ -113,7 +113,15 @@ class SkyModel(object):
             if sname  not in names: 
                 skydir=SkyDir(float(s.ra), float(s.dec))
                 index=self.hpindex(skydir)
-                self.point_sources.append(sources.PointSource(name=s.name, skydir=skydir, index=index, model=self.newmodel))
+                model = self.newmodel
+                if type(self.newmodel)==types.StringType: 
+                    model = eval(self.newmodel)
+                elif model is None: pass
+                else:
+                    model=self.newmodel.copy() # make sure to get a new object
+                if model is not None:
+                    model.free[0] = True # must have at least one free parameter to be set up properly in an ROI
+                self.point_sources.append(sources.PointSource(name=s.name, skydir=skydir, index=index,  model=model))
                 print '\tadded new source %s at ROI %d' % (s.name, index)
             else: 
                 print '\t source %s is in the model:' %sname, # will remove if ra<0' % sname

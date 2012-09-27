@@ -13,7 +13,7 @@ import numpy as np
 import pylab as plt
 from uw.utilities import makefig, makerec, colormaps
 from . import healpix_map, dz_collection 
-from . import source_pivot, roi_pivot, makecat, display_map, healpix_map, combine_figures
+from . import source_pivot, roi_pivot, makecat, display_map,  combine_figures
 #from ..analysis import residuals
 from .. import skymodel
 

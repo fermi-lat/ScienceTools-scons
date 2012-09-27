@@ -289,14 +289,17 @@ class Poisson(object):
         """return percentile for given limit, default 95%"""
         e = abs(self.p[1]) 
         f = lambda x : self.cdf(x/e)-limit
-        xmax = self.find_delta(6)[1]*e
-        if f(xmax)< 0:
-            return xmax/e #kluge!!
-            #raise Exception('bad percentile limit: %s' % f(xmax))
-        ret = optimize.brentq(f, 0, xmax) 
-        if abs(f(ret))>1e-2:
-            raise Exception('percentile failed fit: %s %.1f %.1f %.1e' % (self.p,ret, f(ret), xmax))
-        return ret/e
+        try:
+            xmax = self.find_delta(6)[1]*e
+            if f(xmax)< 0:
+                return xmax/e #kluge!!
+                #raise Exception('bad percentile limit: %s' % f(xmax))
+            ret = optimize.brentq(f, 0, xmax) 
+            if abs(f(ret))>1e-2:
+                raise Exception('percentile failed fit: %s %.1f %.1f %.1e' % (self.p,ret, f(ret), xmax))
+            return ret/e
+        except:
+            return np.nan
         
     def pts(self):
         return 0 if self.flux<=0 else (self(self.flux)-self(0))*2.0
