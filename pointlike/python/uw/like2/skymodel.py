@@ -101,7 +101,9 @@ class SkyModel(object):
         if not os.path.exists(cat):
             cat = os.path.expandvars(os.path.join('$FERMI','catalog', cat))
         if not os.path.exists(cat):
-            raise Exception('auxilliary catalog %s not found locally or in $FERMI/catalog'%self.auxcat)
+            cat = os.path.join(self.folder, self.auxcat )
+        if not os.path.exists(cat):
+            raise Exception('auxilliary source catalog "%s" not found locally or in $FERMI/catalog'%self.auxcat)
         ss = makerec.load(cat)
         names = [s.name for s in self.point_sources]
         toremove=[]
