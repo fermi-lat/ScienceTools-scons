@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ observationSim-09-02-01 27-Sep-2012 jchiang patch tag since ST LATEST was foiled by lingering lock files
  observationSim-09-03-00 27-Sep-2012 jchiang write EVENT_CLASS using bit mapping for pass 7 irfs and later; corner case handling for pre-pass 7 irfs
  observationSim-09-02-00 14-Jun-2012 jchiang write gtobssim par values to EVENTS and SC_DATA headers
  observationSim-09-01-01 08-Feb-2012 jchiang const correctness fixes
