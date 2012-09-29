@@ -137,7 +137,6 @@ class ROIstat(object):
         Note: this does not change the set of variable sources defined by the SourceList: but should.
         It should also require that the source has varaiable parameters
         """
-        source = self.sources.find
         if sourcename is None:
             self.initialize()
             return None
