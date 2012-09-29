@@ -18,6 +18,8 @@
 #include "facilities/commonUtilities.h"
 #include "facilities/Util.h"
 
+#include "st_stream/StreamFormatter.h"
+
 #include "st_facilities/Util.h"
 
 #include "tip/IFileSvc.h"
@@ -103,7 +105,8 @@ namespace dataSubselector {
 
 Cuts::Cuts(const std::vector<std::string> & eventFiles,
            const std::string & extname, bool check_columns,
-           bool skipTimeRangeCuts, bool skipEventClassCuts) {
+           bool skipTimeRangeCuts, bool skipEventClassCuts) 
+   : m_irfName("NONE") {
    std::vector<Cuts> my_cuts;
    for (size_t i = 0; i < eventFiles.size(); i++) {
       my_cuts.push_back(Cuts(eventFiles.at(i), extname, check_columns,
@@ -164,7 +167,8 @@ void Cuts::getGtiCuts(std::vector<const GtiCut *> & gtiCuts) {
 
 Cuts::Cuts(const std::string & eventFile, const std::string & extname,
            bool check_columns, bool skipTimeRangeCuts,
-           bool skipEventClassCuts) {
+           bool skipEventClassCuts) 
+   : m_irfName("NONE") {
    const tip::Extension * ext(0);
    try {
       ext = tip::IFileSvc::instance().readTable(eventFile, extname);
@@ -226,7 +230,13 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
          std::vector<std::string> tokens;
          facilities::Util::stringTokenize(type, "(),", tokens);
          unsigned int bit_position = std::atoi(tokens[2].c_str());
-         m_cuts.push_back(new BitMaskCut(tokens[1], bit_position));
+         if (tokens.size() == 4) {
+            // Assume third position in BITMASK arg list is pass_ver.
+            m_cuts.push_back(new BitMaskCut(tokens[1], bit_position, 
+                                            tokens[3]));
+         } else {
+            m_cuts.push_back(new BitMaskCut(tokens[1], bit_position));
+         }
       } else {
          std::ostringstream message;
          message << "FITS extension contains an unrecognized DSS filtering "
@@ -274,7 +284,9 @@ bool Cuts::hasCut(const CutBase * newCut) const {
    return false;
 }
 
-Cuts::Cuts(const Cuts & rhs) {
+Cuts::Cuts(const Cuts & rhs) 
+   : m_irfName(rhs.m_irfName),
+     m_pass_ver(rhs.m_pass_ver) {
    m_cuts.reserve(rhs.size());
    for (unsigned int i = 0; i < rhs.size(); i++) {
       m_cuts.push_back(rhs.m_cuts[i]->clone());
@@ -338,8 +350,9 @@ unsigned int Cuts::addSkyConeCut(double ra, double dec, double radius) {
 }
 
 unsigned int Cuts::addBitMaskCut(const std::string & colname,
-                                 unsigned int bitPosition) {
-   return addCut(new BitMaskCut(colname, bitPosition));
+                                 unsigned int bitPosition,
+                                 const std::string & pass_ver) {
+   return addCut(new BitMaskCut(colname, bitPosition, pass_ver));
 }
 
 unsigned int Cuts::addCut(CutBase * newCut) {
@@ -447,6 +460,20 @@ bool Cuts::isTimeCut(const CutBase & cut) {
       return true;
    }
    return false;
+}
+
+void Cuts::checkIrfs(const std::string & infile, 
+                     const std::string & extname,
+                     const std::string & irfs) {
+   Cuts my_cuts(infile, extname);
+   if (my_cuts.irfName() != irfs || irfs.substr(0, 2) != "P7") {
+      st_stream::StreamFormatter formatter("dataSubselector::Cuts",
+                                           "checkIrfs", 2);
+      formatter.warn() << "IRF selection, "
+                       << irfs << ", and DSS keywords in "
+                       << infile << "[" << extname << "] "
+                       << "are inconsistent." << std::endl;
+   }
 }
 
 void Cuts::removeDssKeywords(tip::Header & header) const {
@@ -689,7 +716,11 @@ void Cuts::setIrfs(const std::string & irfName) {
       std::map<unsigned int, std::string>::const_iterator it(irfs.begin());
       for ( ; it != irfs.end(); ++it) {
          if (it->second == event_class) {
-            addBitMaskCut("EVENT_CLASS", it->first);
+            if (m_pass_ver == "NONE") {
+               addBitMaskCut("EVENT_CLASS", it->first);
+            } else {
+               addBitMaskCut("EVENT_CLASS", it->first, m_pass_ver);
+            }
          }
       }
    } catch (std::runtime_error & eObj) {

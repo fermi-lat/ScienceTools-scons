@@ -25,7 +25,8 @@ class BitMaskCut : public CutBase {
 
 public:
 
-   BitMaskCut(const std::string & colname, unsigned int bitPosition);
+   BitMaskCut(const std::string & colname, unsigned int bitPosition,
+              const std::string & pass_ver="");
 
    virtual ~BitMaskCut() {}
 
@@ -59,6 +60,8 @@ private:
    std::string m_colname;
    unsigned int m_bitPosition;
    unsigned int m_mask;
+
+   std::string m_pass_ver;
 
    bool accept(unsigned int value) const;
 

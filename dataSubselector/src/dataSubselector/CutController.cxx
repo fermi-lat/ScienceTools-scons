@@ -62,7 +62,7 @@ CutController::CutController(st_app::AppParGroup & pars,
    } else {
       try {
          int evclass = pars["evclass"];
-         m_cuts.addBitMaskCut("EVENT_CLASS", evclass);
+         m_cuts.addBitMaskCut("EVENT_CLASS", evclass, m_passVer);
       } catch (const hoops::Hexception &) {
          // Assume INDEF is given as the parameter value for evclass,
          // so use default of applying no EVENT_CLASS cut.

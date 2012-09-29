@@ -17,9 +17,10 @@
 
 namespace dataSubselector {
 
-BitMaskCut::BitMaskCut(const std::string & colname, unsigned int bitPosition) 
+BitMaskCut::BitMaskCut(const std::string & colname, unsigned int bitPosition,
+                       const std::string & pass_ver) 
    : CutBase("bit_mask"), m_colname(colname), m_bitPosition(bitPosition),
-     m_mask(1 << bitPosition) {}
+     m_mask(1 << bitPosition), m_pass_ver(pass_ver) {}
 
 bool BitMaskCut::accept(tip::ConstTableRecord & row) const {
    unsigned int value;
@@ -62,7 +63,7 @@ std::string BitMaskCut::filterString() const {
 
 bool BitMaskCut::equals(const CutBase & arg) const {
    try {
-      BitMaskCut & rhs = dynamic_cast<BitMaskCut &>(const_cast<CutBase &>(arg));
+      BitMaskCut &rhs = dynamic_cast<BitMaskCut &>(const_cast<CutBase &>(arg));
       bool result = (m_colname == rhs.m_colname && m_mask == rhs.m_mask);
       return result;
    } catch(...) {
@@ -78,7 +79,12 @@ void BitMaskCut::getKeyValues(std::string & type,
    (void)(ref);
    std::ostringstream typ;
    // typ << "(" << m_colname << "/POW(2," << m_bitPosition << "))%2";
-   typ << "BIT_MASK(" << m_colname << "," << m_bitPosition << ")";
+   typ << "BIT_MASK(" << m_colname 
+       << "," << m_bitPosition;
+   if (m_pass_ver != "") {
+      typ << "," << m_pass_ver;
+   }
+   typ << ")";
    type = typ.str();
    unit = "DIMENSIONLESS";
    value = "1:1";
