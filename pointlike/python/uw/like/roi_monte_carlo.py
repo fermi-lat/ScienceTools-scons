@@ -34,6 +34,7 @@ from uw.utilities import keyword_options
 from uw.utilities import path
 from uw.utilities.keyword_options import decorate, process, change_defaults, get_default, get_row
 from uw.utilities.fitstools import rad_mask
+from uw.utilities import xml_parsers
 
 import pyLikelihood
 
