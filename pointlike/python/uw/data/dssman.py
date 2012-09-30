@@ -215,13 +215,14 @@ class DSSEntries(list):
                 return dss,idss
         return None,None
 
+
     def delete(self,index):  
         """ Delete a DSS entry and re-index the remaining ones."""
+        ret = self.pop(index)
         if index < len(self)-1:
-            for i in xrange(index,len(self)-1):
-                self[i] = self[i+1]
-                self[i]['index'] = i
-        return self.pop()
+            for i in xrange(index,len(self)):
+                self[i]['index'] = i+1
+        return ret
 
     def write(self,fits_name,header_key='EVENTS'):
         f = pyfits.open(fits_name,uint=False)
@@ -269,12 +270,13 @@ class DSSEntries(list):
     
     def _remove_duplicates(self):
         duplicates = []
-        for i in xrange(len(self)):
-            for j in range(i+1,len(self)):
-                if self[i]==self[j] and j not in duplicates:
-                    duplicates.append(j)
+        for i, keyword in enumerate(self):
+            if keyword in self[i+1:]: duplicates.append(i)
+
+        offset = 0
         for dup in duplicates:
-            self.delete(dup)
+            self.delete(dup - offset)
+            offset += 1
 
 def make_simple_dss(colname,unit,low,high,index=1):
     """ Return a DSSSimpleRange object with bounds specified by low/high.
