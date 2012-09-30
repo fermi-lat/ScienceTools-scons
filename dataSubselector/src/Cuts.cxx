@@ -465,8 +465,10 @@ bool Cuts::isTimeCut(const CutBase & cut) {
 void Cuts::checkIrfs(const std::string & infile, 
                      const std::string & extname,
                      const std::string & irfs) {
-   Cuts my_cuts(infile, extname);
-   if (my_cuts.irfName() != irfs || irfs.substr(0, 2) != "P7") {
+   bool check_columns;
+   Cuts my_cuts(infile, extname, check_columns=false);
+   // @todo Fix test to skip comparison for pre-Pass 7 IRFs.
+   if (my_cuts.irfName() != irfs && irfs.substr(0, 2) == "P7") {
       st_stream::StreamFormatter formatter("dataSubselector::Cuts",
                                            "checkIrfs", 2);
       formatter.warn() << "IRF selection, "
