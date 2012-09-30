@@ -7,8 +7,8 @@
 import numpy as N
 from skymaps import SkyDir,CompositeSkySpectrum,DiffuseFunction,EffectiveArea,Exposure,IsotropicSpectrum,IsotropicConstant
 from uw.like.Models import Model,Constant,PowerLaw,ScalingPowerLaw,ExpCutoff,LogParabola,FileFunction
-from roi_diffuse import DiffuseSource,ROIDiffuseModel_OTF
-from roi_extended import ExtendedSource,ROIExtendedModel
+from . roi_diffuse import DiffuseSource,ROIDiffuseModel_OTF
+from . roi_extended import ExtendedSource,ROIExtendedModel
 from os.path import join
 import os
 from abc import abstractmethod
