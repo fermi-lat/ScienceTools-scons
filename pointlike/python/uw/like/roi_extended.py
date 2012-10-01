@@ -9,7 +9,7 @@
 
 import sys
 from SpatialModels import RadiallySymmetricModel,Disk,SpatialModel,SpatialMap
-from uw.utilities.convolution import ExtendedSourceConvolutionCache,AnalyticConvolutionCache
+from uw.utilities.convolution import ExtendedSourceConvolution,AnalyticConvolution
 from roi_diffuse import DiffuseSource,ROIDiffuseModel,SmallBand
 from textwrap import dedent
 from skymaps import SkyDir,Background
@@ -118,7 +118,7 @@ class ROIExtendedModel(ROIDiffuseModel):
         """ Unlike background models, always do the convolution around 
             the spatial model's center. """
         self.exp = self.sa.exposure.exposure; psf = self.sa.psf
-        self.active_bgc = ExtendedSourceConvolutionCache(self.extended_source,psf)
+        self.active_bgc = ExtendedSourceConvolution(self.extended_source,psf)
 
     def set_state(self,band):
         self.active_bgc.do_convolution(band)
@@ -518,7 +518,7 @@ class ROIExtendedModelAnalytic(ROIExtendedModel):
         convolution for a more efficient pdf calculation.
 
         Any of the optional keyword arguments to uw.utilities.convolution's 
-        AnalyticConvolutionCache class will be passed on to that class.  """
+        AnalyticConvolution class will be passed on to that class.  """
 
     defaults = ROIExtendedModel.defaults
 
@@ -532,7 +532,7 @@ class ROIExtendedModelAnalytic(ROIExtendedModel):
         psf = self.sa.psf
 
         d={'num_points':self.num_points} if self.__dict__.has_key('num_points') else {}
-        self.active_bgc = AnalyticConvolutionCache(self.extended_source,psf,**d)
+        self.active_bgc = AnalyticConvolution(self.extended_source,psf,**d)
 
     def set_state(self,band):
         self.active_bgc.do_convolution(band)
