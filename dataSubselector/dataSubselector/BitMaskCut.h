@@ -48,6 +48,10 @@ public:
       return m_bitPosition;
    }
 
+   const std::string & pass_ver() const {
+      return m_pass_ver;
+   }
+
 protected:
 
    virtual bool equals(const CutBase & rhs) const;

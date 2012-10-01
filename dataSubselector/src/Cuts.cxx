@@ -123,7 +123,7 @@ Cuts::Cuts(const std::vector<std::string> & eventFiles,
    if (!my_cuts.empty()) {
       *this = mergeGtis(my_cuts);
    }
-   set_irfName(eventFiles.at(0), extname);
+//   set_irfName(eventFiles.at(0), extname);
 }
 
 Cuts Cuts::mergeGtis(std::vector<Cuts> & cuts_vector) {
@@ -216,14 +216,6 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
       unsigned int indx = parseColname(type, colname);
       if (value.find("CIRCLE") == 0) {
          m_cuts.push_back(new SkyConeCut(type, unit, value));
-      } else if ( (!check_columns || 
-                   std::find(colnames.begin(), colnames.end(), colname) 
-                   != colnames.end())
-                  && value != "TABLE" ) {
-         if ((type != "TIME" || !skipTimeRangeCuts) &&
-             (type != "EVENT_CLASS" || !skipEventClassCuts)) {
-            m_cuts.push_back(new RangeCut(colname, unit, value, indx));
-         }
       } else if (type == "TIME" && value == "TABLE") {
          m_cuts.push_back(new GtiCut(eventFile));
       } else if (type.substr(0, 8) == "BIT_MASK") {
@@ -236,6 +228,14 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
                                             tokens[3]));
          } else {
             m_cuts.push_back(new BitMaskCut(tokens[1], bit_position));
+         }
+      } else if ( (!check_columns || 
+                   std::find(colnames.begin(), colnames.end(), colname) 
+                   != colnames.end())
+                  && value != "TABLE" ) {
+         if ((type != "TIME" || !skipTimeRangeCuts) &&
+             (type != "EVENT_CLASS" || !skipEventClassCuts)) {
+            m_cuts.push_back(new RangeCut(colname, unit, value, indx));
          }
       } else {
          std::ostringstream message;
@@ -251,7 +251,7 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
       }
    }
    delete ext;
-   set_irfName(eventFile, extname);
+//   set_irfName(eventFile, extname);
 }
 
 unsigned int Cuts::parseColname(const std::string & colname,
@@ -467,14 +467,17 @@ void Cuts::checkIrfs(const std::string & infile,
                      const std::string & irfs) {
    bool check_columns;
    Cuts my_cuts(infile, extname, check_columns=false);
+   my_cuts.set_irfName(infile, extname);
    // @todo Fix test to skip comparison for pre-Pass 7 IRFs.
    if (my_cuts.irfName() != irfs && irfs.substr(0, 2) == "P7") {
       st_stream::StreamFormatter formatter("dataSubselector::Cuts",
                                            "checkIrfs", 2);
       formatter.warn() << "IRF selection, "
                        << irfs << ", and DSS keywords in "
-                       << infile << "[" << extname << "] "
-                       << "are inconsistent." << std::endl;
+                       << infile << "[" << extname << "]\n"
+                       << "are inconsistent. " 
+                       << "DSS keywords give " << my_cuts.irfName()
+                       << std::endl;
    }
 }
 
@@ -611,8 +614,12 @@ read_bitmask_mapping(std::map<unsigned int, std::string> & irfs) const {
    }
 }
 
-void Cuts::set_irfName(const std::string & infile, 
-                       const std::string & ext) {
+void Cuts::read_pass_ver(const std::string & infile, 
+                         const std::string & ext) {
+// Set default value.
+   m_pass_ver == "NONE";
+
+// Attempt to read m_pass_ver from PASS_VER keyword.
 /// @todo Improve error handling when PASS_VER does not exist or does not
 /// have "P#V#" format.
    std::auto_ptr<const tip::Extension> 
@@ -621,14 +628,19 @@ void Cuts::set_irfName(const std::string & infile,
       events->getHeader()["PASS_VER"].get(m_pass_ver);
    } catch (tip::TipException & eObj) {
       if (st_facilities::Util::expectedException(eObj,"Cannot read keyword")) {
-         // Do nothing for now.
-         return;
+         // Look for pass_ver from BIT_MASK cut.
+         if (bitMaskCut()) {
+            m_pass_ver = bitMaskCut()->pass_ver();
+            return;
+         }
       }
    }
-   if (m_pass_ver == "NONE") {
-      // Do nothing for now.
-      return;
-   }
+   return;
+}
+
+void Cuts::set_irfName(const std::string & infile, 
+                       const std::string & ext) {
+   read_pass_ver(infile, ext);
 
    std::map<unsigned int, std::string> irfs;
    read_bitmask_mapping(irfs);

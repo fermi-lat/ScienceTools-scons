@@ -266,8 +266,9 @@ private:
 
    void read_bitmask_mapping(std::map<unsigned int, std::string> & irfs) const;
 
-   void set_irfName(const std::string & infile,
-                    const std::string & ext);
+   void read_pass_ver(const std::string & infile, const std::string & ext);
+                      
+   void set_irfName(const std::string & infile, const std::string & ext);
 
 };
 
