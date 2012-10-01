@@ -792,8 +792,7 @@ class RadiallySymmetricModel(SpatialModel):
             Outside the disk edge, the spatial map has intensity 0:
 
                 >>> print profile(SkyDir(1.5,0))
-                0
-
+                0.0
             """
         radius,pdf = self.approximate_profile(*args, **kwarsg)
         open(path.expand(filename),'w').write('\n'.join(['%g\t%g' % (i,j) for i,j in zip(radius,pdf)]))
@@ -1254,7 +1253,7 @@ class InterpProfile(RadiallySymmetricModel):
         self.scalefactor *= integral
 
     def at_r_in_deg(self,r,energy=None):
-        return self.spline(r)/self.scalefactor
+        return np.where(r<self.r_in_degrees[-1],self.spline(r)/self.scalefactor,0)
 
     def extension(self):
         return self.get_parameters(absolute=True)[2]
