@@ -159,3 +159,10 @@ class Polyco:
         pces = self.getentry(times,use_keys=True)
         self.ids = np.asarray([pc.uid for pc in pces])
         return np.asarray([pce.evalphase(time) for pce,time in zip(pces,times)])
+
+    def invert_phase_shift(self,t0,phi):
+        """ Compute the time lapse (in s) corresponding to phi at t0."""
+        pe = self.getentry(t0)
+        f = pe.evalfreq(t0)
+        return phi/f
+            
