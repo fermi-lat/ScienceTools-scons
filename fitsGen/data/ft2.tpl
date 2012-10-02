@@ -159,7 +159,7 @@ TTYPE22      = 'LAT_CONFIG'                / flag for config. of LAT (1=nominal 
 TFORM22      = 'B'                         / data format of field: byte 
 TTYPE23      = 'DATA_QUAL'                 / flag for quality of data (1=nominal)
 TFORM23      = 'I'                         / data format of field: 2-byte signed INTEGER
-TTYPE23      = 'LIVETIME'                  / livetime
+TTYPE24      = 'LIVETIME'                  / livetime
 TFORM24      = 'D'                         / data format of field: 8-byte DOUBLE
 TUNIT24      = 's'                         / physical unit of field
 TTYPE25      = 'QSJ_1'                     / First component of SC attitude quaternion
