@@ -465,11 +465,14 @@ bool Cuts::isTimeCut(const CutBase & cut) {
 void Cuts::checkIrfs(const std::string & infile, 
                      const std::string & extname,
                      const std::string & irfs) {
+   if (irfs.substr(0, 2) != "P7") {
+      // Skip comparison for pre-Pass 7 IRFs.
+      return;
+   }
    bool check_columns;
    Cuts my_cuts(infile, extname, check_columns=false);
    my_cuts.set_irfName(infile, extname);
-   // @todo Fix test to skip comparison for pre-Pass 7 IRFs.
-   if (my_cuts.irfName() != irfs && irfs.substr(0, 2) == "P7") {
+   if (my_cuts.irfName() != irfs) {
       st_stream::StreamFormatter formatter("dataSubselector::Cuts",
                                            "checkIrfs", 2);
       formatter.warn() << "IRF selection, "
@@ -605,7 +608,7 @@ read_bitmask_mapping(std::map<unsigned int, std::string> & irfs) const {
       }
    }
    delete irf_map;
-   if (irfs.size() == 0) {
+   if (irfs.size() == 0 && m_pass_ver != "NONE") {
       std::ostringstream message;
       message << "dataSubselector::Cuts::read_bitmask_mapping: "
               << "PASS_VER not found in irf_index.fits: "
@@ -641,6 +644,10 @@ void Cuts::read_pass_ver(const std::string & infile,
 void Cuts::set_irfName(const std::string & infile, 
                        const std::string & ext) {
    read_pass_ver(infile, ext);
+   if (m_pass_ver == "NONE") {
+      // Do nothing.
+      return;
+   }
 
    std::map<unsigned int, std::string> irfs;
    read_bitmask_mapping(irfs);
