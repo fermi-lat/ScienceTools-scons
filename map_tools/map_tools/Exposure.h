@@ -81,7 +81,8 @@ public:
     //! @param weighted [false] set true to make a weighted table
     Exposure(double pixelsize=1., double cosbinsize=1./healpix::CosineBinner::nbins(), 
         double zcut=-1.0,
-        bool   weighted=false
+        bool   weighted=false,
+        double zmaxcut=1
         );
 
     //! add a time interval at the given position
@@ -149,6 +150,7 @@ private:
     class Filler ; ///< class used to fill a CosineBinner object with a value
 
     double m_zcut; ///< value for zenith angle cut
+   double m_zmaxcut;
     double m_lost; ///< keep track of lost
     bool   m_weighted; ///< true if accumulating weighted livetime
 };
