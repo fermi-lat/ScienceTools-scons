@@ -300,6 +300,11 @@ void EventContainer::writeEvents(double obsStopTime) {
       cuts = new dataSubselector::Cuts();
    }
 
+// Write PASS_VER keyword.
+   if (cuts->bitMaskCut()) {
+      ft1.header()["PASS_VER"].set(cuts->bitMaskCut()->pass_ver());
+   }
+
 // Fill the GTI extension with the entire observation in a single GTI.
    dataSubselector::Gti gti;
    gti.insertInterval(m_startTime + Spectrum::startTime(),
