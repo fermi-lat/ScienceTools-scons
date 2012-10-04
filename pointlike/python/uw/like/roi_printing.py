@@ -66,7 +66,7 @@ def print_summary(roi, sdir=None, galactic=False, maxdist=5, title=None, print_a
         print indent,fmt % values
         
     print indent,90*'-'
-    print indent,'\tDiffuse sources\n'
+    print indent,'\tDiffuse sources'
     print indent,90*'-'
     for source in self.bgm.diffuse_sources:
         if  'spatial_model' in source.__dict__: continue
