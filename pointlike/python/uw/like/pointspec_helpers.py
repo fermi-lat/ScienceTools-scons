@@ -15,6 +15,8 @@ from abc import abstractmethod
 from uw.utilities import keyword_options
 from uw.utilities import path
 
+class PointlikeException(Exception): pass
+
 class PointSource(object):
     """ combine name, skydir, model """
     def __init__(self,skydir,name,model=None,free_parameters=True,leave_parameters=False):

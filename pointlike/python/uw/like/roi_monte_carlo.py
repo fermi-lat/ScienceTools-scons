@@ -1290,7 +1290,12 @@ class SpectralAnalysisMC(SpectralAnalysis):
         if self.event_class != 0:
             raise Exception("event_class must be set to 0 for MC data.")
 
-    def roi(self, roi_dir, point_sources = [], diffuse_sources = [], **kwargs):
+    def roi(self, roi_dir,
+            point_sources = [], diffuse_sources = [],
+            xmlfile=None, diffdir=None,
+            catalogs = [], include_radius = None,
+            **kwargs):
+
         """ First, simulate the requested data. 
             Then properly create a new spectral analysis object.
             And use it to return an ROI. 
@@ -1305,10 +1310,13 @@ class SpectralAnalysisMC(SpectralAnalysis):
 
         assert len(self.dataspec.ft1files) == 1
 
-        if diffuse_sources is None:
-            sources = point_sources 
-        else:
-            sources = point_sources + diffuse_sources
+        point_sources, diffuse_sources = self.get_sources(roi_dir=roi_dir, point_sources=point_sources, 
+                                                          diffuse_sources=diffuse_sources,
+                                                          xmlfile=xmlfile, diffdir=diffdir, 
+                                                          catalogs=catalogs, include_radius=include_radius)
+
+        print point_sources, diffuse_sources
+        sources = point_sources + diffuse_sources
 
         if not os.path.exists(self.dataspec.ft1files[0]):
             monte_carlo=MonteCarlo(
@@ -1342,7 +1350,8 @@ class SpectralAnalysisMC(SpectralAnalysis):
         sa=SpectralAnalysis(self.dataspec,**keyword_options.defaults_to_kwargs(self,SpectralAnalysis))
         return sa.roi(roi_dir=roi_dir,
                       point_sources=point_sources, 
-                      diffuse_sources=diffuse_sources,**kwargs)
+                      diffuse_sources=diffuse_sources,
+                      **kwargs)
 
 if __name__ == "__main__":
     import doctest
