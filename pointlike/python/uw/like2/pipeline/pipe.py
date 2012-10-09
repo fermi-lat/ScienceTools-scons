@@ -8,6 +8,7 @@ import numpy as np
 from . import processor,  engines, associate
 from .. import main, roisetup, skymodel
 from uw.like import Models 
+from uw.utilities import makerec
 
 class Pipe(roisetup.ROIfactory):
     """ This is a subclass of ROIfactory,
@@ -308,7 +309,7 @@ def check_converge(month, tol=10, add_neighbors=True, log=None):
     from pointlike import IntVector
     from skymaps import Band
     outdir = 'month%02d'%month if type(month)==types.IntType else month
-    print '%s:' %outdir
+    #print '%s:' %outdir
     r = roirec(outdir)
     if r is None: return
     diff = r.loglike-r.prevlike
