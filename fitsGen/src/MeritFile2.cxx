@@ -127,12 +127,12 @@ void MeritFile2::setEntry(Long64_t index) {
    if (entry_value == -1) {
       st_stream::StreamFormatter formatter("MeritFile2", "setEntry", 4);
       formatter.warn() << "Missing index error from TEventList::GetEntry "
-                       << "for index " << index;
+                       << "for index " << index << std::endl;
    }
    Int_t status = m_tree->GetEvent(entry_value);
    if (status == -1) {
       std::ostringstream message;
-      message << "TTree::GetEvent == -1 for index " << index;
+      message << "TTree::GetEvent == -1 for index " << index << "\n";
       throw std::runtime_error(message.str());
    }
 }
