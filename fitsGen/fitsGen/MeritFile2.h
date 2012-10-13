@@ -75,6 +75,8 @@ public:
    /// @return Conversion type (e.g., front=0, back=1) of current row.
    short int conversionType() const;
 
+   static bool resetSigHandlers();
+
 private:
 
    TFile * m_file;
@@ -92,6 +94,7 @@ private:
    double m_tstop;
 
    void setEntry();
+   void setEntry(Long64_t index);
    
    BranchData_t get_branch_pointer(const std::string & fieldname) const;
    double recast_as_double(const BranchData_t & branch_data) const;

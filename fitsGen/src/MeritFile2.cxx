@@ -6,6 +6,7 @@
  * $Header$
  */
 
+#include <sstream>
 #include <stdexcept>
 
 #include "TChain.h"
@@ -13,7 +14,10 @@
 #include "TEventList.h"
 #include "TFile.h"
 #include "TLeaf.h"
+#include "TSystem.h"
 #include "TTree.h"
+
+#include "st_stream/StreamFormatter.h"
 
 #include "fitsGen/MeritFile2.h"
 
@@ -49,7 +53,7 @@ MeritFile2::MeritFile2(const std::string & meritfile,
    m_nrows = m_eventList->GetN();
 
    m_tstart = operator[]("EvtElapsedTime");
-   m_tree->GetEvent(m_eventList->GetEntry(m_nrows-1));
+   setEntry(m_nrows - 1);
    m_tstop = operator[]("EvtElapsedTime");
    rewind();
 }
@@ -76,7 +80,7 @@ MeritFile2::MeritFile2(const std::vector<std::string> & meritFiles,
    m_nrows = m_eventList->GetN();
 
    m_tstart = operator[]("EvtElapsedTime");
-   m_tree->GetEvent(m_eventList->GetEntry(m_nrows-1));
+   setEntry(m_nrows - 1);
    m_tstop = operator[]("EvtElapsedTime");
    rewind();
 }
@@ -115,7 +119,22 @@ Long64_t MeritFile2::rewind() {
 }
 
 void MeritFile2::setEntry() {
-   m_tree->GetEvent(m_eventList->GetEntry(m_index));
+   setEntry(m_index);
+}
+
+void MeritFile2::setEntry(Long64_t index) {
+   Long64_t entry_value = m_eventList->GetEntry(index);
+   if (entry_value == -1) {
+      st_stream::StreamFormatter formatter("MeritFile2", "setEntry", 4);
+      formatter.warn() << "Missing index error from TEventList::GetEntry "
+                       << "for index " << index;
+   }
+   Int_t status = m_tree->GetEvent(entry_value);
+   if (status == -1) {
+      std::ostringstream message;
+      message << "TTree::GetEvent == -1 for index " << index;
+      throw std::runtime_error(message.str());
+   }
 }
 
 double MeritFile2::operator[](const std::string & fieldname) {
@@ -201,5 +220,26 @@ void MeritFile2::delete_branch_pointer(const BranchData_t & branch_data) const {
    }
 }
 
+bool MeritFile2::resetSigHandlers() {
+   if (0 == gSystem) {
+      return false;
+   }
+   gSystem->ResetSignal(kSigBus);
+   gSystem->ResetSignal(kSigSegmentationViolation);
+   gSystem->ResetSignal(kSigSystem);
+   gSystem->ResetSignal(kSigPipe);
+   gSystem->ResetSignal(kSigIllegalInstruction);
+   gSystem->ResetSignal(kSigQuit);
+   gSystem->ResetSignal(kSigInterrupt);
+   gSystem->ResetSignal(kSigWindowChanged);
+   gSystem->ResetSignal(kSigAlarm);
+   gSystem->ResetSignal(kSigChild);
+   gSystem->ResetSignal(kSigUrgent);
+   gSystem->ResetSignal(kSigFloatingException);
+   gSystem->ResetSignal(kSigTermination);
+   gSystem->ResetSignal(kSigUser1);
+   gSystem->ResetSignal(kSigUser2);
+   return true;
+}
 
 } //namespace fitsGen
