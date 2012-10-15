@@ -88,7 +88,7 @@ double	GPS::time ()  const{     return m_time;}
 
 double   GPS::expansion () const{    return m_expansion;}
 
-double GPS::endTime()const{ return m_history==0? 3e8 : m_history->endTime();}
+double GPS::endTime()const{ return m_history==0? 3e9 : m_history->endTime();}
 
 // functions that set the state, then retrieve the given value
 
