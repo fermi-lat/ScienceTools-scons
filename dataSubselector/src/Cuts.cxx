@@ -584,7 +584,7 @@ void Cuts::
 read_bitmask_mapping(std::map<unsigned int, std::string> & irfs) const {
    irfs.clear();
    std::string sub_path;
-   ::joinPaths("data glast lat irf_index.fits", sub_path);
+   ::joinPaths("data glast lat bcf irf_index.fits", sub_path);
    std::string irf_index = facilities::commonUtilities::joinPath(
       facilities::commonUtilities::getEnvironment("CALDB"), sub_path);
    const tip::Table * irf_map 
