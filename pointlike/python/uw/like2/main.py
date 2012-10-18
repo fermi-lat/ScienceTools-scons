@@ -6,7 +6,7 @@ $Header$
 """
 import types
 import numpy as np
-from . import roistat, localization, printing, roisetup, sedfuns, sources
+from . import roistat, localization, printing, roisetup, sedfuns, sources, loglikelihood
 from . import plotting as pointlike_plotting
 from uw.utilities import fitter
 import skymaps
@@ -352,8 +352,19 @@ class ROI_user(roistat.ROIstat, fitter.Fitted):
         
     def zero_source(self, source_name, **kwargs):
         raise Exception('not implemented')
+        
     def unzero_source(self, source_name, **kwargs):
         raise Exception('not implemented')
+    
+    def poisson_likelihood(self, source_name=None, **kwargs):
+        source = self.sources.find_source(source_name)
+
+        with sedfuns.SourceFlux(self, source.name) as sf:
+            sf.select_band(None)
+            pf = loglikelihood.PoissonFitter(sf, **kwargs)
+            p = pf.poiss
+        return p 
+
         
         
 class Factory(roisetup.ROIfactory):
