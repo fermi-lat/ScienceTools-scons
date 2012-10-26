@@ -522,7 +522,7 @@ if not baseEnv.GetOption('help'):
         baseEnv.Alias('all', [superList])
         Depends(setupScript, [superList])
         if (sys.platform == "win32"):
-            Depends(StudioFiles, [superList])
+            baseEnv.Alias('StudioFiles', [superList])
     if baseEnv.GetOption('clean'):
         baseEnv.Default('test')
 
