@@ -45,6 +45,7 @@ else:
 
     
 baseEnv.Tool('generateScript')
+baseEnv.Tool('writePkgList')
 baseEnv.Tool('doxygen')
 baseEnv.Alias('NoTarget')
 baseEnv.SourceCode(".", None)
@@ -514,7 +515,14 @@ if not baseEnv.GetOption('help'):
             # to create target for an "all" sln file
             baseEnv.Tool('registerTargets', package = '*ALL*')
 
-
+    if not override == '.':
+        superList = baseEnv.GeneratePkgList(os.path.join(str(baseEnv['DATADIR']), 'supersede'), [])
+        baseEnv.AlwaysBuild([superList])
+        baseEnv.Default([superList])
+        baseEnv.Alias('all', [superlist])
+        Depends(setupScript, [superList])
+        if (sys.platform == "win32"):
+            Depends(StudioFiles, [superList])
     if baseEnv.GetOption('clean'):
         baseEnv.Default('test')
 
