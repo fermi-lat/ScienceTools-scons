@@ -519,7 +519,7 @@ if not baseEnv.GetOption('help'):
         superList = baseEnv.GeneratePkgList(os.path.join(str(baseEnv['DATADIR']), 'supersede'), [])
         baseEnv.AlwaysBuild([superList])
         baseEnv.Default([superList])
-        baseEnv.Alias('all', [superlist])
+        baseEnv.Alias('all', [superList])
         Depends(setupScript, [superList])
         if (sys.platform == "win32"):
             Depends(StudioFiles, [superList])
