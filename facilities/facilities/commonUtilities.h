@@ -9,6 +9,12 @@
 */
 
 namespace facilities {
+#ifdef SCons
+  // See commonUtilities.cxx for definition of this class. It has information
+  // and tools used only by commonUtilities functions
+  class MyInternal;
+#endif
+
   /// Class used to obtain various file paths and set environment variables
   class commonUtilities{
   public:
@@ -49,6 +55,9 @@ namespace facilities {
     static void setupEnvironment();
   private:
     static std::string getPackageRoot(const std::string &package);
+#ifdef SCons    
+    static  MyInternal* myInternal;
+#endif
   };
 }
 

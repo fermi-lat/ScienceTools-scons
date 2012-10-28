@@ -4,6 +4,8 @@
 #if defined(SCons) || defined(HEADAS)
 #include <sstream>
 #include <fstream>
+#include <set>
+#include <vector>
 #include "config.h"
 #endif
 
@@ -23,7 +25,74 @@ extern char **environ;
 #endif
 #endif
 
+struct ltstr
+{
+  bool operator()(const char* s1, const char* s2) const
+  {
+    return std::strcmp(s1, s2) < 0;
+  }
+};
+
 namespace facilities {
+#ifdef SCons
+  class MyInternal {
+  public:
+    bool m_hasSupersede;
+    std::set<const char*, ltstr> m_superSet;
+    std::vector<std::string> m_superPkgs;
+    std::string m_instDir;
+    std::string m_baseDir;
+    
+    MyInternal();
+    std::string getSconsPackageRoot(const std::string &package);
+    
+  };
+  MyInternal* commonUtilities::myInternal = 0;
+  // Constructor saves values for INST_DIR, BASE_DIR
+  // If supersede area exists, read file from supersede area
+  // containing list of active supersede packages and save in std::set
+  MyInternal::MyInternal() {
+    m_superPkgs.clear();
+    m_superSet.clear();
+    m_instDir = commonUtilities::getEnvironment("INST_DIR");
+    m_baseDir = commonUtilities::getEnvironment("BASE_DIR");
+    m_hasSupersede =  (m_instDir != m_baseDir);
+    if (!m_hasSupersede) return;
+
+    // Otherwise read $INST_DIR/data/supersede.pkgList,
+    // store packages found in myInternal->superPkgs;
+    std::string superPath = 
+      commonUtilities::joinPath(commonUtilities::joinPath(m_instDir, "data"), 
+                                "supersede.pkgList");
+    std::ifstream fp(superPath.c_str());
+    if (fp.is_open()) {
+      char buf[100];
+      char* ln = &buf[0];
+      while (fp.good()) {
+        fp.getline(buf, 100);
+        std::string lnCopy(ln);
+        if (fp.gcount() ==  0 ) continue;
+        if ((*ln == '#') || (*ln == ' ') || (*ln == 0)) continue;
+        m_superPkgs.push_back(std::string(ln));
+      }
+      for (int i = 0; i < m_superPkgs.size(); i++ ) {
+        m_superSet.insert(m_superPkgs[i].c_str());
+      }
+      fp.close();
+    } else {
+      std::cerr << "Unable to open " << superPath << std::endl;
+    }
+  }
+  // Scons package root is base dir unless the package is an
+  // active package in supersede area
+  std::string MyInternal::getSconsPackageRoot(const std::string &package) {
+    std::string rt = m_baseDir;
+    if (m_hasSupersede) { // check if we're a supersede pkg
+      if (m_superSet.find(package.c_str()) != m_superSet.end()) rt = m_instDir;
+    }
+    return rt;
+  }
+#endif
   std::string commonUtilities::getPackagePath(const std::string &package){
 #ifdef SCons
     return joinPath(commonUtilities::getPackageRoot(package), package);
@@ -39,19 +108,11 @@ namespace facilities {
   std::string commonUtilities::getDataPath(const std::string &package){
 
 #ifdef SCons
-    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    std::string packageRoot = 
+      commonUtilities::myInternal->getSconsPackageRoot(package);
     std::string dataPath = joinPath(joinPath(packageRoot, "data"), package);
 
-    if (pathFound(dataPath)) return dataPath;
-
-    // Otherwise, might have supersede and our package could be in base
-    const char *env = getenv("BASE_DIR");
-    if (env == NULL) return "";
-    packageRoot = std::string(env);
-
-    dataPath = joinPath(joinPath(packageRoot, "data"), package);
-
-    return (pathFound(dataPath)) ?  dataPath : "";
+    return  dataPath;
 #else
 #ifdef HEADAS
     std::string packageRoot = commonUtilities::getPackageRoot(package);
@@ -69,17 +130,11 @@ namespace facilities {
 
   std::string commonUtilities::getJobOptionsPath(const std::string &package) {
 #ifdef SCons
-    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    std::string packageRoot = 
+      commonUtilities::myInternal->getSconsPackageRoot(package);
+
     std::string joPath = joinPath(joinPath(packageRoot, "jobOptions"), package);
-    if (pathFound(joPath)) return joPath;
-    // Otherwise, might have supersede and our package could be in base
-    const char *env = getenv("BASE_DIR");
-    if (env == NULL) return "";
-    packageRoot = std::string(env);
-
-    joPath = joinPath(joinPath(packageRoot, "jobOptions"), package);
-
-    return (pathFound(joPath)) ?  joPath : "";
+    return joPath;
 #else
     std::string packageRoot = commonUtilities::getPackageRoot(package);
     if(packageRoot=="")
@@ -90,20 +145,11 @@ namespace facilities {
 
   std::string commonUtilities::getXmlPath(const std::string &package){
 #ifdef SCons
-    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    std::string packageRoot = 
+      commonUtilities::myInternal->getSconsPackageRoot(package);
     std::string xmlPath = joinPath(joinPath(packageRoot, "xml"), package);
 
-    if (pathFound(xmlPath)) return xmlPath;
-
-    // Otherwise, might have supersede and our package could be in base
-    const char *env = getenv("BASE_DIR");
-    if (env == NULL) return "";
-    packageRoot = std::string(env);
-
-    xmlPath = joinPath(joinPath(packageRoot, "xml"), package);
-
-    return (pathFound(xmlPath)) ?  xmlPath : "";
-
+    return xmlPath;
 #else
 #ifdef HEADAS
     std::string packageRoot = commonUtilities::getPackageRoot(package);
@@ -121,7 +167,8 @@ namespace facilities {
 
   std::string commonUtilities::getPfilesPath(const std::string &package){
 #ifdef SCons
-    std::string packageRoot = commonUtilities::getPackageRoot(package);
+    std::string packageRoot = 
+      commonUtilities::myInternal->getSconsPackageRoot(package);
     std::string pfilesLocation = joinPath(packageRoot, "syspfiles");
     return pfilesLocation;
 #else
@@ -159,10 +206,7 @@ namespace facilities {
   std::string commonUtilities::getPackageRoot(const std::string &package){
     std::string packageRoot;
 #ifdef SCons
-    const char *env = getenv("INST_DIR");
-    if (env != NULL) {
-      packageRoot = env; // ok if SConscript is open or is openable
-    }      
+    return commonUtilities::myInternal->getSconsPackageRoot(package);
 
 #else
 #ifdef HEADAS
@@ -178,17 +222,6 @@ namespace facilities {
       packageRoot = env;
 #endif
 #endif
-    //  For now insist there be a translation for package root
-    /*
-      if(packageRoot == ""){
-      env = getenv("INST_DIR");
-      if(env!=NULL)
-        packageRoot = env;
-      }
-    */
-    //if(packageRoot == ""){
-    //  std::cerr<<"Unable to determine data path for "<<package<<std::endl;
-    //}
     return packageRoot;
   }
 
@@ -236,8 +269,10 @@ namespace facilities {
   // 3. extFiles stuff EXTFILESSYS, TIMING_DIR ScienceTools & GlastRelease
   //                   PARAMFILESROOT          GlastRelease
   // 4. caldb    Used for SCons and HEADAS builds of ScienceTools
-
   void commonUtilities::setupEnvironment(){
+#if defined(SCons)
+    if (myInternal == 0 ) myInternal = new MyInternal();
+#endif
 #if defined(SCons) || defined(HEADAS)
     std::stringstream packages;
     packages << PACKAGES;
