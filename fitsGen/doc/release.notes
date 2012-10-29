@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ fitsGen-06-06-03 28-Oct-2012 jchiang remove st_stream dependence
  fitsGen-06-06-02 24-Oct-2012 jchiang check TTree->GetEvent return code
  fitsGen-06-06-01 03-Oct-2012 jchiang patch tag since ft2.tpl was missed somehow by the fitsGen-06-06-00 tag
  fitsGen-06-06-00 02-Oct-2012 jchiang add LAMBDA to ft2.tpl
