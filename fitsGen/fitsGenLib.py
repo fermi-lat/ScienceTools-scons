@@ -13,7 +13,6 @@ def generate(env, **kw):
     env.Tool('astroLib')
     env.Tool('embed_pythonLib')
     env.Tool('evtUtilsLib')
-    env.Tool('st_streamLib')
     env.Tool('addLibrary', library = env['rootGuiLibs'])
     if kw.get('incsOnly', 0) == 1: 
         env.Tool('findPkgPath', package = 'embed_python') 

@@ -6,6 +6,7 @@
  * $Header$
  */
 
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 
@@ -16,8 +17,6 @@
 #include "TLeaf.h"
 #include "TSystem.h"
 #include "TTree.h"
-
-#include "st_stream/StreamFormatter.h"
 
 #include "fitsGen/MeritFile2.h"
 
@@ -125,9 +124,8 @@ void MeritFile2::setEntry() {
 void MeritFile2::setEntry(Long64_t index) {
    Long64_t entry_value = m_eventList->GetEntry(index);
    if (entry_value == -1) {
-      st_stream::StreamFormatter formatter("MeritFile2", "setEntry", 4);
-      formatter.warn() << "Missing index error from TEventList::GetEntry "
-                       << "for index " << index << std::endl;
+      std::cout << "Missing index error from TEventList::GetEntry "
+                << "for index " << index << std::endl;
    }
    Int_t status = m_tree->GetEvent(entry_value);
    if (status == -1) {
