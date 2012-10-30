@@ -6,6 +6,7 @@
 #include <fstream>
 #include <set>
 #include <vector>
+#include <cstring>
 #include "config.h"
 #endif
 
