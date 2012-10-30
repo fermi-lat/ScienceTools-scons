@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+ facilities-02-22-01 30-Oct-2012    jrb patch for rhel6 compiler
  facilities-02-22-00 27-Oct-2012    jrb new strategy for setting package env variables (e.g. GLEAMJOBOPTIONSPATH) correctly in all circumstances
  facilities-02-21-00 16-Aug-2012    jrb support for Windows no-installed-headers
  facilities-02-20-10 09-Jul-2012    jrb omit wrapper lib from GR without breaking other containers
