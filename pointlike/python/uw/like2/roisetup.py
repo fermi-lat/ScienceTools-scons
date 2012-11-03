@@ -51,7 +51,7 @@ class ExposureManager(object):
             energies = [100, 1000, 10000]
             print 'Exposure correction: for energies %s ' % energies
             for i,f in enumerate(self.correction):
-                print ('\tfront:','\tback: ','\tdfront:', '\tback')[i], map( f , energies)
+                print ('\tfront:','\tback: ','\tdfront:', '\tdback')[i], map( f , energies)
         else:
             self.correction = lambda x: 1.0, lambda x: 1.0
             
@@ -163,7 +163,9 @@ class ROIfactory(object):
             #datadict = dict(dataname=dataspec, ) \
             #        if type(dataspec)!=types.DictType else dataspec
             exposure_correction=datadict.pop('exposure_correction', None)        
-            self.dataset = dataset.DataSet(datadict['dataname'], **self.analysis_kw)
+            self.dataset = dataset.DataSet(datadict['dataname'], interval=datadict.get('interval',None), 
+                    **self.analysis_kw)
+            print self.dataset
             self.exposure = ExposureManager(self.dataset, exposure_correction=exposure_correction)
         
         if 'CUSTOM_IRF_DIR' not in os.environ and os.path.exists(os.path.expandvars('$FERMI/custom_irfs')):

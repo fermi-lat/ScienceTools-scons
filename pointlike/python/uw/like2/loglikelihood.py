@@ -305,6 +305,7 @@ class Poisson(object):
             1-pval: zero corresponds to infinite flux
         """
         e,beta,mu = self.altpars()
+        if e==0: return np.nan
         gcbar = lambda x : special.gammaincc(mu+1, beta+x)
         #cchat = lambda x : gcbar(x)/gcbar(0)
         cchatinv = lambda pv : special.gammainccinv( mu+1, pv*gcbar(0) )-beta
