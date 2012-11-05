@@ -246,7 +246,7 @@ class SkyModel(object):
                         self.changed.add(name)
                         print 'check mappers:', model.mappers
                     else: pass # was the following line; problem with mappers changing too
-                    es.smodel=es.model=model #update with fit values
+                        #es.smodel=es.model=model #update with fit values
                     if sources.validate(es,self.nside, self.filter): #lambda x: True): 
                         self.extended_sources.append(es)
             self.global_sources.append(t)
