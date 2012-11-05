@@ -165,7 +165,7 @@ class DataSet(dataman.DataSpec):
             if interval is not None:
                 try:
                     pyfile = os.path.join(folder, 'intervals.py')
-                    idict = eval(open()).read()) ifos.path.exists(pyfile) else Interval()
+                    idict = eval(open(pyfile).read()) if os.path.exists(pyfile) else Interval()
                     gr = idict[interval]
                     gti_mask = skymaps.Gti([gr[0]], [gr[1]])
                     if True: #self.verbose: 
