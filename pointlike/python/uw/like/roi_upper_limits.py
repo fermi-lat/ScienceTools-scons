@@ -108,7 +108,7 @@ class FluxUpperLimit(object):
             return np.exp(ll_0-roi.logLikelihood(roi.parameters()))
         npoints = int(math.ceil(self.simps_points * (np.log10(integral_max) - np.log10(integral_min))))
         points = np.logspace(np.log10(integral_min), np.log10(integral_max),npoints*2+1)
-        y = np.array([like(x)*10**x for x in points])
+        y = np.array([like(x)*x for x in points])
         trapz1 = integrate.cumtrapz(y[::2])
         trapz2 = integrate.cumtrapz(y)[::2]
         cumsimps = (4*trapz2 - trapz1)/3.
