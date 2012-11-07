@@ -233,7 +233,11 @@ class SkyModel(object):
                 elif  self.extended_catalog_name=='ignore': 
                     continue
                 else:
-                    es = self.extended_catalog.lookup(name) if self.extended_catalog is not None else None
+                    try:
+                        es = self.extended_catalog.lookup(name) if self.extended_catalog is not None else None
+                    except Exception, msg:
+                        print 'Skymodel: Failed to create model for %s' %name
+                        raise
                     if es is None:
                         #raise Exception( 'Extended source %s not found in extended catalog' %name)
                         print 'SkyModel warning: Extended source %s not found in extended catalog, removing' %name
@@ -244,7 +248,6 @@ class SkyModel(object):
                         if name not in self.changed:
                             print 'SkyModel warning: catalog model  %s changed from %s for source %s'% (es.model.name, model.name, name)
                         self.changed.add(name)
-                        print 'check mappers:', model.mappers
                     else: pass # was the following line; problem with mappers changing too
                         #es.smodel=es.model=model #update with fit values
                     if sources.validate(es,self.nside, self.filter): #lambda x: True): 
