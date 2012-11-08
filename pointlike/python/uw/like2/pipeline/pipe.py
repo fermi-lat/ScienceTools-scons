@@ -378,7 +378,7 @@ class Update(NotebookPipe):
         self.setup = Setup(self.indir, outdir=self.outdir, **kw)
      
     def defaults(self):
-        return dict(sedfig_dir='"sedfig"', dampen=0.5, quiet=True)
+        return dict( dampen=0.5, quiet=True)
     
      
     def __call__(self): return self.setup
