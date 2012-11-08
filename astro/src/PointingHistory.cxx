@@ -173,6 +173,21 @@ void PointingHistory::readFitsData(std::string filename) {
         interval["sc_position"].get(sc_pos);
         CLHEP::Hep3Vector position(sc_pos[0]/1e3, sc_pos[1]/1e3, sc_pos[2]/1e3);
         EarthCoordinate earthpos(position, start_time);
+
+        // Read the properties of the LAT for this interval.
+        int lat_mode;
+        int lat_config;
+        int data_qual;
+        double livetime;
+        double rock_angle;
+        interval["lat_mode"].get(lat_mode);
+        interval["lat_config"].get(lat_config);
+        interval["data_qual"].get(data_qual);
+        interval["livetime"].get(livetime);
+        interval["rock_angle"].get(rock_angle);
+        astro::LatProperties latProperties(lat_mode, lat_config, data_qual,
+                                           livetime, start_time, stop_time,
+                                           rock_angle);
     
         // check consistency of latitude, longitude: EarthCoordinate computes from the MET and position
         double check_lat(earthpos.latitude()-lat), check_lon(earthpos.longitude()-lon);
@@ -201,7 +216,7 @@ void PointingHistory::readFitsData(std::string filename) {
             m_data[last_stop] = m_data[last_start]; 
        }
         m_data[start_time] = 
-            PointingInfo( position, orientation, earthpos);
+           PointingInfo( position, orientation, earthpos, latProperties);
          if( m_startTime<0) m_startTime = start_time;
          last_start = start_time;
          last_stop = stop_time;

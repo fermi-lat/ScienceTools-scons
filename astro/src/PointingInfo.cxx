@@ -10,10 +10,12 @@ using namespace astro;
 
 PointingInfo::PointingInfo(const CLHEP::Hep3Vector& position, 
                            const Quaternion& orientation,
-                           const EarthCoordinate& earthPos)
+                           const EarthCoordinate& earthPos,
+                           const LatProperties & latProperties)
 : m_position(position)
 , m_q(orientation)
 , m_earth(earthPos)
+, m_latProperties(latProperties)
 {}
 
 astro::SkyDir PointingInfo::xAxis()const
@@ -49,7 +51,7 @@ astro::PointingInfo PointingInfo::interpolate(const astro::PointingInfo& next, d
     Hep3Vector position (linear_interp(pos1,pos2,f).unit() * alt );
 
     // note using the quaternion interpolation (SLERP)
-    return PointingInfo(position, m_q.interpolate(next.m_q, f), EarthCoordinate(position,time));
+    return PointingInfo(position, m_q.interpolate(next.m_q, f), EarthCoordinate(position,time), latProperties());
  
     return *this; // todo
 
