@@ -380,7 +380,7 @@ class DataSpec(object):
         #
         # sort through files first to limit list to those with overlaps
         files = filter(overlaps, self.ft1files) ##TODO
-        if len(files)>==0:
+        if len(files)==0:
             raise DataManException('Attempt to create binned photon file with no data')
         print 'Creating binfile from %d FT1 files' % len(files)
         data = pointlike.Data(files,-1, 0,0, self.mc_src_id,'')
