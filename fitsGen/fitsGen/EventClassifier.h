@@ -36,7 +36,7 @@ class EventClassifier {
 
 public:
 
-   EventClassifier() : m_module(0), m_classifier(0), m_meritDict(0) {}
+   EventClassifier();
 
    /// @param classifierScript Module name of a Python script that 
    /// takes TCuts for defining event classes.

@@ -22,8 +22,19 @@
 
 namespace fitsGen {
 
+EventClassifier::EventClassifier() 
+  : m_module(0), m_classifier(0), m_meritDict(0) {
+   /// Sadly, this is required.  Would be nice if commonUtilities were
+   /// implemented so that clients wouldn't need to do this.
+   facilities::commonUtilities::setupEnvironment();
+}
+
 EventClassifier::EventClassifier(const std::string & classifierScript) 
    : m_module(0), m_classifier(0), m_meritDict(0) {
+   /// Sadly, this is required.  Would be nice if commonUtilities were
+   /// implemented so that clients wouldn't need to do this.
+   facilities::commonUtilities::setupEnvironment();
+
    m_module = new embed_python::Module("", classifierScript, 
                                        pythonPath(), false);
    m_classifier = m_module->attribute("eventClassifier");
