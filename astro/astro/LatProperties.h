@@ -41,6 +41,18 @@ public:
       return m_data_qual;
    }
 
+   double livetime() const {
+      return m_livetime;
+   }
+   
+   double interval_start() const {
+      return m_start;
+   }
+
+   double interval_stop() const {
+      return m_stop;
+   }
+
    double rock_angle() const {
       return m_rock_angle;
    }

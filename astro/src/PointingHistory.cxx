@@ -185,10 +185,7 @@ void PointingHistory::readFitsData(std::string filename) {
         interval["data_qual"].get(data_qual);
         interval["livetime"].get(livetime);
         interval["rock_angle"].get(rock_angle);
-        astro::LatProperties latProperties(lat_mode, lat_config, data_qual,
-                                           livetime, start_time, stop_time,
-                                           rock_angle);
-    
+
         // check consistency of latitude, longitude: EarthCoordinate computes from the MET and position
         double check_lat(earthpos.latitude()-lat), check_lon(earthpos.longitude()-lon);
         if( check_lat>maxlatdiff) maxlatdiff = check_lat;
@@ -215,11 +212,15 @@ void PointingHistory::readFitsData(std::string filename) {
        if( last_stop>0 && start_time != last_stop){
             m_data[last_stop] = m_data[last_start]; 
        }
-        m_data[start_time] = 
-           PointingInfo( position, orientation, earthpos, latProperties);
-         if( m_startTime<0) m_startTime = start_time;
-         last_start = start_time;
-         last_stop = stop_time;
+       m_data[start_time] = 
+           PointingInfo(position, orientation, earthpos, 
+                        LatProperties(lat_mode, lat_config, data_qual,
+                                      livetime, start_time, stop_time,
+                                      rock_angle));
+    
+       if( m_startTime<0) m_startTime = start_time;
+       last_start = start_time;
+       last_stop = stop_time;
     }
     m_endTime = stop_time+time_tol;
     // an extra entry to allow query for the last interval +slop
