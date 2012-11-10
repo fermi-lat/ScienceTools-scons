@@ -10,7 +10,8 @@ libEnv = baseEnv.Clone()
 if baseEnv['PLATFORM'] == "posix":
     libEnv.Append(CPPDEFINES = 'TRAP_FPE')
 
-st_facilitiesLib = libEnv.StaticLibrary('st_facilities', listFiles(['src/*.cxx', 'src/*.c']))
+st_facilitiesLib = libEnv.StaticLibrary('st_facilities',
+                                        listFiles(['src/*.cxx', 'src/*.c']))
 
 progEnv.Tool('st_facilitiesLib')
 
@@ -18,7 +19,8 @@ if baseEnv['PLATFORM'] == "posix":
     progEnv.Append(CPPDEFINES = 'TRAP_FPE')
 
 progEnv.Tool('addLibrary', library = progEnv['cppunitLibs'])
-test_st_facilitiesBin = progEnv.Program('test_st_facilities', listFiles(['src/test/*.cxx']))
+test_st_facilitiesBin = progEnv.Program('test_st_facilities', 
+                                        listFiles(['src/test/*.cxx']))
 
 #progEnv.Tool('registerObjects', package = 'st_facilities', libraries = [st_facilitiesLib], testApps = [test_st_facilitiesBin], includes = listFiles(['st_facilities/*.h']),
 #             data = listFiles(['data/*'], recursive = True))
