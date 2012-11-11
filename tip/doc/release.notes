@@ -5,6 +5,7 @@
 @verbatim
  * EOH *
 
+ tip-02-18-01 11-Nov-2012 jchiang test program fix
  tip-02-18-00 17-Aug-2012    jrb for Windows no-install-headers
  tip-02-17-04 09-Aug-2012 jchiang from Gulli:  set TNULL keyword for variable length arrays and undo last two commits re: fits_write_colnull
  tip-02-17-03 07-Aug-2012 jchiang Gulli's fix for null values in variable length arrays
