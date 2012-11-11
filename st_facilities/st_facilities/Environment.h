@@ -28,7 +28,13 @@ public:
 
    static std::string dataPath(const std::string & package);
 
+   static std::string getEnv(const std::string & envvar);
+
    static std::string packagePath(const std::string & package);
+
+   static std::string pfilesPath(const std::string & package);
+
+   static std::string xmlPath(const std::string & package);
 
 protected:
 

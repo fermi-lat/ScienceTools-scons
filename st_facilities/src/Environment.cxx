@@ -37,9 +37,19 @@ std::string Environment::dataPath(const std::string & package) {
    return facilities::commonUtilities::getDataPath(package);
 }
 
+std::string Environment::getEnv(const std::string & envvar) {
+   instance();
+   return facilities::commonUtilities::getEnvironment(envvar);
+}
+
 std::string Environment::packagePath(const std::string & package) {
    instance();
    return facilities::commonUtilities::getPackagePath(package);
+}
+
+std::string Environment::xmlPath(const std::string & package) {
+   instance();
+   return facilities::commonUtilities::getXmlPath(package);
 }
 
 } // namespace st_facilities
