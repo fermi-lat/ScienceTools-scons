@@ -39,6 +39,8 @@
 
 #include "optimizers/NewMinuit.h"
 
+#include "st_facilities/Environment.h"
+
 #include "facilities/commonUtilities.h"
 
 #include "MyFun.h"
@@ -74,7 +76,6 @@ int main() {
 #ifdef TRAP_FPE
    feenableexcept (FE_INVALID|FE_DIVBYZERO|FE_OVERFLOW);
 #endif
-   facilities::commonUtilities::setupEnvironment();
    test_FunctionFactory();
    test_Parameter_class();
    test_Function_class();
@@ -94,7 +95,7 @@ void test_FunctionFactory() {
    std::cout << "*** testing FunctionFactory ***" << std::endl;
 
    std::string xmlFile;
-   std::string root = facilities::commonUtilities::getXmlPath("optimizers");
+   std::string root = st_facilities::Environment::xmlPath("optimizers");
    if (root=="") {
       xmlFile = "../xml/FunctionModels.xml";
    } else {

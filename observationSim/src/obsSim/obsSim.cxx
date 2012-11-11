@@ -36,6 +36,7 @@
 #include "irfInterface/IrfsFactory.h"
 #include "irfLoader/Loader.h"
 
+#include "st_facilities/Environment.h"
 #include "st_facilities/Util.h"
 
 #include "facilities/commonUtilities.h"
@@ -182,13 +183,13 @@ void ObsSim::setXmlFiles() {
    m_xmlSourceFiles.clear();
 // observationSim::Simulator requires a specific "TimeCandle" source,
 // so time_source.xml must always be loaded.
-   m_xmlSourceFiles.push_back(facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("observationSim"), "time_source.xml"));
+   m_xmlSourceFiles.push_back(facilities::commonUtilities::joinPath(st_facilities::Environment::xmlPath("observationSim"), "time_source.xml"));
 
 // Fetch any user-specified xml file of flux-style source definitions,
 // replacing the default list.
    std::string xmlFiles = m_pars["infile"];
    if (xmlFiles == "none" || xmlFiles == "") { // use the default
-     xmlFiles = facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("observationSim"), "xmlFiles.dat");
+      xmlFiles = facilities::commonUtilities::joinPath(st_facilities::Environment::xmlPath("observationSim"), "xmlFiles.dat");
    }
    facilities::Util::expandEnvVar(&xmlFiles);
    if (Util::fileExists(xmlFiles)) {

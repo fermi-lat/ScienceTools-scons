@@ -19,6 +19,7 @@
 #include <cppunit/ui/text/TextTestRunner.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "st_facilities/Environment.h"
 #include "st_facilities/FitsUtil.h"
 #include "st_facilities/Util.h"
 
@@ -95,8 +96,8 @@ private:
 #define ASSERT_EQUALS(X, Y) CPPUNIT_ASSERT(std::fabs( (X - Y)/Y ) < 1e-4)
 
 void DssTests::setUp() {
-   std::string root_path = 
-      facilities::commonUtilities::getDataPath("dataSubselector");
+   std::string root_path 
+      = st_facilities::Environment::dataPath("dataSubselector");
    m_infile = "input_events.fits";
    m_evtable = "EVENTS";
    if (root_path != "") {

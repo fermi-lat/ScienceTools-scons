@@ -36,9 +36,6 @@ using XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument;
  * calculation.  Only the (apparent) value is intended to accessible
  * through the value accessor methods of the Function class.
  *
- * @authors J. Chiang
- *    
- * $Header$ 
  */
 
 class Parameter {

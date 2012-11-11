@@ -11,7 +11,11 @@
 
 #include <cstdlib>
 
+#include "facilities/commonUtilities.h"
+
 #include "astro/SkyDir.h"
+
+#include "st_facilities/Environment.h"
 
 #include "irfInterface/IrfsFactory.h"
 #include "irfLoader/Loader.h"
@@ -22,8 +26,6 @@
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
 #include "LatSc.h"
-
-#include "facilities/commonUtilities.h"
 
 void help();
 
@@ -37,15 +39,15 @@ int main(int iargc, char * argv[]) {
    try {
 // Create list of xml input files for source definitions.
    std::vector<std::string> fileList;
-   std::string xml_list(facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("observationSim"), "obsSim_source_library.xml"));
+   std::string xml_list(facilities::commonUtilities::joinPath(st_facilities::Environment::xmlPath("observationSim"), "obsSim_source_library.xml"));
    fileList.push_back(xml_list);
-   xml_list = facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("observationSim"), "3EG_catalog_20-1e6MeV.xml");
+   xml_list = facilities::commonUtilities::joinPath(st_facilities::Environment::xmlPath("observationSim"), "3EG_catalog_20-1e6MeV.xml");
    fileList.push_back(xml_list);
 #ifndef BUILD_WITHOUT_ROOT
-   xml_list = facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("GRB"), "GRB_user_library.xml");
+   xml_list = facilities::commonUtilities::joinPath(st_facilities::Environment::xmlPath("GRB"), "GRB_user_library.xml");
    fileList.push_back(xml_list);
 #endif
-   xml_list = facilities::commonUtilities::joinPath(facilities::commonUtilities::getXmlPath("observationSim"), "time_source.xml");
+   xml_list = facilities::commonUtilities::joinPath(st_facilities::Environment::xmlPath("observationSim"), "time_source.xml");
    fileList.push_back(xml_list);
 
    load_sources();

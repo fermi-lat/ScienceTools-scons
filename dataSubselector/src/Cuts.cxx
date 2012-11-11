@@ -20,6 +20,7 @@
 
 #include "st_stream/StreamFormatter.h"
 
+#include "st_facilities/Environment.h"
 #include "st_facilities/Util.h"
 
 #include "tip/IFileSvc.h"
@@ -586,7 +587,7 @@ read_bitmask_mapping(std::map<unsigned int, std::string> & irfs) const {
    std::string sub_path;
    ::joinPaths("data glast lat bcf irf_index.fits", sub_path);
    std::string irf_index = facilities::commonUtilities::joinPath(
-      facilities::commonUtilities::getEnvironment("CALDB"), sub_path);
+      st_facilities::Environment::getEnv("CALDB"), sub_path);
    const tip::Table * irf_map 
       = tip::IFileSvc::instance().readTable(irf_index, "BITMASK_MAPPING");
    tip::Table::ConstIterator it(irf_map->begin());
