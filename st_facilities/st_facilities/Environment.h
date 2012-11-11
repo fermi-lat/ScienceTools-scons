@@ -26,7 +26,9 @@ public:
 
    static Environment & instance();
 
-   std::string packagePath(const std::string & package) const;
+   static std::string dataPath(const std::string & package);
+
+   static std::string packagePath(const std::string & package);
 
 protected:
 

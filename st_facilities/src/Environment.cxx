@@ -32,7 +32,13 @@ Environment::Environment() {
    facilities::commonUtilities::setupEnvironment();
 }
 
-std::string Environment::packagePath(const std::string & package) const {
+std::string Environment::dataPath(const std::string & package) {
+   instance();
+   return facilities::commonUtilities::getDataPath(package);
+}
+
+std::string Environment::packagePath(const std::string & package) {
+   instance();
    return facilities::commonUtilities::getPackagePath(package);
 }
 
