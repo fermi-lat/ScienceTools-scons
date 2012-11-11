@@ -75,6 +75,7 @@ int main() {
   Table * my_table = 0;
 
   try {
+     facilities::commonUtilities::setupEnvironment();
     // Figure out runtime environment.
     std::string data_dir;
 
