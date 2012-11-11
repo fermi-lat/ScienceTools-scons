@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ observationSim-09-02-03 10-Nov-2012 jchiang ensure setupEnvironment() is called exactly once via st_facilities::Environment
  observationSim-09-02-02 02-Oct-2012 jchiang set the PASS_VER keyword in FT1 EVENTS HDU
  observationSim-09-02-01 27-Sep-2012 jchiang patch tag since ST LATEST was foiled by lingering lock files
  observationSim-09-03-00 27-Sep-2012 jchiang write EVENT_CLASS using bit mapping for pass 7 irfs and later; corner case handling for pre-pass 7 irfs
