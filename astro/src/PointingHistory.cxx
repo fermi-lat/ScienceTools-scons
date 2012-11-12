@@ -180,11 +180,13 @@ void PointingHistory::readFitsData(std::string filename) {
         int data_qual;
         double livetime;
         double rock_angle;
+        bool in_saa;
         interval["lat_mode"].get(lat_mode);
         interval["lat_config"].get(lat_config);
         interval["data_qual"].get(data_qual);
         interval["livetime"].get(livetime);
         interval["rock_angle"].get(rock_angle);
+        interval["in_saa"].get(in_saa);
 
         // check consistency of latitude, longitude: EarthCoordinate computes from the MET and position
         double check_lat(earthpos.latitude()-lat), check_lon(earthpos.longitude()-lon);
@@ -216,7 +218,7 @@ void PointingHistory::readFitsData(std::string filename) {
            PointingInfo(position, orientation, earthpos, 
                         LatProperties(lat_mode, lat_config, data_qual,
                                       livetime, start_time, stop_time,
-                                      rock_angle));
+                                      rock_angle, in_saa));
     
        if( m_startTime<0) m_startTime = start_time;
        last_start = start_time;

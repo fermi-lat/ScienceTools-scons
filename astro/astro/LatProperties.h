@@ -17,13 +17,13 @@ public:
 
    LatProperties() : m_lat_mode(0), m_lat_config(0), m_data_qual(0),
                      m_livetime(1), m_start(0), m_stop(1),
-                     m_rock_angle(50) {}
+                     m_rock_angle(50), m_in_saa(false) {}
 
    LatProperties(int lat_mode, int lat_config, int data_qual, double livetime,
-                 double start, double stop, double rock_angle) 
+                 double start, double stop, double rock_angle, bool in_saa) 
       : m_lat_mode(lat_mode), m_lat_config(lat_config), m_data_qual(data_qual),
         m_livetime(livetime), m_start(start), m_stop(stop),
-        m_rock_angle(rock_angle) {}
+        m_rock_angle(rock_angle), m_in_saa(in_saa) {}
 
    double livetime_frac() const {
       return m_livetime/(m_stop - m_start);
@@ -57,6 +57,10 @@ public:
       return m_rock_angle;
    }
 
+   bool in_saa() const {
+      return m_in_saa;
+   }
+
 private:
 
    int m_lat_mode;
@@ -66,6 +70,7 @@ private:
    double m_start;
    double m_stop;
    double m_rock_angle;
+   bool m_in_saa;
 
 };
 

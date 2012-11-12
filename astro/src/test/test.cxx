@@ -9,6 +9,7 @@
 #include "astro/IGRField.h"
 #include "astro/JulianDate.h"
 #include "astro/SkyDir.h"
+#include "astro/LatProperties.h"
 #include "astro/PointingTransform.h"
 #include "astro/PointingHistory.h"
 #include "astro/HTM.h"
@@ -21,10 +22,10 @@
 #include "tip/IFileSvc.h"
 #include "tip/Image.h"
 
-
 #include <cstdio>
 #include <algorithm>
 #include <stdexcept>
+#include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <typeinfo>
@@ -468,6 +469,32 @@ bool test_IGRF() {
    return true;
 }
 
+bool test_LatProperties() {
+   astro::GPS * gps(astro::GPS::instance());
+   std::string data_path(facilities::commonUtilities::getDataPath("astro"));
+   std::string filename(facilities::commonUtilities::joinPath(data_path, 
+                                                              "test_FT2.fits"));
+   gps->setPointingHistoryFile(filename);
+   for (size_t i(1); i < 11; i++) {
+      PointingHistory history(gps->history());
+      double met(i*800);
+      double tstart(static_cast<int>(met/30.)*30.);
+      double tstop(tstart + 30.);
+      assert(0 == history(met).latProperties().lat_mode());
+      assert(1 == history(met).latProperties().lat_config());
+      assert(1 == history(met).latProperties().data_qual());
+      if (history(met).latProperties().in_saa()) {
+         assert(0 == history(met).latProperties().livetime());
+      } else {
+         ASSERT_EQUALS(27., history(met).latProperties().livetime());
+      }
+      ASSERT_EQUALS(tstart, history(met).latProperties().interval_start());
+      ASSERT_EQUALS(tstop, history(met).latProperties().interval_stop());
+      assert(0 == history(met).latProperties().rock_angle());
+   }
+   return true;
+}
+
 int main(){
 
     using namespace astro;
@@ -625,7 +652,9 @@ int main(){
         if (!test_IGRF()) {
            rc = 1;
         }
-
+        if (!test_LatProperties()) {
+           rc = 1;
+        }
     }catch( const std::exception& e){
         std::cerr << "Failed test because caught " <<typeid(e).name()<<" \""  
             << e.what() << "\"" << std::endl;
