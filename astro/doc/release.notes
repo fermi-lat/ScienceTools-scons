@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-03-15-00 11-Nov-2012 jchiang provide access to lat_config, etc. via GPS->PointingHistory->PointingInfo->LatProperties
  astro-03-14-01 15-Oct-2012 jchiang address OBS-19@JIRA
  astro-03-14-00 16-Aug-2012    jrb support for Windows no-installed-headers
  astro-03-13-03 25-Jun-2012  lsrea update calc. of magnetic hemisphere; remove sign from geomaglat
