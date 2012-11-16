@@ -1443,7 +1443,7 @@ class BrokenPowerLaw(Model):
 
     default_limits = dict(
         Norm=LimitMapper(1e-16,1e-3,1e-9),
-        Index_1=LimitMapper(5,5,1),
+        Index_1=LimitMapper(-5,5,1),
         Index_2=LimitMapper(-5,5,1),
         E_break=LimitMapper(30,5e5,1))
     default_oomp_limits=['Norm','E_break']
