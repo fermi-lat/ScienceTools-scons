@@ -475,7 +475,7 @@ void Cuts::checkIrfs(const std::string & infile,
    my_cuts.set_irfName(infile, extname);
    if (my_cuts.irfName() != irfs) {
       st_stream::StreamFormatter formatter("dataSubselector::Cuts",
-                                           "checkIrfs", 2);
+                                           "checkIrfs", 4);
       formatter.warn() << "IRF selection, "
                        << irfs << ", and DSS keywords in "
                        << infile << "[" << extname << "]\n"
@@ -609,13 +609,13 @@ read_bitmask_mapping(std::map<unsigned int, std::string> & irfs) const {
       }
    }
    delete irf_map;
-   if (irfs.size() == 0 && m_pass_ver != "NONE") {
-      std::ostringstream message;
-      message << "dataSubselector::Cuts::read_bitmask_mapping: "
-              << "PASS_VER not found in irf_index.fits: "
-              << m_pass_ver;
-      throw std::runtime_error(message.str());
-   }
+//    if (irfs.size() == 0 && m_pass_ver != "NONE") {
+//       std::ostringstream message;
+//       message << "dataSubselector::Cuts::read_bitmask_mapping: "
+//               << "PASS_VER not found in irf_index.fits: "
+//               << m_pass_ver;
+//       throw std::runtime_error(message.str());
+//    }
 }
 
 void Cuts::read_pass_ver(const std::string & infile, 
