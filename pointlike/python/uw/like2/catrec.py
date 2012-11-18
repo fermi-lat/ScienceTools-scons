@@ -52,7 +52,7 @@ def create_catalog(outdir, **kwargs):
         opener = pzip.open
     else:
         assert os.path.exists(os.path.join(outdir,'pickle')), 'pickle folder not found under %s' %outdir
-        files = sortec(glob.glob(os.path.join(outdir, 'pickle', '*.pickle')))
+        filelist = sorted(glob.glob(os.path.join(outdir, 'pickle', '*.pickle')))
         opener = open
  
     failed,maxfail = 0,kwargs.pop('maxfail',10)
