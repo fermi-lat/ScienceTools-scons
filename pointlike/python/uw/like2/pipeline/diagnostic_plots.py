@@ -575,5 +575,20 @@ class IsoDiffusePlots(GalDiffusePlots):
        
 # temporary -- run in skymodel folder
 if __name__=='__main__':
-    dp = Diagnostics('.')
-    dp.chisq_plots()
+    keys = 'iso gal sources fb'.split()
+    if len(sys.argv)<2: print 'require an argument: expect one of %s' % keys
+    
+    arg = seys.argv[1]
+    if arg not in keys: print 'found %s; expect one of %s' %(arg,keys)
+    
+    if arg=='iso':
+        IsoDiffusePlots('.').all_plots()
+    elif arg=='gal':
+        GalDiffusePlots('.').all_plots()
+    elif arg=='sources':
+        SourceFits('.').all_plots()
+    elif arg=='fb':
+        FrontBackSedPlots('.').all_plots()
+    else:
+        Diagnostics('.').chisq_plots()
+    
