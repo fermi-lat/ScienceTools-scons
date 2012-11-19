@@ -306,11 +306,16 @@ class SourceFits(Diagnostics):
             print 'creating %s...' % recfile, ; sys.stdout.flush()
             catrec.create_catalog('.', save_local=True)
         sin = pickle.load(open(recfile))
-        cut = (sin.ts>10)*(-np.isnan(sin.a))*(sin.pindex<3.5)+ sin.extended
-        #cut = (sin.ts>10)*(sin.pindex<3.5)+ sin.extended
+        localized = -np.isnan(sin.a)
+        use_localization =  sum(localized)>0
+        if use_localization:
+            cut = (sin.ts>10)*(localized)*(sin.pindex<3.5)+ sin.extended
+        else:
+            cut = (sin.ts>10)*(sin.pindex<3.5)+ sin.extended
         print np.sum(sin.ts>10), sum(-np.isnan(sin.a)),np.sum(sin.pindex<3.5) , np.sum(sin.extended)
         self.s = sin[cut]
-        print 'found %d sources, selecting %d for analysis (ignoring localization)' % (len(cut), sum(cut))
+        print 'found %d  sources, selecting %d for analysis %s' %\
+            ( len(cut), sum(cut), ('' if use_localization else '(ignoring localization)'))
         self.plotfolder='sources'
         self.srcinfo = catrec.FitSource('.')
         
@@ -578,7 +583,7 @@ if __name__=='__main__':
     keys = 'iso gal sources fb'.split()
     if len(sys.argv)<2: print 'require an argument: expect one of %s' % keys
     
-    arg = seys.argv[1]
+    arg = sys.argv[1]
     if arg not in keys: print 'found %s; expect one of %s' %(arg,keys)
     
     if arg=='iso':
