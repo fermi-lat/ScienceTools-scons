@@ -527,3 +527,8 @@ using optimizers::Exception;
       return *(self->begin() + i);
    }
 }
+%extend optimizers::Parameter {
+   void setEquals(const optimizers::Parameter & rhs) {
+      self->operator=(rhs);
+   }
+}
