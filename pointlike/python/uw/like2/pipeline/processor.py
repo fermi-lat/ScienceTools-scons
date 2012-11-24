@@ -268,7 +268,7 @@ def process(roi, **kwargs):
             fit_kw = kwargs.get('fit_kw', {})
             try:
                 if diffuse_only:
-                    ndiff = len([n for n in roi.parameter_names if n.split('_')[0] in ('ring','isotrop')])
+                    ndiff = len([n for n in roi.parameter_names if n.split('_')[0] in ('ring','isotrop', 'limb')])
                     roi.summary(range(ndiff), title='Before fit to diffuse components')
                     fit_kw.update(select=range(ndiff))
                     roi.fit(**fit_kw)
