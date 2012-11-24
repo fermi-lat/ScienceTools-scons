@@ -405,15 +405,15 @@ class Update(NotebookPipe):
         return rc
 
 class Finish(Update):
-    """ finish processing with localizaion 
+    """ finish processing with localization and association
     """
     def __init__(self, *pars, **kwargs):
         super(Finish, self).__init__(*pars, **kwargs)
         
     def defaults(self):
         return dict(dampen=0,
-            localize=True, tsmap_dir='"tsmap"',  
-            sedfig_dir = '"sedfig"',
+            localize=True, 
+            tsmap_dir='"tsmap"',  
             setup_cmds = 'from uw.like2.pipeline import associate ',
             associator="associate.SrcId('$FERMI/catalog','all_but_gammas')",quiet=True)
             
