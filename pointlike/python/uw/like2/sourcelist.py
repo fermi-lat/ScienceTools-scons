@@ -259,7 +259,7 @@ class SourceList(list):
                 plim = dict(
                     Index=(-0.5, 5), 
                     Norm=(10**-15, 10**-7),
-                    Scale=(0.001, 4.0),
+                    Scale=(0.0001, 10.0),
                     beta=(0, 5.), 
                     Cutoff=(100., 1e5),
                     )[pname.split('_')[0]]
