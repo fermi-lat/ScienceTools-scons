@@ -138,7 +138,7 @@ class ROI_user(roistat.ROIstat, fitter.Fitted):
             mm = fitter.Minimizer(fn, quiet=quiet)
             mm(**fit_kw)
             w = self.log_like()
-            print '%d calls, function value, improvement: %.1g, %.1f'\
+            print '%d calls, function value, improvement: %.0f, %.1f'\
                 % (self.calls, w, w - initial_value)
             if fit_kw['estimate_errors'] :
                 self.sources.set_covariance_matrix(mm.cov_matrix, select)
