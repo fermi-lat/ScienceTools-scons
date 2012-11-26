@@ -223,7 +223,8 @@ def make_association(source, tsf, associate, quiet=False):
 def localize_all(roi, **kwargs):
     """ localize all variable local sources in the roi, make TSmaps and associations if requested 
     """
-    sources = [s for s in roi.sources if s.skydir is not None and np.any(s.spectral_model.free)]
+    tsmin = kwargs.get('tsmin',10)
+    sources = [s for s in roi.sources if s.skydir is not None and np.any(s.spectral_model.free) and s.ts>tsmin]
     tsmap_dir = kwargs.pop('tsmap_dir', None)
     associator = kwargs.pop('associator', None)
     tsfits = kwargs.pop('tsfits', False) #TODO: reimplement this to generate FITS maps
