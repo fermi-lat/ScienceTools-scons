@@ -33,7 +33,7 @@ class SkyModel(object):
         ('newmodel', None, 'if not None, a string to eval\ndefault new model to apply to appended sources'),
         ('update_positions', None, 'set to minimum ts  update positions if localization information found in the database'),
         ('filter',   lambda s: True,   'source selection filter, applied when creating list of all soruces: see examples at the end. Can be string, which will be eval''ed '), 
-        ('global_check', 'GlobalCheck()', 'check global sources: can modify parameters when loading'),
+        ('global_check', lambda s: True, 'check global sources: can modify parameters when loading'),
         #('diffuse_check', lambda s: None, 'check diffuse sources: can modify parameters'),
         ('closeness_tolerance', 0., 'if>0, check each point source for being too close to another, print warning'),
         ('quiet',  False,  'make quiet' ),
