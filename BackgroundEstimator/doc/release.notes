@@ -6,6 +6,7 @@
   $Id$
   EOH
 
+ BackgroundEstimator-00-06-00 27-Nov-2012 omodei Automatic Tagging of GRBAnalysis packages
  BackgroundEstimator-00-05-00 17-Apr-2012 omodei Automatic Tagging of GRBAnalysis packages
  BackgroundEstimator-00-04-00 02-Feb-2012 omodei Fixing file definition for the LLE datarelease
  BackgroundEstimator-00-03-00 06-Oct-2011 vlasisva Cleaned version of bkge
