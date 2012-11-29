@@ -587,6 +587,10 @@ class LCTopHat(LCPrimitive):
         width,x0 = self.p
         return np.where(np.mod(phases - x0 + width/2,1) < width,1./width,0)
 
+    def random(self,n):
+        return np.mod(
+            np.random.rand(n)*self.p[0]+self.p[-1]-self.p[0]/2,1)
+
 class LCHarmonic(LCPrimitive):
     """Represent a sinusoidal shape corresponding to a harmonic in a Fourier expansion.
    

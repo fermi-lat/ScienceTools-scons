@@ -369,7 +369,7 @@ class UnweightedLCFitter(object):
             x = (x[:-1]+x[1:])/2
             axes.errorbar(x,w1,yerr=errors,capsize=0,marker='',ls=' ',color='red')
         else:
-            bg_level = 1
+            bg_level = 0
             #axes.plot(dom,cod,color='blue',lw=1)
             h = np.histogram(self.phases,bins=np.linspace(0,1,nbins+1))
             x = (h[1][:-1]+h[1][1:])/2
