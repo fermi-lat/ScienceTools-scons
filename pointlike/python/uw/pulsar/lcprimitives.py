@@ -105,6 +105,7 @@ class LCPrimitive(object):
         self.p[self.free] = p
         # adjust position to be between 0 and 1
         self.p[-1] = self.p[-1] % 1
+        return np.all(self.p >= 0)
 
     def get_parameters(self): return self.p[self.free]
 

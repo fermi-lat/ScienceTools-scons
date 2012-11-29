@@ -41,11 +41,13 @@ class LCTemplate(object):
 
     def set_parameters(self,p):
         start = 0
+        params_ok = True
         for prim in self.primitives:
             n = int(prim.free.sum())
-            prim.set_parameters(p[start:start+n])
+            params_ok = prim.set_parameters(p[start:start+n]) and params_ok
             start += n
         self.norms.set_parameters(p[start:start+self.norms.free.sum()])
+        return params_ok
 
     def set_errors(self,errs):
         start = 0
