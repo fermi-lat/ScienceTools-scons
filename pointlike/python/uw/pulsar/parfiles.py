@@ -1,3 +1,11 @@
+"""
+Module reads and manipulates tempo2 parameter files.
+
+$Header$
+
+author: Matthew Kerr
+"""
+
 import numpy as np
 import os
 from uw.utilities.coords import ec2eq
