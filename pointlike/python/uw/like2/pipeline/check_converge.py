@@ -62,7 +62,6 @@ def main(args):
     streamInfo(stream, absskymodel)
 
     os.chdir(absskymodel) # useful for diagnostics below
-    s
     current = str(datetime.datetime.today())[:16]
     print '\n%s stage %s stream %s model %s ' % (current, stagelist, stream,  absskymodel)
 
