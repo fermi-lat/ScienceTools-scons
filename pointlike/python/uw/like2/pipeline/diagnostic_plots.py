@@ -935,8 +935,8 @@ def main(args):
             try:
                 classes[i]('.').all_plots()
             except FloatingPointError, msg:
-                print 'Floating point error running %s, %s' % (keys[i], msg)
-                print 'seterr:', seterr()
+                print 'Floating point error running %s: "%s"' % (keys[i], msg)
+                print 'seterr:', np.seterr()
         
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='run a diagnostic output job; must be in skymodel folder')
