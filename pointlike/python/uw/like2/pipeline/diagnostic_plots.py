@@ -926,6 +926,7 @@ opts = [('iso',    IsoDiffusePlots),
         ]  
         
 def main(args):
+    if type(args)==types.StringType: args = [args]
     keys,classes =  [[t[j] for t in opts] for j in (0,1)]
     for arg in args:
         i = keys.index(arg)
