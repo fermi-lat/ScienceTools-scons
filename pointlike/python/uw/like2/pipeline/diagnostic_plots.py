@@ -931,7 +931,11 @@ def main(args):
         i = keys.index(arg)
         if i<0: print 'found %s; expect one of %s' %(arg,keys)
         else:
-            classes[i]('.').all_plots()
+            try:
+                classes[i]('.').all_plots()
+            except FloatingPointError, msg:
+                print 'Floating point error running %s, %s' % (keys[i], msg)
+                print 'seterr:', seterr()
         
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='run a diagnostic output job; must be in skymodel folder')
