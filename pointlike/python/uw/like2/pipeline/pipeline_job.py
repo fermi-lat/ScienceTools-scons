@@ -78,6 +78,9 @@ elif stage=='isodiffuse':
 elif stage=='limb':
     update = pipe.Update(POINTLIKE_DIR, SKYMODEL_SUBDIR, 
         processor='processor.limb_processor')
+elif stage=='fluxcorr':
+    update = pipe.Update(POINTLIKE_DIR, SKYMODEL_SUBDIR, 
+        processor='processor.flux_correlations')
 elif stage=='pulsar_table':
     update = pipe.PulsarLimitTables(POINTLIKE_DIR, SKYMODEL_SUBDIR) 
 else:
