@@ -28,13 +28,6 @@ def streamInfo( stream, path='.'):
 
 
 
-def create_stream(newstage):
-    cmd = 'cd %s;  /afs/slac/g/glast/ground/bin/pipeline  createStream -D "stage=%s, SKYMODEL_SUBDIR=%s" UWpipeline '\
-        %(pointlike_dir, newstage, skymodel)
-    rc=os.system(cmd)
-    if rc==0:
-        print '\n----> started new stream with stage %s'% newstage
-    else: print '\n***** Failed to create new stream: tried %s'%cmd
 
 def main(args):
     """ 
@@ -54,6 +47,14 @@ def main(args):
             for filename in ff:
                 z.write( filename, os.path.join(fname,os.path.split(filename)[-1]))
         print ' zipped into file %s.zip' %fname
+        
+    def create_stream(newstage):
+        cmd = 'cd %s;  /afs/slac/g/glast/ground/bin/pipeline  createStream -D "stage=%s, SKYMODEL_SUBDIR=%s" UWpipeline '\
+            %(pointlike_dir, newstage, skymodel)
+        rc=os.system(cmd)
+        if rc==0:
+            print '\n----> started new stream with stage %s'% newstage
+        else: print '\n***** Failed to create new stream: tried %s'%cmd
 
 
     if not args.test:
