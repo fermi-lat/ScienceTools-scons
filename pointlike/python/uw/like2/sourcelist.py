@@ -276,7 +276,7 @@ class SourceList(list):
         if source.name in self.source_names:
             raise SourceListException('Attempt to add source "%s": already exists' % source.name)
         set_point_property(source)
-        set_default_bounds(source.model)
+        self.set_default_bounds(source)
         self.append(source)
  
     def del_source(self, source_name):
