@@ -210,7 +210,7 @@ class CountPlots(Diagnostics):
         if ax is None:
             fig,ax = plt.subplots( figsize=(4,4))
         else: fig = ax.figure
-        r = self.residual(ib).clip(ylim)
+        r = self.residual(ib).clip(*ylim)
         ax.plot(self.rois.dec, r, '.')
         galplane = np.abs(self.rois.glat)<5
         ax.plot(self.rois.dec[galplane], r[galplane], '+r', label='|b|<5')
