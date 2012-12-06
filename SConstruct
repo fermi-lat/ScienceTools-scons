@@ -457,6 +457,7 @@ if not baseEnv.GetOption('help'):
             (baseDirectories, basePackages) = findPackages('.', True)
             baseEnv['absBasePath'] = os.path.abspath(str(Dir('.')))
             baseEnv['basePackageNameList'] = basePackages
+            baseEnv['absSuperPath'] = os.path.abspath(override)
 
     Export('packages')
     baseEnv['packageNameList'] = packages
