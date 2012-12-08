@@ -124,6 +124,9 @@ class DiffuseModelFromCache(DiffuseModel):
             filename = self.diffuse_source.dmodel[0].name()
         cache_path = os.path.splitext(filename)[0]+'_%dbpd'%self.binsperdec
         assert os.path.exists(filename), 'oops, %s not found' %filename
+        if os.path.exists(cache_path+'.zip'):
+            print 'found a zip file with cached diffuse maps'
+            print '(not doing anything yet)'
         if not os.path.exists(cache_path):
             raise DiffuseException('cache folder %s not found' %cache_path)
 
@@ -214,7 +217,7 @@ class IsotropicModel(DiffuseModel):
         
         grid.cvals = grid.fill(exp) * dm(self.roi_dir, energy) 
         assert not np.any(np.isnan(grid.cvals)), \
-            'Grid for %s has nan values' %dm.filename
+            'Grid for %s has nan values' %dm.name()
         return grid
 
 class DiffuseModelFromFits( DiffuseModel):
@@ -257,7 +260,7 @@ class DiffuseModelFromFits( DiffuseModel):
     def spectral_model(self):
         return self.diffuse_source.smodel
 
-class DiffuseModelFB(DiffuseModelFromFits): 
+class DiffuseModelFB(IsotropicModel): #DiffuseModelFromFits): 
     def __init__(self, *pars, **kwargs):
         super(DiffuseModelFB,self).__init__(*pars, **kwargs)
 
@@ -488,11 +491,11 @@ def create_diffuse_cache(name, **kwargs):
 
 def mapper(roi_factory, roiname, skydir, source, **kwargs): 
     """
-    return a DiffuseModel appropriate for the source
+    return a convolved DiffuseModel appropriate for the source
     """
     psf = roi_factory.psf
     exposure = roi_factory.exposure
-    if source.name.startswith('iso'):
+    if source.name.lower().startswith('iso'):
         return IsotropicModel(psf, exposure,skydir, source, **kwargs)
     elif source.name.startswith('limb'):
         for dmodel in source.dmodel:

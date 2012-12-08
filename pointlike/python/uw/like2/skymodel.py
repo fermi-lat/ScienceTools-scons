@@ -642,7 +642,7 @@ class Rename(object):
 #========================================================================================
 #  These classes are filters. An object of which can be loaded by the filter parameter
 # A filter must implement a __call__ method, which must return True to keep the source.
-# Since it is passed a refterence to the source, it may change any characteristic, such as the model
+# Since it is passed a reference to the source, it may change any characteristic, such as the model
 #
 # note MultiFilter that can be used to combine filters.
 
