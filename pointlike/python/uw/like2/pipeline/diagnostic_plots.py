@@ -261,17 +261,6 @@ class CountPlots(Diagnostics):
         )
         return fig
         
-    def sunmoon(self):
-        fig,axx=plt.subplots(1,2, figsize=(10,5))
-        plt.subplots_adjust(hspace = 0.3)
-        sm = self.counts['SunMoon']
-        ax = axx[0]
-        ax.hist(sm[0], np.linspace(0,1000))
-        plt.setp(ax, xlabel='sun/moon counts per ROI')
-        ax = axx[1]
-        self.skyplot( np.log10(sm[0]), ax=ax, cbtext='log10(sunmoon counts)')
-        return fig
-    
     def all_plots(self):
         self.residual_hists()
         self.residual_plot()
@@ -279,9 +268,6 @@ class CountPlots(Diagnostics):
         self.resid_vs_dec_multi()
         self.chisq_plots()
         
-        self.sunmoon()
-        self.savefigure('sunmoon_counts', title='Sun and Moon counts per roi')
-
 
 class FrontBackSedPlots(Diagnostics):
     """ in progress 
