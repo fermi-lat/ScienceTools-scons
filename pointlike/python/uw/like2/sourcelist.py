@@ -26,32 +26,32 @@ def set_point_property(psource) :
 
 class SourceListException(Exception):pass
 
-# redundant?
-#def set_default_bounds( model, force=False):
-#    """
-#    Handy utility to set bounds for a model from like.Models
-#    force=True to override previously set bounds.
-#    """
-#    if not force and hasattr(model, 'bounds'):
-#        # model has bounds. Were they set? check to see if all are None
-#        notset =  np.all(np.array([np.all(b ==[None,None]) for b in model.bounds]))
-#        if not notset: return
-#    bounds=[]
-#    def to_internal(fun, values):
-#        return [fun(value) if value is not None else None for value in values]
-#    for pname, mp in zip(model.param_names, model.mappers):
-#        plim = (None,None)
-#        try:
-#            plim = dict(
-#                Index=(-0.5, 5), 
-#                Norm=(10**-15, 10**-7),
-#                Scale=(0.001, 4.0),
-#                beta=(0, 5.), 
-#                Cutoff=(100., 1e5),
-#                )[pname.split('_')[0]]
-#        except: pass
-#        bounds.append( to_internal(mp.tointernal, plim) )
-#    model.bounds = np.array(bounds) # convert to array so can mask with free
+## redundant?
+def set_default_bounds( model, force=False):
+    """
+    Handy utility to set bounds for a model from like.Models
+    force=True to override previously set bounds.
+    """
+    if not force and hasattr(model, 'bounds'):
+        # model has bounds. Were they set? check to see if all are None
+        notset =  np.all(np.array([np.all(b ==[None,None]) for b in model.bounds]))
+        if not notset: return
+    bounds=[]
+    def to_internal(fun, values):
+        return [fun(value) if value is not None else None for value in values]
+    for pname, mp in zip(model.param_names, model.mappers):
+        plim = (None,None)
+        try:
+            plim = dict(
+                Index=(-0.5, 5), 
+                Norm=(10**-15, 10**-7),
+                Scale=(0.001, 4.0),
+                beta=(0, 5.), 
+                Cutoff=(100., 1e5),
+                )[pname.split('_')[0]]
+        except: pass
+        bounds.append( to_internal(mp.tointernal, plim) )
+    model.bounds = np.array(bounds) # convert to array so can mask with free
 
 def check_bounds(model):
     """ check that free parameters in the model are within the bounds
