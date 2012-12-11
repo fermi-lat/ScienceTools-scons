@@ -525,7 +525,7 @@ class AnalysisBase(object):
         #enough
         allFrozen=True
         for name in self.sourceNames():
-            if self.freePars(name).size() !=0:
+            if len(self.freePars(name)) != 0:
                 allFrozen=False
                 break
 
