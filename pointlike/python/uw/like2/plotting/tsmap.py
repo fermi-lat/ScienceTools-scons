@@ -83,6 +83,9 @@ def plot(localizer, name=None, center=None, size=0.5, pixelsize=None, outdir=Non
             x,y = tsp.zea.pixel(ps.skydir)
             if ps.name==name or x<0 or x>tsp.zea.nx or y<0 or y>tsp.zea.ny: continue
             tsp.zea.axes.plot([x],[y], marker[k%12], color=markercolor, label=ps.name, markersize=markersize)
+            if hasattr(ps, 'ellipse'):
+                # this draws a line, perhaps shaded
+                tsp.zea.ellipse(ps.skydir, ps.ellipse[2:5])
             k+=1
     
     tsp.plot(tsp.tsmaxpos, symbol='+', color='k') # at the maximum
