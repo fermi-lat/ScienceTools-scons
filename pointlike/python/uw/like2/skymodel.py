@@ -778,3 +778,8 @@ class LimbSpecial(object):
             s.model.free = np.array([False, True])
             pars = s.model.get_parameters()
             if pars[0]<=-3: s.model.set_parameters(np.array([-1.]))
+class TScut(object):
+    def __init__(self, cut=10):
+        self.cut=cut
+    def __call__(self, s):
+        return s.ts>10 if hasattr(s,'ts') else True
