@@ -78,10 +78,11 @@ def main(args):
         pipe.check_converge(absskymodel, log=logto)
         r = pipe.roirec(absskymodel)
         q = pipe.check_converge(absskymodel, add_neighbors=False)
-        if max(r.niter)<8 and len(q)>1:
+        if max(r.niter)<5 and len(q)>1:
             create_stream('update')
         else:
-            create_stream('sedinfo')
+            create_stream('finish')
+            #create_stream('sedinfo')
     elif stage=='sedinfo':
         make_zip('sedinfo')
         make_zip('sedfig','png')
@@ -110,8 +111,8 @@ def main(args):
 
     elif stage=='finish':
         make_zip('pickle')
-        make_zip('tsmap', 'png')
-        make_zip('sedfig', 'png')
+        #make_zip('tsmap', 'png')
+        #make_zip('sedfig', 'png')
         diagnostic_plots.main('sources')
 
     elif stage=='tables':
