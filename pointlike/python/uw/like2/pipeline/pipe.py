@@ -114,7 +114,6 @@ class Setup(dict):
                 source_kw=dict(),
                 fit_kw=dict(ignore_exception=False, use_gradient=True, call_limit=1000),
                 repivot = False,
-                update_positions=None,
                 tables = None,  #roi_maps.ROItables("%(outdir)s", skyfuns=(
                                 # (roi_tsmap.TSCalc, 'ts', dict(photon_index=2.0),) 
                                 #  (ts_map.KdeMap, "kde", dict()),))
@@ -147,7 +146,7 @@ import os, pickle; os.chdir(os.path.expandvars(r"%(cwd)s"));%(setup_cmds)s
 from uw.like2.pipeline import pipe,associate; from uw.like2 import skymodel;
 g=pipe.Pipe("%(indir)s", %(datadict)s, 
         skymodel_kw=dict(auxcat="%(auxcat)s", 
-            extended_catalog_name=%(extended)s, #update_positions=%(update_positions)s,
+            extended_catalog_name=%(extended)s,
             %(skymodel_extra)s), 
         analysis_kw=dict(irf="%(irf)s", minROI=%(minROI)s, maxROI=%(maxROI)s, emin=%(emin)s,emax=%(emax)s),
         irf="%(irf)s",

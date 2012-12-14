@@ -56,12 +56,12 @@ mstage = stage
 stage=stage.split(':')[0] # allows multiple stages, separated by colons
 if stage=='create':
     update = pipe.Create(POINTLIKE_DIR, SKYMODEL_SUBDIR,)
-elif stage=='create_reloc': #perform relocalization when create
-    update = pipe.Create(POINTLIKE_DIR, SKYMODEL_SUBDIR, update_positions=10. )
 elif stage=='update_full':
     update = pipe.Update(POINTLIKE_DIR, SKYMODEL_SUBDIR, dampen=1.0, sedfig_dir=None, )
 elif stage=='update':
     update = pipe.Update(POINTLIKE_DIR, SKYMODEL_SUBDIR, dampen=0.5, sedfig_dir=None, )
+elif stage=='update_beta': # do an update, freeing beta when appropriate
+    update = pipe.Update(POINTLIKE_DIR, SKYMODEL_SUBDIR, dampen=1.0, sedfig_dir=None, fix_beta=True)
 elif stage=='finish':
     update = pipe.Finish(POINTLIKE_DIR, SKYMODEL_SUBDIR,)
 elif stage=='tables':
