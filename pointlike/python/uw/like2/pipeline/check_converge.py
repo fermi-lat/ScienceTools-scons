@@ -71,9 +71,8 @@ def main(args):
         stage, nextstage = t 
     else: stage,nextstage = t[0], None
 
-    if stage=='update' or stage=='update_full':
+    if stage.split('_')[0]=='update':
         make_zip('pickle') # always update; latter diagnostic will use it, not the files
-        diagnostic_plots.main('counts');
         logto = open(os.path.join(absskymodel,'converge.txt'), 'a')
         pipe.check_converge(absskymodel, log=logto)
         r = pipe.roirec(absskymodel)
@@ -86,7 +85,6 @@ def main(args):
     elif stage=='sedinfo':
         make_zip('sedinfo')
         make_zip('sedfig','png')
-        diagnostic_plots.main('fb')
 
     elif stage=='create' or stage=='create_reloc':
         ff = glob.glob(os.path.join(absskymodel, 'pickle', '*.pickle'))
