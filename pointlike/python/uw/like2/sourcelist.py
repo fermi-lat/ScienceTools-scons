@@ -46,7 +46,7 @@ def set_default_bounds( model, force=False):
                 Index=(-0.5, 5), 
                 Norm=(10**-15, 10**-7),
                 Scale=(0.001, 4.0),
-                beta=(0, 5.), 
+                beta=(-0.1, 5.), 
                 Cutoff=(100., 1e5),
                 )[pname.split('_')[0]]
         except: pass
@@ -260,7 +260,7 @@ class SourceList(list):
                     Index=(-0.5, 5), 
                     Norm=(10**-15, 10**-7),
                     Scale=(0.0001, 10.0),
-                    beta=(0, 5.), 
+                    beta=(-0.1, 5.), 
                     Cutoff=(100., 1e5),
                     )[pname.split('_')[0]]
             except: pass
