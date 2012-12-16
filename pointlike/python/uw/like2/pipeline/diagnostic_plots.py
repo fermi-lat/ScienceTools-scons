@@ -691,7 +691,7 @@ class SourceInfo(Diagnostics):
     def setup(self, **kwargs):
         self.plotfolder='sources' #needed by superclass
         filename = 'sources.pickle'
-        refresh = kwargs.pop('refresh', False)
+        refresh = kwargs.pop('refresh', os.getmtime(filename)< os.getmtime('pickle.zip'))
         if (not os.path.exists(filename)) or (refresh):
             files, pkls = self.load_pickles('pickle')
             assert len(files)==1728, 'Expected to find 1728 files'
