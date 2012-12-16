@@ -26,8 +26,9 @@ def main(args):
         stage, nextstage = t 
     else: stage,nextstage = t[0], None
 
-    if stage=='update' or stage=='update_full':
+    if stage.split('_')[0]=='update':
         diagnostic_plots.main('counts');
+
     elif stage=='sedinfo':
         diagnostic_plots.main('fb')
 
@@ -43,6 +44,7 @@ def main(args):
         pass
     elif stage=='finish':
         diagnostic_plots.main('sources')
+        diagnostic_plots.main('sourceinfo') # join thise 
 
     elif stage=='tables':
         pass
