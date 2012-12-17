@@ -30,9 +30,10 @@ import pyLikelihood
 
 class _Parameter(object):
     """Thin wrapper around pyLikelihood.Parameter, temporarily, for
-    refactoring purposes."""
+    refactoring purposes.  Eventually, should replace with 
+    pyLikelihood.Parameter."""
     def __init__(self, par):
-        self.par = pyLikelihood.Parameter(par)
+        self.par = pyLikelihood.Parameter(par.parameter)
     def setDataMembers(self, par):
         par.setEquals(self.par)
 
