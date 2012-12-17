@@ -691,7 +691,7 @@ class SourceInfo(Diagnostics):
     def setup(self, **kwargs):
         self.plotfolder='sources' #needed by superclass
         filename = 'sources.pickle'
-        refresh = kwargs.pop('refresh', os.getmtime(filename)< os.getmtime('pickle.zip'))
+        refresh = kwargs.pop('refresh', os.path.getmtime(filename)< os.path.getmtime('pickle.zip'))
         if (not os.path.exists(filename)) or (refresh):
             files, pkls = self.load_pickles('pickle')
             assert len(files)==1728, 'Expected to find 1728 files'
@@ -716,6 +716,7 @@ class SourceInfo(Diagnostics):
                     sdict[name].update(glat=info['skydir'].b(), glon=info['skydir'].l(),
                         roiname=pkl['name'], 
                         pars= pars, errs=errs, free=free, badfit=badfit,
+                        e0 = model.e0,
                         modelname=model.name,
                         )
             self.df = pd.DataFrame(sdict).transpose()
