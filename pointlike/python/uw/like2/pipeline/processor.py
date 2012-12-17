@@ -194,7 +194,7 @@ def pickle_dump(roi, fit_sources, pickle_dir, dampen, failed=False, **kwargs):
     print 'saved pickle file to %s' % filename
         
 
-def repivot(roi, fit_sources=None, min_ts = 16, max_beta=3.0, emin=200, emax=10000.):
+def repivot(roi, fit_sources=None, min_ts = 10, max_beta=3.0, emin=200, emax=10000.):
     """ invoked by process() if repivot flag set; can be run separately to test
     
     returns True if had to refit, allowing iteration
