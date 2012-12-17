@@ -232,8 +232,8 @@ def repivot(roi, fit_sources=None, min_ts = 10, max_beta=3.0, emin=200, emax=100
                 model.free[2]=False # make sure beta fixed?
 
         if pivot < emin or pivot > emax:
-            print 'bad pivot energy, not in range (%.0f, %.0f)' % (emin, emax)
-            continue
+            print 'pivot energy, not in range (%.0f, %.0f): setting to limit' % (emin, emax)
+            pivot = min(emax, max(pivot,emin))
         if abs(pivot/e0-1.)<0.05:
             print 'converged'; continue
         print 'will refit'
