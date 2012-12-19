@@ -152,10 +152,6 @@ void DataFilter::run() {
       std::exit(1);
    } 
 
-   if (m_inputFiles.size() > 1) {
-      tip::IFileSvc::instance().createFile(m_outputFile, m_inputFiles.front());
-   }
-
    st_app::AppParGroup pars(m_pars);
    pars["ra"] = m_ra;
    pars["dec"] = m_dec;
@@ -225,58 +221,74 @@ void DataFilter::copyTable(const std::string & extension,
       header["TSTOP"].get(m_tstop);
       delete inputTable;
    } else { // handle multiple input files using tip
+      // New schema : try to ensure that each (input) file is opened only
+      // once. We don't know the size of the output file in advance so we grow
+      // it as we go along. First file is handled differently from others,
+      // using fcopy as above. Others are read using tip.
+      
       std::vector<std::string>::const_iterator infile(m_inputFiles.begin());
       tip::Index_t nrows(0);
+      tip::Index_t nsize(0);
+
+      st_facilities::FitsUtil::fcopy(*infile, m_outputFile,
+				     extension, filterString, 
+				     m_pars["clobber"]);
+      // Get TSTART and TSTOP from copy in output file as it is quicker
+      // than reopening the input file.
+      tip::Table * outputTable 
+	= tip::IFileSvc::instance().editTable(m_outputFile, extension);
+      tip::Header & outputHeader(outputTable->getHeader());
+      outputHeader["TSTART"].get(m_tstart);
+      outputHeader["TSTOP"].get(m_tstop);
+      nsize = nrows = outputTable->getNumRecords();	  
+      infile++;
+
+      tip::Table::Iterator outputIt = outputTable->end();
+      tip::Table::Record & output = *outputIt;
+      
       for ( ; infile != m_inputFiles.end(); ++infile) {
          const tip::Table * inputTable 
             = tip::IFileSvc::instance().readTable(*infile, extension,
                                                   filterString);
          nrows += inputTable->getNumRecords();
-// Get tstart, tstop for this file, treating the first file as a
-// special case to initialize the values.
+	 if(nrows > nsize)
+	    {
+	      // resize output file
+	      long newsize = nrows;
+#if 0 // AGGERSSIVE RESIZING SCHEME - SHOULD NOT BE USED I THINK
+	      if(infile+1 != m_inputFiles.end())
+		{
+		  // Guess size based on number of input files and number
+		  // of records read already
+		  long size_guess = 
+		    (long(nrows)*long(m_inputFiles.size()))/
+		    ((long(infile - m_inputFiles.begin()) + 1L));
+		  //size_guess = std::min(size_guess, nrows*10);
+		  newsize = std::max(newsize, size_guess);
+		}
+#endif
+	      //std::cerr << "Resizing: " << newsize << '\n';
+	      outputTable->setNumRecords(newsize);
+	      nsize = newsize;
+	    }
          const tip::Header & header(inputTable->getHeader());
          double tstart, tstop;
          header["TSTART"].get(tstart);
          header["TSTOP"].get(tstop);
-         if (infile == m_inputFiles.begin()) {
-            m_tstart = tstart;
-            m_tstop = tstop;
-         } else {
-            if (tstart < m_tstart) {
-               m_tstart = tstart;
-            }
-            if (tstop > m_tstop) {
-               m_tstop = tstop;
-            }
-         }
-         delete inputTable;
-      }
+	 m_tstart = std::min(m_tstart, tstart);
+	 m_tstop = std::max(m_tstop, tstop);
 
-      tip::Table * outputTable 
-         = tip::IFileSvc::instance().editTable(m_outputFile, extension);
-      outputTable->setNumRecords(nrows);
-
-      tip::Table::Iterator outputIt = outputTable->begin();
-      tip::Table::Record & output = *outputIt;
-
-      tip::Index_t npts(0);
-      for (infile=m_inputFiles.begin(); infile != m_inputFiles.end();
-           ++infile) {
-         const tip::Table * inputTable 
-            = tip::IFileSvc::instance().readTable(*infile, extension, 
-                                                  filterString);
          tip::Table::ConstIterator inputIt = inputTable->begin();
          tip::ConstTableRecord & input = *inputIt;
          for (; inputIt != inputTable->end(); ++inputIt) {
             output = input;
             ++outputIt;
-            npts++;
          }
          delete inputTable;
       }
 
 // Resize output table to account for filtered rows.
-      outputTable->setNumRecords(npts);
+      outputTable->setNumRecords(nrows);
       delete outputTable;
    }
 
