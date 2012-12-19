@@ -5,6 +5,7 @@
     @verbatim
     * EOH *
 
+ dataSubselector-08-04-07 19-Dec-2012  fegan improve multiple input file handling
  dataSubselector-08-04-06 16-Nov-2012 jchiang back off on IRF checking until custom irfs are handled correctly
  dataSubselector-08-04-05 10-Nov-2012 jchiang ensure setupEnvironment() is called exactly once via st_facilities::Environment
  dataSubselector-08-04-04 02-Oct-2012 jchiang refactor BITMASK and PASS_VER handling; remove set_irfName from Cuts constructors and make an explicit call required in Cuts::checkIrfs(...)
