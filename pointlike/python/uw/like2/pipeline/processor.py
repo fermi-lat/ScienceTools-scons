@@ -648,7 +648,10 @@ def flux_correlations(roi, **kwargs):
             return (10**(fdict[delta]-fdict[0])-1)/delta
         
         def result(self, delta=0.01):
-            # return a DataFrame with names as indices, columns for plus, minus, average, difference/average
+            """ return a DataFrame with names as indices, columns for plus, minus, average, difference/average
+            """
+            if len(self.names)==0:
+                return None
             df=pd.DataFrame( self(delta), index=self.names, columns=[delta])
             df[-delta]=self(-delta)
             df['average'] = 0.5*(df[delta]+df[-delta])
