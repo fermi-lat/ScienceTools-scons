@@ -43,7 +43,7 @@ def main(args):
 
     def make_zip(fname,  ext='pickle'):
         ff = glob.glob(os.path.join(absskymodel, fname, '*.'+ext))
-        ir len(ff)==0:
+        if len(ff)==0:
             print 'no files found to zip in folder %s' %fname
             return
         print 'found %d *.%s in folder %s ...' % ( len(ff),ext, fname,) ,

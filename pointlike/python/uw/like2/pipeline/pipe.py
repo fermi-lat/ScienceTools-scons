@@ -412,7 +412,7 @@ class Finish(Update):
     def defaults(self):
         return dict(dampen=0,
             localize=True, 
-            tsmap_dir='"tsmap"',  
+            ####### temporary #####  tsmap_dir='"tsmap"',  
             setup_cmds = 'from uw.like2.pipeline import associate ',
             associator="associate.SrcId('$FERMI/catalog','all_but_gammas')",quiet=True)
             

@@ -20,6 +20,7 @@ current = str(datetime.datetime.today())[:16]
 print '\n%s stage %s stream %s model %s ' % (current, stagelist, stream,  absskymodel)
 
 rc = dataset.validate(absskymodel, nocreate=True)
+print 'Validated' if rc else 'NOT validated'
 tee.close()
 
 if not rc: raise Exception('Failed to validate data')
