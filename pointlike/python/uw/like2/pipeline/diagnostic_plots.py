@@ -77,7 +77,7 @@ class Diagnostics(object):
         """ functions: list of bound functions 
         """
         for function in functions:
-            function(**kwwargs)
+            function(**kwargs)
             self.savefigure(function.__name__)
             
     def load_pickles(self,folder='pickle'):

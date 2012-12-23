@@ -16,7 +16,7 @@ def main(args):
     pointlike_dir=args.pointlike_dir 
     skymodel  =args.skymodel 
     stream    =args.stream
-    stagelist = args.stage 
+    stagelist = args.stage[0] 
    
     absskymodel = os.path.join(pointlike_dir, skymodel)
 

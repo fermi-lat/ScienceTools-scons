@@ -36,8 +36,9 @@ def main(args):
     """
     pointlike_dir=args.pointlike_dir # = os.environ.get('POINTLIKE_DIR', '.')
     skymodel=args.skymodel # = os.environ.get('SKYMODEL_SUBDIR', sys.argv[1] )
-    stream=args.stream #= os.environ.get('PIPELINE_STREAM', '26')
-    stagelist = args.stage #os.environ.get('stage', 'update' if len(sys.argv)==2 else sys.argv[2])
+    stream = args.stream #= os.environ.get('PIPELINE_STREAM', '26')
+    stagelist = args.stage
+    if hasattr(stagelist, '__iter__'): stagelist=stagelist[0] #handle local or from uwpipeline.py
    
     absskymodel = os.path.join(pointlike_dir, skymodel)
 
@@ -55,6 +56,9 @@ def main(args):
     def create_stream(newstage):
         cmd = 'cd %s;  /afs/slac/g/glast/ground/bin/pipeline  createStream -D "stage=%s, SKYMODEL_SUBDIR=%s" UWpipeline '\
             %(pointlike_dir, newstage, skymodel)
+        if args.test:
+            print 'Test mode: would have submitted %s'%cmd
+            return
         rc=os.system(cmd)
         if rc==0:
             print '\n----> started new stream with stage %s'% newstage
