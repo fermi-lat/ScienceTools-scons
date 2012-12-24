@@ -14,6 +14,10 @@ def main(args=None):
         stage = args.stage[0]
     else:
         stage = os.environ.get('stage', 'update' )
+    if stage!='create':
+        print 'assume validated'
+        return
+        
 
     pointlike_dir = os.environ.get('POINTLIKE_DIR', '.')
     skymodel = os.environ.get('SKYMODEL_SUBDIR', '.')
