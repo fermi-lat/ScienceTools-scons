@@ -122,8 +122,11 @@ def main(args):
         make_zip('ts_table')
         make_zip('kde_table')
         make_zip('counts_table')
-    else:
-        print 'stage %s not recognized for summary'%stage 
+    else: # catch fluxcorr, any others like
+        if os.path.exists(stage):
+            make_zip(stage)
+        else:
+            print 'stage %s not recognized for summary'%stage 
     if not args.test:
         if nextstage:
             create_stream(nextstage)

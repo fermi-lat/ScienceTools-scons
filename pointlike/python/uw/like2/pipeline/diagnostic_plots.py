@@ -1230,6 +1230,15 @@ class FluxCorr(SourceInfo):
     def all_plots(self):
         self.runfigures([self.flux_sensitivity])
 
+
+class FluxCorr4G(FluxCorr):
+
+    def setup(self, **kw):
+        super(FluxCorr4G,self).setup(**kw)
+        self.plotfolder='fluxcorr4g'
+        self.source_name='fluxcorr4g'
+        self.title='Source-diffuse flux dependence, E>4GeV'
+
         
 class GalDiffusePlots(Diagnostics):
 
@@ -1439,6 +1448,7 @@ opts = dict(
         iso   =  (IsoDiffusePlots,),
         gal   =  (GalDiffusePlots,),
         fb=      (FrontBackSedPlots,),
+        fluxcorr=(FluxCorr,),
         ) 
         
 def main(args):

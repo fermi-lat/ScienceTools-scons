@@ -32,8 +32,7 @@ class Summary(object):
         if kw is not None:
             diagnostic_plots.main(kw)
 
-        
-        
+   
 class Proc(dict):
     def __init__(self, run, help='', **kwargs):
         """ run: class or module -- must have main function """
@@ -72,7 +71,7 @@ stagenames = dict(
     diffuse     = Stage(sum='gal', help=''),
     isodiffuse  = Stage(sum='iso', help=''),
     limb        = Stage(sum='limb',help=''),
-    fluxcorr    = Stage(help=''),
+    fluxcorr    = Stage(sum='fluxcorr', help=''),
     pulsar_table= Stage(help=''),
 )
 
