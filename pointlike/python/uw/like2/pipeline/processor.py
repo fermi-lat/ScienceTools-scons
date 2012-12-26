@@ -671,8 +671,9 @@ def flux_correlations(roi, **kwargs):
     outtee = OutputTee(os.path.join(logpath, roi.name+'.txt'))
     print  '='*80
     print '%4d-%02d-%02d %02d:%02d:%02d - %s' %(time.localtime()[:6]+ (roi.name,))
-
-    t = DiffuseDependence(roi)
+    diffuse=kwargs.get('diffuse', 'ring')
+    print 'Running diffuse dependence for %s'%diffuse
+    t = DiffuseDependence(roi, diffuse=diffuse)
     for emin in 100, 1000, 4000:
         t.run(emin)
     
