@@ -72,6 +72,7 @@ stagenames = dict(
     isodiffuse  = Stage(sum='iso', help=''),
     limb        = Stage(sum='limb',help=''),
     fluxcorr    = Stage(sum='fluxcorr', help=''),
+    fluxcorriso = Stage(sum='fluxcorriso', help=''),
     pulsar_table= Stage(help=''),
 )
 
