@@ -134,7 +134,7 @@ class DiffuseModelFromCache(DiffuseModel):
         else:
             if not os.path.exists(cache_path):
                 raise DiffuseException('cache folder or zip %s not found' %cache_path)
-            files = sorted(glob.glob(os.path.join(cache_path, test)))
+            files = sorted(glob.glob(cache_path+'/*'))
             opener=open
         assert len(files)==1728, 'wrong number of files: expected 1728, found %d' % len(files)
         try:
