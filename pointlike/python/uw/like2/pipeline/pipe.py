@@ -415,9 +415,6 @@ class Update(NotebookPipe):
 class Finish(Update):
     """ finish processing with localization and association
     """
-    def __init__(self, *pars, **kwargs):
-        super(Finish, self).__init__(*pars, **kwargs)
-        
     def defaults(self):
         return dict(dampen=0,
             localize=True, 
@@ -446,7 +443,7 @@ class Create(Update):
         model_dir points to the new model, which must have an entry "input_model" in its config.txt
         also look for keys auxcat and skymodel_kw
     """
-    def __init__(self, analysisdir, model_dir,  **kwargs):
+    def __init__(self, analysisdir='.', indir='.',  **kwargs):
         """
         
         """
