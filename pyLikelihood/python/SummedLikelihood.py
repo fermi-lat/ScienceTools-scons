@@ -52,6 +52,9 @@ class Parameter(object):
     def setAlwaysFixed(self, alwaysFixed):
         for par in self.pars:
             par.setAlwaysFixed(alwaysFixed)
+    def setEquals(self, rhs):
+        for par in self.pars:
+            par.setEquals(rhs)
     def __getattr__(self, attrname):
         return getattr(self.pars[0], attrname)
 
