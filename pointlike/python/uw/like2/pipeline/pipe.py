@@ -443,7 +443,7 @@ class Create(Update):
         model_dir points to the new model, which must have an entry "input_model" in its config.txt
         also look for keys auxcat and skymodel_kw
     """
-    def __init__(self, analysisdir='.', indir='.',  **kwargs):
+    def __init__(self, analysisdir='.', model_dir='.',  **kwargs):
         """
         
         """
