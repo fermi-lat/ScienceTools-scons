@@ -393,8 +393,8 @@ def localize(roi, **kwargs):
             loc_kw[kw]=kwargs[kw]
     localization.localize_all(roi, **loc_kw)
     sources = [s for s in roi.sources if s.skydir is not None\
-        and np.any(s.spectral_model.free) and s.ts>tsmin\
-        and s.__dict__.get(  'spatial_model', None) is None ]
+        and s.__dict__.get(  'spatial_model', None) is None \
+        and np.any(s.spectral_model.free) and s.ts>tsmin]
 
     for source in sources:
         outfile = os.path.join(locdir, source.name.replace(' ', '_').replace('+','p')+'.pickle')
