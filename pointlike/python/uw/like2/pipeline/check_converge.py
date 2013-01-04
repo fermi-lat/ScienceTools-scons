@@ -32,8 +32,6 @@ def streamInfo( stream, path='.'):
     return times
 
 
-
-
 def main(args):
     """ 
     """
@@ -119,9 +117,9 @@ def main(args):
         make_zip('pickle')
 
     elif stage=='tables':
-        make_zip('ts_table')
-        make_zip('kde_table')
-        make_zip('counts_table')
+        names = 'ts kde counts'.split() 
+        healpix_map.assemble_tables(names)
+
     else: # catch fluxcorr, any others like
         if os.path.exists(stage):
             make_zip(stage)
