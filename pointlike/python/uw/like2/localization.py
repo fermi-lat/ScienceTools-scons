@@ -223,8 +223,10 @@ def make_association(source, tsf, associate, quiet=False):
 def localize_all(roi, **kwargs):
     """ localize all variable local sources in the roi, make TSmaps and associations if requested 
         ignore if extended -- has 'spatial_model'
+        kwargs can have prefix to select subset with name starting with the prefix, e.g. 'SEED'
     """
     tsmin = kwargs.get('tsmin',10)
+    prefix = kwargs.pop('prefix', None)
     sources = [s for s in roi.sources if s.skydir is not None\
             and s.__dict__.get(  'spatial_model', None) is None \
             and np.any(s.spectral_model.free) and s.ts>tsmin]
@@ -234,6 +236,7 @@ def localize_all(roi, **kwargs):
     initw = roi.log_like()
     
     for source in sources:
+        if prefix is not None and not source.name.startswith(prefix): continue
         with Localization(roi, source.name, quiet=True, **kwargs) as loc:
             try:
                 loc.localize()
