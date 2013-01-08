@@ -584,7 +584,34 @@ def limb_processor(roi, **kwargs):
         counts=t.counts, pixel_values=t.pixel_values), open(fname,'w'))
     print 'wrote file to %s' %fname
     
-    
+def check_seeds(roi, **kwargs):
+    outdir = kwargs.get('outdir')
+    prefix = kwargs.get('prefix')
+    tsmap_dir=kwargs.get('tsmap', None)
+    seedcheck_dir = kwargs.get('seedcheck_dir', 'seedcheck')
+    if not os.path.exists(seedcheck_dir): os.mkdir(seedcheck_dir)
+    associator= kwargs.pop('associate', None)
+    if type(associator)==types.StringType and associator=='None': associator=None
+    logpath = os.path.join(outdir, 'log')
+    outtee = OutputTee(os.path.join(logpath, roi.name+'.txt'))
+    print  '='*80
+    print '%4d-%02d-%02d %02d:%02d:%02d - %s' %(time.localtime()[:6]+ (roi.name,))
+    fit_sources = [s for s in roi.sources if s.skydir is not None and np.any(s.spectral_model.free)]
+    seed_sources = [ s for s in fit_sources if s.name.startswith(prefix)]
+    if len(seed_sources)==0: 
+        print 'no sources to refit, locate'
+        outtee.close()
+        return
+    roi.fit()
+    for s in seed_sources:
+        s.ts=ts = roi.TS(s.name)
+    localization.localize_all(roi, prefix=prefix, tsmap_dir=tsmap_dir, associator = associator)
+    for s in seed_sources: 
+        sfile = os.path.join(seedcheck_dir, s.name.replace(' ', '_').replace('+','p')+'.pickle')
+        pickle.dump(s, open(sfile, 'w'))
+        print 'wrote file %s' %sfile
+    outtee.close()
+
     
 cat = None
 def gtlike_compare(roi, **kwargs):
