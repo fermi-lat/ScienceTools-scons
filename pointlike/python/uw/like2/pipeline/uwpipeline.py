@@ -109,7 +109,7 @@ stagenames = dict(
     fluxcorriso =  Stage(pipe.Update, dict( processor='processor.flux_correlations(diffuse="iso*", fluxcorr="fluxcorriso")'), ),
     pulsar_table=  Stage(pipe.PulsarLimitTables,),
     localize    =  Stage(pipe.Update, dict( processor='processor.localize(emin=1000.)'), help='localize with energy cut' ),
-    seedcheck   =  Stage(pipe.Update, dict( processor='processor.seedcheck(prefix="SEED")',auxcat="seeds.txt"), help='refit seeds'),
+    seedcheck   =  Stage(pipe.Finish, dict( processor='processor.check_seeds(prefix="SEED")',auxcat="seeds.txt"), help='refit seeds'),
 ) 
 keys = stagenames.keys()
 stage_help = '\nstage name, or sequential stages separaged by ":" names are\n\t' \
