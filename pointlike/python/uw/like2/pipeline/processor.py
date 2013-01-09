@@ -585,13 +585,15 @@ def limb_processor(roi, **kwargs):
     print 'wrote file to %s' %fname
     
 def check_seeds(roi, **kwargs):
+    """ Evaluate a set of seeds: fit, localize with position update, fit again
+    """
     outdir = kwargs.get('outdir')
     prefix = kwargs.get('prefix')
     tsmap_dir=kwargs.get('tsmap', None)
+    tsmin = kwargs.pop('tsmin', 10)
     seedcheck_dir = kwargs.get('seedcheck_dir', 'seedcheck')
     if not os.path.exists(seedcheck_dir): os.mkdir(seedcheck_dir)
     associator= kwargs.pop('associate', None)
-    if type(associator)==types.StringType and associator=='None': associator=None
     logpath = os.path.join(outdir, 'log')
     outtee = OutputTee(os.path.join(logpath, roi.name+'.txt'))
     print  '='*80
@@ -605,8 +607,10 @@ def check_seeds(roi, **kwargs):
     roi.fit()
     for s in seed_sources:
         s.ts=ts = roi.TS(s.name)
-    localization.localize_all(roi, prefix=prefix, tsmap_dir=tsmap_dir, associator = associator)
+    localization.localize_all(roi, prefix=prefix, tsmap_dir=tsmap_dir, associator = associator, update=True, tsmin=tsmin)
+    roi.fit() 
     for s in seed_sources: 
+        s.ts=ts = roi.TS(s.name)
         sfile = os.path.join(seedcheck_dir, s.name.replace(' ', '_').replace('+','p')+'.pickle')
         pickle.dump(s, open(sfile, 'w'))
         print 'wrote file %s' %sfile
