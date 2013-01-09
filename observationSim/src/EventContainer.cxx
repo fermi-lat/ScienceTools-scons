@@ -70,7 +70,7 @@ namespace {
       const irfInterface::IEfficiencyFactor * efficiency_factor
          = respPtrs.front()->efficiencyFactor();
       if (efficiency_factor) {
-         efficiency = efficiency_factor->value(energy, ltfrac);
+         efficiency = efficiency_factor->value(energy, ltfrac, time);
       }
 // First, fill a vector with the individual values.
       std::vector<double> effAreas(respPtrs.size());
