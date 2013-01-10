@@ -126,4 +126,20 @@ double Gaussian::derivByParam(Arg &xarg,
    return 0;
 }
 
+const std::vector<double> & Gaussian::xvalues(size_t nx) const {
+   const double nsig(5);
+
+   double mean(m_parameter[1].getValue());
+   double sigma(m_parameter[2].getValue());
+   
+   double xmin = mean - nsig*sigma;
+
+   double dx = 10*sigma/(nx - 1.);
+   m_xvalues.clear();
+   for (size_t i(0); i < nx; i++) {
+      m_xvalues.push_back(i*dx + xmin);
+   }
+   return m_xvalues;
+}
+
 } // namespace optimizers

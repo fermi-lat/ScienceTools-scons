@@ -39,7 +39,6 @@ class Arg;
  *
  * @authors J. Chiang, P. Nolan
  *
- * $Header$
  */
 
 class Function {
@@ -217,6 +216,10 @@ public:
       parameter(name).setFree(false);
    }
 
+   const std::vector<double> & xvalues(size_t nx=100) const {
+      return m_xvalues;
+   }
+
 protected:
 
    std::string m_genericName;
@@ -232,6 +235,8 @@ protected:
    std::vector<Parameter> m_parameter;
 
    std::string m_normParName;
+
+   mutable std::vector<double> m_xvalues;
 
    void setMaxNumParams(int nParams) {
       m_maxNumParams = nParams;

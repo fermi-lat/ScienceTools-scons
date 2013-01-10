@@ -41,6 +41,8 @@ public:
       return new Gaussian(*this);
    }
 
+   const std::vector<double> & xvalues(size_t nx=100) const;
+
 private:
 
    void init(double Prefactor, double Mean, double Sigma);
