@@ -744,8 +744,7 @@ class MCModelBuilder(object):
             as a fully vecotrized numpy function, but this is good enough, for now.
         """
 
-        fits=pyfits.open(path.expand(filename))
-        energies,intensity = MCModelBuilder._spatial_map_integral(fits)
+        energies,intensity = MCModelBuilder.spatial_map_integral(filename)
 
         # Then integrate the spectral part connecting each point
         # with a powerlaw
@@ -756,7 +755,7 @@ class MCModelBuilder(object):
         return map_integral
 
     @staticmethod
-    def spatial_map_integral(fits):
+    def spatial_map_integral(filename):
         """ Takes in a 3D fits file (l, b, and energy),
             and returns a 1D array of the energy and the integral of
             the map over solid angle. """
