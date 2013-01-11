@@ -169,7 +169,7 @@ class DiffuseDict(dict):
             ext = os.path.splitext(files[0])[-1]
             try:
                 dfun = {'.txt': IsotropicSpectrum, 
-                    '.fit': DiffuseFunction, '.fits': DiffuseFunction, 
+                    '.fit': DiffuseFunction, '.fits': DiffuseFunction, '.zip': DiffuseFunction,
                     ')': IsotropicSpectralFunction, 
                     }[ext if ext[-1]!=')' else ')']
             except:
