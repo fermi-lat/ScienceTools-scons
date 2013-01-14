@@ -434,9 +434,12 @@ class Tables(Update):
             )
             
 class PulsarLimitTables(Tables):
-    """ create tables with pulsar fits """
+    """ create tables with pulsar fits (used for 2PC limits) """
     skyfuns=[ ("ResidualLikelihood", "pulsar_like", dict(model="Models.ExpCutoff(p=[1e-15,1.7, 2000.])"),)]
-           
+
+class PulsarDetection(Tables):
+    """ create TS table with pulsar-like function"""
+    skyfuns = [("ResidualTS", "pts", dict(model="Models.ExpCutoff(p=[6e-14, 1.2, 2000])"),)]
             
 class Create(Update):
     """ create a new model, assuming appropriate config.txt

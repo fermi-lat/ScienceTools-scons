@@ -120,6 +120,9 @@ def main(args):
         names = 'ts kde counts'.split() 
         healpix_map.assemble_tables(names)
 
+    elif stage=='pts':
+        healpix_map.assemble_tables([stage])
+        
     else: # catch fluxcorr, any others like
         if os.path.exists(stage):
             make_zip(stage)

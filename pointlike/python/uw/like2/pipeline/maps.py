@@ -98,13 +98,14 @@ class ResidualTS(object):
         if type(model)==types.StringType:
             print 'ResidualTS: using spectral model: %s' %model
             model = eval(model)
-        photon_index=kwargs.pop('index', 2.2) 
         self.sourcename=kwargs.pop('sourcename', 'tsmap')
         self.source =roi.add_source(name=self.sourcename, skydir = roi.roi_dir, model=model)
         self.roi.select_source(self.sourcename)
-        self.index = len(self.roi.get_parameters())-2
+        self.index = list(roi.parameter_names).index('tsmap_Norm')
         self.model = self.source.spectral_model
         sourcelist.set_default_bounds(self.model) # in case no bounds already
+        roi.summary()
+        roi.fit([self.index]) #check
         
     def __enter__(self):
         return self
