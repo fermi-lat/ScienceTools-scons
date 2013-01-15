@@ -604,7 +604,9 @@ def check_seeds(roi, **kwargs):
         print 'no sources to refit, locate'
         outtee.close()
         return
-    roi.fit()
+    # initial fit to norm only
+    seednorms = np.arange(len(roi.parameter_names))[np.array([s.startswith(prefix) and s.endswith('_Norm') for s in roi.parameter_names])]
+    roi.fit(seednorms)
     for s in seed_sources:
         s.ts=ts = roi.TS(s.name)
     localization.localize_all(roi, prefix=prefix, tsmap_dir=tsmap_dir, associator = associator, update=True, tsmin=tsmin)
