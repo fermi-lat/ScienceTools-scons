@@ -18,7 +18,7 @@ from uw.like2.pipeline import pipe, processor
 def streamInfo( stream, path='.'):
     streamlogs=sorted(glob.glob(os.path.join(path,'streamlogs','stream%s.*.log'%stream)))
     if len(streamlogs)==0:
-    print 'Did not find stream %d logfiles'% stream
+        print 'Did not find stream %d logfiles'% stream
     return
     etimes = []
     substream = []
@@ -129,6 +129,12 @@ def main(args):
 
     elif stage=='pts':
         healpix_map.assemble_tables([stage])
+        
+    elif stage=='seedcheck':
+        make_zip('seedcheck', 'seedcheck', 'SEED*') #needs implementation
+        
+    elif stage=='pseedcheck':
+        make_zip('pseedcheck', 'seedcheck', 'PSEED*')
         
     else: # catch fluxcorr, any others like
         if os.path.exists(stage):
