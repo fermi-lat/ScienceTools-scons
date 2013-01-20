@@ -112,7 +112,7 @@ class SkyModel(object):
             cat = os.path.join(self.folder, self.auxcat )
         if not os.path.exists(cat):
             raise Exception('auxilliary source catalog "%s" not found locally (%s) or in $FERMI/catalog'
-                    %( self.folder,self.auxcat))
+                    %( self.auxcat, self.folder))
         if os.path.splitext(cat)[-1]=='.pickle':
             ss = pd.load(cat).itertuples()
             dataframe=True
