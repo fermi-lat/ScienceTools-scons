@@ -95,6 +95,8 @@ SkyProj::SkyProj(const std::string & fitsFile, const std::string & extension) {
    std::string projName("");
    if (ctype.size() > 7) {
       projName = ctype.substr(ctype.size() - 3, 3);
+   } else {
+      throw std::runtime_error("CTYPE1 must be more than 7 characters");
    }
    
    double crpix[2], crval[2], cdelt[2];
