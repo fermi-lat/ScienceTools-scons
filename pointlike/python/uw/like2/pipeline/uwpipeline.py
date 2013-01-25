@@ -92,7 +92,7 @@ class Stage(dict):
 stagenames = dict(
     # List of possible stages, with proc to run, parameters for it,  summary string
     # list is partly recognized by check_converge.py, TODO to incoprorate it here, especially the part that may start a new stream
-    create      =  Stage(pipe.Create,  sum='counts', help='Create a new skymodel'),
+    create      =  Stage(pipe.Create,  sum='counts menu', help='Create a new skymodel'),
     update_full =  Stage(pipe.Update, dict( dampen=1.0,),sum='counts',help='perform update' ),
     update      =  Stage(pipe.Update, dict( dampen=0.5,),sum='counts',help='perform update' ),
     update_beta =  Stage(pipe.Update, dict( dampen=1.0, fix_beta=True),sum='counts',help='perform update', ),
