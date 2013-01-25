@@ -147,7 +147,8 @@ class Localization(object):
             if not self.quiet: print ('\t'+7*'%10.4f')% (diff, delt, l.par[0],l.par[1],l.par[3],l.par[4], l.par[6])
             if delt>self.maxdist:
                 if not self.quiet: print '\t -attempt to move beyond maxdist=%.1f' % self.maxdist
-                raise Exception('localize failure: -attempt to move beyond maxdist=%.1f' % self.maxdist)
+                break # hope this does not screw things up
+                #raise Exception('localize failure: -attempt to move beyond maxdist=%.1f' % self.maxdist)
             if (diff < tolerance) and (abs(sigma-old_sigma) < tolerance):
                 break
             ld = l.dir
