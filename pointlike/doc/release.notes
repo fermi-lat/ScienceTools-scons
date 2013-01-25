@@ -7,6 +7,7 @@ $Id$
  --------- -----   --- -----------------------------------------------------------------------
  * EOH *
 
+ pointlike-08-00-03 24-Jan-2013    jrb [for lande] Bugfix for extended sources with new PSF convention
  pointlike-08-00-02 15-Jan-2013    jrb updating (for Joshua)
  pointlike-08-00-02 15-Jan-2013  lande Bug Fix
  pointlike-08-00-01 14-Jan-2013    jrb Do not build broken test program
