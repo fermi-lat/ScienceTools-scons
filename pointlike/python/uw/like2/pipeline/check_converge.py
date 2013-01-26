@@ -93,10 +93,11 @@ def main(args):
         pipe.check_converge(absskymodel, log=logto)
         r = pipe.roirec(absskymodel)
         q = pipe.check_converge(absskymodel, add_neighbors=False)
-        if max(r.niter)<5 and len(q)>1:
-            create_stream('update')
-        else:
-            create_stream('finish')
+        if stage!='update_only':
+            if max(r.niter)<8 and len(q)>1:
+                create_stream('update')
+            else:
+                create_stream('finish')
             
     elif stage=='sedinfo':
         make_zip('sedinfo')
