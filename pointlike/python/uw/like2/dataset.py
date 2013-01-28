@@ -130,9 +130,6 @@ class DataSet(dataman.DataSpec):
                 )
                 
         dataspec.update(kwargs)
-        if dataspec.pop('event_class', 'Source').lower()=='clean':
-            d = dict(TYP='BIT_MASK(EVENT_CLASS,3)',UNI='DIMENSIONLESS', VAL='1:1', REF=None)
-            dataspec['event_class_cut'] =d
         # Now invoke the superclass to actually load the data, which may involve creating the binfile and livetime cube
         super(DataSet,self).__init__(  **dataspec)
         assert self.irf is not None, 'irf was not specifed!'
