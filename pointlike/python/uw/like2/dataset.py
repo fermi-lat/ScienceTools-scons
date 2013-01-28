@@ -184,6 +184,8 @@ class DataSet(dataman.DataSpec):
             else: gti_mask=None
             if dataset in ldict: 
                 print 'found dataset %s in %s' % (dataset, folder)
+                # translate event class name to appropriate bit
+                ldict['event_class_bit']= dict(source=2, clean=3, extraclean=4)[ldict.get('event_class','source').lower()]
                 return DataSpecification(folder,  interval=interval, gti_mask=gti_mask, **ldict[dataset])
         raise DataSetError('dataset name "%s" not found in %s' % (dataset, folders))
 
