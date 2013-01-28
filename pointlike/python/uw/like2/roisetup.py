@@ -96,6 +96,7 @@ class ROIfactory(object):
         ('extended', None, 'Set to override saved value with skymodel'),
         ('selector', skymodel.HEALPixSourceSelector,' factory of SourceSelector objects'),
         ('data_interval', 0, 'Data interval (e.g., month) to use'),
+        ('nocreate', True, 'Do not allow creation of a binned photon file'),
         ('quiet', False, 'set to suppress most output'),
         )
 
@@ -169,7 +170,8 @@ class ROIfactory(object):
             #datadict = dict(dataname=dataspec, ) \
             #        if type(dataspec)!=types.DictType else dataspec
             exposure_correction=datadict.pop('exposure_correction', None)        
-            self.dataset = dataset.DataSet(datadict['dataname'], interval=datadict.get('interval',None), 
+            self.dataset = dataset.DataSet(datadict['dataname'], interval=datadict.get('interval',None),
+                    nocreate = self.nocreate,
                     **self.analysis_kw)
             print self.dataset
             self.exposure = ExposureManager(self.dataset, exposure_correction=exposure_correction)

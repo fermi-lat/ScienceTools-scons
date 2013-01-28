@@ -230,7 +230,8 @@ class ROI_user(roistat.ROIstat, fitter.Fitted):
         llzero = self.log_like()
         model[0]=norm; self.update()
         ts= 2*(self.log_like()-llzero)
-        return max(ts, 0)
+        source.ts=max(ts,0)
+        return source.ts
 
     def band_ts(self, source_name=None):
         sed = self.get_sed(source_name)
