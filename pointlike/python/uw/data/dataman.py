@@ -58,7 +58,7 @@ def SimpleCut(vmin,vmax,vuni,colname):
 
     return dssman.make_simple_dss(colname,vuni,vmin,vmax)
 
-def get_default(colname, **kw):
+def get_default(colname, kw):
     """return DSS object for colname
     defaults wired in, except for event class, get info from kw args
     """
@@ -286,7 +286,7 @@ class DataSpec(object):
         for col,mycut in basic_cuts:
             ft1_cut,index = self.dss.get_simple_dss(col)
             if self.__dict__[mycut] is not None:
-                print('Working on {0}'.format(col))
+                print('_make_cuts: working on {0}, cut {1}'.format(col, self.__dict__[mycut] ))
                 if ft1_cut is not None:
                     # apply more restrictive of two cuts
                     self.__dict__[mycut].intersection(ft1_cut)
@@ -353,7 +353,7 @@ class DataSpec(object):
             print('Extracting DSS from existing binfile')
             self.dss = dss
         if self.dss != dss:
-            print 'File %s Failed DSS keyword check: expect %s found %s' % (self.binfile, self.dss, dss)
+            print 'File %s Failed DSS keyword check: expected \n%s \nbut found \n%s' % (self.binfile, self.dss, dss)
             sys.stdout.flush()
             return False
         #
