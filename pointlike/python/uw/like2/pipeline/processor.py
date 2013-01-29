@@ -608,6 +608,38 @@ def limb_processor(roi, **kwargs):
     print 'wrote file to %s' %fname
     outtee.close()
 
+
+def sunmoon_processor(roi, **kwargs):
+    """ report on sunmon refit """
+    outdir= kwargs.get('outdir')
+    logpath = os.path.join(outdir, 'log')
+    outtee = OutputTee(os.path.join(logpath, roi.name+'.txt'))
+    print  '='*80
+    print '%4d-%02d-%02d %02d:%02d:%02d - %s sunmoon processor' %(time.localtime()[:6]+ (roi.name,))
+
+    sunmoondir = os.path.join(outdir, kwargs.get('sunmoondir', 'sunmoon'))
+    if not os.path.exists(sunmoondir): os.mkdir(sunmoondir)
+    refit = kwargs.get('refit', True)
+    try:
+        sunmoon = roi.get_model('SunMoon')
+    except:
+        print 'No sunmoon source: no pickle file saved'
+        outtee.close()
+        return
+    sunmoon.free[:] = True
+    roi.initialize()
+    names = roi.parameter_names
+    u = np.arange(len(names))
+    i = np.array(['SunMoon' in x for x in names])
+    before = roi.log_like()
+    roi.fit(u[i])
+        
+    fname = os.path.join(sunmoondir,'%s_sunmoon.pickle' %roi.name)
+    pickle.dump( dict(ra=roi.roi_dir.ra(), dec=roi.roi_dir.dec(), model=sunmoon, skydir=roi.roi_dir,
+      delta_likelihood=roi.log_like()-before ), open(fname,'w'))
+    print 'wrote file to %s' %fname
+    outtee.close()
+
     
 def check_seeds(roi, **kwargs):
     """ Evaluate a set of seeds: fit, localize with position update, fit again
