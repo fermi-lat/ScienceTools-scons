@@ -104,7 +104,7 @@ stagenames = dict(
                             help='process SED information' ),
     diffuse     =  Stage(pipe.Update, dict( processor='processor.roi_refit_processor'), sum='gal', ),
     isodiffuse  =  Stage(pipe.Update, dict( processor='processor.iso_refit_processor'), sum='iso', ),
-    limb        =  Stage(pipe.Update, dict( processor='processor.limb_processor'), sum='limb', help'Refit the limb component, usually fixed' ),
+    limb        =  Stage(pipe.Update, dict( processor='processor.limb_processor'), sum='limb', help='Refit the limb component, usually fixed' ),
     sunmoon     =  Stage(pipe.Update, dict( processor='processor.sunmoon_processor'), sum='sunmoon', help='Refit the SunMoon compoent, usually fixed' ),
     fluxcorr    =  Stage(pipe.Update, dict( processor='processor.flux_correlations'), sum='fluxcorr', ),
     fluxcorrgal =  Stage(pipe.Update, dict( processor='processor.flux_correlations'), sum='flxcorriso', ),
