@@ -575,12 +575,25 @@ def iso_refit_processor(roi, **kwargs):
     return roi_refit_processor(roi, **kwargs)
 
 def limb_processor(roi, **kwargs):
+    """ report on limb fit, perhaps refit"""
     outdir= kwargs.get('outdir')
     limbdir = os.path.join(outdir, kwargs.get('limbdir', 'limb'))
     if not os.path.exists(limbdir): os.mkdir(limbdir)
+    refit = kwargs.get('refit', True)
+    limb = roi.get_model('limb')
+    if refit:
+        for m in limb.models:
+            m.free[:]=True
+        roi.initialize()
+        names = roi.parameter_names
+        u = np.arange(len(names))
+        i = np.array(['limb' in x for x in names])
+        
+        roi.fit(u[i])
+        
     t = roi.all_bands[1][2]
     fname = os.path.join(limbdir,'%s_limb.pickle' %roi.name)
-    pickle.dump( dict(ra=roi.roi_dir.ra(), dec=roi.roi_dir.dec(),
+    pickle.dump( dict(ra=roi.roi_dir.ra(), dec=roi.roi_dir.dec(), model=limb,
         counts=t.counts, pixel_values=t.pixel_values), open(fname,'w'))
     print 'wrote file to %s' %fname
     
