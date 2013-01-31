@@ -19,7 +19,7 @@ import sys
 import numpy as np
 
 class BandSource(object):
-    """ baseclass for point or diffuse band models, used to implement printout
+    """ base class for point or diffuse band models, used to implement printout
     subclasses implement code to compute prediction of the source model for the pixels in the band
     """
     def __init__(self, band, source  ): 
@@ -50,7 +50,7 @@ class BandSource(object):
         if hasattr(self,'exposure_ratio'):
             print >>out, '\texposure ratio, overlap: %.3f %.3f'%( self.exposure_ratio, self.overlap)
         pc = self.pix_counts
-        print >>out, ('\tpixel counts: min, max, sum: '+3*'%8.2f') % ( pc.min(), pc.max(), pc.sum())
+        print >>out, ('\tpixel counts: min, max, sum: '+3*'%10.2f') % ( pc.min(), pc.max(), pc.sum())
         print >>out, '\ttotal counts %8.1f'%  self.counts 
 
     @property 

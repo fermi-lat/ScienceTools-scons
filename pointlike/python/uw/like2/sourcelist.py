@@ -79,7 +79,8 @@ class SourceList(list):
             
             roi : an ROIdef object:
                 expect to find attributes:
-                    bgmodels : a list of global and extended sources
+                    global_sources : a list of global sources
+                    extended_sources : lost of local extended sources
                     point_sources : list of point sources
                     roi_dir: the center of the ROI
         """

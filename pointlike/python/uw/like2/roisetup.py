@@ -148,7 +148,7 @@ class ROIfactory(object):
                 if isinstance(datadict, dataman.DataSet): 
                     interval = self.skymodel.config.get('interval', None)
                     if interval is None: interval = self.skymodel.config.get('data_interval', None)
-                    assert interval is not None, 'did not fine interval or data_interval in skymodel.config'
+                    assert interval is not None, 'did not find interval or data_interval in skymodel.config'
                     dset = datadict[interval]
                     assert hasattr(dset, 'binfile'), 'Not a DataSet? %s' % dataset
                     datadict = dict(dataname=dset)
