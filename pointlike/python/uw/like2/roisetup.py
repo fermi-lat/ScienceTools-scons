@@ -7,9 +7,9 @@ $Header$
 import os, sys, types
 import numpy as np
 import skymaps
-from . import dataset, skymodel, diffuse
+from . import dataset, skymodel, diffuse , roi_bands
 from .. utilities import keyword_options, convolution
-from .. like import roi_extended, pypsf, pycaldb, pointspec2, roi_bands
+from .. like import roi_extended, pypsf, pycaldb, pointspec2 #, roi_bands
 from .. data import dataman
 
         
