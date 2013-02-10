@@ -10,7 +10,8 @@ import os, glob, types
 import cPickle as pickle
 import numpy as np
 import skymaps, pointlike #from the science tools
-from ..like import pycaldb, roi_bands
+from ..like import pycaldb# , roi_bands
+from . import roi_bands
 from ..data import dataman, dssman
 
 from ..utilities import keyword_options
@@ -138,7 +139,10 @@ class DataSet(dataman.DataSpec):
                 psf_irf=self.psf_irf,
                 CALDB=self.CALDB,
                 custom_irf_dir=self.custom_irf_dir)
-        self.lt = skymaps.LivetimeCube(self.ltcube,weighted=False) ###<< ok?
+        if self.exposure_cube is None:
+            self.lt = skymaps.LivetimeCube(self.ltcube,weighted=False) ###<< ok?
+        else:
+            self.lt = None
         self._load_binfile()
     
 
@@ -192,8 +196,9 @@ class DataSet(dataman.DataSpec):
         
         Parameters
         ----------
-        sa : object of a class
-            must have psf and 
+        psf
+        exposure
+        roi_dir
         """
         self.bands = []
         band_kwargs= dict()
@@ -239,7 +244,7 @@ class DataSet(dataman.DataSpec):
         """
         s = indent+'DSS: %-15s  %-10s%-10s%-10s\n'% tuple('name value units ref'.split() )
         s+= indent
-        s+= indent.join(['       %-15s  %-10s%-9s %s\n' %\
+        s+= indent.join(['       %-15s  %-10s%-10s %s\n' %\
             (dss['TYP'],dss['VAL'],dss['UNI'],dss['REF'] ) for dss in self.dss])
         return s
     
