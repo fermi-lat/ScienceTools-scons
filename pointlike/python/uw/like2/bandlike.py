@@ -264,9 +264,9 @@ class BandLike(object):
         
     def __str__(self):
         b = self.bandsources[0].band
-        return 'BandLike: %d models (%d free) applied to band %.0f-%.0f, %s with %d pixels, %d photons'\
+        return 'BandLike: %d models (%d free) applied to band %.0f-%.0f, %s with %d pixels, %d photons; residual %.1f'\
                 % (len(self.bandsources), sum(self.free), b.emin, b.emax, 
-                 ('front back'.split()[b.b.event_class()]), self.pixels, sum(self.data))
+                 ('front back'.split()[b.b.event_class()]), self.pixels, sum(self.data), sum(self.data-self.model_pixels))
                  
     def __getitem__(self, i): return self.bandsources[i]
         
