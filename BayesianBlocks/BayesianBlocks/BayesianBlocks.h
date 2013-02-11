@@ -22,7 +22,14 @@ class BayesianBlocks {
 
 public:
 
-   BayesianBlocks(const std::vector<double> & arrival_times);
+
+   /// @param arrival_times Event arrival times
+   /// @param tstart Start time of observation interval to set the
+   ///        minimum boundary of the first cell.
+   /// @param tstop Stop time of the observation interval to set the 
+   ///        maximum boundary of the last cell.
+   BayesianBlocks(const std::vector<double> & arrival_times,
+                  double tstart, double tstop);
 
    BayesianBlocks(double start_time, 
                   const std::vector<double> & bin_content,
@@ -80,6 +87,7 @@ private:
    bool m_point_mode;
    bool m_binned;
    double m_tstart;
+   double m_tstop;
    std::vector<double> m_cellSizes;
    std::deque<double> m_unscaledCellSizePartialSums;
    std::deque<double> m_cellSizePartialSums;
