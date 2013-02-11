@@ -22,6 +22,8 @@
 
 #include "celestialSources/SpectrumFactoryLoader.h"
 
+#include "dataSubselector/Cuts.h"
+
 #include "observationSim/Simulator.h"
 #include "observationSim/EventContainer.h"
 #include "observationSim/ScDataContainer.h"
@@ -106,8 +108,11 @@ int main(int iargc, char * argv[]) {
    respPtrs.push_back(myFactory->create("DC1A::Front"));
    respPtrs.push_back(myFactory->create("DC1A::Back"));
 
+   dataSubselector::Cuts * cuts(new dataSubselector::Cuts);
+   cuts->setIrfs("DC1A");
+
 // Generate the events and spacecraft data.
-   observationSim::EventContainer events("test_events", "EVENTS");
+   observationSim::EventContainer events("test_events", "EVENTS", cuts);
    observationSim::ScDataContainer scData("test_scData", "SC_DATA");
 
 // The spacecraft object.
