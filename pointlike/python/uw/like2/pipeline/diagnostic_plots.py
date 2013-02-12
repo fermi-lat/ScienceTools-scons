@@ -374,8 +374,8 @@ class CountPlots(Diagnostics):
         
     def ridge_spectral_residuals(self):
         """ Spectral residuals along the Galactic ridge
-        
-        Designed to match, except for differnt ROI definitions, the Scalay standard plot.
+       
+        Designed to match, except for different ROI definitions, the Saclay standard plot.
         """
         fig,ax = plt.subplots( figsize=(4,4))
         ridge = ( np.abs(self.rois.glat)<10) * ( np.abs(self.rois.glon)<60 )
