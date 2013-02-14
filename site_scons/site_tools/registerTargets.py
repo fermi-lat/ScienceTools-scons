@@ -50,6 +50,7 @@ def generate(env, **kw):
                 tools = env.Install(env['TOOLDIR'], os.path.join(str(env.Dir('.').srcnode()),kw.get('package')+"Lib.py"))
                 env.Default(tools)
                 env.Alias('tools', tools)
+                env.Alias('to_install', tools)
                 env.Alias('all', tools)
                 env.Alias(pkgname, tools)
 
