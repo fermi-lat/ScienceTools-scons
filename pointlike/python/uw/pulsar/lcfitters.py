@@ -72,6 +72,9 @@ class UnweightedLCFitter(object):
         self.phistory = []
         self.ghistory = []
 
+    def is_energy_dependent(self):
+        return False
+
     def _hist_setup(self):
         """ Setup data for chi-squared and binned likelihood."""
         h = hm(self.phases)
@@ -214,6 +217,7 @@ class UnweightedLCFitter(object):
                 #except ValueError:
                 #    print 'Warning, could not estimate errors.'
                 #    self.template.set_errors(np.zeros_like(p0))
+        print 'Improved log likelihood by %.2f'%(self.ll-ll0)
         return True
 
     def fit_fmin(self,fit_func,ftol=1e-5):
@@ -402,7 +406,10 @@ class UnweightedLCFitter(object):
         self.gradient = self.unbinned_gradient
 
     def aic(self,template=None):
-        """ Return the Akaike information criterion for the current state."""
+        """ Return the Akaike information criterion for the current state.
+
+            Note the sense of the statistic is such that more negative
+            implies a better fit."""
         if template is not None:
             template,self.template = self.template,template
         else:
@@ -413,13 +420,22 @@ class UnweightedLCFitter(object):
         return ts
 
     def bic(self,template=None):
-        """ Return the Bayesian information criterion for the current state."""
+        """ Return the Bayesian information criterion for the current state.
+
+            Note the sense of the statistic is such that more negative
+            implies a better fit.
+            
+            This should work for energy-dependent templates provided the
+            template and fitter match types."""
         if template is not None:
             template,self.template = self.template,template
         else:
             template = self.template
         nump = len(self.template.get_parameters())
-        n = len(self.phases()) if (self.weights is None) else self.weights.sum()
+        if self.weights is None:
+            n = len(self.phases)
+        else:
+            n = self.weights.sum()
         ts = nump*np.log(n)+2*self()
         self.template = template
         return ts

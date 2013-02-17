@@ -122,6 +122,9 @@ class LCPrimitive(object):
         light curve models must inherit and must implement the three
         'virtual' functions below."""
 
+    def is_energy_dependent(self):
+        return False
+
     def __call__(self,phases):
         raise NotImplementedError('Virtual function must be implemented by child class.')
 
@@ -324,9 +327,14 @@ class LCPrimitive(object):
     def dict_string(self):
         """ Return a string to express the object as a dictionary that can
             be easily instantiated using its keys."""
+        def pretty_list(l,places=5):
+            fmt = '%.'+'%d'%places+'f'
+            s = ', '.join([fmt%x for x in l])
+            return '['+s+']'
         t =  ['name = %s'%self.__class__.__name__,
-              'p = %.6f'%(str(list(self.p))),
-              'slope = %.6f'%(str(list(self.slope)) if hasattr(self,'slope') else None),
+              'p = %s'%(pretty_list(self.p)),
+              'free = %s'%(str(list(self.free))),
+              'slope = %s'%(pretty_list(self.slope) if hasattr(self,'slope') else None),
               'slope_free = %s'%(str(list(self.slope_free)) if hasattr(self,'slope_free') else None),
             ]
         #return 'dict(\n'+'\n    '.join(t)+'\n
@@ -336,6 +344,9 @@ class LCPrimitive(object):
         """ Return the minimum distance between a member of the array of
             phases and the position of the mode of the primitive."""
         return np.abs(phases-self.get_location()).min()
+
+    def get_fixed_energy_version(self,log10_en=3):
+        return self
 
 class LCWrappedFunction(LCPrimitive):
     """ Super-class for profiles derived from wrapped functions.

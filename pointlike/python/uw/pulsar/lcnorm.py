@@ -33,6 +33,10 @@ class NormAngles(object):
         self.name = 'NormAngles'
         self.shortname = 'None'
 
+    def copy(self):
+        from copy import deepcopy
+        return deepcopy(self)
+
     def _asarrays(self):
         for key in ['p','free','bounds','errors','slope','slope_free']:
             if hasattr(self,key):
@@ -218,14 +222,24 @@ class NormAngles(object):
         str(list(self.slope_free)) if hasattr(self,'slope_free') else None)
 
     def dict_string(self):
+        """ Round down to avoid input errors w/ normalization."""
         t = self()
         if len(t.shape)>1:
             t = t[:,0] # handle e-dep
+        def pretty_list(l,places=6,round_down=True):
+            if round_down:
+                r = np.round(l,decimals=places)
+                r[r>np.asarray(l)] -= 10**-places
+            else:
+                r = l
+            fmt = '%.'+'%d'%places+'f'
+            s = ', '.join([fmt%x for x in r])
+            return '['+s+']'
         return [
             'name = %s'%self.__class__.__name__,
-            'norms = %s'%(list(t)),
+            'norms = %s'%(pretty_list(t)),
             'free = %s'%(str(list(self.free))),
-            'slope = %s'%(str(list(self.slope)) if hasattr(self,'slope') else None),
+            'slope = %s'%(pretty_list(self.slope,round_down=False) if hasattr(self,'slope') else None),
             'slope_free = %s'%(str(list(self.slope_free)) if hasattr(self,'slope_free') else None)
         ]
 
