@@ -403,7 +403,7 @@ class LCTemplate(object):
 
     def mean_single_component(self,index,phases,log10_ens=None,weights=None,bins=20):
         prim = self.primitives[index]
-        if (log10_ens is None) or (not self.is_energy_dependent() is self):
+        if (log10_ens is None) or (not self.is_energy_dependent()):
             return prim(phases)*self.norms()[index]
         if weights is None:
             weights = np.ones_like(log10_ens)
