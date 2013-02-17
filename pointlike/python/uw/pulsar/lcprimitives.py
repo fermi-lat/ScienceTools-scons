@@ -125,6 +125,11 @@ class LCPrimitive(object):
     def is_energy_dependent(self):
         return False
 
+    def is_two_sided(self):
+        """ True if primitive is asymmetric.  Default is False, two-sided
+            child classes should override."""
+        return False
+
     def __call__(self,phases):
         raise NotImplementedError('Virtual function must be implemented by child class.')
 
@@ -486,6 +491,9 @@ class LCGaussian2(LCWrappedFunction):
         self.name = 'Gaussian2'
         self.shortname = 'G2'
 
+    def is_two_sided(self):
+        return True
+
     def hwhm(self,right=False):
         return (self.p[right])*(2 * np.log(2))**0.5
 
@@ -594,6 +602,9 @@ class LCLorentzian2(LCWrappedFunction):
         self.pnames = ['Width1','Width2','Location']
         self.name = 'Lorentzian2'
         self.shortname = 'L2'
+
+    def is_two_sided(self):
+        return True
 
     def hwhm(self,right=False):
         return self.p[right]
