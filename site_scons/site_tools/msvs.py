@@ -195,6 +195,11 @@ class _DSPGenerator:
         elif SCons.Util.is_List(env['variant']):
             variants = env['variant']
 
+        if env.has_key('gr_app_src'):
+            gr_app_src = env['gr_app_src']
+            self.gr_app_src = gr_app_src.replace("#", "..\\..\\")
+        else:
+            self.gr_app_src = '..\\..\\gr_app\\src'
         if not env.has_key('buildtarget') or env['buildtarget'] == None:
             buildtarget = ['']
         elif SCons.Util.is_String(env['buildtarget']):
@@ -453,14 +458,14 @@ V8VCRootcintPrebuildTool = """
 V8VCGaudiTestTool = """
 \t\t\t<Tool
 \t\t\t\tName="VCPreBuildEventTool"
-\t\t\t\tCommandLine='xcopy /S /Y /F ..\..\gr_app\src\setPriority.cxx $(IntDir)\ &amp;&amp; xcopy /S /Y /F ..\..\gr_app\src\TestGlastMain.cxx $(IntDir)\'
+\t\t\t\tCommandLine='xcopy /S /Y /F %(gr_app_src)s\setPriority.cxx $(IntDir)\ &amp;&amp; xcopy /S /Y /F %(gr_app_src)s\TestGlastMain.cxx $(IntDir)\'
 \t\t\t/>
 """
 
 V8VCGaudiMainTool = """
 \t\t\t<Tool
 \t\t\t\tName="VCPreBuildEventTool"
-\t\t\t\tCommandLine='xcopy /S /Y /F ..\..\gr_app\src\setPriority.cxx $(IntDir)\ &amp;&amp; xcopy /S /Y /F ..\..\gr_app\src\GlastMain.cxx $(IntDir)\'
+\t\t\t\tCommandLine='xcopy /S /Y /F %(gr_app_src)s\setPriority.cxx $(IntDir)\ &amp;&amp; xcopy /S /Y /F %(gr_app_src)s\GlastMain.cxx $(IntDir)\'
 \t\t\t/>
 """
 
@@ -903,9 +908,9 @@ class _GenerateV7DSP(_DSPGenerator):
             elif self.linkfileext == "exe":
                 gaudi = self.env.get('GAUDIPROG','')
                 if gaudi == 'test':
-                    self.file.write(V8VCGaudiTestTool)
+                    self.file.write(V8VCGaudiTestTool % self.__dict__)
                 elif gaudi == 'main':
-                    self.file.write(V8VCGaudiMainTool)
+                    self.file.write(V8VCGaudiMainTool % self.__dict__)
                 if self.targettype != "install":
                     self.file.write(V8VCCLCompilerTool % self.__dict__)
                     self.file.write(V8VCLinkExeTool % self.__dict__)
