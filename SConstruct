@@ -487,6 +487,8 @@ if not baseEnv.GetOption('help'):
     baseEnv.Default(setupScript)
     baseEnv.Alias('all', setupScript)
     baseEnv.Alias('setup', setupScript)
+    if sys.platform == 'win32':  baseEnv.Alias('forVS', setupScript)
+        
     baseEnv['setupTarget'] = setupScript
 
 
