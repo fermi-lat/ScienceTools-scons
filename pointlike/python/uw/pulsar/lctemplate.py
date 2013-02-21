@@ -57,10 +57,7 @@ class LCTemplate(object):
     def set_errors(self,errs):
         start = 0
         for prim in self.primitives:
-            n = len(prim.get_parameters())
-            prim.errors = np.zeros_like(prim.p)
-            prim.errors[prim.free] = errs[start:start+n]
-            start += n
+            start += prim.set_errors(errs[start:])
         self.norms.set_errors(errs[start:])
 
     def get_parameters(self,free=True):
