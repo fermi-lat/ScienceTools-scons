@@ -72,7 +72,7 @@ class KdeMap(object):
         sd = skydir or SkyDir(Hep3Vector(v[0],v[1],v[2]))
         rval = 0
         for i,band in enumerate(self.bands):
-            if band.photons==0: continue
+            if not band.has_pixels: continue
             rvals = np.empty(len(band.wsdl),dtype=float)
             PythonUtilities.arclength(rvals, band.wsdl, sd)
             mask = rvals < self.r95[i]
