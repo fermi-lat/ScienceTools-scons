@@ -26,6 +26,9 @@ class NormAngles(object):
         normalization is given by the an additional angle, the sine of
         which provides the (squared) normalization."""
 
+    def is_energy_dependent(self):
+        return False
+
     def init(self):
         self.free = np.asarray([True]*self.dim,dtype=bool)
         self.errors = np.zeros(self.dim)
