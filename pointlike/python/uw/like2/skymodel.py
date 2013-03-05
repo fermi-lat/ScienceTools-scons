@@ -44,7 +44,7 @@ class SkyModel(object):
             name of folder to find all files defining the sky model, including:
              a subfolder 'pickle' with files *.pickle describing each ROI, partitioned as a HEALpix set. 
              -- OR: a file pickle.zip with the same. 
-             a file 'config.txt' written by the pipeline
+             a file 'config.txt', a python dictionary, which must start with '{', with possible entries for diffuse, extended 
         """
         keyword_options.process(self, kwargs)
         #if self.free_index is not None: 
@@ -449,7 +449,7 @@ class RemoveByName(object):
     
 class UpdatePulsarModel(object):
     """ special filter to replace models if necessary"""
-    def __init__(self,  tol=0.25, ts_min=10, version=705, rename=True):
+    def __init__(self,  tol=0.25, ts_min=10, version=760, rename=True):
         import pyfits
         self.tol=tol
         self.ts_min=ts_min

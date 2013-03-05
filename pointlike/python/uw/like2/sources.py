@@ -150,7 +150,7 @@ class IsotropicSpectralFunction(object):
     
 class DiffuseDict(dict):
     """ create a dictionary of global diffuse objects
-        key:   a string defined by the filename following an underscore
+        key:   a string defined by the filename following an underscore, or key in input to init
         value: (both) or (front,back)  diffuse objects determined by the extension:
             txt: IsotropicSpectrum
             fit or fits: DiffuseFunction

@@ -33,7 +33,7 @@ def main(args=None):
     current = str(datetime.datetime.today())[:16]
     print '\n%s stage %s stream %s model %s ' % (current, stage, stream,  absskymodel)
 
-    rc = dataset.validate(absskymodel, nocreate=True)
+    rc = dataset.validate(absskymodel, nocreate=nocreate)
     print 'Validated' if rc else 'NOT validated'
     if args is not None:
         tee.close()

@@ -138,7 +138,7 @@ def plot_counts(roi,fignum=1, event_class=None, outfile=None,
         ax.set_xlabel(r'$\mathsf{Energy\ (GeV)}$')
         ax.grid(b=True)
         if show_chisq :
-            ax.text(en[0]*1.1, 0.2,'chisq=%.1f'% count_data['chisq'])
+            ax.text(0.04, 0.80,'chisq=%.1f'% count_data['chisq'], transform = ax.transAxes, fontsize=10)
 
 
     if axes is None:

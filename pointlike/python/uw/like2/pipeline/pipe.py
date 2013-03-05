@@ -73,7 +73,9 @@ class Pipe(roisetup.ROIfactory):
         try:
             t = super(Pipe, self).roi(*pars, **kwargs)
         except Exception, e:
-            print 'trying again after exception %s' %e
+            #if not e.startswith('Root'): 
+            #    raise
+            print 'trying again after exception "%s"' %e
             t = super(Pipe, self).roi(*pars, **kwargs)
 
         return main.ROI_user(t)
