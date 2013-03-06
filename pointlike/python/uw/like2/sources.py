@@ -15,6 +15,7 @@ from uw.utilities import parmap
 def LogParabola(*pars):return Models.LogParabola(p=pars)
 def PowerLaw(*pars):   return Models.PowerLaw(p=pars)
 def ExpCutoff(*pars):  return Models.ExpCutoff(p=pars)
+def PLSuperExpCutoff(*pars): return Models.PLSuperExpCutoff(p=pars)
     
 def convert_model(oldmodel):
     """ convert the original version to the new one with parameter mappers
