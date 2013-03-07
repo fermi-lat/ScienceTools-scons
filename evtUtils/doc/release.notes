@@ -22,3 +22,4 @@
  evtUtils-00-02-00 20-Aug-2012    jrb for Windows no-install-headers
  evtUtils-00-02-01 21-Aug-2012 heather merge in xml handling in SConscript from
      L1 branch
+ evtUtils-00-02-02 06-Mar-2013 echarles Added xml/EvtClassDefs_P7REP.xml

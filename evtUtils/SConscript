@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Id$
 # Authors: Eric Charles <echarles@slac.stanford.edu>
-# Version: evtUtils-00-02-01
+# Version: evtUtils-00-02-02
 Import('baseEnv')
 Import('listFiles')
 Import('packages')
