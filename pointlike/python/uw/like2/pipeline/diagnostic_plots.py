@@ -1195,6 +1195,8 @@ class SourceInfo(Diagnostics):
                         b = ellipse[3] if ellipse is not None else np.nan,
                         ang=ellipse[4] if ellipse is not None else np.nan,
                         delta_ts = ellipse[5] if ellipse is not None else np.nan,
+                        flux = pars[0],
+                        flux_unc = errs[0],
                         pindex = pars[1],
                         pindex_unc = errs[1],
                         beta = betavalue,
@@ -1620,7 +1622,9 @@ class SourceInfo(Diagnostics):
         """ Plots of source properties, from analysis of spectral fits. 
         See <a href="../localization/index.html"> localization </a> for localization plots.
         <h3>Rough Census</h3>
+        
         %(census_html)s
+        <p>
         The columns are the number of sources with ts> than the header. 
         The rows labels are the first three characters of the source name, except 'ext' means extended.
         """
