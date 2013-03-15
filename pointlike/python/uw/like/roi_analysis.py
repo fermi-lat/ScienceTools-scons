@@ -791,21 +791,21 @@ class ROIAnalysis(object):
         return i
 
     @decorate_with(mapplots.ROISmoothedSources,append_init=True)
-    def plot_sources(self,which=None,filename=None,**kwargs):
+    def plot_sources(self,which=None,filename=None,axes=None,**kwargs):
         i=mapplots.ROISmoothedSources(self,which=which,**kwargs)
-        i.show(filename=filename)
+        i.show(filename=filename,axes=axes)
         return i
 
     @decorate_with(mapplots.ROISmoothedResidual,append_init=True)
-    def plot_residual(self,filename=None,**kwargs):
+    def plot_residual(self,filename=None,axes=None,**kwargs):
         i=mapplots.ROISmoothedResidual(self,**kwargs)
-        i.show(filename=filename)
+        i.show(filename=filename,axes=axes)
         return i
 
     @decorate_with(mapplots.ROISignificance,append_init=True)
-    def plot_significance(self,filename=None,**kwargs):
+    def plot_significance(self,filename=None,axes=None,**kwargs):
         i=mapplots.ROISignificance(self,**kwargs)
-        i.show(filename=filename)
+        i.show(filename=filename,axes=axes)
         return i
 
     @decorate_with(mapplots.ROISmoothedBeforeAfter,append_init=True)
@@ -815,9 +815,9 @@ class ROIAnalysis(object):
         return i
 
     @decorate_with(mapplots.ROITSMapPlotter,append_init=True)
-    def plot_tsmap(self,filename=None,**kwargs):
+    def plot_tsmap(self,filename=None,axes=None,**kwargs):
         i=mapplots.ROITSMapPlotter(self,**kwargs)
-        i.show(filename=filename)
+        i.show(filename=filename, axes=axes)
         return i
 
     @decorate_with(mapplots.ROISmoothedDataModel,append_init=True)
