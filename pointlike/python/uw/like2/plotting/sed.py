@@ -80,7 +80,7 @@ class Plot(object):
         bfun  = lambda e: m.flux_relunc(e)
 
         axes.errorbar([e0], [eflux(e0)], yerr=[eflux(e0)*bfun(e0)], 
-                    fmt='or', elinewidth=2, markersize=8)
+                    fmt='+r', elinewidth=2, markersize=8)
                 
         dom_r = np.array([dom[-i-1] for i in range(len(dom))]) #crude reversal.
         upper = eflux(dom)  * (1 + bfun(dom)  ) 
