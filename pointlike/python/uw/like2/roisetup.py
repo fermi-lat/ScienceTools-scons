@@ -242,7 +242,7 @@ class ROIfactory(object):
         sel = pars[0]
         source_name=None
         if type(sel)==types.IntType:
-            index = sel
+            index = int(sel) # needs to be int if int type
         elif type(sel)==skymaps.SkyDir:
             index = self.skymodel.hpindex(sel)
         elif type(sel)==types.StringType:
