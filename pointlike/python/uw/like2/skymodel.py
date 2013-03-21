@@ -571,8 +571,12 @@ class Rename(object):
         """ namefile : string
                 text file with from to pairs
         """
+        def parse_line(line):
+            t = line.split()
+            if len(t)==2: return t
+            return (t[0]+'_'+t[1], t[2])
         with open(namefile) as inp:
-            self.namedict = dict( line.split() for line in inp if len(line)>9)
+            self.namedict = dict( parse_line(line) for line in inp if len(line)>9)
         print 'found %d names to convert' % len(self.namedict)
         
     def __call__(self, s):
