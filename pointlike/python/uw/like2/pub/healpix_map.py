@@ -595,8 +595,8 @@ def make_maps(outdir, title='all',):
     if all or title=='counts':
         Setup(outdir, 'counts').run()
         
-def main(): 
-    outdir = sorted(glob.glob('uw*'))[-1]
+def main(outdir=None): 
+    if outdir is None: outdir = sorted(glob.glob('uw*'))[-1]
     print 'using outdir %s' % outdir
     make_maps(outdir, 'all')
 
