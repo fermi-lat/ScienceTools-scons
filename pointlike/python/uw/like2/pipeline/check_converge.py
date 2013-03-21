@@ -51,8 +51,11 @@ def main(args):
    
     absskymodel = os.path.join(pointlike_dir, skymodel)
 
-    def make_zip(fname,  ext='pickle'):
-        ff = glob.glob(os.path.join(absskymodel, fname, '*.'+ext))
+    def make_zip(fname,  ext='pickle', select=None):
+        if select is not None:
+            ff = glob.glob(os.path.join(absskymodel, select))
+        else:
+            ff = glob.glob(os.path.join(absskymodel, fname, '*.'+ext))
         if len(ff)==0:
             print 'no files found to zip in folder %s' %fname
             return
@@ -133,10 +136,13 @@ def main(args):
         healpix_map.assemble_tables(['pts'])
         
     elif stage=='seedcheck':
-        make_zip('seedcheck', 'seedcheck', 'SEED*') #needs implementation
+        make_zip('seedcheck', select='seedcheck/SEED*') #needs implementation
         
     elif stage=='pseedcheck':
-        make_zip('pseedcheck', 'seedcheck', 'PSEED*')
+        make_zip('pseedcheck', select='seedcheck/PSEED*')
+        
+    elif stage=='seedcheck_PGW':
+        make_zip('seedcheck_PGW', select='seedcheck/PGW*')
         
     else: # catch fluxcorr, any others like
         if os.path.exists(stage):
