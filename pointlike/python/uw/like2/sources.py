@@ -64,8 +64,12 @@ class Source(object):
         #    par,sig=self.model.statistical()
         #    self.model = ExpCutoff(*par[:-1])
         elif self.model.name=='ExpCutoff':
-            self.model = self.model.create_super_cutoff()
-            print 'converting %s ' %self.name
+            try:
+                self.model = self.model.create_super_cutoff()
+            except FloatingPointError:
+                pass
+                
+            print 'converting %s to PLSuperExpCutoff' %self.name
         elif self.model.name=='PowerLawFlux':
             f, gamma = self.model.get_all_parameters() #10**self.model.p
             emin = self.model.emin
