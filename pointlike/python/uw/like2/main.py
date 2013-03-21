@@ -6,7 +6,7 @@ $Header$
 """
 import types
 import numpy as np
-from . import roistat, localization, printing, roisetup, sedfuns, sources, loglikelihood
+from . import roistat, localization, printing, roisetup, sedfuns, sources, loglikelihood, sourcelist
 from . import plotting as pointlike_plotting
 from uw.utilities import fitter
 import skymaps
@@ -410,6 +410,7 @@ class ROI_user(roistat.ROIstat, fitter.Fitted):
         source_name: None or string
             if None, use currently selected source
         """
+        from sources import ExpCutoff, PLSuperExpCutoff, LogParabola, PowerLaw
         src = self.get_source(source_name)
         old_model = src.model
         if type(model)==types.StringType:
