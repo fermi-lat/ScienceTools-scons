@@ -177,7 +177,9 @@ def get_diffuse_source(spatialModel='ConstantValue',
             dmodel = IsotropicConstant()
         elif spectralModel == 'PowerLaw':
             # use Sreekumar-like defaults
-            smodel = PowerLaw(norm=1.5e-5,index=2.1)
+            smodel = PowerLaw(index=2.1)
+            smodel.set_flux(1.5e-5, emin=100, emax=N.inf)
+
             dmodel = IsotropicConstant()
         else:
             raise Exception("Unable to parse input.")
