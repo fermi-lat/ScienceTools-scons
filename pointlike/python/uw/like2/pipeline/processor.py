@@ -340,7 +340,8 @@ def process(roi, **kwargs):
         t = os.path.join(outdir, kwargs.get(x))
         if not os.path.exists(t): os.mkdir(t)
         return t
-    sedfuns.makesed_all(roi, sedfig_dir=getdir('sedfig_dir'))
+    skymodel_name = os.path.split(os.getcwd())[-1]
+    sedfuns.makesed_all(roi, sedfig_dir=getdir('sedfig_dir'), suffix='_sed_%s'%skymodel_name, )
     if localize:
         print 'localizing and associating all sources with variable...'
         q, roi.quiet = roi.quiet,False
