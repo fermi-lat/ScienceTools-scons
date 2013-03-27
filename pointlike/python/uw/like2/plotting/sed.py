@@ -32,6 +32,8 @@ class Plot(object):
     def plot_data(self, axes, **kwargs):
         if 'color' not in kwargs:
             kwargs['color'] = 'k'
+            ul_kwargs = kwargs.copy()
+            ul_kwargs['color']='gray'
 
         for r in self.rec:
             xl, xh = r.elow, r.ehigh
@@ -42,10 +44,10 @@ class Plot(object):
                 axes.plot([bc,bc], [r.lflux*fac,r.uflux*fac], **kwargs)
             else:
                 x,y = bc, r.uflux*fac
-                axes.plot([xl,xh], [y,y] , **kwargs) # bar at upper limit
+                axes.plot([xl,xh], [y,y] , **ul_kwargs) # bar at upper limit
                 # plot arrow 0.6 long by 0.4 wide, triangular head (in log coords)
                 axes.plot([x, x,     x*1.2, x,     x/1.2, x],
-                          [y, y*0.6, y*0.6, y*0.4, y*0.6, y*0.6], **kwargs)
+                          [y, y*0.6, y*0.6, y*0.4, y*0.6, y*0.6], **ul_kwargs)
  
                       
     def plot_model(self, axes, m, dom,  butterfly, **kwargs):
