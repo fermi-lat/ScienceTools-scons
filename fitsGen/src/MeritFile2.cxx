@@ -98,6 +98,8 @@ MeritFile2::~MeritFile2() {
 Long64_t MeritFile2::next() {
    if (m_index < m_nrows) {
       m_index++;
+   }
+   if (m_index < m_nrows) {
       setEntry();
    }
    return m_index;
@@ -106,6 +108,8 @@ Long64_t MeritFile2::next() {
 Long64_t MeritFile2::prev() {
    if (m_index > 0) {
       m_index--;
+   }
+   if (m_index >= 0) {
       setEntry();
    }
    return m_index;
@@ -130,7 +134,8 @@ void MeritFile2::setEntry(Long64_t index) {
    Int_t status = m_tree->GetEvent(entry_value);
    if (status == -1) {
       std::ostringstream message;
-      message << "TTree::GetEvent == -1 for index " << index << "\n";
+      message << "MeritFile2::setEntry: " 
+              << "TTree::GetEvent == -1 for index " << index << "\n";
       throw std::runtime_error(message.str());
    }
 }
