@@ -177,7 +177,7 @@ class Plot(object):
             axes.set_xlabel(r'$\mathsf{Energy\ (GeV)}$')
         else:
             axes.set_xlabel(r'$\mathsf{Energy\ (MeV)}$')
-        axes.set_title(name)
+        axes.set_title(name, size='small')
         # add a galactic map if requested
         if galmap is not None:
             image.galactic_map(galmap, color='lightblue', marker='s', markercolor='r', markersize=20)
