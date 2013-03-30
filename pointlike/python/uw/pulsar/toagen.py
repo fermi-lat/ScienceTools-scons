@@ -82,10 +82,10 @@ class TOAGenerator(object):
             # Prepare a string to write to a .tim file or to send to STDOUT
             toa = phase_time + (tau*period)/SECSPERDAY
             toa_err = tau_err*period*1.0e6
-            if weights is None:
-                s = " %s 0.0 %.12f %.2f %s -i LAT -np %d -chanceprob %.2e" % ("GEO",toa,toa_err,pe.obs,len(phases),prob)
-            else:
-                s = " %s 0.0 %.12f %.2f %s -i LAT -np %d -nwp %.2f -chanceprob %.2e" % ("GEO",toa,toa_err,pe.obs,len(phases),weights.sum(),prob)
+            frac_err = tau_err/period
+            frame_label = 'BAT' if self.data.bary else 'GEO'
+            weight_string = '' if (weights is None) else '-nwp %.2f'%(weights.sum())
+            s = " %s 0.0 %.12f %.2f %s -i LAT -np %d %s -chanceprob %.2e -fracerr %.3f" % (frame_label,toa,toa_err,pe.obs,len(phases),weight_string,prob,frac_err)
             toas[ii] = toa
             err_toas[ii] = toa_err
             tim_strings.append(s)
