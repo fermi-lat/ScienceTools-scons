@@ -85,3 +85,9 @@ class UniformLogBinner(TOABinner):
             else:
                 self.stops[i] = (mjds[indices[i+1]] + mjds[indices[i+1]-1])/2
             
+class PrebinnedBinner(TOABinner):
+    def __init__(self,starts,stops):
+        self.counter = 0
+        self.ntoa = len(starts)
+        self.starts = starts
+        self.stops = stops
