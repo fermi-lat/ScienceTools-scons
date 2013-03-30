@@ -486,7 +486,7 @@ class LCBridgeTemplate(LCTemplate):
         #raise NotImplementedError()
         rvals,norms,norm = self._get_scales(phases,log10_ens)
         if index<len(self.primitives):
-            np.add(rvals,norms[index]*self.primitives[index](phases,log10_ens),out=rvals)
+            np.add(rvals,norms[index]*self.primitives[index](phases,log10_ens),rvals)
         return rvals
 
     def mean_single_component(self,index,phases,log10_ens=None,weights=None,bins=20):
