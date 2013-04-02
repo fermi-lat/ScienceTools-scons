@@ -24,6 +24,10 @@ class A(object):
 # test creating a dictionary
 
 mymap = {'a':1, 'b':2.0}
+
+# test dictionary of list of strings
+
+stringlistdict = dict(A=['a', 'aa'], B=['b', 'bb'])
     
 print 'directory ', dir()
 print

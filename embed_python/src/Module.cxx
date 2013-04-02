@@ -342,6 +342,39 @@ void Module::getDict(const std::string& dictname, std::map<std::string,std::vect
 
 }
 
+void Module::getDict(const std::string & dictname,
+                     std::map<std::string, std::vector<std::string> > & valuemap) const {
+   PyObject * pdict(attribute(dictname));
+   PyObject * dict_iterator(PyObject_GetIter(pdict));
+   if (dict_iterator==NULL) {
+      throw std::invalid_argument("Module: "+ dictname +" is not a dictionary");
+   }
+   PyObject *key, *values;
+   Py_ssize_t pos(0);
+
+   while (PyDict_Next(pdict, &pos, &key, &values)) {
+      std::string skey = PyString_AsString(key);
+      PyObject *list_iterator( PyObject_GetIter(values) );
+      if (list_iterator==NULL) {
+         throw std::invalid_argument("Module: dictionary value for "+ skey +" is not a list");
+      }
+      std::vector<std::string> v;
+      while (PyObject* item = PyIter_Next(list_iterator)) {
+         std::string value(PyString_AsString(item));
+         check_error("Module::getDict: dictionary " + dictname + "["+ skey + "] contains non-string item");
+         if (verbose()) {
+            std::cout << "\t" << value << std::endl;
+         }
+         v.push_back(value);
+         Py_DECREF(item);
+      }
+      valuemap[skey] = v;
+      Py_DECREF(list_iterator);
+   }
+   Py_DECREF(dict_iterator);
+   check_error("Module: failure parsing " + dictname);
+}
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void Module::check_error(const std::string& text)const
 {    if (PyErr_Occurred()) {
@@ -407,6 +440,23 @@ int Module::test(int argc, char* argv[], const std::string& modulename)
         for( std::map<std::string, double>::const_iterator mip(mymap.begin()); mip!=mymap.end(); ++mip){
             std::cout << std::left<< std::setw(20) << mip->first << std::setw(20) << mip->second << std::endl;
         }
+
+        std::map<std::string, std::vector<std::string> > mydict;
+        setup.getDict("stringlistdict", mydict);
+        std::map<std::string, std::vector<std::string> >::const_iterator it(mydict.begin());
+        for ( ; it != mydict.end(); ++it) {
+           std::cout << it->first << ": [";
+           for (size_t i(0); i < it->second.size(); i++) {
+              std::cout << "'" << it->second.at(i) << "'";
+              if (i < it->second.size()-1) {
+                 std::cout << ", ";
+              } else {
+                 std::cout << "]";
+              }
+           }
+           std::cout << std::endl;
+        }
+
     }catch( const std::exception & e){
         std::cerr<< "Module::test -- caught exception " << e.what() << std::endl;
         ret=1;

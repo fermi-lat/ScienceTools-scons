@@ -79,6 +79,10 @@ public:
     /// set a map of list of doubles from a dictionary
     void getDict(const std::string& dictname, std::map<std::string,std::vector<double> >& valuemap)const;
 
+    /// get a map of vector of strings from a dictionary
+   void getDict(const std::string & dictname,
+                std::map<std::string, std::vector<std::string> > & valuemap) const;
+
     /// examine type of a PyObject
     std::string type(const PyObject* obj)const;
 
