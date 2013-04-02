@@ -168,7 +168,9 @@ void FitsUtil::fcopy(std::string infilename,
    }
    
    fitsfile * infile(0);
-   infilename = infilename + "[" + extname + "]";
+   if (extname != "") {
+      infilename = infilename + "[" + extname + "]";
+   }
    if (filterString != "") {
       infilename = infilename + "[" + filterString + "]";
    }

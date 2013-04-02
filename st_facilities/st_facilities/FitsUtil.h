@@ -54,7 +54,7 @@ public:
    /// Interface to fits_copy_file.
    static void fcopy(std::string infilename,
                      std::string outfilename,
-                     const std::string & extname, 
+                     const std::string & extname="", 
                      const std::string & filterString="",
                      bool clobber=false);
 
