@@ -6,6 +6,7 @@
   $Id$
   EOH
 
+ st_facilities-00-20-03 02-Apr-2013 jchiang allow extname to be omitted in FitsUtil::fcopy(...)
  st_facilities-00-20-02 12-Dec-2012  cohen try to fix windows build?
  st_facilities-00-20-01 11-Dec-2012 jrb    The big windows fix to SConscript for windows
  st_facilities-00-20-00 11-Dec-2012  cohen copy over to st_facilities the Bilinear and FitsTable classes
