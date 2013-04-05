@@ -109,10 +109,15 @@ class SkyModel(object):
         if not os.path.exists(cat):
             raise Exception('auxilliary source catalog "%s" not found locally (%s) or in $FERMI/catalog'
                     %( self.auxcat, self.folder))
-        if os.path.splitext(cat)[-1]=='.pickle':
+        ext = os.path.splitext(cat)[-1]            
+        if ext =='.pickle':
             ss = pd.load(cat).itertuples()
             dataframe=True
             print 'loading auxcat from DataFrame'
+        elif ext == '.csv':
+            ss = pd.read_csv(cat).itertuples()
+            dataframe=True
+            print 'loading auxcat from csv'
         else:
             ss = makerec.load(cat); dataframe=False
         names = [s.name for s in self.point_sources]
