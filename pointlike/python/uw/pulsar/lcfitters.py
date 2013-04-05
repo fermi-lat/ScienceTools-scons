@@ -541,6 +541,49 @@ class WeightedLCFitter(UnweightedLCFitter):
         denom = 1+self.weights*(phase_template_terms)
         return -(numer/denom).sum(axis=1)
 
+class ChiSqLCFitter(object):
+    """ Fit binned data with a gaussian likelihood."""
+
+    def __init__(self,template,x,y,yerr,**kwargs):
+        self.template = template
+        self.chistuff = x,y,yerr
+        self.__dict__.update(kwargs)
+
+    def chi(self,p,*args):
+        x,y,yerr = self.chistuff
+        t = self.template
+        if not self.template.shift_mode and np.any(p < 0):
+            return 2e100*np.ones_like(x)/len(x)
+        t.set_parameters(p)
+        chi = (t(x) - y)/yerr
+        return chi
+
+    def chigrad(self,p,*args):
+        x,y,yerr = self.chistuff
+        #chi = self.chi(p,*args)
+        g = self.template.gradient(x)
+        #return 2*(chi*g)
+        return g/yerr
+
+    def fit(self,use_gradient=True):
+        p = self.template.get_parameters()
+        Dfun = self.chigrad if use_gradient else None
+        results = leastsq(self.chi,p,Dfun=Dfun,full_output=1,
+            col_deriv=True)
+        p,cov = results[:2]
+        self.template.set_parameters(p)
+        self.template.set_errors(np.diag(cov)**0.5)
+    
+    def __str__(self):
+        return str(self.template)
+
+    def plot(self,fignum=2):
+        x,y,yerr = self.chistuff
+        import pylab as pl
+        pl.figure(2); pl.clf()
+        pl.errorbar(x,y,yerr=yerr,ls=' ')
+        pl.plot(x,self.template(x))
+
 def hessian(m,mf,*args,**kwargs):
     """Calculate the Hessian; mf is the minimizing function, m is the model,args additional arguments for mf."""
     p = m.get_parameters().copy()
