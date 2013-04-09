@@ -250,9 +250,9 @@ class ROI_user(roistat.ROIstat, fitter.Fitted):
         update = kwargs.pop('update', False)
         if hasattr(source, 'sedrec') and not update:
             return source.sedrec
-        sf = sedfuns.SourceFlux(self, source.name, **kwargs)
-        source.sedrec = sedfuns.SED(sf, event_class=event_class).rec
-        return source.sedrec
+        with sedfuns.SourceFlux(self, source.name, **kwargs) as sf:
+            source.sedrec = sedfuns.SED(sf, event_class=event_class).rec
+            return source.sedrec
 
     @decorate_with(pointlike_plotting.tsmap.plot)
     def plot_tsmap(self, source_name=None, **kwargs):
