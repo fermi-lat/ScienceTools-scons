@@ -255,8 +255,9 @@ def localize_all(roi, **kwargs):
                 make_association(source, loc.TSmap, associator, quiet=roi.quiet)
             
             if tsmap_dir is not None:
-                tsize = loc.ellipse['a']*15. if hasattr(loc,'ellipse') and loc.ellipse is not None else 1.1
-                pixelsize= tsize/15.;
+                tsize = loc.ellipse['a']*15. if hasattr(loc,'ellipse') and loc.ellipse is not None else 2.0
+                tsize = min(tsize, 2.0)
+                pixelsize= tsize/15.
                 try:
                     tsm=tsmap.plot(loc, source.name, center=source.skydir, 
                         outdir=tsmap_dir, catsig=0, size=tsize, 
