@@ -101,14 +101,12 @@ class METConverter(object):
             frame = 'SOLARSYSTEM'
             timesys = 'TDB'
             timecon = BaryConverter
-        elif (not noprocess):
+        else:
             frame = 'GEOCENTRIC'
             timesys = 'TT'
             timecon = GeoConverter
-        else:
-            timecon = IdentityConverter
-            frame = None
-        if ft1hdr['TIMEREF'] != frame:
+
+        if (not noprocess) and (ft1hdr['TIMEREF'] != frame):
             self.timecon = timecon(ft2,ra,dec)
             if not self.timecon.can_process():
                 s = 'BARYCENTERED' if bary else 'GEOCENTERED'
