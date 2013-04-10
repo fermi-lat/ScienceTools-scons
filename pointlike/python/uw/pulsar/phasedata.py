@@ -68,7 +68,8 @@ class PhaseData(object):
             weights = np.asarray(f['EVENTS'].data.field(self.we_col_name))
             mask = mask & (weights > self.wmin)
             self.weights = weights[mask]
-        else: self.weights = None
+        else:
+            self.weights = None
         mets = np.asarray(f['EVENTS'].data.field(tcol))[mask]
         self.mjds = mc(mets)
         self.ph = self.polyco.vec_evalphase(self.mjds)
