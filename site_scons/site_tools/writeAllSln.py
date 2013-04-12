@@ -96,6 +96,10 @@ class allSln(object):
                             (projName[len(projName)-10:] == "InstallSrc") or 
                             (projName == self.pkgname) or
                             (projName == "test_" + self.pkgname)): useIt = True
+
+        # One more special case:  for alluserAlg, include userApp
+        if((self.pkgname == 'userAlg') and (projName == 'userApp')): useIt = True
+
         if projName not in self.projectDict:
             #print "First-time dict entry for ", projName
             if useIt: self.projectDict[projName] = [projName, mobj.group(2), projLines, lenp, base]
