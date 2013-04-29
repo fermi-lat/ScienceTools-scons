@@ -457,10 +457,11 @@ class LCBridgeTemplate(LCTemplate):
         # rescaling for peaks over pedestal
         dn1 = k/(delta*d)*(f21-f22)
         dn2 = k/(delta*d)*(f12-f11)
+        # make the mask inclusive for ease of testing
         if l2 > l1:
-            mask = (phases > l1) & (phases < l2)
+            mask = (phases >= l1) & (phases <= l2)
         else:
-            mask = (phases > l1) | (phases < l2)
+            mask = (phases >= l1) | (phases <= l2)
         rvals = k/delta*mask # pedestal
         norm_list = [norms[i] for i in xrange(0,len(norms)-2)] + [n1+dn1*mask,n2+dn2*mask]
         return rvals,norm_list,all_norms.sum(axis=0)
