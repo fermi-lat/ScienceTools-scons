@@ -45,6 +45,7 @@ class AnalysisBase(object):
             import hippoplotter as plot
             return plot
     def __call__(self):
+        self.model.syncParams()
         return -self.logLike.value()
     def setFitTolType(self, tolType):
 
