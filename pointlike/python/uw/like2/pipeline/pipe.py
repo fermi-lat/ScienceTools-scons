@@ -416,11 +416,12 @@ class Update(NotebookPipe):
 
 class Finish(Update):
     """ finish processing with localization and association
+       Make tsmaps for problem fits
     """
     def defaults(self):
         return dict(dampen=0,
             localize=True, 
-            ####### temporary #####  tsmap_dir='"tsmap"',  
+            tsmap_dir='"tsmap_fail"',  
             setup_cmds = 'from uw.like2.pipeline import associate ',
             associator="associate.SrcId('$FERMI/catalog','all_but_gammas')",quiet=True)
             
