@@ -283,7 +283,9 @@ def main(outfile, infile='sources.pickle', cuts='(sources.ts>10)*(sources.a<0.25
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='create a FITS file')
     parser.add_argument('filename', nargs='*', help='output FITS file' )
-    parser.add_argument('--cuts', default='(sources.ts>10)*(sources.a<0.25)*(sources.locqual<10)', help='selection cuts')
+    parser.add_argument('--cuts', 
+        default='(sources.ts>10)*(sources.a<0.25)*(sources.locqual<10)+ pd.isnull(sources.locqual)', 
+        help='selection cuts')
     parser.add_argument('--infile', default='sources.pickle')
     args = parser.parse_args()
     filename = args.filename[0] if len(args.filename)>0 else None
