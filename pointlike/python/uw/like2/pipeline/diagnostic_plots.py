@@ -3128,6 +3128,7 @@ opts = dict(
         data =   (Data,),
         comparison=(SourceComparison,),
         association=(Associations,),
+        gtlike_comparison=(GtlikeComparison,),
         ) 
         
 def main(args, update_top=False , raise_exception=False):
