@@ -421,6 +421,22 @@ class ROI_user(roistat.ROIstat, fitter.Fitted):
         self.initialize()
         return old_model
         
+    def diffuse_correction(self, corr=None):
+        """ set or return the diffuse correction factors
+        corr : array of float or None
+             if None, return the current correction factors
+             
+        """
+        bands = self.selected_bands
+        bgal = [b[0] for b in bands]
+        dc = [x.diffuse_correction for x in bgal]
+        if corr is None:
+            return np.array(dc)
+        for i,c in enumerate(corr):
+            dc[2*i]=dc[2*i+1] = c
+            for x,y in zip(dc,bgal):
+                y.diffuse_correction = x
+        
         
 class Factory(roisetup.ROIfactory):
     """ subclass of ROIfactory that sets up a ROI_user analysis object"""
