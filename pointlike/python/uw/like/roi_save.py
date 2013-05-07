@@ -105,6 +105,10 @@ def load(filename,**kwargs):
     from . pointspec import DataSpecification,SpectralAnalysis
     from . roi_analysis import ROIAnalysis
 
+    xmlfile=None
+    point_sources = d['point_sources']
+    diffuse_sources = d['diffuse_sources']
+
     for k,v in kwargs.items():
 
         keys=lambda x: [ i[0] for i in x]
@@ -116,20 +120,27 @@ def load(filename,**kwargs):
             d['SpectralAnalysis'][k]=v
         elif k in keys(ROIAnalysis.defaults):
             d['ROIAnalysis'][k]=v
+        elif k == 'xmlfile':
+            xmlfile = v
+        elif k == 'point_sources':
+            point_sources = v
+        elif k == 'diffuse_sources':
+            diffuse_sources = v
         else:
             raise Exception("Unknown argument %s to function load" % k)
 
     # backwards compatability
-    for ps in d['point_sources']: 
+    for ps in point_sources: 
         if hasattr(ps.model,'p'): ps.model._p=ps.model.p
-    for ds in d['diffuse_sources']: 
+    for ds in diffuse_sources: 
         if hasattr(ds.smodel,'p'): ds.smodel._p=ds.smodel.p
 
     ds=DataSpecification(**d['DataSpecification'])
     sa=SpectralAnalysis(ds,**d['SpectralAnalysis'])
     roi=sa.roi(roi_dir=d['roi_dir'],
-               point_sources=d['point_sources'],
-               diffuse_sources=d['diffuse_sources'],
+               xmlfile=xmlfile,
+               point_sources=point_sources,
+               diffuse_sources=diffuse_sources,
                **d['ROIAnalysis'])
 
     # add in localization stuff, kinda ugly
