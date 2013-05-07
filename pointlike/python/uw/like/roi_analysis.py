@@ -763,7 +763,7 @@ class ROIAnalysis(object):
         return sed_plotter.plot_sed(self,which=which,outdir=filename,**kwargs)
 
     @decorate_with(mapplots.ROIDisplay,append_init=True)
-    def plot_counts_map(self,filename,**kwargs):
+    def plot_counts_map(self,filename=None,**kwargs):
         i=mapplots.ROIDisplay(self,**kwargs)
         i.show(filename=filename)
         return i
