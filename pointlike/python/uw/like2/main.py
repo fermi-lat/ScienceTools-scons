@@ -274,19 +274,15 @@ class ROI_user(roistat.ROIstat, fitter.Fitted):
             tsp = pointlike_plotting.tsmap.plot(loc, **plot_kw)
         return tsp
         
-    @decorate_with(pointlike_plotting.sed.Plot, append_init=True)    
+    @decorate_with(pointlike_plotting.sed.stacked_plots)    
     def plot_sed(self, source_name=None, **kwargs):
         source = self.sources.find_source(source_name)
-        source.sedrec = self.get_sed(source.name, 
-            event_class=kwargs.pop('event_class', None), update=kwargs.pop('update',True))
-        plot_kw=dict(energy_flux_unit=kwargs.pop('energy_flux_unit','eV'),
-                     gev_scale=kwargs.pop('gev_scale',True))
-        ps = pointlike_plotting.sed.Plot(source, **plot_kw)
-        annotation =(0.05,0.9, 'TS=%.0f'% self.TS(source.name))
-        plot_kw = dict(annotate=annotation)
-        plot_kw.update(kwargs)
-        ps(**plot_kw)
-        return ps
+        showts = kwargs.pop('showts', True)
+        if kwargs.get('update', True):
+            self.get_sed(update=True)
+        annotation =(0.04,0.88, 'TS=%.0f' % source.ts ) if showts else None 
+        kwargs.update(galmap=self.roi_dir, annotate=annotation)
+        return pointlike_plotting.sed.stacked_plots(self, **kwargs); 
 
     @decorate_with(pointlike_plotting.counts.stacked_plots)
     def plot_counts(self, **kwargs):
