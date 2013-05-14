@@ -436,7 +436,7 @@ class AIT(object):
         imshow_kw =dict(origin='lower', interpolation='nearest', extent=self.extent) 
         imshow_kw.update( kwargs)
         if self.axes is None: 
-            self.figure = pylab.gcf()
+            self.figure, self.axes = pylab.subplots(1,1, figsize=(10,5))
          
         if self.size==180: self.axes.set_axis_off()
         fun_dict = dict(linear=scale_fun, log=ma.log10, sqrt=ma.sqrt, asinh=ma.arcsinh)
