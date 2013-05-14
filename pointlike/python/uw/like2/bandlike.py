@@ -435,8 +435,8 @@ def factory(bands, sources, exposure, quiet=False):
                 ROIExtendedModel=BandExtended)[class_name]
         return B(band, source)
     bandlist = []
-    print 'applying diffuse correction:', exposure.dcorr
-    dcorr = exposure.dcorr
+    dcorr = getattr(exposure, 'dcorr', None)
+    if dcorr is not None: print 'applying diffuse correction:', exposure.dcorr
     for i,band in enumerate(bands):
         # note: adding attribute to each band for access by BandLike object if needed
         band.exposure_correction = exposure.correction[band.ct](band.e)
