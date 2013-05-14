@@ -53,8 +53,8 @@ def main( update=None):
     first_roi, last_roi = roi_list[0], roi_list[-1]
     
 
-
-    streamlogdir = os.path.join(POINTLIKE_DIR,SKYMODEL_SUBDIR,'streamlogs')
+    skymodeldir =SKYMODEL_SUBDIR.replace('/a/wain025/g.glast.u55/','/afs/slac/g/glast/groups/')  
+    streamlogdir = os.path.join(POINTLIKE_DIR,skymodeldir,'streamlogs')
     streamlogfile=os.path.join(streamlogdir,'stream%s.%04d.log' % ( PIPELINE_STREAMPATH.split('.')[0], int(PIPELINE_STREAM)) )
     if not os.path.exists(streamlogdir): os.mkdir(streamlogdir)
     print 'Logging execution progress to %s' % streamlogfile
