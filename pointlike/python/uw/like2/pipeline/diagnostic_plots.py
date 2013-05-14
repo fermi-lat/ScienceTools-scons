@@ -1767,11 +1767,11 @@ class SourceInfo(Diagnostics):
         self.flagged_link = """\
         <h3>Flagged Sources</h3>
         A number of these sources have been flagged to indicate potential issues. 
-        The flag bits and number flagged as such are:<b>
+        The flag bits and number flagged as such are:
         %s<br>
-        These can be examined with a Pivot browser, which requires Silverlight.
-        <a href="http://deeptalk.phys.washington.edu/PivotWeb/SLViewer.html?cID=%d">Pivot browser</a>"""\
-        %(flagtable.to_html(), pc.cId)
+        These can be examined with a 
+        <a href="http://deeptalk.phys.washington.edu/PivotWeb/SLViewer.html?cID=%d">Pivot browser</a>,
+        which requires Silverlight."""  %(flagtable.to_html(), pc.cId)
         return None
     
 
