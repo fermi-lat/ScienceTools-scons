@@ -7,6 +7,7 @@ $Header$
 import os, pyfits, pickle
 from pylab import mlab
 import numpy as np
+import pandas as pd
 
 def makefits(r, filename=None, **kwargs):
     """ convert a recarray to a pyfits object, write to filename if present.
@@ -98,4 +99,6 @@ def load(filename):
         return textrec(filename)
     elif ext=='.pickle' or ext=='.rec':
         return pickle.load(open(filename))
+    elif ext=='.csv':
+        return textrec(filename, delimiter=',')
     raise Exception('extension %s not recognized: expect txt, rec or pickle' %ext)
