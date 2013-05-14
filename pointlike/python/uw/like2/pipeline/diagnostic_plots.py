@@ -3197,6 +3197,7 @@ opts = dict(
         comparison=(SourceComparison,),
         association=(Associations,),
         gtlike_comparison=(GtlikeComparison,),
+        uw_comparison=(UWsourceComparison,),
         ) 
         
 def main(args, update_top=False , raise_exception=False):
