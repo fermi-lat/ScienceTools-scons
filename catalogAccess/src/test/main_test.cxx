@@ -9,6 +9,10 @@
 #include "st_facilities/Environment.h"
 #include "catalogAccess/catalog.h"
 #include <iomanip>
+#ifdef WIN32
+#include "facilities/AssertDialogOverride.h"
+#endif
+
 
 void help();
 void show_STEP(const std::string text);
@@ -20,6 +24,15 @@ static const std::ios_base::fmtflags
              outDouble=std::ios::right|std::ios::scientific;
 
 int main(int iargc, char * argv[]) {
+#ifndef _DEBUG
+#ifdef WIN32
+   _CrtSetReportHook( AssertDialogOverride );
+   _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+   _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+   _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+#endif
+#endif
+
 
 // Show number of main argument
   std::cout << std::setw(70) << std::setfill('*') << "\n"
