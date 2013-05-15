@@ -1,9 +1,33 @@
 #include <crtdbg.h>
 #include <iostream>
 
+/*
+ * In order to use this function the following lines of code have to be placed
+ * in the file containing main() for the test or program.
+ *
+// Place the following in the includes section:
+
+#ifdef WIN32
+#include "facilities/AssertDialogOverride.h"
+#endif
+
+// Place the following at the beginning of the main() function:
+
+#ifdef _DEBUG
+#ifdef WIN32
+   _CrtSetReportHook( AssertDialogOverride );
+   _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+   _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+   _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+#endif
+#endif
+
+ */
+
+
 /* 
  * Define our own reporting function.
- * We'll hook it into the debug reporting
+ * We hook it into the debug reporting
  * process later using _CrtSetReportHook.
  */
 int AssertDialogOverride( int reportType, char *userMessage, int *retVal )
@@ -25,7 +49,7 @@ int AssertDialogOverride( int reportType, char *userMessage, int *retVal )
    /*
     * When the report type is for an ASSERT,
     * we'll redirect to std::cout instead of having a dialog appear
-	* so we'll return false and have processing stop here.
+    * so we'll return false and have processing stop here.
     *
     * When the report type is a WARNing or ERROR,
     * we'll just pass it on to the system so return true.
