@@ -24,7 +24,6 @@
 
  */
 
-
 /* 
  * Define our own reporting function.
  * We hook it into the debug reporting
