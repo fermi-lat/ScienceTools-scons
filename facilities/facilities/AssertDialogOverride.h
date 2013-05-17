@@ -14,12 +14,10 @@
 // Place the following at the beginning of the main() function:
 
 #ifdef _DEBUG
-#ifdef WIN32
    _CrtSetReportHook( AssertDialogOverride );
    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
-#endif
 #endif
 
  */
@@ -55,12 +53,13 @@ int AssertDialogOverride( int reportType, char *userMessage, int *retVal )
     */
    if (reportType == _CRT_ASSERT)
    {
-	  std::cout << "Assertion failure:" << std::endl;
-	  std::cout << userMessage << std::endl;
-      return(false);
+	std::cout << "Assertion failure:" << std::endl;
+	std::cout << userMessage << std::endl;
+	std::cout << "Shutting down the test." << std::endl;
+	exit(10);
    } else {
-	  std::cout << "Warning or Error:" << std::endl;
-	  std::cout << userMessage << std::endl;
-      return(true);
+	std::cout << "Warning or Error:" << std::endl;
+	std::cout << userMessage << std::endl;
+	return(true);
    }
 }
