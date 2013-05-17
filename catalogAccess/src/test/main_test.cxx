@@ -25,12 +25,10 @@ static const std::ios_base::fmtflags
 
 int main(int iargc, char * argv[]) {
 #ifndef _DEBUG
-#ifdef WIN32
    _CrtSetReportHook( AssertDialogOverride );
    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
-#endif
 #endif
 
 
