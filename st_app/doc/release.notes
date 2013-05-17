@@ -6,6 +6,7 @@ $Id$
 \verbatim
 * EOH *
 
+ st_app-02-00-08 17-May-2013 glastrm Added code to override the default handling of assertion dialogs and make them more friendly to the Release Manager.  This enables the functionality for all programs that derive from st_app.
  st_app-02-00-07 19-Apr-2010    hmk no changes - just tagging to force a 
                                 SCons build
  st_app-02-00-06 19-Apr-2010    hmk no changes - just tagging to force a 
