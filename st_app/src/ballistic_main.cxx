@@ -16,8 +16,18 @@
 #include "st_app/StAppFactory.h"
 
 #include "facilities/commonUtilities.h"
+#ifdef WIN32
+#include "facilities/AssertDialogOverride.h"
+#endif
 
 int main(int argc, char ** argv) {
+#ifdef _DEBUG
+   _CrtSetReportHook( AssertDialogOverride );
+   _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+   _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+   _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+#endif
+
   int status = 0;
   st_app::StApp * this_st_app = 0;
 
