@@ -154,8 +154,8 @@ class ROIfactory(object):
         input_config = eval(open(os.path.expandvars(modeldir+'/config.txt')).read())
         for key in 'extended diffuse irf galactic_correction galactic_systematic'.split():
             if self.__dict__[key] is None or self.__dict__[key]=='None': 
-                #print '%s: %s replace from skymodel: "%s"' %(key, kwargs.get(key,None), input_config[key])
-                self.__dict__[key]=input_config[key]
+                #print '%s: %s replace from skymodel: "%s"' %(key, kwargs.get(key,None), input_config.get(key,None))
+                self.__dict__[key]=input_config.get(key, None)
 
         # check for skymodel_kw in the config,txt file, use if found
         config_skymodel = input_config.get('skymodel_config', None)
