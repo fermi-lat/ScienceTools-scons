@@ -24,7 +24,7 @@ static const std::ios_base::fmtflags
              outDouble=std::ios::right|std::ios::scientific;
 
 int main(int iargc, char * argv[]) {
-#ifndef _DEBUG
+#ifdef WIN32
    _CrtSetReportHook( AssertDialogOverride );
    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
