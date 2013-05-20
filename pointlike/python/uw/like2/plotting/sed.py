@@ -187,7 +187,7 @@ class Plot(object):
         if self.energy_flux_unit=='eV':
            axes.set_yticklabels(['', '1', '10', '100', r'$\mathdefault{10^{3}}$'])
 
-        axes.set_title(name, size=12)
+        axes.set_title(name, size=14)
         set_xlabels(axes, self.gev_scale)
         # add a galactic map if requested
         if galmap is not None:
