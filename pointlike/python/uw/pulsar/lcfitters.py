@@ -359,7 +359,7 @@ class UnweightedLCFitter(object):
     def plot(self,nbins=50,fignum=2, axes=None, plot_components=False, template=None):
         import pylab as pl
         weights = self.weights
-        dom = np.linspace(0,1,200)
+        dom = np.linspace(0,1,1000)
         if template is None: template = self.template
 
         if axes is None:
