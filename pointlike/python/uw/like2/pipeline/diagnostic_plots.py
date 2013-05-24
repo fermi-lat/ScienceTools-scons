@@ -1324,7 +1324,7 @@ class SourceInfo(Diagnostics):
         self.df['poorloc'] = (self.df.a>0.2) + (self.df.locqual>8) + (self.df.delta_ts>2)
         self.df['flags'] = 0  #used to set bits below
         flags = self.df.flags
-        pl = (self.df.poorloc + self.df.unloc)
+        pl = (self.df.poorloc + self.df.unloc) * (self.df.ts>10)
         flags[pl] += 8 ### bit 8
         print '%d sources flagged (8) as poorly or not localized' % sum(pl)
 
@@ -1827,7 +1827,7 @@ class SourceInfo(Diagnostics):
         plt.close('all')
         csvfile='sources_%s.csv' % version
         colstosave="""ra dec ts modelname freebits fitqual e0 flux flux_unc pindex pindex_unc index2 index2_unc
-                 cutoff cutoff_unc locqual a b ang flags roiname""".split()
+                 cutoff cutoff_unc locqual delta_ts a b ang flags roiname""".split()
         self.df.ix[self.df.ts>10][colstosave].to_csv(csvfile)
         print 'saved truncated csv version to "%s"' %csvfile
         
