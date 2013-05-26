@@ -3363,7 +3363,8 @@ a:hover { background-color:yellow; }
 opts = dict(
         environment=   (Environment,),
         counts=  (CountPlots,),
-        sources= (SourceInfo, Localization, SourceTotal,),
+        sources= (SourceInfo, Localization, ), #SourceTotal,),
+        sourceinfo=(SourceInfo,),
         localization=(Localization,),
         diffuse= (Galactic, Isotropic, Limb, SunMoon),
         isotropic=(Isotropic,),
