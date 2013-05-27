@@ -762,8 +762,8 @@ class Model(object):
             while fluxes[0] < clip_flux: energies,fluxes=energies[1:],fluxes[1:]
             while fluxes[-1] < clip_flux: energies,fluxes=energies[:-1],fluxes[:-1]
 
-        # Paranoid check:
-        if np.any(fluxes==0): raise ModelException("Error: 0s found in differential flux")
+            # Paranoid check:
+            if np.any(fluxes==0): raise ModelException("Error: 0s found in differential flux")
 
         open(path.expand(filename),'w').write('\n'.join(['%g\t%g' % (i,j) for i,j in zip(energies,fluxes)]))
 
