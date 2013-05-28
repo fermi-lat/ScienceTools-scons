@@ -128,7 +128,7 @@ class Diagnostics(object):
         functions: list of bound functions 
         names: names to use instad of function names
         
-        Expect to be called from all_plots, get a summary from its docstring
+        Expect to be called from all_plots, get a summary from its docstring if present, or the class docstring
         """
         if names is None:
             names=[None]*len(functions)
@@ -138,6 +138,7 @@ class Diagnostics(object):
         html +='<body><h2>%(header)s</h2>'
  
         docstring = self.all_plots.__doc__
+        if docstring is None: docstring = self.__doc__
         if docstring is not None: html+=docstring
         section = 0
         for function, name in zip(functions,names):
