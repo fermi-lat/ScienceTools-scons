@@ -438,8 +438,9 @@ def factory(bands, sources, exposure, quiet=False):
         return B(band, source)
     bandlist = []
     dcorr = getattr(exposure, 'dcorr', None)
-    if dcorr is not None: print 'applying diffuse correction:', exposure.dcorr
-    average_corr = dcorr.mean()
+    if dcorr is not None: 
+        print 'applying diffuse correction:', exposure.dcorr
+        average_corr = dcorr.mean()
     for i,band in enumerate(bands):
         # note: adding attribute to each band for access by BandLike object if needed
         band.exposure_correction = exposure.correction[band.ct](band.e)

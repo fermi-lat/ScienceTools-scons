@@ -165,7 +165,7 @@ class DiffuseModelFromCache(DiffuseModel):
         if not self.quiet: print 'Using cached diffuse in %s'%self.filename
         self.emins = [cd['emin'] for cd in self.cached_diffuse]
         if hasattr(dfun, 'kw') and dfun.kw is not None: # check for extra keywords
-            self.corr = pd.read_csv(dfun.kw['correction'])
+            self.corr = pd.read_csv(dfun.kw['correction']) if dfun.kw['correction'] is not None else None
             self.systematic = dfun.kw['systematic']
             print '\tusing file "%s" for corrections' % dfun.kw['correction']
             print '\tsystematic factor:%.3f' % dfun.kw['systematic']
