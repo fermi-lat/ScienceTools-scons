@@ -284,6 +284,7 @@ if sys.platform == 'win32':
 ##################
 # Create release #
 ##################
+baseEnv['TARFLAGS']='-c'
 if baseEnv.GetOption('userRelease'):
     if sys.platform != 'win32':
         baseEnv['TARFLAGS']+=' -z'
@@ -328,7 +329,7 @@ if baseEnv.GetOption('sourceRelease'):
                         baseEnv['TOOLDIR'].path, baseEnv['TESTDIR'].path,
                         baseEnv['TESTSCRIPTDIR'].path, 
                         baseEnv['LIBDIR'].path, 'build','"*.tar.gz"'):
-            baseEnv['TARFLAGS']+='--exclude '+exclude
+            baseEnv['TARFLAGS']+=' --exclude '+exclude
         baseEnv.Default(baseEnv.Tar(baseEnv.GetOption('sourceRelease'), glob.glob('*')))
     else:
         for exclude in (baseEnv['BINDIR'].path, baseEnv['SCRIPTDIR'].path, 
