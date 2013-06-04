@@ -203,14 +203,15 @@ class BandExtended(BandPoint):
         # klugy way to create new source object for each band
         self.source= source.__class__(source.sa, source.diffuse_source, source.roi_dir, source.name)
         self.band = band
+        self.initialized = False
         self.initialize()
         self.update()
 
-    
     def initialize(self):
+        if self.initialized: return # already initialized never need to do this
         self.source.quiet = True # turn off convolving messages
-        #if hasattr(self.source, 'bands'):
-        #    print 'warning: second initialization:  object id=%d, overlap=%f' % (id(self.source), self.source.bands[0].er)
+        self.initialized=True
+        
         self.source.initialize_counts([self.band])
         #print ' overlap=%f' % self.source.bands[0].er
         
