@@ -2452,6 +2452,7 @@ class Associations(SourceInfo):
         self.df['acat']  = np.array([ assoc['cat'][0] if assoc is not None else 'unid' for  assoc in self.df.associations])
         self.df['adeltats'] = np.array([assoc['deltats'][0] if assoc is not None else np.nan for assoc in self.df.associations])
         self.df['aname']  = np.array([ assoc['name'][0] if assoc is not None else 'unid' for  assoc in self.df.associations])
+        self.df['aang']  = np.array([ assoc['ang'][0] if assoc is not None else np.nan for  assoc in self.df.associations])
         self.df10 = self.df.ix[self.df.ts>10]
         print 'associated: %d/%d' % (sum(self.df10.aprob>0.8), len(self.df10))
         
@@ -2507,7 +2508,7 @@ class Associations(SourceInfo):
         print '%d sources found in other pulsar catalogs' % sum(psrx)
         if sum(psrx)>0:
             self.atable+= '<p>%d sources with pulsar association not in LAT pulsar catalog' % sum(psrx)
-            self.atable+= self.df[psrx]['aprob acat aname ts delta_ts locqual'.split()].to_html(float_format=FloatFormat(1))        
+            self.atable+= self.df[psrx]['aprob acat aname aang ts delta_ts locqual'.split()].to_html(float_format=FloatFormat(2))        
         
     def localization_check(self, tsmin=10, dtsmax=9):
         """Localization resolution test
