@@ -48,6 +48,17 @@ class PolycoEntry:
             print "BAD PHASE ",phase
         return(phase)
 
+    def evalabsphase(self,t):
+        '''Return the phase at time t, computed with this polyco entry'''
+        dt = (t-self.tmid)*1440.0
+        # Compute polynomial by factoring out the dt's
+        phase = self.coeffs[self.ncoeff-1]
+        for i in range(self.ncoeff-2,-1,-1):
+            phase = self.coeffs[i] + dt*phase
+        # Add DC term
+        phase += self.rphase + dt*60.0*self.f0
+        return(phase)
+
     def evalfreq(self,t):
         '''Return the freq at time t, computed with this polyco entry'''
         dt = (t-self.tmid)*1440.0
@@ -204,6 +215,11 @@ class Polyco:
         """ Return the phases for a vector of times; NB times should be in
             MJD @ GEO."""
         return self._vec_eval(times,PolycoEntry.evalphase)
+
+    def vec_evalabsphase(self,times):
+        """ Return the phases for a vector of times; NB times should be in
+            MJD @ GEO."""
+        return self._vec_eval(times,PolycoEntry.evalabsphase)
 
     def vec_evalfreq(self,times):
         """ Return the phases for a vector of times; NB times should be in
