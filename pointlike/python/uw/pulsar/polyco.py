@@ -166,7 +166,9 @@ class Polyco:
             os.chdir(self.working_dir)
         prefix = self.output or ''
         if recalc_polycos:
-            os.system( "rm %spolyco_new.dat %snewpolyco.dat polyco.tim"%(prefix,prefix) )
+            for f in filter(os.path.isfile,
+                ['polyco.tim','%spolyco_new.dat'%prefix,'%snewpolyco.dat'%prefix]):
+                os.remove(f)
             obs_string = '@' if self.bary else 'coe'
             out_string = '' if self.output is None else ' -polyco_file %s'%self.output
             t2cmd = 'tempo2 -f %s%s -polyco "%s %s 360 12 12 %s 0 0\"'%(
