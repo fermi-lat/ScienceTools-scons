@@ -116,6 +116,16 @@ class FindPeak(diagnostic_plots.SourceInfo):
             self.dfs[x] = self.df[x]
         self.dfs[self.dfs.flags>7].to_csv('flagged_localizations.csv')
         print 'wrote file %s with TSmap moment analysis' % 'flagged_localizations.csv'
+        self.write_updated_sourcelist()
+    
+    def write_updated_sourcelist(self):
+        df = pd.read_csv('sources_%s.csv'%self.skymodel, index_col=0) 
+        for x in 'ax bx angx'.split():
+            df[x]=self.dfs[x]
+        outfile = 'sources_%s_with_moments.csv'%self.skymodel
+        df.to_csv(outfile)
+        print 'wrote updated file %s with moment analysis' %outfile
+
     
     def make_collection(self):
         self.collection_html=''
