@@ -6,8 +6,11 @@ $Header$
 """
 
 from uw.like2.pipeline import diagnostic_plots as dp 
-from uw.like2.analyze import find_peak
+from uw.like2.analyze import (find_peak, export )
 import os, argparse, types
+import numpy as np
+import pylab as plt
+import pandas as pd
 
 opts = dict(
         environment=   (dp.Environment,),
@@ -40,7 +43,8 @@ opts = dict(
         association=(dp.Associations,),
         gtlike_comparison=(dp.GtlikeComparison,),
         uw_comparison=(dp.UWsourceComparison,),
-        findpeak= (find_peak.FindPeak,)
+        findpeak= (find_peak.FindPeak,),
+        export= (export.Export,),
         ) 
         
 def main(args, update_top=False , raise_exception=False):
