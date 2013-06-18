@@ -64,6 +64,12 @@ class OutputTee(object):
         pass
     def set_parent(self, parent):
         self.stdout.set_parent(parent) #needed??
+    def __enter__(self):
+        return self
+        
+    def __exit__(self, type, value, traceback):
+        self.close()
+
 
 class Diagnostics(object):
     """ basic class to handle data for diagnostics, collect code to make plots
@@ -214,8 +220,9 @@ class Diagnostics(object):
             text = html%self.__dict__
         except KeyError, msg:
             print '*** failed filling %s:%s' % (title, msg)
-        except TypeError:
-            pass # ignore if % in text
+        except TypeError, msg:
+            print '*** type error expanding header: %s' %msg
+            raise
         open(os.path.join(self.plotfolder,'index.html'), 'w').write(text)
         print 'saved html doc to %s' %os.path.join(self.plotfolder,'index.html')
             
@@ -1421,11 +1428,11 @@ class SourceInfo(Diagnostics):
                         freebits= np.sum( int(b)*2**i for i,b in enumerate(model.free)),
                         flux = prefactor * pars[0],
                         flux_unc = prefactor * errs[0],
-                        pindex = pars[1],
+                        pindex = max(0, pars[1]), # force to zero if less 
                         pindex_unc = errs[1],
                         beta = betavalue,
                         beta_unc = errs[2] if not pulsar and pars[2]>0.002 else np.nan,
-                        index2 = pars[3] if pulsar else pars[2],
+                        index2 = max(0, pars[3] if pulsar else pars[2]),
                         index2_unc = errs[3] if pulsar and not np.isnan(pars[3]) else errs[2],
                         cutoff = pars[2] if pulsar else np.nan,
                         cutoff_unc = errs[2] if pulsar else np.nan,
@@ -3602,6 +3609,7 @@ p   { font-size:10pt; margin-left:25pt; }
 pre { font-size:10pt; margin-left:25pt; 
     border-style:solid;
     border-width:thin;}
+h3 { -webkit-margin-after: 0px; -webkit-margin-before: 2em; }
 h5 {margin-left:25pt;}
 table { margin-left:25pt; margin-top:15pt; font-size:8pt;
     border-style: solid; border-width: 1px;  border-collapse: collapse; }
