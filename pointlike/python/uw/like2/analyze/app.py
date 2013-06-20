@@ -9,10 +9,10 @@ import numpy as np
 import pylab as plt
 import pandas as pd
 
-from uw.like2.analyze import ( html, seedcheck, export, sourceinfo, )
+from uw.like2.analyze import ( html, seedcheck, export, sourceinfo, localization,)
 #    associations,components, countplots, data, environment, 
 #    flux_corr_iso, fluxcorr, frontbacksedplots,galactic, galacticspectra, gtlikecomparison,
-#    hptables, isotropic, isotropicspectra, limb,limbrefit, localization, pgwseedcheck,
+#    hptables, isotropic, isotropicspectra, limb,limbrefit,  pgwseedcheck,
 #    ptstable, pulsarseedcheck, roi_info, seedcheck,sourcecomparison, sourceinfo, sourcetotal, 
 #    sunmoon, sunmoonrefit, uwsourcecomparison, diagnostics, find_peak, export)
 
@@ -34,7 +34,7 @@ opts = dict(
 #        isospect =  (isotropicspectra.IsotropicSpectra,),
 #        limb=       (limb.Limb,),
 #        limb_refit= (limbrefit.LimbRefit,),
-#        localization=(localization.Localization,),
+        localization=(localization.Localization,),
 #        pgwseedcheck=(pgwseedcheck.PGWSeedCheck,),
 #        pts=        (ptstable.PTStable,),
 #        pseedcheck= (pulsarseedcheck.PulsarSeedCheck,),
