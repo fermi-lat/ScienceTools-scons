@@ -8,10 +8,10 @@ $Header$
 import os, sys, pickle, glob, zipfile, time
 import numpy as np
 import pylab as plt
-from . import html
 from mpl_toolkits.axes_grid import axes_grid, axes_size, Divider, make_axes_locatable
 from skymaps import SkyDir, Hep3Vector
 
+from . import html
 from . html import HTMLindex
 
 class FloatFormat(): #simple formatting functor for to_html!

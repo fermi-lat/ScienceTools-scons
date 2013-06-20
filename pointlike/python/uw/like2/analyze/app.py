@@ -9,45 +9,47 @@ import numpy as np
 import pylab as plt
 import pandas as pd
 
-from uw.like2.analyze import (associations,components, countplots, data, environment, 
-    flux_corr_iso, fluxcorr, frontbacksedplots,galactic, galacticspectra, gtlikecomparison,
-    hptables, isotropic, isotropicspectra, limb,limbrefit, localization, pgwseedcheck,
-    ptstable, pulsarseedcheck, roi_info, seedcheck,sourcecomparison, sourceinfo, sourcetotal, 
-    sunmoon, sunmoonrefit, uwsourcecomparison, diagnostics, find_peak, export)
+from uw.like2.analyze import ( html, seedcheck, export, sourceinfo, )
+#    associations,components, countplots, data, environment, 
+#    flux_corr_iso, fluxcorr, frontbacksedplots,galactic, galacticspectra, gtlikecomparison,
+#    hptables, isotropic, isotropicspectra, limb,limbrefit, localization, pgwseedcheck,
+#    ptstable, pulsarseedcheck, roi_info, seedcheck,sourcecomparison, sourceinfo, sourcetotal, 
+#    sunmoon, sunmoonrefit, uwsourcecomparison, diagnostics, find_peak, export)
 
 
 opts = dict(
-        associations=  (associations.Associations,),
-        components= (components.Components,),
-        counts=     (countplots.CountPlots,),
-        data =      (data.Data,),
-        environment=   (environment.Environment,),
-        fluxcorriso=(flux_corr_iso.FluxCorrIso,),
-        fluxcorr=   (fluxcorr.FluxCorr,),
-        fb=         (frontbacksedplots.FrontBackSedPlots,),
-        galactic=   (galactic.Galactic,),
-        galspect =  (galacticspectra.GalacticSpectra,),
-        gtlike_comparison=(gtlikecomparison.GtlikeComparison,),
-        hptables =  (hptables.HPtables,),
-        isotropic=  (isotropic.Isotropic,),
-        isospect =  (isotropicspectra.IsotropicSpectra,),
-        limb=       (limb.Limb,),
-        limb_refit= (limbrefit.LimbRefit,),
-        localization=(localization.Localization,),
-        pgwseedcheck=(pgwseedcheck.PGWSeedCheck,),
-        pts=        (ptstable.PTStable,),
-        pseedcheck= (pulsarseedcheck.PulsarSeedCheck,),
-        roi=        (roi_info.ROIinfo,),
+#        associations=  (associations.Associations,),
+#        components= (components.Components,),
+#        counts=     (countplots.CountPlots,),
+#        data =      (data.Data,),
+#        environment=   (environment.Environment,),
+#        fluxcorriso=(flux_corr_iso.FluxCorrIso,),
+#        fluxcorr=   (fluxcorr.FluxCorr,),
+#        fb=         (frontbacksedplots.FrontBackSedPlots,),
+#        galactic=   (galactic.Galactic,),
+#        galspect =  (galacticspectra.GalacticSpectra,),
+#        gtlike_comparison=(gtlikecomparison.GtlikeComparison,),
+#        hptables =  (hptables.HPtables,),
+#        isotropic=  (isotropic.Isotropic,),
+#        isospect =  (isotropicspectra.IsotropicSpectra,),
+#        limb=       (limb.Limb,),
+#        limb_refit= (limbrefit.LimbRefit,),
+#        localization=(localization.Localization,),
+#        pgwseedcheck=(pgwseedcheck.PGWSeedCheck,),
+#        pts=        (ptstable.PTStable,),
+#        pseedcheck= (pulsarseedcheck.PulsarSeedCheck,),
+#        roi=        (roi_info.ROIinfo,),
         seedcheck=  (seedcheck.SeedCheck,),
-        comparison= (sourcecomparison.SourceComparison,),
-        info      = (sourceinfo.SourceInfo,),
-        sourcetotal=(sourcetotal.SourceTotal,),
-        sunmoon=    (sunmoon.SunMoon,),
-        sunmoon_refit = (sunmoonrefit.SunMoonRefit,),
-        uw_comparison=(uwsourcecomparison.UWsourceComparison,),
-        findpeak=   (find_peak.FindPeak,),
+#        comparison= (sourcecomparison.SourceComparison,),
+        sourceinfo= (sourceinfo.SourceInfo,),
+#        sourcetotal=(sourcetotal.SourceTotal,),
+#        sunmoon=    (sunmoon.SunMoon,),
+#        sunmoon_refit = (sunmoonrefit.SunMoonRefit,),
+#        uw_comparison=(uwsourcecomparison.UWsourceComparison,),
+#        findpeak=   (find_peak.FindPeak,),
         export=     (export.Export,),
         ) 
+
         
         
 def main(args, update_top=False , raise_exception=False):
@@ -89,8 +91,8 @@ def main(args, update_top=False , raise_exception=False):
             if raise_exception: raise
             success = False
     if success: 
-        diagnostics.HTMLindex().create_menu()
-        if update_top: diagnostics.HTMLindex().update_top()
+        html.HTMLindex().create_menu()
+        if update_top: html.HTMLindex().update_top()
         
     return success  
       
@@ -98,6 +100,7 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser(description='run an analysis/plotting job; must be in skymodel folder')
     parser.add_argument('args', nargs='+', help='processsor identifier: must be one of %s' %opts.keys())
     parser.add_argument('--update_top', action='store_true', help='Update the top level Web  menu')
+    parser.add_argument('--raise_exception', action='store_true', help ='set to catch exceptions')
     args = parser.parse_args()
-    if not main(args.args, update_top=args.update_top):
+    if not main(args.args, update_top=args.update_top, raise_exception=args.raise_exception):
         raise Exception
