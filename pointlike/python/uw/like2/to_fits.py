@@ -239,7 +239,7 @@ class MakeCat(object):
         self.add('Unc_Flux_Density',  z.flux_unc)
         self.add('Spectral_Index',    z.pindex)
         self.add('Unc_Spectral_Index',z.pindex_unc)
-        self.add('Exp_Index',         np.where(has_exp_index, z.index2, np.nan))
+        self.add('Exp_Index',         np.where(psr, z.index2, np.nan))
         self.add('Unc_Exp_Index',     np.where(has_exp_index, z.index2_unc, np.nan))
         self.add('Cutoff_Energy',     z.cutoff) 
         self.add('Unc_Cutoff_Energy', z.cutoff_unc) 
