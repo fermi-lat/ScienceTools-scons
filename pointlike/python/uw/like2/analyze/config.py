@@ -1,5 +1,5 @@
 """
-Analysis code to use grids of TSmap values to locate peaks, an alternative
+Run the moment analysis for finding peaks
 $Header$
 
 """

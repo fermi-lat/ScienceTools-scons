@@ -1,5 +1,5 @@
 """
-Description here
+Plots of the SunMoon diffuse component
 
 $Header$
 
@@ -10,6 +10,8 @@ import numpy as np
 from . import roi_info
 
 class SunMoon(roi_info.ROIinfo):
+    """SunMoon plots
+    """
     def setup(self, **kwargs):
         super(SunMoon, self).setup(**kwargs)
         self.plotfolder='sunmoon'
@@ -19,3 +21,6 @@ class SunMoon(roi_info.ROIinfo):
         assert t, 'No sun-moon component in this sky model'
         self.default_plots()
         self.plots_kw=dict(ecliptic=True)
+        
+    def all_plots(self):
+        super(SunMoon, self).all_plots()

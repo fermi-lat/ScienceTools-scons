@@ -1,5 +1,5 @@
 """
-Description here
+Galactic diffuse plots
 
 $Header$
 
@@ -23,3 +23,6 @@ class Galactic(roi_info.ROIinfo):
         u.index.name='roiname'
         u.to_csv(filename)
         print 'wrote table of galactic diffuse counts to file %s' % filename
+        
+    def all_plots(self):
+        super(Galactic, self).all_plots()

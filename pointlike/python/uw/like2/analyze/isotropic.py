@@ -1,5 +1,5 @@
 """
-Description here
+Isotropic diffuse plots
 
 $Header$
 
@@ -67,3 +67,6 @@ class Isotropic(galactic.Galactic):
         plt.setp(ax, xlim=(1e2,1e4))
         ax.legend();ax.grid(True)
         return fig
+    
+    def all_plots(self):
+        super(Isotropic, self).all_plots()

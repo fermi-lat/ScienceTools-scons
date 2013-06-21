@@ -1,5 +1,5 @@
 """
-Description here
+Limb plots
 
 $Header$
 
@@ -113,3 +113,6 @@ class Limb(roi_info.ROIinfo):
         """ front normalization
         """
         return self.polar_plots(self.fpar)
+        
+    def all_plots(self):
+        super(Limb, self).all_plots()
