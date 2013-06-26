@@ -182,8 +182,9 @@ class Polyco:
                 print o
         fname = '%spolyco_new.dat'%(prefix)
         polyconame=os.path.abspath(fname)
-        o = subprocess.check_output(
-            'rm %snewpolyco.dat polyco.tim'%(prefix),shell=True)
+        DEVNULL = open(os.devnull,'wb')
+        subprocess.call('rm %snewpolyco.dat polyco.tim'%(prefix),
+            shell=True,stderr=DEVNULL)
         os.chdir(curdir)
         return polyconame
 
