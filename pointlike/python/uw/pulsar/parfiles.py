@@ -451,6 +451,12 @@ class ParFile(dict):
             self.ordered_keys.append(key)
         self[key] = val
 
+    def has_glitches(self):
+        for key in self.keys():
+            if 'GLEPOCH' in key:
+                return True
+        return False
+
     def zero_glitches(self):
         no_glitches = True
         for key in self.keys():
