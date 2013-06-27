@@ -453,7 +453,7 @@ class ParFile(dict):
 
     def has_glitches(self):
         for key in self.keys():
-            if 'GLEPOCH' in key:
+            if 'GLEP' in key:
                 return True
         return False
 
@@ -463,7 +463,8 @@ class ParFile(dict):
             if key[:2]=='GL':
                 no_glitches = False
                 lab = key[2:4]
-                if (lab=='PH') or (lab=='F0') or (lab=='F1') or (lab=='F2'): 
+                if ((lab=='PH') or (lab=='F0') or (lab=='F1') or
+                    (lab=='F2') or (lab=='TD')): 
                     self.set(key,0)
         return no_glitches
 
