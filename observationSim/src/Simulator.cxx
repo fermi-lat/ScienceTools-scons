@@ -216,7 +216,7 @@ void Simulator::makeEvents(EventContainer &events,
             m_newEvent->code(m_source->numSource());
             m_interval = m_source->interval(m_absTime);
          } catch (astro::PointingHistory::TimeRangeError & eObj) {
-            m_formatter->info(4) << "Caught TimeRangeError: " 
+            m_formatter->info() << "Caught TimeRangeError: " 
                                  << eObj.what() << "\n"
                                  << "Exiting." << std::endl;
             break;
