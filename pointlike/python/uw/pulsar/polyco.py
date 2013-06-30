@@ -163,7 +163,8 @@ class Polyco:
         endMJD=mjd0+nDays+2
         if (endMJD-mjd0) < 2:
             raise ValueError('Unacceptable MJD bounds.')
-        print "MJD limits: %s %s"%(str(mjd0),str(endMJD))
+        if self.verbose:
+            print "MJD limits: %s %s"%(str(mjd0),str(endMJD))
         curdir = os.getcwd()
         if self.working_dir is not None:
             os.chdir(self.working_dir)
