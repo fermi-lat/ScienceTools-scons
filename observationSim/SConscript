@@ -2,7 +2,7 @@
 #
 # $Id$
 # Authors: James Chiang <jchiang@slac.stanford.edu>
-# Version: observationSim-09-02-05
+# Version: observationSim-09-02-06
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
