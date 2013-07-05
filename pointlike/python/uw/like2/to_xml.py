@@ -146,8 +146,9 @@ def pmodel(source):
             modelname='PowerLaw'
             model = Models.PowerLaw(p=[norm, pindex ], e0=e0)
         else:
-            if index2<0: print  'Source %s has beta (%.2f) <0: setting to 0.' % (  source.name, index2, )
-            index2=0
+            if index2<0: 
+                print  'Source %s has beta (%.2f) <0: setting to 0.' % (  source.name, index2, )
+                index2=0
             model =Models.LogParabola(p= [norm, pindex, index2, e0])
             model.free[-1]=False
             errors.append(index2_unc)
