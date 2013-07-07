@@ -24,6 +24,7 @@ class PTStable(hptables.HPtables):
         self.tsname = 'pts'
         self.plotfolder = 'pulsar_ts'
         self.seedfile, self.seedroot, self.title = 'pseeds.txt', 'PSEED' ,'pulsar'
+        self.bmin=0
         self.make_seeds(kw.pop('refresh', False))
         
     def all_plots(self):
