@@ -23,7 +23,7 @@ class AppMenu(dict):
         title = (doc[0] if doc[0]!='' else doc[1]).strip()
         classname = self._check_for_class(pack)
         if classname is None:
-            print 'no class found in %s' %name
+            print '***no class with all_plots found in module %s' %name
             return None
         classobj = eval(name+'.'+classname)
         return dict(title=title, classname=classname, classobj=classobj, require=getattr(classobj,'require',None),)
