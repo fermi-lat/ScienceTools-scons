@@ -218,6 +218,7 @@ class Diagnostics(object):
             pass # ignore if % in text
         open(os.path.join(self.plotfolder,'index.html'), 'w').write(text)
         print 'saved html doc to %s' %os.path.join(self.plotfolder,'index.html')
+        _html.HTMLindex().create_menu() # always update the menu to include this guy if necessary
             
     def load_pickles(self,folder='pickle'):
         """
