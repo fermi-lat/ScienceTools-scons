@@ -14,6 +14,9 @@ import pylab as plt
 from skymaps import SkyImage, SkyDir
 
 class PeakFinder(object):
+    """Log of analysis stream
+    <pre>%(logstream)s</pre>
+    """    
 
     def __init__(self, filename):
         t =os.path.split(os.path.splitext(filename)[0])[-1].split('_')
