@@ -1,5 +1,5 @@
 """
-Description here
+Plots involving the 1728 ROIs
 
 $Header$
 
