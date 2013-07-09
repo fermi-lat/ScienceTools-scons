@@ -690,3 +690,15 @@ class SourceInfo(diagnostics.Diagnostics):
         return pd.DataFrame(dict(flux=si.flux.round(1), TS=si.ts.round(1), lflux=si.lflux.round(1), 
             uflux=si.uflux.round(1), model=si.mflux.round(1), pull=pull.round(1) ),
                 index=np.array(np.sqrt(si.elow*si.ehigh),int), columns='flux lflux uflux model TS pull'.split())
+    
+    def find_nearest_to(self, *pars):
+        """Given the ra, dec, or a skydir, find nearest source, return name, distance"""
+        from skymaps import SkyDir
+
+        sd = SkyDir(*pars) if len(pars)==2 else pars[0]
+        dists = [x.difference(sd) for x in self.df.skydir]
+        t= min(dists)
+        i = dists.index(t)
+        return self.df.index[i], np.degrees(t)
+
+        
