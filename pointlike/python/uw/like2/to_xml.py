@@ -153,14 +153,18 @@ def pmodel(source):
             model.free[-1]=False
             errors.append(index2_unc)
     elif modelname=='PLSuperExpCutoff':
-        model = Models.PLSuperExpCutoff(p = [norm, pindex, cutoff, index2], e0=e0)
+        prefactor = np.exp(-(e0/cutoff)**index2)
+        model = Models.PLSuperExpCutoff(p = [norm/prefactor, pindex, cutoff, index2], e0=e0)
+        errors[0] /= prefactor
         errors += [cutoff_unc, index2_unc]
     elif modelname=='ExpCutoff':
-        model = Models.PLSuperExpCutoff(p = [norm, pindex, cutoff, 0.], e0=e0)
+        prefactor = np.exp(-(e0/cutoff))
+        model = Models.PLSuperExpCutoff(p = [norm/prefactor, pindex, cutoff, 0.], e0=e0)
         model.free[3]==False
+        errors[0] /= prefactor
         errors += [cutoff_unc]
     else:
-            raise Exception('model name %s not recognized' % modelname)
+        raise Exception('model "%s" not recognized' % modelname)
     map(model.set_error, range(len(errors)), errors)
     model.free[:]=free[:model.len()]    
     return model
