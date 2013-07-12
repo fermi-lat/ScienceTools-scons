@@ -14,7 +14,7 @@ from . import (sourceinfo,diagnostics)
 
 from . diagnostics import FloatFormat
 from . diagnostics import html_table
-from . html import HTMLindex
+from . _html import HTMLindex
 
 
 

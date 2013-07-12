@@ -18,7 +18,7 @@ class UWsourceComparison(sourceinfo.SourceInfo):
     <br>Ratios are %(skymodel)s/%(othermodel)s.
     
     """
-    def setup(self, othermodel='uw25'):
+    def setup(self, othermodel='uw26'):
         super(UWsourceComparison,self).setup()
         self.plotfolder = 'comparison_%s' % othermodel
 

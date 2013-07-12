@@ -9,7 +9,7 @@ import numpy as np
 import pylab as plt
 import pandas as pd
 
-from . import sourceinfo, diagnostics, html
+from . import sourceinfo, diagnostics, _html
 
 class SeedCheck(sourceinfo.SourceInfo):
     """Analysis of a set of seeds

@@ -8,7 +8,7 @@ _locs = locals().keys()
 from uw.like2.analyze import *
 newlocs = locals().keys()
 module_names = filter(lambda x:not x[0]=='_',set(newlocs).difference(_locs))
-from uw.like2.analyze import html
+from uw.like2.analyze import _html
 import numpy as np
 import sys, types
 

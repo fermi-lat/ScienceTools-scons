@@ -14,7 +14,7 @@ import pandas as pd
 from uw.utilities import makepivot
 from . import diagnostics
 from . diagnostics import FloatFormat
-from . html import HTMLindex
+from . _html import HTMLindex
 
 
 class SourceInfo(diagnostics.Diagnostics):
