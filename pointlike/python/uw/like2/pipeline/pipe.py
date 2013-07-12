@@ -5,7 +5,7 @@ $Header$
 import os, types, glob, time, copy
 import cPickle as pickle
 import numpy as np
-from . import processor,  engines, associate
+from . import processor, associate
 from .. import main, roisetup, skymodel
 from uw.like import Models 
 from uw.utilities import makerec

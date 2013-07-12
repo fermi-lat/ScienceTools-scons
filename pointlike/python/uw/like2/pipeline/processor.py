@@ -24,7 +24,7 @@ class OutputTee(object):
         self.stdout = sys.stdout
         sys.stdout = self
     def write(self, stuff):
-        self.logstream.write(stuff)
+        self.logstream.write(stuff)
         self.stdout.write(stuff)
     def close(self):
         sys.stdout =self.stdout
