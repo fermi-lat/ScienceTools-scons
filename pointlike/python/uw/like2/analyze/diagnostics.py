@@ -160,7 +160,7 @@ class Diagnostics(object):
         localfile = '%s_%s.png'%(name, self.skymodel.replace('/','_'))
         savefile = os.path.join(self.plotfolder,localfile)
         if title is None: title = name.replace('_', ' ')
-        htmldoc = '<a id="%.0f"/><h3>%s %s</h3> ' % (float(section), section, title)
+        htmldoc = '<a id="%.0f"><h3>%s %s</h3></a> ' % (float(section), section, title)
         if fig is not None:
             fig.text(0.02, 0.02, self.skymodel, fontsize=8)
             savefig_kw=dict(dpi=60, bbox_inches='tight', bbox_extra_artists=fig.texts, pad_inches=0.5) 
