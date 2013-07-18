@@ -26,7 +26,9 @@ class AppMenu(dict):
             print '***no class with all_plots found in module %s' %name
             return None
         classobj = eval(name+'.'+classname)
-        return dict(title=title, classname=classname, classobj=classobj, require=getattr(classobj,'require',None),)
+        return dict(title=title, classname=classname, classobj=classobj, 
+                    require=getattr(classobj,'require',None), 
+                    module=pack,)
 
     def _check_for_class(self,pack):
         for name, value in pack.__dict__.items():
@@ -34,9 +36,14 @@ class AppMenu(dict):
             if 'all_plots' in value.__dict__: return name
         return None
 
-    def __call__(self, name):
+    def __call__(self, name, reloadit=False):
+        """ return an object for the class in this module, optionally reloading it"""
+        if reloadit:
+            print reload(self[name]['module'])
+            self[name]= self._create_entry(name)
         return self[name]['classobj']()
 
+        
     def __str__(self):
         s = '%-15s %s\n' % ('name', 'description')
         return s+ '\n'.join(['%-15s %s' % (key, self[key]['title']) for key in sorted(self.keys())])  
