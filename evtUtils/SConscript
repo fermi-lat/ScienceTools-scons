@@ -21,5 +21,5 @@ progEnv.Tool('registerTargets',
              package = 'evtUtils',
              libraryCxts = [[evtUtilsLib, libEnv]],
              xml = listFiles(['xml/*.xml']),
-             testAppsCxts = [evtUtilsApp_MakeEventClass,evtUtilsApp_MakeEventClassPyDict,evtUtilsApp_MakeEventClassHtml,progEnv],
+             testAppCxts = [[evtUtilsApp_MakeEventClass,evtUtilsApp_MakeEventClassPyDict,evtUtilsApp_MakeEventClassHtml,progEnv]],
              includes = listFiles(['evtUtils/*.h']))
