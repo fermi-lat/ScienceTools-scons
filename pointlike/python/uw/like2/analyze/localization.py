@@ -38,7 +38,7 @@ class Localization(sourceinfo.SourceInfo):
         self.qualcut=kw.get('qualcut', 8.0)
         self.delta_tscut = kw.get('delta_tscut', 2.0)
         poorcut=((self.ebox.locqual>self.qualcut) | (self.ebox.a>self.acut) | (abs(self.ebox.delta_ts)>self.delta_tscut))*(self.df.ts>self.tscut)
-        self.poorloc=self.ebox[poorcut] ['ts a locqual delta_ts roiname'.split()].sort_index(by='ts',ascending=False)
+        self.poorloc=self.ebox[poorcut] ['ts a locqual delta_ts roiname'.split()].sort_index()
         if len(self.poorloc)>0:
             print '%d poorly localized (locqual>%.1f or a>%.2f or delta_ts>%.2f) '%\
                 (len(self.poorloc), self.qualcut,self.acut, self.delta_tscut)
