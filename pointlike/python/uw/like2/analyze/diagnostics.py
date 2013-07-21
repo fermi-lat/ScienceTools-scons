@@ -305,3 +305,7 @@ class Diagnostics(object):
             cb=ax.figure.colorbar(scat, ax=ax, **cb_kw)
             cb.set_label(cbtext)    
         return scat
+        
+    def __call__(self, **kw):
+        """ invoke all_plots """
+        return self.all_plots(**kw)
