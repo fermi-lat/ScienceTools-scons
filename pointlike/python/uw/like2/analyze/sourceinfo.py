@@ -644,7 +644,7 @@ class SourceInfo(diagnostics.Diagnostics):
         suffixes=[s[-1] for s in self.df.index.values if s.startswith(primary_prefix) and s[-1]>'9']
         c=Counter(suffixes)
         scounts = lambda  r : int(sum([c[x] for x in r if x in c.keys()]))
-        suffixranges = ('ABCDEF', 'GHIJKL', 'MNOPQR', 'XYZ')
+        suffixranges = ('ABCDEF', 'GHIJKL', 'MNO', 'PQRSTUVW', 'XYZ')
         sdict = dict([(r[0]+'-'+r[-1], [scounts(r)]) for r in suffixranges])
         self.census_html += '\n<h4>Suffixes</h4>\n'+diagnostics.html_table(pd.DataFrame(sdict, index=['freq']).T)
 
