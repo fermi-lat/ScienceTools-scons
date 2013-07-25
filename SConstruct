@@ -40,6 +40,7 @@ if sys.platform == 'win32':
     else:
         baseEnv=Environment(TARGET_ARCH=arch )
         vccmp = str(baseEnv['MSVC_VERSION'])
+    platBrief = sys.platform + "_" + arch
 else:
     baseEnv=Environment()
 
@@ -58,6 +59,7 @@ if baseEnv['PLATFORM'] == "posix":
     baseEnv['OSNAME'] = platform.dist()[0]+re.sub('\.\d+', '', platform.dist()[1])
     baseEnv['MACHINENAME'] = platform.machine()
     baseEnv['ARCHNAME'] = platform.architecture()[0]
+    platBrief = platform.dist()[0] + platform.dist()[1] + "_" + platform.architecture()[0]
 
 if baseEnv['PLATFORM'] == "darwin":
     version = commands.getoutput("sw_vers -productVersion")
@@ -79,6 +81,7 @@ if baseEnv['PLATFORM'] == "darwin":
     else:
         variant+="32bit"
         baseEnv['ARCHNAME'] = '32bit'
+    platBrief=variant
 
 if sys.platform == "win32":
     variant = "Windows" + "-"+"i386"+"-"+platform.architecture()[0]
@@ -134,6 +137,8 @@ else:
 
 baseEnv['COMPILERNAME'] = compiler
 variant += "-" + compiler
+platBrief += "-" + compiler
+
 
 if baseEnv.GetOption('debug'):
     if sys.platform == 'win32':
@@ -161,9 +166,9 @@ if baseEnv.GetOption('variant'):
     variant = baseEnv.GetOption('variant')
     if variant == "NONE": baseEnv['NO_VARIANT'] = True
 override = baseEnv.GetOption('supersede')
-SConsignFile(os.path.join(override,'.sconsign.dblite'))
+SConsignFile(os.path.join(os.path.join(override, platBrief) , '.sconsign.dblite'))
 baseEnv['VARIANT'] = variant
-
+baseEnv['PLATBRIEF'] = platBrief
 Export('baseEnv')
 
 #########################
