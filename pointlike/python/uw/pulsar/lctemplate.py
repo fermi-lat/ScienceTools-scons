@@ -112,7 +112,7 @@ class LCTemplate(object):
     def norm(self):
         return self.norms.get_total()
 
-    def integrate(self,phi1,phi2,log10_ens,suppress_bg=False):
+    def integrate(self,phi1,phi2,log10_ens=3,suppress_bg=False):
         norms = self.norms(log10_ens)
         t = norms.sum(axis=0)
         dphi = (phi2-phi1)
