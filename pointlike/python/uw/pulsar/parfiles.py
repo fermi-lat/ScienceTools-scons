@@ -89,9 +89,13 @@ class ParFile(dict):
                 comment_counter += 1
             known_key = False
             for key in self.ordered_keys:
-                if tok[0] == key: known_key = True
+                if tok[0] == key:
+                    known_key = True
             if known_key:
-                if len(self[tok[0]][-1]) == 1: self[tok[0]] = [self[tok[0]]]
+                # TODO -- figure out why I put this in! clearly breaks
+                # pathological cases like two identical PEPOCHs specified
+                if len(self[tok[0]][-1]) == 1:
+                    self[tok[0]] = [self[tok[0]]]
                 self[tok[0]] += [tok[1:]]
             else:
                 self.ordered_keys.append(tok[0])               
