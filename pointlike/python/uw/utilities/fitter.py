@@ -13,7 +13,7 @@ from numpy import linalg  #for inv
 class FitterException(Exception): pass
 
 class Fitted(object):
-    """ base class to define fit properties """
+    """ base class for a function object to define fit properties """
     @property
     def bounds(self):
         return None
@@ -139,10 +139,10 @@ class Minimizer(object):
         if estimate_errors: 
             self.__set_error__(use_gradient)
         if estimate_errors:
-            diag = self.cov_matrix.diagonal()
+            diag = self.cov_matrix.diagonal().copy()
             bad = diag<0
             if np.any(bad):
-                print 'Minimizer warning: bad errors for values %s'\
+                if not self.quiet: print 'Minimizer warning: bad errors for values %s'\
                      %np.asarray(self.fn.parameter_names)[bad] #    %np.arange(len(bad))[bad]
                 diag[bad]=np.nan
             return f[1], f[0], np.sqrt(diag)
