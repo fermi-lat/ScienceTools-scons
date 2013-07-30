@@ -10,6 +10,7 @@ __all__=[
 # 'components',
  'background', 
  'countplots',
+ 'collection',
  'data',
  'environment',
  'export',
