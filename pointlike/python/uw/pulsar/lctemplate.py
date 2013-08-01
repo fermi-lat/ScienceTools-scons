@@ -237,7 +237,8 @@ class LCTemplate(object):
             for s in rstring: f.write(s+'\n')
         return '\n'.join(rstring)
        
-    def random(self,n,weights=None,return_partition=False):
+    def random(self,n,weights=None,return_partition=False,
+        randomize_partition=True):
         """ Return n pseudo-random variables drawn from the distribution 
             given by this light curve template.
 
@@ -250,6 +251,11 @@ class LCTemplate(object):
             random check is done according to this probability to
             determine whether to draw the photon from the template or from
             a uniform distribution.
+
+            By default, the partition of light curve components is
+            randomized, i.e. there is no time or weight dependence.  If not
+            randomized, the partition have components sorted by their
+            their overall amplitude (decreasing).
         """
 
         # compatibility with energy-dependent calls
@@ -280,6 +286,9 @@ class LCTemplate(object):
             t_indices = np.arange(n)
 
         # TODO -- faster implementation for single component case
+
+        if randomize_partition:
+            t_indices = np.random.permutation(t_indices)
 
         # multinomial implementation -- draw from the template components
         a = np.argsort(norms)[::-1]
