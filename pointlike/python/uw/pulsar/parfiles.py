@@ -480,6 +480,13 @@ class ParFile(dict):
                     self.set(key,0)
         return no_glitches
 
+    def get_glepochs(self):
+        glepochs = []
+        for key in self.keys():
+            if key[:4] == 'GLEP':
+                glepochs.append(self.get(key,type=np.float128))
+        return glepochs
+
     def get_wave_string(self,epoch=None):
         """ Return a sting suitable for appending to an ephemeris giving
             a zeroed wave contribution with the same number of terms as
