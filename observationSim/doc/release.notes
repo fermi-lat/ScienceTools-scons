@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ observationSim-09-02-07 03-Aug-2013 jchiang use Earth Azimuth calculation from GLEAM
  observationSim-09-02-06 01-Jul-2013 jchiang set chatter level of TimeRangeError handling to 2 (default) in Simulator.cxx (from Jeremy)
  observationSim-09-02-05 11-Feb-2013 jchiang write correct EVENT_CLASS column value for test program output
  observationSim-09-02-04 14-Jan-2013 jchiang use time-dependence of efficiency factor
