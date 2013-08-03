@@ -10,10 +10,11 @@ import pylab as plt
 from scipy import integrate
 from skymaps import SkyDir
 from . import roi_info
-from . diagnostics import FloatFormat, html_table
+from . analysis_base import FloatFormat, html_table
 
 class Background(roi_info.ROIinfo):
-    r"""This is an analysis of the sensitivity of point source analysis to the presence of 
+    r"""Background sensitivity analysis
+    <br>This is an analysis of the sensitivity of point source analysis to the presence of 
     diffuse background. The ingredients are the PSF and the galactic and isotropic background fluxes.
     <br>
     Detailed results are presented for weak and strong high- and low-latitude sources.

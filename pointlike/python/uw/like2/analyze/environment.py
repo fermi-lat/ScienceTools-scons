@@ -1,5 +1,5 @@
 """
-Description here
+Environment plots
 
 $Header$
 
@@ -15,7 +15,7 @@ from scipy import integrate, misc
 from . import roi_info
 
 class Environment(roi_info.ROIinfo):
-    """ Plots associated with the environment"""
+    """ Environment plots"""
 
     
     def setup(self, **kw):

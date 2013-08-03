@@ -8,14 +8,14 @@ import os, glob
 from . import sourceinfo 
 from .. import to_xml
 from .. import to_fits
-from . diagnostics import FloatFormat, html_table
+from . analysis_base import FloatFormat, html_table
 import numpy as np
 import pandas as pd
 import pylab as plt
 import pyfits
 
 class Export(sourceinfo.SourceInfo):
-    """Manage, and document an export step
+    """Export to XML and FITS
     <p>Generates XML and FITS files from the file %(sourcecsv)s.
     <p>Expect that <a href="../peak_finder/index.html?skipDecoration">findpeak</a> has been run to update 
     the sources file. In this case, there are a set of sources for which the standard localization analyis failed, 

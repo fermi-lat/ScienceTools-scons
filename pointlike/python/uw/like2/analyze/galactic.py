@@ -10,6 +10,7 @@ import pandas as pd
 from . import roi_info
 
 class Galactic(roi_info.ROIinfo):
+    """Galactic diffuse plots"""
     def setup(self, **kw):
         super(Galactic, self).setup(**kw)
         self.plotfolder='gal'

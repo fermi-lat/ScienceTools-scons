@@ -10,9 +10,11 @@ import pylab as plt
 import pandas as pd
 
 from uw.like2 import dataset
-from . import diagnostics
+from . import analysis_base
 
-class Data(diagnostics.Diagnostics):
+class Data(analysis_base.AnalysisBase):
+    """Data summary
+    """
     require='config.txt'
     """ look at binned data """
     def setup(self):
@@ -37,6 +39,7 @@ class Data(diagnostics.Diagnostics):
         fig, ax = plt.subplots(figsize=(4,4))
         photons = self.df.photons.values
         combine = photons[0::2]+photons[1::2]
+        self.total100 = np.sum(combine[3:])
         elow = self.df.emin.values[0::2]
         ehigh = self.df.emax.values[0::2]
         ax.plot(ehigh, combine, ls='steps', lw=2)
@@ -46,5 +49,4 @@ class Data(diagnostics.Diagnostics):
         return fig  
 
     def all_plots(self):
-        """ plots involving the data """
         self.runfigures( [self.plot_spectrum,])

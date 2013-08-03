@@ -210,11 +210,11 @@ class Diagnostics(object):
         self.header='/'.join([r, m, os.path.split(self.plotfolder)[-1]])
         text= htmldoc
         try:
-            text = htmldoc%self.__dict__
+            text = htmldoc % self.__dict__
         except KeyError, msg:
             print '*** failed filling %s:%s' % (title, msg)
         except TypeError, msg:
-            print '*** TYpeError %s' %msg
+            print '*** TypeError with string "%s": %s' % (htmldoc, msg)
             pass # ignore if % in text
         open(os.path.join(self.plotfolder,'index.html'), 'w').write(text)
         print 'saved html doc to %s' %os.path.join(self.plotfolder,'index.html')
