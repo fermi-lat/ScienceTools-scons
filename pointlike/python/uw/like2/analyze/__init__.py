@@ -11,6 +11,7 @@ __all__=[
  'background', 
  'countplots',
  'collection',
+ 'config',
  'data',
  'environment',
  'export',
