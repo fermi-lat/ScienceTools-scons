@@ -38,7 +38,7 @@ class SourceInfo(analysis_base.AnalysisBase): #diagnostics.Diagnostics):
                     pars[:n] = model.parameters
                     free[:n] = model.free
                     try:
-                        d = np.diag(model.get_cov_matrix())
+                        d = np.diag(model.get_cov_matrix()).copy()
                         d[d<0] =0
                         errs[:n] = np.sqrt(d)
                         errs[np.isnan(errs)]=-1
