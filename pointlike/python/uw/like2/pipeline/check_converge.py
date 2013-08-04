@@ -33,6 +33,7 @@ def streamInfo( stream, path='.'):
     times = pd.DataFrame(dict(etimes=etimes,nex=nex), index=pd.Index(substream, name='substream'))#,name='stream%d'%stream)
     etimes = times.etimes
     print '\texecution times: mean=%.1f, max=%.1f'% (etimes.mean(), etimes.max())
+    print '\ttotal execution time: %.1f hours' % (etimes.sum()/3600.)
     print '\tnumber of executions: %s' % np.histogram(times.nex, range(7))[0][1:]
     bad = times[times.etimes>2*times.etimes.mean()]
     if len(bad)>0:
