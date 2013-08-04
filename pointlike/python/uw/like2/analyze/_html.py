@@ -23,6 +23,7 @@ table.topmenu {border-style:solid; border-width:0px}
 table, th, td { padding: 3px; }
 td {text-align:center;}
 td.index {text-align:left;}
+td.integer {text-align:right;}
 a:link { text-decoration: none ; color:green}
 a:hover { background-color:yellow; }
 </style>
