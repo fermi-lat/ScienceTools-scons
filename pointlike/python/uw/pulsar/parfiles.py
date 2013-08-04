@@ -24,6 +24,7 @@ def decl2dec(s): return sex2dec(s,mode='decl')
 def pad(s,n): return s + ' '*(n-len(s))
 def pad20(s): return pad(s,20)
 def pad30(s): return pad(s,30)
+def pad28(s): return pad(s,28)
 
 class StringFloat(object):
     """ Use strings and python longs to handle float strings with arbitrary
@@ -339,7 +340,7 @@ class ParFile(dict):
                     val = s.join([v for v in substrings])
                 else:
                     try:
-                        val = ''.join(map(pad30,val))
+                        val = ''.join(map(pad28,val))
                     except TypeError:
                         print key,val
             # ensure a space for long keys
