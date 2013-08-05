@@ -9,7 +9,7 @@ import os, pickle, types
 import numpy as np
 import pylab as plt
 import pandas as pd
-from scipy import integrate, misc
+from scipy import integrate, misc, optimize
 #from skymaps import SkyDir #?
 
 from . import roi_info
@@ -204,8 +204,8 @@ the second when there is small background, above a few GeV.
             yscale='log',  ylabel='Diffuse counts/ROI')
         ax.legend(prop=dict(size=10)); ax.grid()
         return fig
-        return fig
+        
         
     def all_plots(self, **kw):
-        self.runfigures([self.psf_plot, self.exposure_plots, self.isotropic_spectrum,self.diffuse_flux])
+        self.runfigures([self.psf_plot, self.exposure_plots, self.isotropic_spectrum,self.diffuse_flux, ])
     
