@@ -651,7 +651,10 @@ def get_resids(par,tim,emax=None,phase=False,get_mjds=False):
     else:
         dof = len(resi)
         mask = np.asarray([True]*dof)
-    chi2 = ((resi[mask]/errs[mask])**2).sum()
+    if not np.any(mask):
+        chi2 = 0
+    else:
+        chi2 = ((resi[mask]/errs[mask])**2).sum()
     if get_mjds:
         return resi,errs,chi2,dof,mjds
     return resi,errs,chi2,dof
