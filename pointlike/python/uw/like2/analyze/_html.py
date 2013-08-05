@@ -54,15 +54,12 @@ a:hover { background-color:yellow; }
 </style>
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-
 <script type="text/javascript" src="%(include)s/flexdropdown.js">
-
 /***********************************************
 * Flex Level Drop Down Menu- (c) Dynamic Drive DHTML code library (www.dynamicdrive.com)
 * This notice MUST stay intact for legal use
 * Visit Dynamic Drive at http://www.dynamicdrive.com/ for this script and 100s more
 ***********************************************/
-
 </script>
 </head>
 """
@@ -149,9 +146,8 @@ class HTMLindex():
         self.model = w[-1] #'/'.join(w[-2:])
         self.upper = w[-2]+'/'
         menu = DDmenu('%s index'%self.model, depth=3)
-        menu.doc +='\n<h2><a href="%(upper_link)s?skipDecoration">%(upper)s</a>%(model)s</h2>'%\
-            dict(upper=self.upper , upper_link = '../', model=self.model)
-
+        menu.doc +='\n<h2><a href="../../plot_index.html?skipDecoration">%(upper)s</a>%(model)s</h2>'%\
+            dict(upper=self.upper, model=self.model)
         plot_folders = [x.split('/')[1] for x in sorted(glob.glob('plots/*/index.html'))]
         for folder in plot_folders:
             menu_html = os.path.join('plots',folder, 'menu.html')
