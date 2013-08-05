@@ -21,7 +21,10 @@ def sex2dec(s,mode='ra'):
 
 def ra2dec(s): return sex2dec(s,mode='ra')
 def decl2dec(s): return sex2dec(s,mode='decl')
-def pad(s,n): return s + ' '*(n-len(s))
+def pad(s,n):
+    if len(s) >= n:
+        return s + ' ' # always have a trailing space!
+    return s + ' '*(n-len(s))
 def pad26(s): 
     """ Specialized version to handle single bit (free/fixed) flags."""
     if len(s)==1:
@@ -333,7 +336,7 @@ class ParFile(dict):
             if key[0] == '#': # handle comments
                 key = key.split('COMMENT')[0]
             else:
-                key = pad20(key)
+                key = pad(key,20)
             if hasattr(val,'__iter__'):
                 if hasattr(val[0],'__iter__'):
                     # multiple vals are mapped to same key
