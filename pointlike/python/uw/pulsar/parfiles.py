@@ -536,8 +536,15 @@ class ParFile(dict):
             indicated in block.  Note that we wish to preserve it verbatim
             since it may include comments and errors.  Therefore, delete
             any existing conflicting entries, then prepend this to the
-            file and reload it.
+            file and reload it.  Example of an astrometry block:
+
+            # from Dodson et al. VLBI
+            RAJ    08:35:20.61149  0.00002
+            DECJ   -45:10:34.8751  0.00030
+            
         """
+        if block is None:
+            return
         # remove all duplicate keys
         keys = [l.split()[0] for l in block.split('\n') if l[0] != '#']
         map(self.delete_key,keys)
