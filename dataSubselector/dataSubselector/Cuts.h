@@ -146,6 +146,16 @@ public:
                               unsigned int bitPosition,
                               const std::string & pass_ver="");
 
+   /// @brief Not a real cut since it does not apply to any columns
+   /// in FT1.  This cut is used to keep track of the IRF version
+   /// information so that it is automatically propagated to derived
+   /// data products such as filtered FT1 files, counts maps, etc..
+   /// @return The current number of cuts stored.
+   /// @param colname Name of IRF property that is versioned.
+   /// @param version The version string.
+   unsigned int addVersionCut(const std::string & colname,
+                              const std::string & version);
+
    unsigned int addCut(const CutBase & newCut) {
       m_cuts.push_back(newCut.clone());
       return m_cuts.size();
@@ -240,6 +250,17 @@ public:
 
    RangeCut * conversionTypeCut() const;
 
+   const std::string & pass_ver() const {
+      return m_pass_ver;
+   }
+
+   static void extract_irf_versions(const std::string & irf_name,
+                                    std::string & pass_ver,
+                                    std::string & irf_ver);
+
+   static void read_bitmask_mapping(std::map<std::string,
+                                    unsigned int> & irfs);
+
 private:
 
    std::vector<CutBase *> m_cuts;
@@ -264,10 +285,8 @@ private:
    ///        the header.
    void removeDssKeywords(tip::Header & header) const;
 
-   void read_bitmask_mapping(std::map<unsigned int, std::string> & irfs) const;
-
    void read_pass_ver(const std::string & infile, const std::string & ext);
-                      
+
    void set_irfName(const std::string & infile, const std::string & ext);
 
 };

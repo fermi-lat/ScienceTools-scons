@@ -31,6 +31,7 @@
 #include "dataSubselector/BitMaskCut.h"
 #include "dataSubselector/Cuts.h"
 #include "dataSubselector/Gti.h"
+#include "dataSubselector/VersionCut.h"
 
 class DssTests : public CppUnit::TestFixture {
 
@@ -51,6 +52,7 @@ class DssTests : public CppUnit::TestFixture {
    CPPUNIT_TEST(test_mergeRangeCuts);
 
    CPPUNIT_TEST(test_BitMaskCut);
+   CPPUNIT_TEST(test_VersionCut);
 
    CPPUNIT_TEST(test_irfName);
 
@@ -74,6 +76,7 @@ public:
    void test_removeRangeCuts();
    void test_mergeRangeCuts();
    void test_BitMaskCut();
+   void test_VersionCut();
    void test_irfName();
 
 private:
@@ -554,6 +557,25 @@ void DssTests::test_BitMaskCut() {
    CPPUNIT_ASSERT(cut.filterString() == "((EVENT_CLASS/4)%2 == 1)");
 }
 
+void DssTests::test_VersionCut() {
+   dataSubselector::VersionCut cut("IRF_VERSION", "V6MC");
+   std::map<std::string, double> pars;  
+   // Can leave pars empty since all accept methods should return true.
+   CPPUNIT_ASSERT(cut.accept(pars));
+
+   CPPUNIT_ASSERT(cut.colname() == "IRF_VERSION");
+   CPPUNIT_ASSERT(cut.version() == "V6MC");
+   CPPUNIT_ASSERT(cut.version() != "V7");
+
+   dataSubselector::VersionCut new_cut("IRF_VERSION", "V7");
+   CPPUNIT_ASSERT(!(new_cut == cut));
+   CPPUNIT_ASSERT(new_cut.supercedes(cut));
+   CPPUNIT_ASSERT(new_cut.type() == "version");
+
+   dataSubselector::VersionCut cut_copy(new_cut);
+   CPPUNIT_ASSERT(cut_copy.type() == "version");
+}
+
 void DssTests::test_irfName() {
    dataSubselector::Cuts cuts1;
    cuts1.setIrfs("P7SOURCE_V6::BACK");
@@ -566,11 +588,19 @@ void DssTests::test_irfName() {
 
    CPPUNIT_ASSERT(cuts1.conversionTypeCut()->minVal() == 1);
    CPPUNIT_ASSERT(cuts1.conversionTypeCut()->maxVal() == 1);
+   CPPUNIT_ASSERT(cuts1.pass_ver() == "P7V6");
 
    dataSubselector::Cuts cuts2;
    cuts2.setIrfs("P7TRANSIENT_V6");
    CPPUNIT_ASSERT(cuts2.bitMaskCut()->bitPosition() == 0);
    CPPUNIT_ASSERT(cuts2.conversionTypeCut() == 0);
+   CPPUNIT_ASSERT(cuts2.pass_ver() == "P7V6");
+
+   dataSubselector::Cuts cuts3;
+   cuts3.setIrfs("P7REP_SOURCE_V10");
+   CPPUNIT_ASSERT(cuts3.bitMaskCut()->bitPosition() == 2);
+   CPPUNIT_ASSERT(cuts3.conversionTypeCut() == 0);
+   CPPUNIT_ASSERT(cuts3.pass_ver() == "P7REP");
 }
 
 int main(int iargc, char * argv[]) {

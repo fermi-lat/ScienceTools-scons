@@ -32,6 +32,7 @@
 #include "dataSubselector/GtiCut.h"
 #include "dataSubselector/RangeCut.h"
 #include "dataSubselector/SkyConeCut.h"
+#include "dataSubselector/VersionCut.h"
 
 namespace {
 void toUpper(std::string & name) {
@@ -124,7 +125,7 @@ Cuts::Cuts(const std::vector<std::string> & eventFiles,
    if (!my_cuts.empty()) {
       *this = mergeGtis(my_cuts);
    }
-//   set_irfName(eventFiles.at(0), extname);
+   set_irfName(eventFiles.at(0), extname);
 }
 
 Cuts Cuts::mergeGtis(std::vector<Cuts> & cuts_vector) {
@@ -230,6 +231,9 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
          } else {
             m_cuts.push_back(new BitMaskCut(tokens[1], bit_position));
          }
+      } else if (type.length() >= 7 &&
+                 type.substr(type.length()-7, 7) == "VERSION") {
+         m_cuts.push_back(new VersionCut(colname, value));
       } else if ( (!check_columns || 
                    std::find(colnames.begin(), colnames.end(), colname) 
                    != colnames.end())
@@ -252,7 +256,7 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
       }
    }
    delete ext;
-//   set_irfName(eventFile, extname);
+   set_irfName(eventFile, extname);
 }
 
 unsigned int Cuts::parseColname(const std::string & colname,
@@ -354,6 +358,11 @@ unsigned int Cuts::addBitMaskCut(const std::string & colname,
                                  unsigned int bitPosition,
                                  const std::string & pass_ver) {
    return addCut(new BitMaskCut(colname, bitPosition, pass_ver));
+}
+
+unsigned int Cuts::addVersionCut(const std::string & colname,
+                                 const std::string & version) {
+   return addCut(new VersionCut(colname, version));
 }
 
 unsigned int Cuts::addCut(CutBase * newCut) {
@@ -466,13 +475,9 @@ bool Cuts::isTimeCut(const CutBase & cut) {
 void Cuts::checkIrfs(const std::string & infile, 
                      const std::string & extname,
                      const std::string & irfs) {
-   if (irfs.substr(0, 2) != "P7") {
-      // Skip comparison for pre-Pass 7 IRFs.
-      return;
-   }
    bool check_columns;
    Cuts my_cuts(infile, extname, check_columns=false);
-   my_cuts.set_irfName(infile, extname);
+//   my_cuts.set_irfName(infile, extname);
    if (my_cuts.irfName() != irfs) {
       st_stream::StreamFormatter formatter("dataSubselector::Cuts",
                                            "checkIrfs", 4);
@@ -582,7 +587,7 @@ const std::string & Cuts::irfName() const {
 }
 
 void Cuts::
-read_bitmask_mapping(std::map<unsigned int, std::string> & irfs) const {
+read_bitmask_mapping(std::map<std::string, unsigned int> & irfs) {
    irfs.clear();
    std::string sub_path;
    ::joinPaths("data glast lat bcf irf_index.fits", sub_path);
@@ -597,25 +602,9 @@ read_bitmask_mapping(std::map<unsigned int, std::string> & irfs) const {
       int bitpos;
       row["event_class"].get(event_class);
       row["bitposition"].get(bitpos);
-      size_t evlen(event_class.length());
-      size_t v_pos(event_class.find_last_of('V'));
-      // Since we lack delimiters in irf names to signify the pass
-      // number part of the IRF name, just take the first two and hope
-      // we don't have a Pass 10 or later.
-      std::string my_pass_ver(event_class.substr(0, 2) + 
-                              event_class.substr(v_pos, evlen - v_pos));
-      if (my_pass_ver == m_pass_ver) {
-         irfs[bitpos] = event_class;
-      }
+      irfs[event_class] = bitpos;
    }
    delete irf_map;
-//    if (irfs.size() == 0 && m_pass_ver != "NONE") {
-//       std::ostringstream message;
-//       message << "dataSubselector::Cuts::read_bitmask_mapping: "
-//               << "PASS_VER not found in irf_index.fits: "
-//               << m_pass_ver;
-//       throw std::runtime_error(message.str());
-//    }
 }
 
 void Cuts::read_pass_ver(const std::string & infile, 
@@ -644,22 +633,11 @@ void Cuts::read_pass_ver(const std::string & infile,
 
 void Cuts::set_irfName(const std::string & infile, 
                        const std::string & ext) {
-   read_pass_ver(infile, ext);
-   if (m_pass_ver == "NONE") {
-      // Do nothing.
-      return;
-   }
-
-   std::map<unsigned int, std::string> irfs;
-   read_bitmask_mapping(irfs);
-
-   std::ostringstream irf_name;
-
    for (size_t i(0); i < m_cuts.size(); i++) {
-      BitMaskCut * bit_mask_cut 
-         = dynamic_cast<BitMaskCut *>(const_cast<CutBase *>(m_cuts[i]));
-      if (bit_mask_cut) {
-         irf_name << irfs[bit_mask_cut->bitPosition()];
+      VersionCut * version_cut 
+         = dynamic_cast<VersionCut *>(const_cast<CutBase *>(m_cuts[i]));
+      if (version_cut && version_cut->colname() == "IRF_VERSION") {
+         m_irfName = version_cut->version();
          continue;
       }
 
@@ -668,14 +646,36 @@ void Cuts::set_irfName(const std::string & infile,
       if (convtype_cut && convtype_cut->colname() == "CONVERSION_TYPE") {
          if (convtype_cut->minVal() == 0 && 
              convtype_cut->maxVal() == 0) {
-            irf_name << "::FRONT";
+            m_irfName += "::FRONT";
          } else if (convtype_cut->minVal() == 1 && 
                     convtype_cut->maxVal() == 1) {
-            irf_name << "::BACK";
+            m_irfName += "::BACK";
          }
       }
    }
-   m_irfName = irf_name.str();
+}
+
+void Cuts::extract_irf_versions(const std::string & irf_name,
+                                std::string & pass_ver,
+                                std::string & irf_ver) {
+   size_t evlen(irf_name.length());
+   size_t v_pos(irf_name.find_last_of('V'));
+   if (v_pos == std::string::npos) {
+      pass_ver = "NONE";
+      irf_ver = "NONE";
+      return;
+   } else if (irf_name.substr(0, 2) == "P7" &&
+              irf_name.substr(v_pos, evlen - v_pos) == "V6") {
+      // Handle Pass 7, V6 irfs as a special case.
+      pass_ver = "P7V6";
+      irf_ver = "V6";
+      return;
+   }
+   // The PASS_VER value in the irf name should be set off from 
+   // the remainder of the irf name by a "_" delimiter.
+   size_t pv_delim(irf_name.find_first_of('_'));
+   pass_ver = irf_name.substr(0, pv_delim);
+   irf_ver = irf_name.substr(v_pos, evlen - v_pos);
 }
 
 void Cuts::setIrfs(const std::string & irfName) {
@@ -719,31 +719,16 @@ void Cuts::setIrfs(const std::string & irfName) {
    }
 
    std::string event_class(irfName.substr(0, delim_pos - 1));
-   // Extract PASS_VER
-   size_t evlen(event_class.length());
-   size_t v_pos(event_class.find_last_of('V'));
-   if (v_pos == std::string::npos) {
-      m_pass_ver = "NONE";
-   } else {
-      // Since we lack delimiters in irf names to signify the pass
-      // number part of the IRF name, just take the first two and hope
-      // we don't have a Pass 10 or later.
-      m_pass_ver = (event_class.substr(0, 2) + 
-                    event_class.substr(v_pos, evlen - v_pos));
-   }
+   std::string irf_ver;
+   extract_irf_versions(event_class, m_pass_ver, irf_ver);
    
-   std::map<unsigned int, std::string> irfs;
+   std::map<std::string, unsigned int> irfs;
    try {
       read_bitmask_mapping(irfs);
-      std::map<unsigned int, std::string>::const_iterator it(irfs.begin());
-      for ( ; it != irfs.end(); ++it) {
-         if (it->second == event_class) {
-            if (m_pass_ver == "NONE") {
-               addBitMaskCut("EVENT_CLASS", it->first);
-            } else {
-               addBitMaskCut("EVENT_CLASS", it->first, m_pass_ver);
-            }
-         }
+      std::map<std::string, unsigned int>::const_iterator 
+         it = irfs.find(event_class);
+      if (it != irfs.end()) {
+         addBitMaskCut("EVENT_CLASS", it->second, m_pass_ver);
       }
    } catch (std::runtime_error & eObj) {
       if (!st_facilities::Util::expectedException(eObj,

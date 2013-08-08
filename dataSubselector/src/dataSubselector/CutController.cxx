@@ -60,12 +60,32 @@ CutController::CutController(st_app::AppParGroup & pars,
          addRangeCut("EVENT_CLASS", "dimensionless", evclsmin, evclsmax);
       }
    } else {
-      try {
-         int evclass = pars["evclass"];
-         m_cuts.addBitMaskCut("EVENT_CLASS", evclass, m_passVer);
-      } catch (const hoops::Hexception &) {
-         // Assume INDEF is given as the parameter value for evclass,
-         // so use default of applying no EVENT_CLASS cut.
+      std::string irfs = pars["irfs"];
+      if (irfs != "INDEF") {
+         // Determine the bit mask cut to use for the requested irfs
+         // and write that irfs name as the IRF_VERSION value.
+         std::string irf_ver;
+         Cuts::extract_irf_versions(irfs, m_passVer, irf_ver);
+         std::map<std::string, unsigned int> bitmask_map;
+         Cuts::read_bitmask_mapping(bitmask_map);
+         std::map<std::string, unsigned int>::const_iterator it = 
+            bitmask_map.find(irfs);
+         if (it == bitmask_map.end()) {
+            throw std::runtime_error("Unknown irfs: " + irfs);
+         }
+         m_cuts.addBitMaskCut("EVENT_CLASS", it->second, m_passVer);
+         // Write out the entire IRF designation.
+         m_cuts.addVersionCut("IRF_VERSION", irfs);
+      } else {
+         // For backwards compatibility, this branch will be executed if 
+         // irfs=INDEF.
+         try {
+            int evclass = pars["evclass"];
+            m_cuts.addBitMaskCut("EVENT_CLASS", evclass, m_passVer);
+         } catch (const hoops::Hexception &) {
+            // Assume INDEF is given as the parameter value for evclass,
+            // so use default of applying no EVENT_CLASS cut.
+         }
       }
    }
    double zmax = pars["zmax"];
