@@ -21,6 +21,16 @@ def sex2dec(s,mode='ra'):
 
 def ra2dec(s): return sex2dec(s,mode='ra')
 def decl2dec(s): return sex2dec(s,mode='decl')
+def dec2sex(d,mode='ra'):
+    """ Convert decimal degree to column separated format."""
+    scale = 15. if mode=='ra' else 1. # scale to convert largest unit
+    sign = 1 if mode=='ra' else (-1 if d < 0 else 1)
+    d = float(abs(d))
+    dg = int(d/scale)
+    mi = int((d/scale-dg)*60.)
+    ss = ((d/scale-dg)*60-mi)*60
+    pref='' if mode=='ra' else ('+' if sign>0 else '-')
+    return '%s%02d:%02d:%.6f'%(pref,dg,mi,ss)
 def pad(s,n):
     if len(s) >= n:
         return s + ' ' # always have a trailing space!
