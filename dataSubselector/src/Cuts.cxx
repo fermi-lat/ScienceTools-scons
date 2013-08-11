@@ -477,15 +477,15 @@ void Cuts::checkIrfs(const std::string & infile,
                      const std::string & irfs) {
    bool check_columns;
    Cuts my_cuts(infile, extname, check_columns=false);
-//   my_cuts.set_irfName(infile, extname);
    if (my_cuts.irfName() != irfs) {
       st_stream::StreamFormatter formatter("dataSubselector::Cuts",
-                                           "checkIrfs", 4);
-      formatter.warn() << "IRF selection, "
-                       << irfs << ", and DSS keywords in "
-                       << infile << "[" << extname << "]\n"
-                       << "are inconsistent. " 
-                       << "DSS keywords give " << my_cuts.irfName()
+                                           "checkIrfs", 3);
+      
+      formatter.warn() << "\nWARNING:\n"
+                       << "The requested IRFs, " << irfs  << ", "
+                       << "do not agree with the IRFs specified\nin the DSS "
+                       << "keywords, " << my_cuts.irfName() << ", in "
+                       << infile << "[" << extname << "]."
                        << std::endl;
    }
 }
@@ -638,20 +638,24 @@ void Cuts::set_irfName(const std::string & infile,
          = dynamic_cast<VersionCut *>(const_cast<CutBase *>(m_cuts[i]));
       if (version_cut && version_cut->colname() == "IRF_VERSION") {
          m_irfName = version_cut->version();
-         continue;
+//         continue;
+         break;
       }
-
-      RangeCut * convtype_cut 
-         = dynamic_cast<RangeCut *>(const_cast<CutBase *>(m_cuts[i]));
-      if (convtype_cut && convtype_cut->colname() == "CONVERSION_TYPE") {
-         if (convtype_cut->minVal() == 0 && 
-             convtype_cut->maxVal() == 0) {
-            m_irfName += "::FRONT";
-         } else if (convtype_cut->minVal() == 1 && 
-                    convtype_cut->maxVal() == 1) {
-            m_irfName += "::BACK";
-         }
-      }
+/// @todo Need to determine if there is any context where adding the
+/// FRONT/BACK qualifier is needed, since CONVTYPE cuts are included
+/// in DSS keywords already and read in by tools like gtexpmap.
+//
+//       RangeCut * convtype_cut 
+//          = dynamic_cast<RangeCut *>(const_cast<CutBase *>(m_cuts[i]));
+//       if (convtype_cut && convtype_cut->colname() == "CONVERSION_TYPE") {
+//          if (convtype_cut->minVal() == 0 && 
+//              convtype_cut->maxVal() == 0) {
+//             m_irfName += "::FRONT";
+//          } else if (convtype_cut->minVal() == 1 && 
+//                     convtype_cut->maxVal() == 1) {
+//             m_irfName += "::BACK";
+//          }
+//       }
    }
 }
 

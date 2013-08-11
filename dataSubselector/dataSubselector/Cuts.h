@@ -85,6 +85,7 @@ public:
    /// Copy assignment operator
    Cuts & operator=(const Cuts & rhs);
 
+#ifndef SWIG
    /// @brief True if the data in the row passes all of the cuts.
    /// @param row A row of FITS binary table.
    bool accept(tip::ConstTableRecord & row) const;
@@ -224,9 +225,11 @@ public:
 
    /// @return A vector of pointers to the GtiCuts that are present.
    void getGtiCuts(std::vector<const GtiCut *> & gtiCuts);
+#endif
 
    const std::string & irfName() const;
 
+#ifndef SWIG
    /// This will set the BitMaskCut and m_pass_ver value based 
    /// on the IRF name (assuming it is Pass 7 or later).
    /// If BitMaskCut is already set, this will throw an exception.
@@ -249,6 +252,7 @@ public:
    BitMaskCut * bitMaskCut() const;
 
    RangeCut * conversionTypeCut() const;
+#endif
 
    const std::string & pass_ver() const {
       return m_pass_ver;
