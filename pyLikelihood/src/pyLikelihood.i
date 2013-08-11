@@ -15,6 +15,7 @@
 #include "irfLoader/Loader.h"
 #include "irfInterface/IEfficiencyFactor.h"
 #include "irfInterface/IrfsFactory.h"
+#include "dataSubselector/Cuts.h"
 #include "healpix/CosineBinner.h"
 #include "map_tools/Exposure.h"
 #include "map_tools/SkyImage.h"
@@ -142,6 +143,7 @@ using optimizers::Exception;
 %template(SkyDirVector) std::vector<astro::SkyDir>;
 %template(SkyDirPair) std::pair<astro::SkyDir, astro::SkyDir>;
 %feature("autodoc", "1");
+%include dataSubselector/Cuts.h
 %include healpix/CosineBinner.h
 %include map_tools/Exposure.h
 %include map_tools/SkyImage.h
