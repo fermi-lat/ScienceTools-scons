@@ -14,7 +14,9 @@ from FitsNTuple import FitsNTuple
 
 def tbounds(evfile):
     foo = pyfits.open(evfile)
-    return foo['EVENTS'].header['TSTART'], foo['EVENTS'].header['TSTOP']
+    tstart = float(foo['EVENTS'].header['TSTART'])
+    tstop = float(foo['EVENTS'].header['TSTOP'])
+    return tstart, tstop
 
 def bb_analysis(evfile, lcfile, fp_frac=1e-3, outfile='change_points.txt'):
     events = FitsNTuple(evfile)

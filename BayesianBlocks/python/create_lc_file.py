@@ -31,7 +31,11 @@ def write_cell_boundaries(arrival_times, outfile, tbounds=None):
 
 def tbounds(ft1file):
     ft1 = pyfits.open(ft1file)
-    return ft1['EVENTS'].header['TSTART'], ft1['EVENTS'].header['TSTOP']
+    # Some sources of FT1 data have TSTART and TSTOP as strings, so
+    # need to convert to ensure correct downstream behavior.
+    tstart = float(ft1['EVENTS'].header['TSTART'])
+    tstop = float(ft1['EVENTS'].header['TSTOP'])
+    return tstart, tstop
 
 def ebounds(ft1file):
     ft1 = pyfits.open(ft1file)
