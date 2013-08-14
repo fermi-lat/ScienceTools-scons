@@ -195,6 +195,8 @@ void SolarTemplate::computeMap() {
 					 //Get the average expsoure for the energy and pixel
 					 const unsigned int indx = (k*m_naxes.at(1) + j)*m_naxes.at(0) + i;
 					 const double avgExp = m_avgexp(m_energies[k], dir.ra(), dir.dec());
+					 if (avgExp == 0)
+						 continue;
 					 //Integrate the solar angles
 	         const ProfFun f(costhetasun, m_energies, intensityCache, k);
 					 m_template.at(indx) = m_expsun.integrate(m_energies[k], dir.ra(), dir.dec(), f);
