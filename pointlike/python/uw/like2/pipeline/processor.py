@@ -603,7 +603,7 @@ def covariance(roi, **kwargs):
     """
     outdir   = kwargs.get('outdir', '.')
     ts_min   = kwargs.get('ts_min', 25)
-    covinfo = os.path.join(outdir, 'covinfo')
+    covinfo = os.path.join(outdir, 'covariance')
     if not os.path.exists(covinfo): os.mkdir(covinfo)
     ptsources = [(i,s) for i,s in enumerate(roi.sources) if s.skydir is not None and np.any(s.spectral_model.free)]
     print 'evaluating %d sources' %len(ptsources)
