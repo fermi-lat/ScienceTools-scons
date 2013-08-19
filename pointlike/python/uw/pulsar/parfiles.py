@@ -483,9 +483,11 @@ class ParFile(dict):
             present, update its entry.  NB will NOT make a duplicate."""
         if key not in self.ordered_keys:
             self.ordered_keys.append(key)
-            self[key] = val
+            self[key] = str(val)
         elif allow_duplicates:
             self.duplicates[key].append(val)
+        else:
+            self[key] = str(val)
 
     def delete_key(self,key):
         try:
