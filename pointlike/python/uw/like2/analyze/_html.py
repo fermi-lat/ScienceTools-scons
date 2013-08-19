@@ -91,6 +91,14 @@ top_nav= """<html>
 body{	font-family:verdana,arial,sans-serif; font-size:10pt;	margin:10px;
 	background-color:white;	}
 h4 {margin-left:15pt;}
+table { margin-left:25pt; margin-top:15pt; font-size:8pt;
+    border-style: solid; border-width: 1px;  border-collapse: collapse; }
+table.topmenu {border-style:solid; border-width:0px}
+table, th, td { padding: 3px; }
+td {text-align:center;}
+td.index {text-align:left;}
+td.integer {text-align:right;}
+
 a:link { text-decoration: none ; color:green}
 a:hover { background-color:yellow; }
 </style> 
