@@ -55,6 +55,7 @@ class ROIinfo(analysis_base.AnalysisBase):
         rx = rois['ra dec glat glon'.split()] 
         rx['chisq'] = [r['chisq'] for r in rois['counts']]
         rx['npar'] = [len(p) for p in rois.parameters]
+        rx.index.name='name'
         ###
         #rx['ring'] = [10**p[0] for p in rois.parameters]
         #rx['iso']  = [10**p[1] for p in rois.parameters]
