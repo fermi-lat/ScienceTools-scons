@@ -1,5 +1,5 @@
 """
-Description here
+Count plots
 
 $Header$
 
@@ -10,11 +10,12 @@ import numpy as np
 import pylab as plt
 import pandas as pd
 
-from . import diagnostics
-from . diagnostics import FloatFormat
+from . import analysis_base
+from . analysis_base import FloatFormat
 
-class CountPlots(diagnostics.Diagnostics): #picks out Diagnostics class from diagnostics.py file.
-    """ Plots generated after each iteration, checking quality of counts histogram
+class CountPlots(analysis_base.AnalysisBase): 
+    """Count plots
+    <br> Plots generated after each iteration, checking quality of counts histogram
     %(iteration_info)s
     """ 
     require='pickle.zip'
