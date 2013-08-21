@@ -12,6 +12,7 @@ from skymaps import SkyDir
 from . import roi_info
 
 class Limb(roi_info.ROIinfo):
+    "Limb plots"
     def setup(self, **kwargs):
         super(Limb, self).setup(**kwargs)
         self.plotfolder='limb'
