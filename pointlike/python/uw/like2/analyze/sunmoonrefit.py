@@ -1,5 +1,5 @@
 """
-Description here
+Sun/moon refit
 
 $Header$
 
@@ -13,6 +13,9 @@ from skymaps import SkyDir
 from . import roi_info
 
 class SunMoonRefit(roi_info.ROIinfo):
+    """ Refit to SunMoon model, showing normalization, change in likelihood
+    %(table)s"""
+
     def setup(self, **kw):
         self.plotfolder = 'sunmoon_refit'
         self.title = 'SunMoon refit'
@@ -46,8 +49,6 @@ class SunMoonRefit(roi_info.ROIinfo):
         self.skyplot_with_hist(self.df.delta_likelihood, 'delta loglike', 0, 5, (0,5))
 
     def all_plots(self):
-        """ Refit to SunMoon model, showing normalization, change in likelihood
-        %(table)s"""
         self.table = pd.DataFrame([self.df.norm, self.df.norm_unc,self.df.delta_likelihood ], 
                 index=['norm', 'norm_unc', 'delta_likelihood']).T.describe().to_html()
         self.runfigures([self.sunmoon_normalization, self.sunmoon_loglikelihood])
