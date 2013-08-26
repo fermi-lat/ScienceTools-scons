@@ -14,7 +14,6 @@ zmax,r,a,180,0,180,maximum zenith angle value (degrees)
 evclsmin,i,h,0,0,1000,"Minimum event class ID"
 evclsmax,i,h,10,0,1000,"Maximum event class ID"
 evclass,i,h,INDEF,0,31,"Event class selection"
-irfs,s,h,INDEF,,,"IRF selection"
 convtype,i,h,-1,-1,1,"Conversion type (-1=both, 0=Front, 1=Back)"
 phasemin,r,h,0,0,1,minimum pulse phase
 phasemax,r,h,1,0,1,maximum pulse phase

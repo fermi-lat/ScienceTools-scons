@@ -257,6 +257,7 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
    }
    delete ext;
    set_irfName(eventFile, extname);
+   read_pass_ver(eventFile, extname);
 }
 
 unsigned int Cuts::parseColname(const std::string & colname,
@@ -411,6 +412,22 @@ unsigned int Cuts::mergeRangeCuts() {
    return m_cuts.size();
 }
 
+unsigned int Cuts::removeVersionCut(const std::string & colname) {
+   std::vector<CutBase *> held_cuts;
+   for (size_t i(0); i < m_cuts.size(); i++) {
+      if (m_cuts.at(i)->type() == "version") {
+         VersionCut * versionCut(dynamic_cast<VersionCut *>(m_cuts.at(i)));
+         if (versionCut->colname() == colname) {
+            delete m_cuts.at(i);
+            continue;
+         }
+      }
+      held_cuts.push_back(m_cuts.at(i));
+   }
+   m_cuts = held_cuts;
+   return m_cuts.size();
+}
+
 unsigned int Cuts::removeRangeCuts(const std::string & colname,
                                    std::vector<RangeCut *> & removedCuts) {
    removedCuts.clear();
@@ -477,16 +494,15 @@ void Cuts::checkIrfs(const std::string & infile,
                      const std::string & irfs) {
    bool check_columns;
    Cuts my_cuts(infile, extname, check_columns=false);
-   if (my_cuts.irfName() != irfs) {
+   if (my_cuts.irfName() != "NONE" && my_cuts.irfName() != irfs) {
       st_stream::StreamFormatter formatter("dataSubselector::Cuts",
-                                           "checkIrfs", 3);
-      
+                                           "checkIrfs", 2);
       formatter.warn() << "\nWARNING:\n"
-                       << "The requested IRFs, " << irfs  << ", "
-                       << "do not agree with the IRFs specified\nin the DSS "
-                       << "keywords, " << my_cuts.irfName() << ", in "
-                       << infile << "[" << extname << "]."
-                       << std::endl;
+                       << "IRF version mismatch detected. "
+                       << "IRF version in HEADER: " 
+                       << my_cuts.irfName() << ", "
+                       << "IRF version provided (by CALDB/on command line): "
+                       << irfs <<  std::endl;
    }
 }
 
@@ -585,6 +601,36 @@ std::string Cuts::filterString() const {
 const std::string & Cuts::irfName() const {
    return m_irfName;
 }
+
+std::string Cuts::CALDB_implied_irfs() const {
+   std::map<std::string, unsigned int> irfs;
+   read_bitmask_mapping(irfs);
+   const BitMaskCut * my_bitmask_cut(bitMaskCut());
+   if (my_bitmask_cut == 0) {
+      throw std::runtime_error("No bitmask cut in input file, so "
+                               "cannot infer most recent IRFs from CALDB.");
+   }
+   unsigned int bit_pos(my_bitmask_cut->bitPosition());
+   std::map<std::string, unsigned int>::const_iterator it(irfs.begin());
+   std::string irfs_name("");
+   unsigned int irf_ver_num(0);
+   for ( ; it != irfs.end(); ++it) {
+      if (it->second != bit_pos) {
+         continue;
+      }
+      std::string pass_ver;
+      std::string irf_ver;
+      extract_irf_versions(it->first, pass_ver, irf_ver);
+      unsigned int candidate_irf_ver_num(std::atoi(irf_ver.substr(1).c_str()));
+      if (pass_ver == m_pass_ver && 
+          (irfs_name == "" || candidate_irf_ver_num > irf_ver_num)) {
+         irfs_name = it->first;
+         irf_ver_num = candidate_irf_ver_num;
+      }
+   }
+   return irfs_name;
+}
+
 
 void Cuts::
 read_bitmask_mapping(std::map<std::string, unsigned int> & irfs) {
@@ -740,6 +786,7 @@ void Cuts::setIrfs(const std::string & irfName) {
          throw;
       }
    }
+   addVersionCut("IRF_VERSION", irfName);
 }
 
 BitMaskCut * Cuts::bitMaskCut() const {

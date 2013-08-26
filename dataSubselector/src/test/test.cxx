@@ -601,6 +601,15 @@ void DssTests::test_irfName() {
    CPPUNIT_ASSERT(cuts3.bitMaskCut()->bitPosition() == 2);
    CPPUNIT_ASSERT(cuts3.conversionTypeCut() == 0);
    CPPUNIT_ASSERT(cuts3.pass_ver() == "P7REP");
+
+   dataSubselector::Cuts cuts4;
+   cuts4.setIrfs("P7SOURCE_V6");
+   CPPUNIT_ASSERT(cuts4.CALDB_implied_irfs() == "P7SOURCE_V6");
+
+   dataSubselector::Cuts cuts5;
+   cuts5.setIrfs("P7REP_SOURCE_V10");
+//   CPPUNIT_ASSERT(cuts5.CALDB_implied_irfs() == "P7REP_SOURCE_V15");
+   CPPUNIT_ASSERT(cuts5.CALDB_implied_irfs() != "P7REP_SOURCE_V10");
 }
 
 int main(int iargc, char * argv[]) {

@@ -174,6 +174,10 @@ public:
    unsigned int removeRangeCuts(const std::string & colname,
                                 std::vector<RangeCut *> & removedCuts);
 
+   /// @brief Remove specified VersionCut
+   /// @param colname Column name of VersionCut to be removed.
+   unsigned int removeVersionCut(const std::string & colname);
+
    /// @brief Add the DSS keywords to a write-enabled tip::Header.
    /// @param header The reference returned from the tip::Table::getHeader
    ///        method where the table has been opened using the
@@ -227,7 +231,14 @@ public:
    void getGtiCuts(std::vector<const GtiCut *> & gtiCuts);
 #endif
 
+   /// @return The irfs named in the DSS keywords.
    const std::string & irfName() const;
+
+   /// @return IRFs implied by the bit position and Pass version in
+   /// the BIT_MASK DSS keywords, using (as specified by the FSSC),
+   /// the most recent version of the corresponding IRFs in
+   /// $CALDB/bcf/irf_index.fits.
+   std::string CALDB_implied_irfs() const;
 
 #ifndef SWIG
    /// This will set the BitMaskCut and m_pass_ver value based 
