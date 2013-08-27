@@ -314,6 +314,9 @@ void ObsSim::generateData() {
    // bit that is set in the EVENT_CLASS variable.
    std::string irfs = m_pars["irfs"];
    cuts->setIrfs(irfs);
+   // Remove the VersionCut containing the IRF_VERSION since that should
+   // not appear in an FT1 file.
+   cuts->removeVersionCut("IRF_VERSION");
 
    if (m_pars["use_ac"]) {
       cuts->addSkyConeCut(m_pars["ra"], m_pars["dec"], m_pars["radius"]);
