@@ -255,6 +255,12 @@ CLHEP::Hep3Vector GPS::LATdirection(CoordSystem index,const CLHEP::Hep3Vector& d
                     east( north.cross(zenith).unit() );
                 HepRotation zenith_to_cel(east, zenith.cross(east), zenith);
 
+                if (::getenv("ZENITH_FRAME_FIX")) {
+                   /// Use coordinate system with z-axis along nadir,
+                   /// x-axis to the north, y-axis to east
+                   zenith_to_cel = HepRotation(zenith.cross(east), east, -zenith);
+                }
+
                 // return the product, zenith->celestial->GLAST
                 result = trans* zenith_to_cel * result;
             }

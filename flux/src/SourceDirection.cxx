@@ -14,7 +14,6 @@ $Header$
 #include <vector>
 #include <stdexcept>
 
-
 SourceDirection::SourceDirection(ISpectrum* spectrum, std::string frame )
 : m_spectrum(spectrum)
 , m_frameName(frame)
@@ -60,13 +59,19 @@ void SourceDirection::execute(double ke, double time){
                     phi = second;
                 CLHEP::Hep3Vector unrotated(cos(phi)*sinth, sin(phi)*sinth, costh);
 
+                if (::getenv("ZENITH_FRAME_FIX")) {
+                   // Use right-handed coordinate system with z-axis
+                   // along nadir and x-axis to North
+                   unrotated = CLHEP::Hep3Vector(cos(phi)*sinth, sin(phi)*sinth, -costh);
+                }
+                
                 //here, we have a direction in the zenith direction, so we need the 
                 //transformation from zenith to GLAST.
+                CLHEP::HepRotation zenToGlast = gps->transformToGlast(time,GPS::ZENITH);
 
                 // use new transformation
                 m_lat_dir = - gps->LATdirection(GPS::ZENITH, unrotated) ;
 
-                CLHEP::HepRotation zenToGlast = gps->transformToGlast(time,GPS::ZENITH);
                 break;
             }
         case EQUATORIAL:
