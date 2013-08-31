@@ -25,6 +25,7 @@ table.topmenu {border-style:solid; border-width:0px}
 table, th, td { padding: 3px; }
 td {text-align:center;}
 td.index {text-align:left;}
+th.index {text-align:left;}
 td.integer {text-align:right;}
 a:link { text-decoration: none ; color:green}
 a:hover { background-color:yellow; }
@@ -41,6 +42,8 @@ table.topmenu {border-style:solid; border-width:0px}
 table, th, td { padding: 3px; }
 td {text-align:center;}
 td.index {text-align:left;}
+th.index {text-align:left;}
+
 td.integer {text-align:right;}
 body{	font-family:verdana,arial,sans-serif; font-size:10pt;	margin:10px;
 	background-color:white;	}
@@ -99,6 +102,7 @@ table.topmenu {border-style:solid; border-width:0px}
 table, th, td { padding: 3px; }
 td {text-align:center;}
 td.index {text-align:left;}
+th.index {text-align:left;}
 td.integer {text-align:right;}
 
 a:link { text-decoration: none ; color:green}
@@ -149,18 +153,17 @@ def table_menu():
            
     def replace_model(instring):
         p = re.compile(r'<th>(.+)</th>')
-        replacer = lambda m: '<tr>\n  <th><a href="*/plots/index.html?skipDecoration"><strong>*</strong></a></th>'.replace('*',m.group(1)) 
+        replacer = lambda m: '<th class="index"><a href="*/plots/index.html?skipDecoration"><strong>*</strong></a></th>'.replace('*',m.group(1)) 
         return p.sub(replacer, instring)
         
     def replace_analysis(instring):
-        p = re.compile('<tr>\s*<th>(.+)<')
-        replacer = lambda m: '<td class="index" title="'+app.menu[m.group(1)]['title'] \
-                    +'">'+m.group(1)+'<'
+        p = re.compile('<tr>\s*<td>(.+)<')
+        replacer = lambda m: '<tr>\n\t<td class="index">'+m.group(1)+'<'
         return p.sub(replacer, instring)
 
     h2 = replace_model(h1) ##### oops, now they use <th>
     h3 = replace_analysis(h2)
-    return h2
+    return h3
     
 def header(title=''):
     """ return HTML for start of a document """
