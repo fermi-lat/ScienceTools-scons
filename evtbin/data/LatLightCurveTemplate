@@ -1,0 +1,103 @@
+SIMPLE   =                    T / File conforms to NOST standard
+BITPIX   =                    8 / Bits per pixel
+NAXIS    =                    0 / No data is associated with this header
+EXTEND   =                    T / Extensions may be present
+DATE                            / Date file was made
+FILENAME =                      / Name of this file
+TELESCOP =                GLAST / Name of telescope generating data
+INSTRUME =                  LAT / Name of instrument generating data
+DATE-OBS                        / Start Date and Time of the observation (UTC)
+DATE-END                        / End Date and Time of the observation (UTC)
+CREATOR  =                      / Software and version creating file
+HISTORY                   $Id$ 
+END
+
+##################################################################################
+XTENSION =             BINTABLE / Binary table extension
+BITPIX   =                    8 / Bits per pixel
+NAXIS    =                    2 / Required value
+NAXIS1   =                    0 / Number of bytes per row
+NAXIS2   =                    0 / Number of rows
+PCOUNT   =                    0 / Normally 0 (no varying arrays)
+GCOUNT   =                    1 / Required value
+TFIELDS  =                    0 / Number of columns in table
+EXTNAME  =                 RATE / Extension name
+TELESCOP =                GLAST / Telescope or mission name
+INSTRUME =                  LAT / Instrument name
+HDUCLASS =                 OGIP / Format confirms to OGIP standard
+HDUCLAS1 =           LIGHTCURVE / PHA dataset (OGIP memo OGIP-92-007)
+HDUCLAS2 =                TOTAL / Type of data stored
+HDUCLAS3 =                COUNT / Further details of type of data stored
+HDUVERS  =                1.2.0 / Version number of the format (this document describes version 1.2.0)
+FILTER   =                      / Instrument filter in use (if any)
+OBJECT   =                      / Observed object
+EQUINOX  =                 2000 / Equinox of RA & DEC specifications
+RADECSYS =                      / Coordinate frame used for EQUINOX
+DATE-OBS                        / Start Date and Time of the observation (UTC)
+DATE-END                        / End Date and Time of the observation (UTC)
+MJDREF   =                      / MJD for reference time
+TSTART   =                      / Start time of the light curve
+TSTOP    =                      / Stop time of the light curve
+TIMEZERO =                      / Zero time from which time is measured
+TIMESYS  =                  MJD / Time system used to define time
+TIMEUNIT =                    s / Unit for TSTART, TSTOP and TIMEZERO
+NDSKEYS  =                    0 / Number of data subspace keywords in header
+CREATOR  =                      / Software and version creating file
+HISTORY                   $Id$ 
+
+# Column description
+
+TTYPE#  TIME                    / Time of the bin center
+TFORM#  D                       / Data format of this field
+TUNIT#  s                       / Unit of this field
+
+TTYPE#  TIMEDEL                 / Bin size
+TFORM#  D                       / Data format of this field
+TUNIT#  s                       / Unit of this field
+
+TTYPE#  COUNTS                  / Photon counts
+TFORM#  J                       / Data format of this field
+TUNIT#  Counts                  / Unit of this field
+
+
+################################################################################
+XTENSION =             BINTABLE / Binary table extension
+BITPIX   =                    8 / Bits per pixel
+NAXIS    =                    2 / Required value
+NAXIS1   =                    0 / Number of bytes per row
+NAXIS2   =                    0 / Number of rows
+PCOUNT   =                    0 / Normally 0 (no varying arrays)
+GCOUNT   =                    1 / Required value
+TFIELDS  =                    0 / Number of columns in table
+EXTNAME  =                  GTI / Extension name
+TELESCOP =                GLAST / Telescope or mission name
+INSTRUME =                  LAT / Instrument name
+MJDREF   =                      / MJD for reference time
+TSTART   =                      / Lower bound of first GTI
+TSTOP    =                      / Upper bound of last GTI
+TIMEZERO =                    0 / Clock correction (if not zero)
+TIMESYS  =                  MJD / Time system used to define time
+TIMEUNIT =                    s / All times are in seconds unless specified otherwise
+HDUCLASS =                 OGIP / File format is OGIP standard
+HDUCLAS1 =                  GTI / Contains Good Time Intervals
+HDUVERS  =                1.2.0 / Version of file format
+DATE-OBS                        / Start Date and Time of the observation (UTC)
+DATE-END                        / End Date and Time of the observation (UTC)
+CREATOR  =                      / Software and version creating file
+HISTORY                   $Id$ 
+
+
+# Column description
+
+
+TTYPE#  START                   / Start time of an interval
+TFORM#  D                       / Data format of this field
+TUNIT#  s                       / Unit of this field
+
+TTYPE#  STOP                    / Stop time of an interval
+TFORM#  D                       / Data format of this field
+TUNIT#  s                       / Unit of this field
+
+
+
+################################################################################

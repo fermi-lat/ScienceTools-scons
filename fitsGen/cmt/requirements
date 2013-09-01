@@ -1,0 +1,42 @@
+package fitsGen
+version v0
+
+author James Chiang <jchiang@slac.stanford.edu>
+
+# $Id$
+
+branches cmt src doc
+
+use GlastPolicy v*
+use rootTuple v*
+
+apply_pattern package_include
+apply_pattern package_linkopts
+
+private
+
+use RootPolicy v2*
+use Goodi v*
+
+# Allow use of internal path.
+macro_append fitsGen_cppflags "" Linux "-I ../src -g -pedantic " WIN32 "/I..\src  /wd4290"
+
+macro_append ROOT_libs "" Linux " -lTreePlayer -lProof -lGX11 " WIN32 " libTreePlayer.lib libProof.lib "
+
+# Make sure test applications gets built when library changes.
+macro makeFT1stamps "makeFT1.stamp"
+macro makeFT2stamps "makeFT2.stamp"
+
+# Standard package library (It's empty so one should be able to 
+# get rid of this):
+macro my_headers "" WIN32 "../fitsGen/*.h *.h"
+library fitsGen -no_share $(my_headers) fitsGen.cxx
+
+#
+# Need this environment variable for Goodi templates.
+#
+set INFILES "$(GOODIROOT)/Data"
+
+# The applications:
+application makeFT1 makeFT1.cxx
+#application makeFT2 makeFT2.cxx

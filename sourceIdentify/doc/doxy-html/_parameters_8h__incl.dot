@@ -1,0 +1,18 @@
+digraph inheritance
+{
+  Node69 [shape="box",label="Parameters.h",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="black",style="filled" fontcolor="white"];
+  Node70 -> Node69 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="Helvetica"];
+  Node70 [shape="box",label="sourceIdentify/sourceIdentify.h",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="black",URL="$source_identify_8h.html"];
+  Node71 -> Node70 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="Helvetica"];
+  Node71 [shape="box",label="string",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="grey75"];
+  Node72 -> Node70 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="Helvetica"];
+  Node72 [shape="box",label="st_app/AppParGroup.h",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="grey75"];
+  Node73 -> Node70 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="Helvetica"];
+  Node73 [shape="box",label="st_app/StApp.h",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="grey75"];
+  Node74 -> Node70 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="Helvetica"];
+  Node74 [shape="box",label="st_app/StAppFactory.h",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="grey75"];
+  Node75 -> Node70 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="Helvetica"];
+  Node75 [shape="box",label="st_stream/StreamFormatter.h",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="grey75"];
+  Node76 -> Node70 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="Helvetica"];
+  Node76 [shape="box",label="st_stream/st_stream.h",fontsize=10,height=0.2,width=0.4,fontname="Helvetica",color="grey75"];
+}

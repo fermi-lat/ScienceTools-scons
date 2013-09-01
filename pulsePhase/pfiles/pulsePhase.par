@@ -1,0 +1,10 @@
+#-------------------------------------------------------------------------------
+eventfile,     s, a, , , , "Name of the input file"
+epoch,         r, a, , , , "Enter value of epoch of timing model"
+phi0,          r, a, , , , "Enter base value of phase at this epoch"
+f0,            r, a, , , , "Enter pulse frequency at this epoch"
+f1,            r, a, , , , "Enter first time derivative of pulse frequency (fdot) at this epoch"
+f2,            r, a, , , , "Enter second time derivative of pulse frequency (f2dot) at this epoch"
+timefield,     s, h, "TIME", , , "Name of time field in input file"
+mode,          s, h, "ql", , ,"Behavior for automatic parameters"
+#-------------------------------------------------------------------------------

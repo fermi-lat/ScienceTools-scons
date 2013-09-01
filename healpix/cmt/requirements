@@ -1,0 +1,26 @@
+package healpix
+
+version v0
+
+#$Id$
+
+author  T. Burnett <tburnett@u.washington.edu>
+
+use astro *
+ 
+apply_pattern package_include
+apply_pattern package_linkopts
+apply_pattern package_stamps
+
+
+private
+
+macro source *.cxx WIN32 "*.h *.cxx"
+library healpix -no_share \
+ -s=../healpix $(source) \
+ -s=../src $(source) \
+ -s=base $(source) *.cc *.c
+
+private
+
+application test_healpix -s=test *.cxx *.h

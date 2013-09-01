@@ -1,0 +1,25 @@
+// -*- mode: c++ -*-
+/**
+ * @file pyExposure.in
+ * @author J. Chiang <jchiang@slac.stanford.edu>
+ *
+ * $Header$
+ */
+%module pyExposure
+%{
+#include "pyExposure/Exposure.h"
+#include <stdexcept>
+#include <string>
+#include <vector>
+%}
+%include stl.i
+%exception {
+   try {
+      $action
+   } catch (std::exception & eObj) {
+      PyErr_SetString(PyExc_RuntimeError, const_cast<char*>(eObj.what()));
+      return NULL;
+   }
+}
+%template(DoubleVector) std::vector<double>;
+%include $(PYEXPOSUREROOT)/pyExposure/Exposure.h

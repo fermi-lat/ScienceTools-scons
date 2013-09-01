@@ -1,0 +1,24 @@
+package embed_python
+
+use GlastPolicy *
+use python v* IExternal
+
+apply_pattern package_include
+apply_pattern package_linkopts
+
+path_append PYTHONPATH $(embed_python_root)/python
+
+
+# have to add this since python does not.
+macro python_linkopts "" WIN32 "$(python_DIR)\libs\$(python_LIB) "
+
+private
+
+macro src *.cxx WIN32 "*.h *.cxx"
+library embed_python -no_share \
+  -s=../embed_python $(src)\
+  -s=../src $(src)
+
+macro pysource "" WIN32 "*.py"
+application test_embed_python -s=test $(src)*.cxx\
+ -s=../python $(pysource)

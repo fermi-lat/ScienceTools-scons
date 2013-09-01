@@ -1,0 +1,9 @@
+/** @file release.notes
+    @brief gtgraph package description
+    @author James Peachey, HEASARC/GSSC
+
+@verbatim
+30-jan-2006        v0 JP  Initial tag of rather old plotting utility.
+@endverbatim
+
+*/

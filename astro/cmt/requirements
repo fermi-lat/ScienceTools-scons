@@ -1,0 +1,29 @@
+package astro
+
+version v0
+
+branches astro cmt src doc
+
+use GlastPolicy v4*
+
+use CLHEP
+
+apply_pattern package_include
+apply_pattern package_linkopts
+
+private
+
+#the following prepend makes the includes and src folders available locally
+macro_prepend includes "-I $(ASTROROOT)/src -I.." WIN32 "/I $(ASTROROOT)\src /I.. "
+apply_pattern package_headers
+
+
+library astro -no_share  *.cxx  \
+ ${astro_headers}
+
+
+# this is the test program from G. Tosti
+application orbit test/Orbit.cxx 
+
+# simple program to test basic functionality
+application test_astro test/test.cxx

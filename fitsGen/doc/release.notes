@@ -1,0 +1,15 @@
+/** @file release.notes
+    @brief package rootTuple
+    @brief Package coordinators: J. Chiang <jchiang@slac.stanford.edu>
+
+    @verbatim
+    v0r4p0 13-Oct-03   JC   RootTuple.cxx can read trees with all floats 
+                            or all doubles.
+    v0r3p1 06-Oct-03   JC   Fix test program.
+    v0r3   04-Oct-03   JC   Use new merit format with FT1 trees and entries
+                            as doubles.
+    v0r2p0 03-Oct-03   JC   Updates to makeFT1.
+    v0r1   18-Sep-03   JC   Make more compatible with Goodi
+    v0     18-Sep-03   JC   Initial import
+    @endverbatim
+*/

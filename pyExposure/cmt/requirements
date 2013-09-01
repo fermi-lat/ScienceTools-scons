@@ -1,0 +1,29 @@
+package pyExposure
+version v0
+
+author James Chiang <jchiang@slac.stanford.edu>
+
+# $Id$
+
+use GlastPolicy v*
+use astro v*
+use irfLoader v* irfs
+use Likelihood v*
+use st_facilities v*
+use SwigPolicy v*
+
+apply_pattern package_include
+apply_pattern package_linkopts
+apply_pattern shared_library
+
+path_remove PYTHONPATH pyExposure
+path_append PYTHONPATH $(PYEXPOSUREROOT)/$(BINDIR)
+path_append PYTHONPATH $(PYEXPOSUREROOT)/python
+
+private
+
+macro_append cppflags "" Linux " -I../src -DTRAP_FPE " 
+macro source *.cxx WIN32 "*.h *.cxx"
+
+library pyExposure $(source)
+apply_pattern swig_module name="pyExposure"

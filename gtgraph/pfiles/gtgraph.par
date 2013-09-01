@@ -1,0 +1,19 @@
+#-------------------------------------------------------------------------------
+binfile1,   s, a, , , , "Name of file with bin definitions for 1st dimension"
+bintable1,  s, a, , , , "Name of table with bin definitions for 1st dimension"
+lowbin1,    s, a, , , , "Name of field with low bin definitions for 1st dimension"
+highbin1,   s, a, , , , "Name of field with high bin definitions for 1st dimension"
+datafile1,  s, a, , , , "Name of file with data for 1st dimension"
+datatable1, s, a, , , , "Name of table with data for 1st dimension"
+data1,      s, a, , , , "Name of field with data for 1st dimension"
+vector1,    b, a, no, , , "Is field with data for 1st dimension a vector?"
+#-------------------------------------------------------------------------------
+binfile2,   s, a, , , , "Name of file with bin definitions for 2nd dimension"
+bintable2,  s, a, , , , "Name of table with bin definitions for 2nd dimension"
+lowbin2,    s, a, , , , "Name of field with low bin definitions for 2nd dimension"
+highbin2,   s, a, , , , "Name of field with high bin definitions for 2nd dimension"
+datafile2,  s, a, , , , "Name of file with data for 2nd dimension"
+datatable2, s, a, , , , "Name of table with data for 2nd dimension"
+data2,      s, a, , , , "Name of field with data for 2nd dimension"
+#-------------------------------------------------------------------------------
+mode,       s, h, ql, , , ""

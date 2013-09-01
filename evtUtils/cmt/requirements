@@ -1,0 +1,25 @@
+package evtUtils
+version evtUtils-00-00-00
+
+author E. Charles <echarles@slac.stanford.edu>
+
+branches evtUtils cmt doc src
+
+use RootcintPolicy v* GlastPolicy
+use facilities v*
+use xmlBase v*
+
+macro_append cppflags "-Wno-unused-parameter " WIN32 ""
+
+macro_append ROOT_libs " -lTreePlayer"\
+                 WIN32 " libTreePlayer.lib"
+
+apply_pattern root_package headers="\
+ ../evtUtils/EventCategory.h\
+ ../evtUtils/EventMap.h\
+ ../evtUtils/EventClass.h"\
+ includes="-I${EVTUTILSROOT}"
+
+apply_pattern use_facilities_symbols
+
+application MakeEventClass ../apps/MakeEventClass.cxx

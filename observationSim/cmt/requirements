@@ -1,0 +1,36 @@
+package observationSim
+version v0
+
+author James Chiang <jchiang@slac.stanford.edu>
+
+# $Id$
+
+branches observationSim cmt src doc
+
+use FluxSvc v6*
+use astro v0*
+use Likelihood v0*
+use xml
+use cfitsio v1* IExternal
+use CLHEP v2* IExternal
+
+apply_pattern packageShr
+apply_pattern package_include
+
+private
+
+# allow use of internal path
+macro_prepend cppflags "" Linux "-I ../src -g -pedantic " WIN32 "/I..\src "
+
+macro_append test_observationSimlinkopts "-L$(LIKELIHOODROOT)/rh72_gcc2953/ -lLikelihood "
+
+apply_pattern package_linkopts
+
+# make sure test application gets built when library changes
+macro test_observationSimstamps "observationSim.stamp"
+
+macro my_headers "" WIN32 "../observationSim/*.h *.h"
+library observationSim -no_share $(my_headers) *.cxx
+
+# test application
+application test_observationSim test/*.cxx

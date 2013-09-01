@@ -1,0 +1,6 @@
+package st_stream
+author James Peachey peachey@lheamail.gsfc.nasa.gov
+
+use STpolicy *
+
+apply_pattern ST_library option="-no_share"

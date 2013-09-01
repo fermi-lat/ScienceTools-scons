@@ -1,0 +1,19 @@
+package sourceIdentify
+version v0
+
+author Jurgen Knodlseder <knodlseder@cesr.fr>
+
+use STpolicy *
+use hoops *
+use st_facilities *
+use st_app *
+use catalogAccess *
+
+apply_pattern ST_library option=-no_share
+apply_pattern ST_pfiles
+
+application sourceIdentify \
+sourceIdentify.cxx \
+Catalogue.cxx \
+Log.cxx \
+Parameters.cxx

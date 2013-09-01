@@ -1,0 +1,13 @@
+package pointing_history
+
+version v0
+
+author T.Burnett <tburnett@u.washington.edu>
+
+use astro *
+private
+
+macro source *.cxx WIN32 "*.h *.cxx"
+ 
+application pointing_history  $(source)
+

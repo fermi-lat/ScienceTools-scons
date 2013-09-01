@@ -1,0 +1,23 @@
+package st_app
+
+version v0
+
+author James Peachey <peachey@lheamail.gsfc.nasa.gov>
+
+use GlastPolicy *
+#use hoops *
+
+apply_pattern package_include
+apply_pattern package_linkopts
+
+#--------------------------------------------
+private
+
+macro st_app_cppflags  ""\
+  Linux "-I ../src -g -pedantic -ansi -fno-inline -Wno-long-long"\
+  WIN32 " /I ..\src /wd4305"
+
+macro source *.cxx WIN32 "*.h *.cxx ../st_app/*.h"
+library st_app -no_share $(source)
+
+application test_st_app test/*.cxx

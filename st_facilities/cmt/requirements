@@ -1,0 +1,17 @@
+package st_facilities
+version v0
+
+author James Chiang <jchiang@slac.stanford.edu>
+
+# $Id$
+
+use f2c v2r*
+use tip v1r*
+use facilities v2r*
+use cfitsio v1r* IExternal
+
+apply_pattern ST_library option="-no_share *.c "
+
+private
+
+use cppunit v1* IExternal

@@ -1,0 +1,9 @@
+package gtgraph
+
+use STpolicy *
+use st_app *
+use st_graph *
+use tip *
+
+apply_pattern ST_app name=gtgraph
+apply_pattern ST_pfiles
