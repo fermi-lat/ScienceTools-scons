@@ -103,6 +103,9 @@ class UnbinnedObs(object):
     def _readData(self, scFile, eventFile):
         self._readScData(scFile, eventFile)
         self._readEvents(eventFile)
+        if self.expCube is not None and self.expCube != "":
+            # Clear the spacecraft data to save memory for long observations.
+            self._scData.clear_arrays()
     def _readEvents(self, eventFile):
         if eventFile is not None:
             eventFiles = self._fileList(eventFile)
@@ -118,9 +121,6 @@ class UnbinnedObs(object):
         tmax = self._roiCuts.maxTime()
         scFiles = self._fileList(scFile)
         self._scData.readData(scFiles, tmin, tmax, self.sctable)
-#        self._scData.readData(scFiles[0], tmin, tmax, True, self.sctable)
-#        for file in scFiles[1:]:
-#            self._scData.readData(file, tmin, tmax)
         self.scFiles = scFiles
     def __getattr__(self, attrname):
         return getattr(self.observation, attrname)
