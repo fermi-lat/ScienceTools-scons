@@ -126,10 +126,11 @@ class FrontBackSedPlots(diagnostics.Diagnostics):
 
     def consistency_plots(self):
         """ Front-Back consistency
-        Measure of the likelihood ratio test for front/back consistency.
+        Measure of the likelihood ratio test for front/back consistency. For each source, the color reflects the test statistic for 
+	the hypothesis that front and back are consistent. The color scale range is from -1 to 2
         """
         map(self.consistency_plot, range(8), self.multifig()); 
-        self.multilabels('flux (eV/cm**2/s)','front/back asymmery','Asymmetries for all sources');
+        self.multilabels('glon','sin(glat)','Asymmetries for all sources');
         return plt.gcf()
     
     def get_strongest(self):

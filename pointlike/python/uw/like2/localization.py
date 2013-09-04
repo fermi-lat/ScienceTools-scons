@@ -54,7 +54,10 @@ class Localization(object):
         self.rs.update(True)
         self.maxlike=self.rs.log_like()
         self.skydir=self.saved_skydir = self.source.skydir #saved value
-        if self.seedpos is not None: self.skydir = self.seedpos
+        if self.seedpos is not None: 
+            if not isinstance(self.seedpos, SkyDir):
+                self.seedpos = SkyDir(*self.seedpos)
+            self.skydir = self.seedpos
         self.name = self.source.name
     
     def __enter__(self):

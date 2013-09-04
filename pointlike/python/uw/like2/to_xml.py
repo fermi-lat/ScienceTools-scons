@@ -124,7 +124,7 @@ def source_library(source_list, title='sources', stream=None, strict=False, maxi
                     ns +=1
                 else:
                     with Element('spatialModel', type='SpatialMap', 
-                            file=extended.ix[source['name']]['Spatial_Filename'].strip() ) as sm:
+                            file="%s" % extended.ix[source['name']]['Spatial_Filename'].strip() ) as sm:
                         SimpleElement('parameter', name='Prefactor', value=1.0, free=0, max=1e3,min=1e-3, scale=1.0)
                     ne += 1
             if maxi is not None and i>maxi: break

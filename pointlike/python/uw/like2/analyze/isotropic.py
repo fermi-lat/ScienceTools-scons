@@ -12,6 +12,8 @@ import pylab as plt
 from . import galactic
 
 class Isotropic(galactic.Galactic):
+    """Isotropic diffuse analysis
+    """
 
     def setup(self, **kw):
         super(Isotropic, self).setup(**kw)

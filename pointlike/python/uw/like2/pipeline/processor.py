@@ -609,7 +609,10 @@ def covariance(roi, **kwargs):
     print 'evaluating %d sources' %len(ptsources)
     
     for pti,source in ptsources:
-        ts = source.ts #roi.TS(source.name)
+        try: 
+            ts = source.ts 
+        except: 
+            ts = roi.TS(source.name)
         if ts<ts_min: continue
         fname = source.name.replace('+','p').replace(' ', '_')+'_covinfo.pickle'
         fullfname = os.path.join(covinfo, fname)
@@ -712,7 +715,7 @@ def iso_refit_processor(roi, **kwargs):
             plot_dir='isofit_plots', fit_dir='isofits', ylim=(0,2))
     return roi_refit_processor(roi, **kwargs)
 
-def limb_processor(roi, **kwarg):
+def limb_processor(roi, **kwargs):
     """ report on limb fit, perhaps refit"""
     outdir= kwargs.get('outdir')
     logpath = os.path.join(outdir, 'log')

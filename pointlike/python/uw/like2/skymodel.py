@@ -595,5 +595,9 @@ class Rename(object):
         print 'found %d names to convert' % len(self.namedict)
         
     def __call__(self, s):
+        t = s.name
         s.name = self.namedict.get(s.name, s.name)
+        if s.name[0] =='*':
+           print 'deleting', t
+           return False
         return True

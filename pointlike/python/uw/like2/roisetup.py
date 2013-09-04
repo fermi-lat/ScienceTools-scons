@@ -283,6 +283,8 @@ class ROIfactory(object):
         elif type(sel)==types.StringType:
             index = self.skymodel.hpindex(self.skymodel.find_source(sel).skydir)
             source_name=sel
+        elif type(sel)==tuple and len(sel)==2: # interpret a tuple of length 2 as (ra,dec)
+            index = self.skymodel.hpindex(skymaps.SkyDir(*sel))
         else:
             raise Exception( 'factory argument "%s" not recognized.' %sel)
         ## preselect the given source after setting up the ROI

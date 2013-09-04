@@ -54,7 +54,7 @@ def html_table( df, columns={}, name='temp', heading='heading', href=True, maxli
     open(filename, 'w').write(tt+'\n<body>\n'+t+'\n</body>')
     print 'wrote file %s' % filename
     
-    return '<a href="%s">%s</a>' % ( filename.split('/')[-1], heading)
+    return '<a href="%s?skipDecoration">%s</a>' % ( filename.split('/')[-1], heading)
     
     
     

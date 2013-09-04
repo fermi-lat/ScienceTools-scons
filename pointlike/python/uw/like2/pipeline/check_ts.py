@@ -114,7 +114,7 @@ def main(args):
     assert os.path.exists(args.files[0]), 'did not find file %s'%args.files[0]
     tsdata = TSdata('.', args.files[0], args.tsfield)
     rec = open(args.files[1], 'w')
-    make_seeds(tsdata, rcut=args.tsmin, bcut=args.bmin, rec=rec, seedroot=args.seedroot, minsize=args.minsize)
+    make_seeds(tsdata, rcut=args.tsmin, bcut=float(args.bmin), rec=rec, seedroot=args.seedroot, minsize=args.minsize)
     
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='examine a TS map file for clusters, create a file of source candidates')
