@@ -7,6 +7,7 @@
    @verbatim
    * EOH *
 
+ pyLikelihood-01-33-01 03-Sep-2013 jchiang call ScData::clear_arrays(...) in UnbinnedAnalysis after event data are read in
  pyLikelihood-01-33-00 27-Aug-2013 jchiang changes for FSSC-requested irfs handling
  pyLikelihood-01-32-00 10-Aug-2013 jchiang add irf handling code
  pyLikelihood-01-31-06 24-Jun-2013 jchiang use delta-log-likelihood = 0.5 for calculation in UpperLimit.errorEst()
