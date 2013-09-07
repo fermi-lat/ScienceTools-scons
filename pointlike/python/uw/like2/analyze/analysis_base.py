@@ -218,6 +218,9 @@ class AnalysisBase(object):
                 % (tuple(time.localtime()[:6])+
                  (os.environ.get('HOSTNAME',os.environ.get('COMPUTERNAME','?')),
                   os.environ.get('USER',os.environ.get('USERNAME','?'))))
+        try:
+            htmldoc+= '\n<br>'+ re.search(r'Header:(.+)\$', sys.modules[self.__module__].__doc__).group(1)
+        except: pass
         htmldoc+='\n</body>'
         self.htmlmenu.save(os.path.join(self.plotfolder,'menu.html'))
         print 'saved local menu to %s' % os.path.join(self.plotfolder,'menu.html')
