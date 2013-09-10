@@ -1,5 +1,5 @@
 """
-Description here
+Limb refit
 
 $Header$
 
@@ -14,7 +14,8 @@ from . import limb
 from .analysis_base import FloatFormat
 
 class LimbRefit(limb.Limb):
-    """ Special run to refit Limb normalization
+    """Limb normalization refit
+    <p>Results of a special pipeline run to allow only limb normalization to vary
     %(table)s
     """
 
