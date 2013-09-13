@@ -79,7 +79,8 @@ class Export(sourceinfo.SourceInfo):
         df = pd.DataFrame(t)
         df['flux13*'] = df['Flux_Density']*1e13
         df['unc_flux13*'] = df['Unc_Flux_Density']*1e13
-        summary = html_table(df.describe().T, float_format=FloatFormat(3), href=False)
+        summary = html_table(df.describe().T, float_format=FloatFormat(3),
+                heading='', href=False, maxlines=50)
         self.fits_summary_table = summary.replace('%', '%%')
         print 'Check: %s' % df
         
