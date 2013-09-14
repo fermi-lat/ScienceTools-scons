@@ -7,7 +7,6 @@ $Header$
 import os, pyfits, pickle
 from pylab import mlab
 import numpy as np
-import pandas as pd
 
 def makefits(r, filename=None, **kwargs):
     """ convert a recarray to a pyfits object, write to filename if present.
