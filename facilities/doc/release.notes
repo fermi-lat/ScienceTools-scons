@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+ facilities-02-22-05 19-Sep-2013    jrb Handle setupEnvironment call automatically in some cases
  facilities-02-22-04 17-May-2013 glastrm Fixed AssertDialogOverride() function to provide desired behavior and updated comment documentation
  facilities-02-22-03 16-May-2013 glastrm Corrected line endings so that programs will properly compile using the AssertDialogOverride.h header.
  facilities-02-22-02 15-May-2013 glastrm Added header to use when overriding assertion dialogs on Windows.
