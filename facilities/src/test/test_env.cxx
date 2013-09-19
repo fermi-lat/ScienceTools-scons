@@ -34,14 +34,21 @@ int main(){
     errors++;
   }
   testSet = commonUtilities::getEnvironment("FACILITIESXMLPATH");
-  if(testSet != ""){
+  string xmlPath = commonUtilities::getEnvironment("INST_DIR");
+  xmlPath = commonUtilities::joinPath(xmlPath, "xml");
+  xmlPath = commonUtilities::joinPath(xmlPath, "facilities");
+  if (testSet == xmlPath) {
+    cout << "FACILITIESXMLPATH properly set with no explicit setupEnvironment call"
+         << endl;
+  }
+  else if(testSet != ""){
     cerr<<"FACILITIESXMLPATH incorrectly set"<<endl;
     errors++;
   }
   commonUtilities::setupEnvironment();
   testSet = commonUtilities::getEnvironment("FACILITIESXMLPATH");
   if(testSet != commonUtilities::getXmlPath("facilities")){
-    cerr<<"FACILITIESXMLPATH incorrectly not set to right value"<<endl;
+    cerr<<"FACILITIESXMLPATH not set to right value"<<endl;
     errors++;
   }
   return errors;

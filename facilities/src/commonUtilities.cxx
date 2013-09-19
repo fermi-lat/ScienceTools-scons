@@ -109,6 +109,9 @@ namespace facilities {
   std::string commonUtilities::getDataPath(const std::string &package){
 
 #ifdef SCons
+    if (commonUtilities::myInternal == 0) {
+      commonUtilities::setupEnvironment();
+    }
     std::string packageRoot = 
       commonUtilities::myInternal->getSconsPackageRoot(package);
     std::string dataPath = joinPath(joinPath(packageRoot, "data"), package);
@@ -131,6 +134,10 @@ namespace facilities {
 
   std::string commonUtilities::getJobOptionsPath(const std::string &package) {
 #ifdef SCons
+    if (commonUtilities::myInternal == 0) {
+      commonUtilities::setupEnvironment();
+    }
+
     std::string packageRoot = 
       commonUtilities::myInternal->getSconsPackageRoot(package);
 
@@ -146,6 +153,10 @@ namespace facilities {
 
   std::string commonUtilities::getXmlPath(const std::string &package){
 #ifdef SCons
+    if (commonUtilities::myInternal == 0) {
+      commonUtilities::setupEnvironment();
+    }
+
     std::string packageRoot = 
       commonUtilities::myInternal->getSconsPackageRoot(package);
     std::string xmlPath = joinPath(joinPath(packageRoot, "xml"), package);
@@ -168,6 +179,10 @@ namespace facilities {
 
   std::string commonUtilities::getPfilesPath(const std::string &package){
 #ifdef SCons
+    if (commonUtilities::myInternal == 0) {
+      commonUtilities::setupEnvironment();
+    }
+
     std::string packageRoot = 
       commonUtilities::myInternal->getSconsPackageRoot(package);
     std::string pfilesLocation = joinPath(packageRoot, "syspfiles");
@@ -335,7 +350,7 @@ namespace facilities {
 #endif
 #endif
 
-    // EXTFILES and related environment variaables
+    // EXTFILES and related environment variables
 #ifndef HEADAS
 #ifdef extFiles
     setEnvironment("EXTFILESSYS", joinPath(joinPath(getEnvironment("GLAST_EXT"), "extFiles"), extFiles));
