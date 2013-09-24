@@ -76,14 +76,14 @@ class Associations(sourceinfo.SourceInfo):
         """
         # load the catalogs used
         srcid_path=sys.path[0] = os.path.expandvars('$FERMI/catalog/srcid/')
-        
         import classes
-        from classes import *
         cats = dict()
         for cn in classes.__all__:
             cd = dict()
+            module = __import__('classes.'+cn,  fromlist=['classes'])
+
             for var in 'catid catname prob_prior prob_thres figure_of_merit max_counterparts new_quantity selection'.split():
-                cd[var] = eval('%s.__dict__["%s"]'%(cn,var))
+                cd[var] = module.__dict__[var] #eval('%s.__dict__["%s"]'%(cn,var))
             cats[cn]= cd
             if cd['catname'].find('*')>0:
                 try:
