@@ -290,10 +290,17 @@ class Catalog(object):
         else:
             self.ras,self.decs = lons[self.mask],lats[self.mask]
         self._get_foms()
+        self.names = [s.name for s in self.sources] #replace so in order of sources
 
     def __iter__(self):
         return self.sources
 
+    def __getitem__(self, name):
+        try:
+            return self.sources[self.names.index(name)]
+        except:
+            raise Exception('Source %s not in catalog %s'%(name, self.cat_name))
+    
     def _get_class_module(self,class_module):
         """Import and return module class_file"""
         return __import__(class_module)
@@ -372,6 +379,9 @@ class Catalog(object):
             elif 'RAJ2000' in ttypes.values():
                 lon_key = ttypes[ttypes.keys()[ttypes.values().index('RAJ2000')]].value
                 lat_key = ttypes[ttypes.keys()[ttypes.values().index('DEJ2000')]].value
+            elif 'RAJD' in ttypes.values(): # only for bigbfile?
+                lon_key = ttypes[ttypes.keys()[ttypes.values().index('RAJD')]].value
+                lat_key = ttypes[ttypes.keys()[ttypes.values().index('DECJD')]].value
             elif 'RA' in ttypes.values():
                 lon_key = ttypes[ttypes.keys()[ttypes.values().index('RA')]].value
                 try:
@@ -393,7 +403,7 @@ class Catalog(object):
             return (self.hdu.data.field(lon_key).astype('float'),
                     self.hdu.data.field(lat_key).astype('float'))
         else:
-            return
+            raise SrcidError('did not find position info in catalog' )
 
     def _make_selection(self):
         """Make selections specified in class module."""
