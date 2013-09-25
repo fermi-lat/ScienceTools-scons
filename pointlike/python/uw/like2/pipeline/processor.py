@@ -314,7 +314,7 @@ def process(roi, **kwargs):
     diffuse_only = kwargs.pop('diffuse_only', False)
     norms_first = kwargs.pop('norms_first', True)
     freeze_iem = kwargs.pop('freeze_iem', 1.0)
-    freeze_iso = kwargs.pop('freeze_iso', 1.0)
+    freeze_iso = kwargs.pop('freeze_iso', None)
 
     countsplot_tsmin = kwargs.pop('countsplot_tsmin', 100) # minimum for counts plot
     source_name = kwargs.pop('source_name', None) # for localize perhaps
