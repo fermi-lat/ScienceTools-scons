@@ -148,12 +148,17 @@ class DiffuseFunction(skymaps.DiffuseFunction):
         if not os.path.exists(self.filename):
             self.filename = os.path.expandvars(os.path.join('$FERMI','diffuse',self.filename))
         assert os.path.exists(self.filename), 'DiffuseFunction file %s not found' % self.filename
-        self.loaded = False
+        self.loaded =  os.path.splitext(self.filename)[-1][:4] != '.fit'
     def load(self):
         if  self.loaded: return
         self.loaded=True
         print 'loading diffuse file %s: warning, not interpolating' %self.filename
-        super(DiffuseFunction,self).__init__(self.filename, 1000., False) #
+        try:
+            super(DiffuseFunction,self).__init__(self.filename, 1000., False) #
+        except RuntimeError, msg:
+            print 'RuntimeEror "%s": retry' % msg
+            super(DiffuseFunction,self).__init__(self.filename, 1000., False) #
+
     def name(self):
         return self.filename
         
