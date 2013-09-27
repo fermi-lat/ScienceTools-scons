@@ -129,7 +129,8 @@ class DSSBitMask(DSSSimpleRange):
 
     def __init__(self,d):
         super(DSSBitMask,self).__init__(d)
-        self['lower'] = self['upper'] = int((self['TYP']).split(',')[-1][:-1])
+        t = self['TYP'][1:-1] #split off parens
+        self['lower'] = self['upper'] = int(t.split(',')[1])
 
     def intersection(self,other):
         """ A bit mask intersection at the level we require is trivial --
@@ -179,8 +180,11 @@ class DSSEntries(list):
         except IOError:
             print('Could not find file {0}'.format(fits_name))
             return
-        except (IndexError,KeyError): 
-            print('Invalid header index')
+        except IndexError, msg: 
+            print('Invalid header index for fits file %s: %s'% (fits_name,msg))
+            return
+        except KeyError, msg:
+            print('Invalid key for fits file %s: %s'% (fits_name,msg))
             return
         keys = [x for x in h.keys() if x.startswith('DS')]
         if len(keys)==0: return
