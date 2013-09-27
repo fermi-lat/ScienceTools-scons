@@ -369,7 +369,7 @@ class DataSpec(object):
             print("dss is None"); sys.stdout.flush()
             return False
         if self.dss is None: 
-            print('Extracting DSS from existing binfile')
+            if not self.quiet: print('Extracting DSS from existing binfile')
             self.dss = dss
         if self.dss != dss:
             print 'File %s Failed DSS keyword check: expected \n%s \nbut found \n%s' % (self.binfile, self.dss, dss)
@@ -379,7 +379,7 @@ class DataSpec(object):
         #  Check GTI
         #
         gti = skymaps.Gti(self.binfile)
-        print 'GTI from binfile', gti
+        if not self.quiet: print 'GTI from binfile', gti
         if gti is None:
             raise DataManException('GTI not found in the binfile %s' % self.binfile)
         self.gti = gti
@@ -440,7 +440,7 @@ class DataSpec(object):
         try:
             lt[0].header['RADIUS']; lt[0].header['PIXSIZE']
         except KeyError: 
-            print 'no header info in ltcube?' #pass #return False
+            if not self.quiet: print 'no header info in ltcube?' #pass #return False
         # check for weighted extension if we are using it
         if self.use_weighted_livetime:
             #try: h['WEIGHTED_EXPOSURE']
@@ -455,7 +455,7 @@ class DataSpec(object):
         dss = dssman.DSSEntries(self.ltcube,header_key=0)
         if dss is None or len(dss)==0: 
             if self.legacy:
-                print 'Accepting ltcube without DSS info since legacy specified'
+                if not self.quiet: print 'Accepting ltcube without DSS info since legacy specified'
                 dss=self.dss
             else:
                 raise DataManException('DSS found in ltcube %s' % self.ltcube)
