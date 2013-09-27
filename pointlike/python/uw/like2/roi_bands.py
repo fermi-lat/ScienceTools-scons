@@ -111,5 +111,6 @@ class ROIBand(object):
         ft = lambda e : t / (fn(e) * self.exp.value(self.sd, e) ) -1
         #print alpha, ft(a), ft(b)
         if ft(a)*ft(b)>0: return (a+b)/2. # no optimum, flat? use mean
-        return optimize.brentq(ft, a, b)
+        opte = optimize.brentq(ft, a, b)
+        return opte if opte>a and opte<b else np.sqrt(a*b) # protection
 
