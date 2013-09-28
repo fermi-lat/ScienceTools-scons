@@ -252,7 +252,7 @@ class SrcId(srcid.SourceAssociation):
             'ra':    [a[2].ra() for a in candidates],
             'dec':   [a[2].dec() for a in candidates],
             'ang':   [np.degrees(a[2].difference(pos)) for a in candidates],
-            'delta_ts':[a[4] for a in candidates],
+            'deltats':[a[4] for a in candidates],
             }
         # stuff depending on the catalog 
         cats = [self.catalogs[a[3]] for a in candidates]
@@ -284,6 +284,15 @@ def run_srcid(r, classes='all_but_gammas'):
         associations.append(d)
 
     return pd.Series(associations,index=r.index)   
+
+def main(filename, sources='sources.pickle', cuts=('sources.ts>10'), classes='all_but_gammas'):
+    import pandas as pd
+    sources = pd.load(sources) # change to read_pickle eventually
+    cut_sources = sources[eval(cuts)]
+    print 'applied cut "%s", %d remain' % (cuts, len(cut_sources))
+    ass = run_srcid(cut_sources, classes)
+    print 'Writing to file %s' % filename
+    ass.dump(filename) # to_pickle
     
 if __name__=='__main__':
     import argparse
@@ -296,10 +305,5 @@ if __name__=='__main__':
             help='selection cuts: use name "sources"')
     parser.add_argument('--classes', default='all_but_gammas', help='List of classes, default "all_but_gamma"')
     args = parser.parse_args()
-    sources = pd.read_pickle(args.sources)
-    cut_sources = sources[eval(args.cuts)]
-    print 'applied cut "%s", %d remain' % (args.cuts, len(cut_sources))
-    ass = run_srcid(cut_sources, args.classes)
-    print 'Writing to file %s' % args.filename[0]
-    ass.to_pickle(args.filename[0])
+    main(args.filename[0], args.sources, args.cuts, args.classes)
     
