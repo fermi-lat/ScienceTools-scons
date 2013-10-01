@@ -286,7 +286,8 @@ class AnalysisBase(object):
             A file path. If the first folder, +'.zip' exists, unpack from that zip file
         """
         pkls = []
-        zipfilename = os.path.split(folder)[0]+'.zip'
+        zipfilename = folder+'.zip' #os.path.split(folder+'.zip')[0]
+        
         if os.path.exists(zipfilename):
             print 'unpacking file %s ...' % (os.getcwd()+'/'+zipfilename ,),
             z = zipfile.ZipFile(zipfilename)
