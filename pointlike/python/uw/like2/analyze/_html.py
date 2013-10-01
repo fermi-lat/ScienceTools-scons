@@ -18,7 +18,7 @@ p   { font-size:10pt; margin-left:25pt; }
 pre { font-size:10pt; margin-left:25pt; 
     border-style:solid;    border-width:thin;}
 h3 { -webkit-margin-after: 0px; -webkit-margin-before: 2em; }
-h4, h5, ol, ul {margin-left:25pt;}
+h4, h5, ol, ul, dl {margin-left:25pt;}
 table { margin-left:25pt; margin-top:15pt; font-size:8pt;
     border-style: solid; border-width: 1px;  border-collapse: collapse; }
 table.topmenu {border-style:solid; border-width:0px}

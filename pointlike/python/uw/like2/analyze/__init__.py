@@ -13,6 +13,7 @@ __all__=[
  'collection',
  'config',
  'data',
+ 'diffuse_info',
  'environment',
  'export',
  'find_peak',
