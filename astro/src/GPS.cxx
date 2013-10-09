@@ -180,6 +180,7 @@ CLHEP::HepRotation GPS::transformToGlast(double seconds, CoordSystem index){
             //do nothing - we are already in the GLAST frame.
             break;
 
+        case NADIR:
         case ZENITH: { 
             // earth-zenith to GLAST - just the rocking rotation.
             // first form rotation from local zenith to celestial
@@ -193,6 +194,13 @@ CLHEP::HepRotation GPS::transformToGlast(double seconds, CoordSystem index){
                 north(0,0,1),
                 east( north.cross(zenith).unit() );
             HepRotation zenith_to_cel(east, zenith.cross(east), zenith);
+
+            if (::getenv("ZENITH_FRAME_FIX") || index == NADIR) {
+               /// Use coordinate system with z-axis along nadir,
+               /// x-axis to the north, y-axis to east
+               zenith_to_cel = HepRotation(zenith.cross(east), east, -zenith);
+            }
+
 
             // return the product, zenith->celestial->GLAST
             trans = trans* zenith_to_cel;
@@ -240,6 +248,7 @@ CLHEP::Hep3Vector GPS::LATdirection(CoordSystem index,const CLHEP::Hep3Vector& d
         case LAT: 
             //do nothing - we are already in the GLAST frame.
             break;
+        case NADIR:
         case ZENITH: 
             { 
                 // earth-zenith to GLAST - just the rocking rotation.
@@ -255,7 +264,7 @@ CLHEP::Hep3Vector GPS::LATdirection(CoordSystem index,const CLHEP::Hep3Vector& d
                     east( north.cross(zenith).unit() );
                 HepRotation zenith_to_cel(east, zenith.cross(east), zenith);
 
-                if (::getenv("ZENITH_FRAME_FIX")) {
+                if (::getenv("ZENITH_FRAME_FIX") || index == NADIR) {
                    /// Use coordinate system with z-axis along nadir,
                    /// x-axis to the north, y-axis to east
                    zenith_to_cel = HepRotation(zenith.cross(east), east, -zenith);
