@@ -39,7 +39,7 @@ public:
     virtual double zenithCosine()const{return m_zenithCos;}
 
 private:
-    typedef enum  { ZENITH, EQUATORIAL, GALACTIC, SUN, MOON, JUPITER, SATURN, INVALID } Frame;
+   typedef enum  { ZENITH, EQUATORIAL, GALACTIC, SUN, MOON, JUPITER, SATURN, NADIR, INVALID } Frame;
     Frame m_frame;
     ISpectrum* m_spectrum;
     double m_zenithCos;
