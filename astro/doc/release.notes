@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-03-15-04 09-Oct-2013 jchiang add NADIR case that correctly implements transformations using EARTH_AZIMUTH_ANGLE
  astro-03-15-03 29-Aug-2013 jchiang possible fix for transforming directions given by zenith and Earth azimuth angles
  astro-03-15-02 01-Jul-2013 jchiang more informative TimeRangeError in PointingHistory.cxx (from Jeremy)
  astro-03-15-01 21-Jan-2013  lande Bugfix for bad CTYPE1 values in SkyProj.
