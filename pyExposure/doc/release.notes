@@ -6,6 +6,7 @@
   $Id$
   * EOH *
 
+ pyExposure-02-06-00 10-Oct-2013 jchiang use new irf discovery mechanism
  pyExposure-02-05-10 10-Aug-2011 jchiang switch to P7SOURCE_V6 as default irfs; add MapCubeFunction2 to list of available source functions
  pyExposure-02-05-09 06-Dec-2010 jchiang trivial change to Exposure::effArea
  pyExposure-02-05-08 24-Feb-2010    jrb TRAP_FPE is for Linux only
