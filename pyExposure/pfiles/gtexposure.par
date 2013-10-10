@@ -4,7 +4,7 @@
 
 infile,f,a,"",,,Light curve file
 scfile,f,a,"",,,Spacecraft file
-irfs,s,a,"P7SOURCE_V6",,,Response functions
+irfs,s,a,"CALDB",,,Response functions
 srcmdl,f,a,"none",,,Source model XML file
 target,s,a,"",,,Target source name
 specin,r,a,-2.1,,,Photon index for spectral weighting

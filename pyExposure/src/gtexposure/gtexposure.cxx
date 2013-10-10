@@ -193,12 +193,13 @@ void GtExposure::setExposure() {
    }
    std::vector<double> tlims;
    getLcTimes(tlims);
+   std::string lc_file = m_pars["infile"];
    std::string ft2file = m_pars["scfile"];
    std::string irfs = m_pars["irfs"];
-   if (irfs == "DSS") {
-      irfs = "DC2";
+   if (irfs == "CALDB") {
+      dataSubselector::Cuts cuts(lc_file, "RATE", false);
+      irfs = cuts.CALDB_implied_irfs();
    }
-   std::string lc_file = m_pars["infile"];
    dataSubselector::GtiCut gtiCut(lc_file);
    std::vector< std::pair<double, double> > gtis;
    evtbin::Gti::ConstIterator it(gtiCut.gti().begin());
