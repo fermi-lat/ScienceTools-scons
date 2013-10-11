@@ -339,7 +339,7 @@ def process(roi, **kwargs):
     if freeze_iso is not None:
         print 'Freezeing isotropic to %f' % freeze_iso
         roi.freeze('Scale', 'iso*', freeze_iso)
-    if freeze_limb is not None:
+    if freeze_limb is not None and 'limb' in roi.sources.source_names:
         print 'Freezeing limb to %s' % freeze_limb
         roi.freeze('Scale_front', 'limb', freeze_limb[0])
         roi.freeze('Scale_back',  'limb', freeze_limb[1])
