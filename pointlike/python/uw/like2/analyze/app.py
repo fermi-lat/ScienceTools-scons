@@ -60,7 +60,7 @@ class AppMenu(dict):
 menu = AppMenu(module_names)
         
         
-def main(procs, args, update_top=False , raise_exception=False):
+def main(procs, args=None, update_top=False , raise_exception=False):
     np.seterr(invalid='warn', divide='warn')
     success=True
     if type(procs)==types.StringType: procs = procs.split()
@@ -84,11 +84,11 @@ def main(procs, args, update_top=False , raise_exception=False):
             continue
 
         if arg not in menu.keys():
-            print 'found %s; expect one of %s' % (arg, menu.keys())
+            print 'found %s; expect one of %s' % (arg, sorted(menu.keys()))
             success = False
             continue
         try:
-            menu(arg).all_plots()
+            menu(arg,args=args).all_plots()
         except FloatingPointError, msg:
             print 'Floating point error running %s: "%s"' % (arg, msg)
             print 'seterr:', np.seterr()

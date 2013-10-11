@@ -19,7 +19,7 @@ class CountPlots(analysis_base.AnalysisBase):
     %(iteration_info)s
     """ 
     require='pickle.zip'
-    def setup(self):
+    def setup(self, **kwargs):
         self.plotfolder = 'counts'
 
          # get the basic pickles with the model
