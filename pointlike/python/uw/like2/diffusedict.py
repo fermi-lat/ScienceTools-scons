@@ -73,9 +73,12 @@ class IsotropicSpectralFunction(DiffuseBase):
         except Exception, msg:
             print 'Failure to evaluate IsotropicSpectralFunction %s : %s' % (self.expression, msg)
             raise
+        self.energy=1000
     def __repr__(self):
         return '%s: %s' % (self.__class__.__name__, self.expression )
-    def __call__(self, skydir, energy):return self.spectral_function(energy)
+    def __call__(self, skydir, energy=None):
+        return self.spectral_function(self.energy if energy is None else energy)
+    def setEnergy(self, energy): self.energy=energy
 
 
 class CachedMapCube(DiffuseBase):
