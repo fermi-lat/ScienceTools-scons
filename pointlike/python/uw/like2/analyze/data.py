@@ -18,7 +18,7 @@ class Data(analysis_base.AnalysisBase):
     <br>look at binned data 
     """
     require='config.txt'
-    def setup(self, eminmin=0):
+    def setup(self, eminmin=0, **kwargs):
         self.plotfolder = 'data'
         config = eval(open('config.txt').read())
         datadict = config['datadict']
