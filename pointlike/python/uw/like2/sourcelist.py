@@ -243,7 +243,7 @@ class SourceList(list):
         """
         variances = np.concatenate([m.get_cov_matrix().diagonal()[m.free] for m in self.models])
         variances[variances<0]=0
-        return np.sqrt(variances) / (np.abs(self.model_parameters) +1e-6) #avoid divide by zero
+        return np.sqrt(variances) / (np.abs(self.model_parameters) +1e-20) #avoid divide by zero
 
     def set_default_bounds(self, source, force=False):
         model = source.spectral_model
