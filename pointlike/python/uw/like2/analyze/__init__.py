@@ -25,7 +25,7 @@ __all__=[
  'gtlikecomparison',
  'hptables',
  'isotropic',
-# 'isotropicspectra',
+ 'isotropicspectra',
  'limb',
  'limbrefit',
  'localization',
