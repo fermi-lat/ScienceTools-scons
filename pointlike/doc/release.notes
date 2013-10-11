@@ -7,6 +7,7 @@ $Id$
  --------- -----   --- -----------------------------------------------------------------------
  * EOH *
 
+ pointlike-08-03-00 11-Oct-2013 burnett after diffuse refactor, all up to date
  pointlike-08-02-00 11-Oct-2013 burnett just before diffuse refactor
  pointlike-08-01-00 15-Sep-2013 burnett fix pandas issue
  pointlike-08-00-04 28-May-2013 heather (for lande) 
