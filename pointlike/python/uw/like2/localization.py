@@ -210,6 +210,7 @@ def make_association(source, tsf, associate, quiet=False):
     except Exception, msg:
         if not quiet: print 'Exception associating %s: %s' %( source.name, msg)
         adict=None
+        raise
     source.adict = adict 
     if adict is not None:
     

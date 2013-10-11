@@ -105,6 +105,7 @@ class ROIBand(object):
           f: function of energy
         """
         a,b = self.emin, self.emax
+        if f(a)==0 or f(b)==0: return np.sqrt(a*b)
         alpha = np.log(f(a)/f(b))/np.log(b/a)
         fn = lambda x: x**-alpha
         t = self.expected(fn) / (b-a)
