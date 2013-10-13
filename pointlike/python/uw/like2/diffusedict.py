@@ -18,6 +18,7 @@ def PowerLaw(*pars, **kw):   return Models.PowerLaw(p=pars, **kw)
 
 class DiffuseBase(object):
     """Base class for diffuse sources
+    expect subclasses to implement SkySpectrum interface
     """
     def load(self): pass
     def __repr__(self):
