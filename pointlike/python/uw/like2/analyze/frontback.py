@@ -1,5 +1,5 @@
 """
-Description here
+SED analysis
 
 $Header$
 
@@ -14,9 +14,12 @@ from . import analysis_base
 
 
 class FrontBackSedPlots(analysis_base.AnalysisBase):
+    """ 
+    Analysis of a special "sedinfo" run, which records SED information for all sources
+        with fits to front and back only, as well as both.
+    """
+
     require = 'sedinfo.zip'
-    """
-    """
     def setup(self, **kwargs):
         """
         Unpack the pickles, one per source, into convenient DataFrame objects
@@ -236,8 +239,7 @@ class FrontBackSedPlots(analysis_base.AnalysisBase):
         ax.set_title('TS with zero flux, energy %.0f MeV'%self.energy[ib], fontsize='medium');
         ax.legend(prop=dict(size=10))  
     
+ 
+
     def all_plots(self):
-        """ Analysis of a special "sedinfo" run, which records SED information for all sources
-        with fits to front and back only, as well as both.
-        """
         self.runfigures([self.fb_flux_vs_energy, self.fb_summary,self.asym_plots, self.consistency_plots, ])
