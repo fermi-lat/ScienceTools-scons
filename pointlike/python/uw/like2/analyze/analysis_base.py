@@ -100,7 +100,7 @@ class AnalysisBase(object):
         else:
             raise Exception('Subclass %s of AnalysisBase did not create a "plotfolder" variable' % self.__class__.__name__)
 
-    def setup(self, **kwargs):
+    def setup(self, *args, **kwargs):
         assert False, 'Base class not implemented'
         
     def startlog(self):

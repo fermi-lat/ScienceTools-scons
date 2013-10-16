@@ -10,14 +10,14 @@ import numpy as np
 import pylab as plt
 import pandas as pd
 
-from . import diagnostics
+from . import analysis_base
 
 
-class FrontBackSedPlots(diagnostics.Diagnostics):
+class FrontBackSedPlots(analysis_base.AnalysisBase):
     require = 'sedinfo.zip'
     """
     """
-    def setup(self):
+    def setup(self, **kwargs):
         """
         Unpack the pickles, one per source, into convenient DataFrame objects
         """
