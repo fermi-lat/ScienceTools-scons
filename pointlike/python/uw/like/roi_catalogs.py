@@ -476,7 +476,7 @@ class ExtendedSourceCatalog(SourceCatalog):
         self.archive_directory = archive_directory
 
         import pyfits
-        filename=join(self.archive_directory,"LAT_extended_sources*.fit")
+        filename=join(self.archive_directory,"LAT_extended_sources*.fit*")
         filename=glob.glob(filename)
         if len(filename)!=1: raise Exception("Unable to find LAT_extended_sources.fit archive file.")
         filename=filename[0]
