@@ -5,6 +5,7 @@
     @verbatim
     * EOH *
 
+ dataSubselector-08-06-01 23-Oct-2013 jchiang make application of RangeCuts half-open (open at lower boundary) to avoid possible double counting of events that are right on the boundaries
  dataSubselector-08-06-00 27-Aug-2013 jchiang changes for FSSC-requested irfs handling
  dataSubselector-08-05-00 10-Aug-2013 jchiang new irf-handling code: add irfs versioning info to DSS keywords via VersionCut class; updated code to determine irfs from input file
  dataSubselector-08-04-07 19-Dec-2012  fegan improve multiple input file handling
