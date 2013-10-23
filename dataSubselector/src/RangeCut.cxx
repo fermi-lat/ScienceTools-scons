@@ -105,11 +105,11 @@ std::string RangeCut::filterString() const {
    std::ostringstream filter;
    filter << std::setprecision(20);
    if (m_intervalType == MINONLY) {
-      filter << m_min << " <= " << m_fullName;
+      filter << m_min << " < " << m_fullName;
    } else if (m_intervalType == MAXONLY) {
       filter << m_fullName << " <= " << m_max;
    } else {
-      filter << m_min << " <= " << m_fullName << " && "
+      filter << m_min << " < " << m_fullName << " && "
              << m_fullName << " <= " << m_max;
    }
    return filter.str();
@@ -134,11 +134,11 @@ void RangeCut::getKeyValues(std::string & type, std::string & unit,
 
 bool RangeCut::accept(double value) const {
    if (m_intervalType == MINONLY) {
-      return m_min <= value;
+      return m_min < value;
    } else if (m_intervalType == MAXONLY) {
       return value <= m_max;
    }
-   return m_min <= value && value <= m_max;
+   return m_min < value && value <= m_max;
 }
 
 double RangeCut::extractValue(tip::ConstTableRecord & row) const {

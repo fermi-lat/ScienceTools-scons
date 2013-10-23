@@ -183,6 +183,8 @@ void DssTests::cutsConstructor() {
    params["ENERGY"] = 20.;
    CPPUNIT_ASSERT(!my_cuts.accept(params));
    params["ENERGY"] = 30.;
+   CPPUNIT_ASSERT(!my_cuts.accept(params));
+   params["ENERGY"] = 30.0001;
    CPPUNIT_ASSERT(my_cuts.accept(params));
    params["ENERGY"] = 100.;
    CPPUNIT_ASSERT(my_cuts.accept(params));
