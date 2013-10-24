@@ -111,8 +111,10 @@ class DataSet(dataman.DataSpec):
         #('phase_factor', 1.0, 'phase factor for pulsar phase analysis'),
 
         ('nocreate', False, 'Set True to suppress file creation'),
+        ('postpone', False, 'Set true to postpone opening data until needed'),
         ('quiet', True, 'set False for some output'),
         ('verbose', False, 'more output'),)
+        
     
     @keyword_options.decorate(defaults)
     def __init__(self, dataset_name, **kwargs):
@@ -144,7 +146,8 @@ class DataSet(dataman.DataSpec):
             self.lt = skymaps.LivetimeCube(self.ltcube,weighted=False) ###<< ok?
         else:
             self.lt = None
-        self._load_binfile()
+        if not self.postpone:
+            self._load_binfile()
     
 
     def _process_dataset(self, dataset, interval=None, month=None, quiet=False):
@@ -202,6 +205,9 @@ class DataSet(dataman.DataSpec):
         exposure
         roi_dir
         """
+        if self.postpone:
+            self.load_binfile()
+            self.postpone=False
         self.bands = []
         band_kwargs= dict()
         band_kwargs.update(kwargs)
@@ -267,9 +273,12 @@ class DataSet(dataman.DataSpec):
                 s.append('\n\t'.join(files[-5:]))
         process_ft('FT1 files: ',self.ft1files)
         process_ft('FT2 files: ',self.ft2files)
-        s.append('Binned data:   {0}'.format(self.binfile))
-        s.append('           :  %d photons, %d energy bands from %d to %d MeV'\
-                % (self.dmap.photonCount(), len(self.dmap), self.dmap[1].emin(), self.dmap[len(self.dmap)-1].emax()))
+        s.append('Binned data: {0}'.format(self.binfile))
+        if not self.postpone:
+            s.append('           :  %d photons, %d energy bands from %d to %d MeV'\
+                    % (self.dmap.photonCount(), len(self.dmap), self.dmap[1].emin(), self.dmap[len(self.dmap)-1].emax()))
+        else:
+            s.append('            (load postponed)')
         s.append('Livetime cube: {0}'.format(self.ltcube))
         s.append(self.gti.__str__())
         s.append(self.dss_info())
