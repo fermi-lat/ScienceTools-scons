@@ -173,9 +173,9 @@ class Configuration(object):
         
         config = eval(open(os.path.expandvars(modeldir+'/config.txt')).read())
         for key in 'extended irf'.split():
-            if self.__dict__[key] is None or self.__dict__[key]=='None': 
+            if self.__dict__[key] is not None: 
                 if not self.quiet:
-                    print '%s: %s set from config: "%s"' %(key, kwargs.get(key,None), config.get(key,None))
+                    print '%s : override config.txt, "%s" => "%s"' %(key, kwargs.get(key,None), config.get(key,None))
                 self.__dict__[key]=config.get(key, None)
 
         # set up IRF
