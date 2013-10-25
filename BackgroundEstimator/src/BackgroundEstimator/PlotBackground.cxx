@@ -14,7 +14,7 @@
 #include <vector>
 
 //if Energy_Min_user,Energy_Max_user,Energy_Bins_user<=0 then the default values will be used
-string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION, string FT1_FILE, string FT2_FILE, string DATACLASS, double Energy_Min_user, double Energy_Max_user, int Energy_Bins_user,  float FT1ZenithTheta_Cut, bool OverwritePlots, int verbosity, double MET_FOR_THETA, bool Save_Earth_Coo_Map){
+string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION, string FT1_FILE, string FT2_FILE, string DATACLASS, double Energy_Min_user, double Energy_Max_user, int Energy_Bins_user, bool OverwritePlots, int verbosity, double MET_FOR_THETA){
  if (MET_FOR_THETA<=0) MET_FOR_THETA=MET;
  
  bool OverwriteResults=false;
@@ -37,19 +37,14 @@ string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION
  char name[1000];
 
  //Initialize Estimators
- BackgroundEstimator * Est[2];
- bool Combine=false;
- string DataClassName=DATACLASS.substr(0,DATACLASS.find("::"));
- if (DATACLASS.find("FRONT+BACK")!=string::npos) {
-     Est[0] = new BackgroundEstimator(DataClassName+"::FRONT",Energy_Min_user,Energy_Max_user,Energy_Bins_user, FT1ZenithTheta_Cut, true,first);
-     Est[1] = new BackgroundEstimator(DataClassName+"::BACK",Energy_Min_user,Energy_Max_user,Energy_Bins_user, FT1ZenithTheta_Cut, true,false);
-     Combine=true;
- }
- else Est[0] = new BackgroundEstimator(DATACLASS ,Energy_Min_user,Energy_Max_user,Energy_Bins_user, FT1ZenithTheta_Cut ,true,first);
+
  
- Energy_Min_user=Est[0]->Energy_Min_user;
- Energy_Max_user=Est[0]->Energy_Max_user;
- Energy_Bins_user=Est[0]->Energy_Bins_user;
+ string DataClassName=DATACLASS.substr(0,DATACLASS.find("::"));
+ BackgroundEstimator * Est = new BackgroundEstimator(DATACLASS ,Energy_Min_user,Energy_Max_user,Energy_Bins_user,true,first);
+ 
+ Energy_Min_user=Est->Energy_Min_user;
+ Energy_Max_user=Est->Energy_Max_user;
+ Energy_Bins_user=Est->Energy_Bins_user;
 
  TCanvas *c= (TCanvas*)gROOT->GetListOfCanvases()->FindObject("cBkgEstimate");
  if (c) delete c;
@@ -65,53 +60,50 @@ string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION
    pad[i]->Draw();
  }
  
- TH1F * hEst[2],*histBurst[2];
+ TH1F * hEst,*histBurst;
  TGraphAsymmErrors * gBurst=NULL;
 
- short int EstMax=1;
- if (Combine) EstMax=2;
-
  //INITIALIZE ROI(s)
- TH1F * hROI[2];
- for (int iEst=0;iEst<EstMax;iEst++) {
-    sprintf(name,"hROI_%d",iEst);
-    TH1F * h = (TH1F*)gROOT->Get(name); if (h) delete h;
-    hROI[iEst] = new TH1F(name,"ROI Radius",Energy_Bins_user,log10(Energy_Min_user),log10(Energy_Max_user));
-    hROI[iEst]->GetXaxis()->SetTitle("log_{10}(Energy/MeV)");
-    hROI[iEst]->GetYaxis()->SetTitle("Radius (deg)");
+ TH1F * hROI;
+    
+    TH1F * h = (TH1F*)gROOT->Get("hROI"); if (h) delete h;
+    hROI = new TH1F(name,"ROI Radius",Energy_Bins_user,log10(Energy_Min_user),log10(Energy_Max_user));
+    hROI->GetXaxis()->SetTitle("log_{10}(Energy/MeV)");
+    hROI->GetYaxis()->SetTitle("Radius (deg)");
     if (CALCULATE_ROI==2) {
-       if (TOOLS::ReadROI_File(hROI[iEst], TOOLS::GetS("ROI_RADIUSFILE"))) return "";
+       if (TOOLS::ReadROI_File(hROI, TOOLS::GetS("ROI_RADIUSFILE"))) {
+          if (!WasBatch) gROOT->SetBatch(kFALSE);
+          return "";
+       }   
     }
     else if (CALCULATE_ROI==0) {
-        for (int i=1;i<=Energy_Bins_user;i++) hROI[iEst]->SetBinContent(i,ROI_MAX_RADIUS);
+        for (int i=1;i<=Energy_Bins_user;i++) hROI->SetBinContent(i,ROI_MAX_RADIUS);
     }
- }
 
  FILE * ftemp;
  TH1F * hROIEff;
- TH1F * h = (TH1F*)gROOT->Get("hROIEff"); if (h) delete h;
+ h = (TH1F*)gROOT->Get("hROIEff"); if (h) delete h;
  hROIEff = new TH1F("hROIEff","hROIEff",Energy_Bins_user,log10(Energy_Min_user),log10(Energy_Max_user));
- TFile * fEst[2]={0,0},*fSig[2]={0,0};
+ TFile * fEst=NULL,*fSig=NULL;
  char GRB_DIR[1000];
  sprintf(GRB_DIR,"%s/Bkg_Estimates/%s",(TOOLS::GetS("OUTPUT_DIR")).c_str(),Interval_name.c_str());
 
  char ResultsFilename[1000];
- if (Combine) sprintf(ResultsFilename,"%s/%s-%s_FRONT+BACK_Results_%1f_%.1f.root",GRB_DIR,GRB_NAME.c_str(),Est[0]->DataClassName_noConv.c_str(),MET,MET+DURATION);
- else         sprintf(ResultsFilename,"%s/%s-%s_Results_%.1f_%.1f.root",GRB_DIR,GRB_NAME.c_str(),Est[0]->DataClass.c_str(),MET,MET+DURATION);
+ sprintf(ResultsFilename,"%s/%s-%s_Results_%.1f_%.1f.root",GRB_DIR,GRB_NAME.c_str(),Est->DataClass.c_str(),MET,MET+DURATION);
 
     //check if the estimation finished correctly first
-    sprintf(name,"%s/%s_BackgroundMaps.root",GRB_DIR,Est[0]->DataClass.c_str());
+    sprintf(name,"%s/%s_BackgroundMaps.root",GRB_DIR,Est->DataClass.c_str());
     TFile * fBkgMaps = TFile::Open(name);
-    if (!fBkgMaps) {printf("%s: Problem with bkg file %s.. skipping\n",__FUNCTION__,name); fBkgMaps->Close(); return "";}      
+    if (!fBkgMaps) {printf("%s: Problem with bkg file %s.. skipping\n",__FUNCTION__,name); fBkgMaps->Close();   if (!WasBatch) gROOT->SetBatch(kFALSE);; return "";}      
     TNamed * err = (TNamed*)fBkgMaps->Get("ERROR");
-    if (err) {printf("%s: Problem with the bkg file. Error code was '%s'. Skipping\n",__FUNCTION__,err->GetTitle()); fBkgMaps->Close(); return "";}
+    if (err) {printf("%s: Problem with the bkg file. Error code was '%s'. Skipping\n",__FUNCTION__,err->GetTitle()); fBkgMaps->Close(); if (!WasBatch) gROOT->SetBatch(kFALSE); return "";}
     fBkgMaps->Close();
 
     //////////////////////////////////////////////////////
     //Background calculation
     bool BkgOK=true;
-    for (int iEst=0;iEst<EstMax;iEst++) {
-       sprintf(name,"%s/%s_bkg_%.0f_%.0f.root",GRB_DIR, Est[0]->DataClass.c_str(),Energy_Min_user,Energy_Max_user);
+    
+       sprintf(name,"%s/%s_bkg_%.0f_%.0f.root",GRB_DIR, Est->DataClass.c_str(),Energy_Min_user,Energy_Max_user);
        ftemp = fopen(name,"r");
        
        bool ProcessFile=false;
@@ -120,13 +112,6 @@ string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION
           TFile * fcheck = TFile::Open(name);      
           //check ztheta cut
    
-          float FT1ZenithTheta_Cut_file = atof(((TNamed*)fcheck->Get("FT1ZenithTheta_Cut"))->GetTitle());
-          if (fabs(FT1ZenithTheta_Cut_file-FT1ZenithTheta_Cut)>0.1) {
-       	      printf("%s: Different ztheta cuts detected bkg_file's=%.0f vs configured=%.0f. Will have to recalculate the background!\n",__FUNCTION__,FT1ZenithTheta_Cut_file,FT1ZenithTheta_Cut);
-	      ProcessFile=true;
-	      
-          }
-    
           TH1F * hexp = (TH1F*)fcheck->Get("hROI");
           if (!hexp) ProcessFile=true;
           else {
@@ -140,11 +125,11 @@ string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION
               if (CALCULATE_ROI==1) {
                  char PlotsFile[1000];
                  sprintf(PlotsFile,"%s/Burst_Plots.root",GRB_DIR);
-                 TOOLS::CalculatePSF(hROI[iEst],MET_FOR_THETA,FT2_FILE,DATACLASS);
-                 if (hROI[iEst]->GetBinContent(1)<0) { BkgOK=false; break;} 
+                 TOOLS::CalculatePSF(hROI,MET_FOR_THETA,FT2_FILE,DATACLASS);
+                 if (hROI->GetBinContent(1)<0) { BkgOK=false;} 
               }
 	      for (int ib=1;ib<=Energy_Bins_user;ib++) {
-		    if (fabs(hROI[iEst]->GetBinContent(ib)-hexp->GetBinContent(ib))>0.0001) ProcessFile=true;
+		    if (fabs(hROI->GetBinContent(ib)-hexp->GetBinContent(ib))>0.0001) ProcessFile=true;
 	      }
 	      if (ProcessFile==true && verbosity>1) printf("%s: Recalculating bkg -- ROI different\n",__FUNCTION__);
           }
@@ -159,69 +144,50 @@ string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION
           if (CALCULATE_ROI==1) {
               char PlotsFile[1000];
               sprintf(PlotsFile,"%s/Burst_Plots.root",GRB_DIR);
-              TOOLS::CalculatePSF(hROI[iEst],MET_FOR_THETA,FT2_FILE,DATACLASS);
+              TOOLS::CalculatePSF(hROI,MET_FOR_THETA,FT2_FILE,DATACLASS);
           }
-          if (hROI[iEst]->GetBinContent(1)<0) { BkgOK=false; break;}
-          if (Est[iEst]->FillBackgroundHist(GRB_DIR, hROI[iEst],RA,DEC,3,verbosity)) {BkgOK=false; break; }//both
+          if (hROI->GetBinContent(1)<0) { BkgOK=false; }
+          if (Est->FillBackgroundHist(GRB_DIR, hROI,RA,DEC,3,verbosity)) {BkgOK=false;  }//both
        }
 
        if (ftemp) fclose(ftemp);
-    }
+    
     if (!BkgOK) {printf("%s: Problem with the bkg file.. skipping\n",__FUNCTION__); return "";}
 
     //Exposure && ROI read
-    TH1F * hExp[2],*hROIEst[2];
-    for (int iEst=0;iEst<EstMax;iEst++) {
-          sprintf(name,"%s/%s_bkg_%.0f_%.0f.root",GRB_DIR,Est[iEst]->DataClass.c_str(),Energy_Min_user,Energy_Max_user);
-          if (fEst[iEst]) fEst[iEst]->Close();
-          fEst[iEst] = TFile::Open(name);
-          if (fEst[iEst]->TestBit(TFile::kRecovered)) {
+    TH1F * hExp,*hROIEst;
+          sprintf(name,"%s/%s_bkg_%.0f_%.0f.root",GRB_DIR,Est->DataClass.c_str(),Energy_Min_user,Energy_Max_user);
+          if (fEst) fEst->Close();
+          fEst = TFile::Open(name);
+          if (fEst->TestBit(TFile::kRecovered)) {
               printf("%s: file %s has not been closed ok. Probably job failed. Delete its folder and run again.\n",__FUNCTION__,name);
               exit(1);
           }
-          hExp[iEst] = (TH1F*)fEst[iEst]->Get("hExposure");
+          hExp = (TH1F*)fEst->Get("hExposure");
 
-          hROIEst[iEst] = (TH1F*)fEst[iEst]->Get("hROI");
-          hEst[iEst] = (TH1F*)fEst[iEst]->Get("hCtsvsEnergy_Est");
-          if (!hEst[iEst]) {
+          hROIEst = (TH1F*)fEst->Get("hROI");
+          hEst = (TH1F*)fEst->Get("hCtsvsEnergy_Est");
+          if (!hEst) {
              printf("no hCtsvsEnergy histogram in %s\n Delete that file and run again.",name); 
-             fEst[iEst]->ls();
+             fEst->ls();
              exit(1);
           }
           
-          hEst[iEst]->SetLineColor(2);
-          hEst[iEst]->SetTitle(GRB_DIR);
-     }
+          hEst->SetLineColor(2);
+          hEst->SetTitle(GRB_DIR);
      hROIEff->Reset();
-
-     if (Combine) {
-          hExp[0]->Add(hExp[1]);
-          hEst[0]->Add(hEst[1]);
-
-          hROIEff->Add(hROIEst[0]);
-          hROIEff->Add(hROIEst[1]);
-          hROIEff->Scale(0.5);
- 
-          //Create a sig file with the combined results
-          sprintf(name,"%s/%s_FRONT_BACK_%.0f_%.0f.root",GRB_DIR,Est[0]->DataClassName_noConv.c_str(),Energy_Min_user,Energy_Max_user);
-          TFile * fBkgNew = new TFile(name,"RECREATE");
-          hEst[0]->Write();
-          hExp[0]->Write();
-          hROIEff->Write();
-          fBkgNew->Close();
-     }
-     else hROIEff->Add(hROIEst[0]);
+     hROIEff->Add(hROIEst);
      //////////////////////////////////////////
      
     ////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////
     //REAL-SIGNAL COUNT
-    TH1F *hROISig[2];
-    for (int iEst=0;iEst<EstMax;iEst++) {
-       sprintf(name,"%s/%s_sig_%.0f_%.0f.root",GRB_DIR,Est[iEst]->DataClass.c_str(),Energy_Min_user,Energy_Max_user);
+    TH1F *hROISig;
+   
+       sprintf(name,"%s/%s_sig_%.0f_%.0f.root",GRB_DIR,Est->DataClass.c_str(),Energy_Min_user,Energy_Max_user);
        ftemp = fopen(name,"r");
 
-       bool ProcessFile=false;
+       ProcessFile=false;
        if (!ftemp || OverwritePlots) ProcessFile=true;
        else { //check if energy levels are the same
           TFile * fcheck = TFile::Open(name);        
@@ -237,21 +203,13 @@ string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION
               if (CALCULATE_ROI==1) {
                  char PlotsFile[1000];
                  sprintf(PlotsFile,"%s/Burst_Plots.root",GRB_DIR);
-                 TOOLS::CalculatePSF(hROI[iEst],MET_FOR_THETA,FT2_FILE,DATACLASS);
+                 TOOLS::CalculatePSF(hROI,MET_FOR_THETA,FT2_FILE,DATACLASS);
               }
 	      for (int ib=1;ib<=Energy_Bins_user;ib++) {
-		    if (fabs(hROI[iEst]->GetBinContent(ib)-hexp->GetBinContent(ib))>0.0001) ProcessFile=true;
+		    if (fabs(hROI->GetBinContent(ib)-hexp->GetBinContent(ib))>0.0001) ProcessFile=true;
 	      }
 	      if (ProcessFile==true && verbosity>1) printf("%s: Recounting signal -- ROIs different\n",__FUNCTION__);
           }
-          
-	  if (!ProcessFile) {
-	     float FT1ZenithTheta_Cut_file = atof(((TNamed*)fcheck->Get("FT1ZenithTheta_Cut"))->GetTitle());
-	     if (fabs(FT1ZenithTheta_Cut_file-FT1ZenithTheta_Cut)>0.1) {
-	 	if (verbosity>1) printf("%s: Different ztheta cuts detected %.0f vs %.0f, will recalculate signal..\n",__FUNCTION__,FT1ZenithTheta_Cut_file,FT1ZenithTheta_Cut);
-	 	ProcessFile=true;
-             }
-    	  }
           
           fcheck->Close();
        }
@@ -259,90 +217,56 @@ string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION
        if (ProcessFile) {
 	    OverwriteResults=true;
             //Check if we have to make a listfile
-            if (FT1_FILE[0]=='^') FT1_FILE="@"+string(GRB_DIR)+"/fitslist.txt";
-            TOOLS::Make_Burst_Plots(DATACLASS, FT1_FILE, GRB_DIR,FT1ZenithTheta_Cut,RA,DEC,MET,DURATION,hROIEst[iEst],0,0,0,Save_Earth_Coo_Map);
+            if (FT1_FILE=='^') FT1_FILE="@"+string(GRB_DIR)+"/fitslist.txt";
+            TOOLS::Make_Burst_Plots(DATACLASS, FT1_FILE, GRB_DIR,RA,DEC,MET,DURATION,hROIEst,0);
        }
        if (ftemp) fclose (ftemp);
 
-       sprintf(name,"%s/%s_sig_%.0f_%.0f.root",GRB_DIR,Est[iEst]->DataClass.c_str(),Energy_Min_user,Energy_Max_user);
-       if (fSig[iEst]) fSig[iEst]->Close();
-       fSig[iEst] = TFile::Open(name);
-       if (fSig[iEst]->TestBit(TFile::kRecovered)) {
+       sprintf(name,"%s/%s_sig_%.0f_%.0f.root",GRB_DIR,Est->DataClass.c_str(),Energy_Min_user,Energy_Max_user);
+       if (fSig) fSig->Close();
+       fSig = TFile::Open(name);
+       if (fSig->TestBit(TFile::kRecovered)) {
               printf("%s: file %s has not been closed ok. Probably job failed. Delete its folder and run again.\n",__FUNCTION__,name);
               exit(1);
        }
 
-       if (!Combine) {
-          gBurst = (TGraphAsymmErrors*)fSig[iEst]->Get("gSignal;1");
+          gBurst = (TGraphAsymmErrors*)fSig->Get("gSignal;1");
           if (!gBurst) {
                  printf("no gSignal in %s. Delete the file and try again.\n",name); 
-                 fSig[iEst]->ls();
+                 fSig->ls();
                  exit(1);
           }
-       }
 
-       histBurst[iEst] =(TH1F*)fSig[iEst]->Get("hCtsvsEnergy_Burst");
-       hROISig[iEst] = (TH1F*)fSig[iEst]->Get("hROI");
-       if (!hROISig[iEst]) {printf("no hROI in %s\n",name); fSig[iEst]->ls(); exit(1);}
+       histBurst =(TH1F*)fSig->Get("hCtsvsEnergy_Burst");
+       hROISig = (TH1F*)fSig->Get("hROI");
+       if (!hROISig) {printf("no hROI in %s\n",name); fSig->ls(); exit(1);}
        //compare ROI Radii and make sure they are the same
-       if (hROIEst[iEst]->GetNbinsX()!=hROISig[iEst]->GetNbinsX()) {printf("ROI Radii have different number of bins! %d %d\n",hROIEst[iEst]->GetNbinsX(),hROISig[iEst]->GetNbinsX()); exit(1);}
-       for (int i=1;i<=hROIEst[iEst]->GetNbinsX();i++) {
-           if (fabs(hROIEst[iEst]->GetBinContent(i)-hROISig[iEst]->GetBinContent(i))>0.0001) {
-                 printf("Different ROI RADII Est:%f SIG:%f bin:%d\n",hROIEst[iEst]->GetBinContent(i),hROISig[iEst]->GetBinContent(i),i);
+       if (hROIEst->GetNbinsX()!=hROISig->GetNbinsX()) {printf("ROI Radii have different number of bins! %d %d\n",hROIEst->GetNbinsX(),hROISig->GetNbinsX()); exit(1);}
+       for (int i=1;i<=hROIEst->GetNbinsX();i++) {
+           if (fabs(hROIEst->GetBinContent(i)-hROISig->GetBinContent(i))>0.0001) {
+                 printf("Different ROI RADII Est:%f SIG:%f bin:%d\n",hROIEst->GetBinContent(i),hROISig->GetBinContent(i),i);
                  exit(1);
            }
        }
        
-       //Compare ZenithTheta cuts
-       if (strcmp(((TNamed*)fSig[iEst]->Get("FT1ZenithTheta_Cut"))->GetTitle(),((TNamed*)fEst[iEst]->Get("FT1ZenithTheta_Cut"))->GetTitle())) {
-            printf("ZenithTheta cuts are different! (sig) %s %s\n",((TNamed*)fSig[iEst]->Get("FT1ZenithTheta_Cut"))->GetTitle(),((TNamed*)fEst[iEst]->Get("FT1ZenithTheta_Cut"))->GetTitle());
-            exit(1);
-       }
-    }
-
-
-    if (Combine) { //if we are combining create the signal graph from scratch
-         if (gBurst) delete gBurst;
-         double Sig[200],SigError[2][200];
-         double EnergyData[3][200];
-         for (int ie=1;ie<=histBurst[0]->GetNbinsX();ie++) {
-             Sig[ie-1]=histBurst[0]->GetBinContent(ie)+histBurst[1]->GetBinContent(ie);
-             EnergyData[0][ie-1]=histBurst[0]->GetXaxis()->GetBinCenter(ie)-histBurst[0]->GetXaxis()->GetBinLowEdge(ie);
-             EnergyData[1][ie-1]=histBurst[0]->GetXaxis()->GetBinCenter(ie);
-             EnergyData[2][ie-1]=histBurst[0]->GetXaxis()->GetBinUpEdge(ie)-histBurst[0]->GetXaxis()->GetBinCenter(ie);
-             SigError[1][ie-1]=TOOLS::PoissonErrorBar(1,(int)Sig[ie-1]);
-             SigError[0][ie-1]=TOOLS::PoissonErrorBar(0,(int)Sig[ie-1]);
-         }
-         gBurst = new TGraphAsymmErrors(Energy_Bins_user,EnergyData[1],Sig, EnergyData[0],EnergyData[2],SigError[0],SigError[1]);
-         histBurst[0]->Add(histBurst[1]);
-
-         sprintf(name,"%s/%s_FRONT_BACK_sig_%.0f_%.0f.root",GRB_DIR,Est[0]->DataClassName_noConv.c_str(),Energy_Min_user,Energy_Max_user);
-         TFile *fSignew = new TFile(name,"RECREATE");
-         histBurst[0]->Write();
-         hROIEff->Write();
-         fSignew->Close();
-
-    }
-
     //TEXT OUTPUT
-    if (Combine) sprintf(name,"%s/%s_FRONT_BACK_Results_%s.txt",GRB_DIR,Est[0]->DataClassName_noConv.c_str(),GRB_NAME.c_str());
-    else         sprintf(name,"%s/%s_Results_%s.txt",GRB_DIR,Est[0]->DataClass.c_str(),GRB_NAME.c_str());
+    sprintf(name,"%s/%s_Results_%s.txt",GRB_DIR,Est->DataClass.c_str(),GRB_NAME.c_str());
     FILE * fdata = fopen(name,"w");
     fprintf(fdata,"\n%3s %7s %7s %7s %9s %7s %7s %9s %20s\n","Bin","Emin","Emax","ROI","bkg/bin","Sig/bin","Int.Bkg.","Int.Sig.","Exposure (cm2*sec)");
     double sumback=0,sumsig=0;
 
     for (int ie=1;ie<=Energy_Bins_user;ie++) {
-       float emin=pow(10,hEst[0]->GetXaxis()->GetBinLowEdge(ie));
-       float emax=pow(10,hEst[0]->GetXaxis()->GetBinUpEdge(ie));
-       sumback+=hEst[0]->GetBinContent(ie);
-       sumsig+=histBurst[0]->GetBinContent(ie);
-       fprintf(fdata,"%3d %7.0f %7.0f %7.1f %9.5e %7.0f %7.5e %9.0f %20.1f\n",ie,emin,emax,hROIEff->GetBinContent(ie),hEst[0]->GetBinContent(ie), histBurst[0]->GetBinContent(ie),sumback,sumsig,hExp[0]->GetBinContent(ie));
+       float emin=pow(10,hEst->GetXaxis()->GetBinLowEdge(ie));
+       float emax=pow(10,hEst->GetXaxis()->GetBinUpEdge(ie));
+       sumback+=hEst->GetBinContent(ie);
+       sumsig+=histBurst->GetBinContent(ie);
+       fprintf(fdata,"%3d %7.0f %7.0f %7.1f %9.5e %7.0f %7.5e %9.0f %20.1f\n",ie,emin,emax,hROIEff->GetBinContent(ie),hEst->GetBinContent(ie), histBurst->GetBinContent(ie),sumback,sumsig,hExp->GetBinContent(ie));
     }
 
     fprintf(fdata,"\n%5s %20s %22s %9s %35s\n","a","Exposure (cm2*sec)", "Ave. energy in MeV","in ergs","AveEnergy/AveExposure (erg/cm2/sec)");
     for (float a=-2.4;a<=-1.79;a+=0.2) {
         double AveE=TOOLS::CalcMeanEnergy(Energy_Min_user,Energy_Max_user,a);
-        double AveExp=TOOLS::CalcSpectrallyWeightedExposure(hExp[0],a);
+        double AveExp=TOOLS::CalcSpectrallyWeightedExposure(hExp,a);
         if (AveExp<0) {
            printf("%s: Results are wrong! Wrong exposure.\n",__FUNCTION__);
            fprintf(fdata,"WRONG!!! ");
@@ -357,38 +281,29 @@ string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION
     gBurst->SetMarkerStyle(4);
     //////////////////////////////////////////////////////////////
 
-    float max=histBurst[0]->GetMaximum();
-    if (hEst[0]->GetMaximum()>max) max=hEst[0]->GetMaximum();
+    float max=histBurst->GetMaximum();
+    if (hEst->GetMaximum()>max) max=hEst->GetMaximum();
 
-    float min=histBurst[0]->GetMinimum(0);
-    if (hEst[0]->GetMinimum()<min) min=hEst[0]->GetMinimum();
-    hEst[0]->GetYaxis()->SetRangeUser(min/5,max*5);
+    float min=histBurst->GetMinimum(0);
+    if (hEst->GetMinimum()<min) min=hEst->GetMinimum();
+    hEst->GetYaxis()->SetRangeUser(min/5,max*5);
 
-    for (int i=0;i<=hEst[0]->GetNbinsX();i++) {
-       float est=hEst[0]->GetBinContent(i);
-       hEst[0]->SetBinError(i,error*est);
+    for (int i=0;i<=hEst->GetNbinsX();i++) {
+       float est=hEst->GetBinContent(i);
+       hEst->SetBinError(i,error*est);
     }
 
     pad[0]->cd();
-    hEst[0]->Draw("E");
+    hEst->Draw("E");
     gBurst->Draw("PSAME");
 
     TLegend * l = new TLegend(0.6,0.87,0.94,0.93);
     l->AddEntry(gBurst,"Burst events","p");
-    l->AddEntry(hEst[0],"Estimated background","l");
+    l->AddEntry(hEst,"Estimated background","l");
     l->SetFillColor(0);
     l->Draw();
 
-    pad[1]->cd(); hROIEst[0]->Draw();
-    if (Combine) {
-        TLegend lROI = TLegend(0.75,0.88,0.89,0.99);
-        hROIEst[1]->SetLineColor(2);
-        hROIEst[1]->Draw("SAME");
-        lROI.AddEntry(hROIEst[0],"Front","l");
-        lROI.AddEntry(hROIEst[1],"Back","l");
-        lROI.Draw();
-    }
-
+    pad[1]->cd(); hROIEst->Draw();
     c->cd();
 
      TPaveText * ptext = new TPaveText(0.5,0.65,0.975,1);
@@ -404,11 +319,11 @@ string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION
 
     /////////////////////////////////////////////////////////////////////////
     //Calculate probs and print out some data
-     double TotalEstimate = hEst[0]->Integral();
-     double TotalSignal   = histBurst[0]->Integral();
+     double TotalEstimate = hEst->Integral();
+     double TotalSignal   = histBurst->Integral();
      double P = ROOT::Math::poisson_cdf_c((int)TotalSignal,TotalEstimate) + ROOT::Math::poisson_pdf((int)TotalSignal,TotalEstimate);
      double PwithBkgUncertainty = TOOLS::WeightedP((int)TotalSignal,TotalEstimate,error*TotalEstimate);
-     sprintf(name,"%.1f>E>%.0eMeV. Signal: %.0f ev., Bkg:%.2e ev. Prob:%.2e (%.1f#sigma)",Energy_Min_user,Energy_Max_user,TotalSignal,TotalEstimate,P,ROOT::Math::gaussian_quantile_c(P,1));
+     sprintf(name,"%.1f>E>%.1eMeV. Signal: %.0f ev., Bkg:%.2e ev. Prob:%.2e (%.1f#sigma)",Energy_Min_user,Energy_Max_user,TotalSignal,TotalEstimate,P,ROOT::Math::gaussian_quantile_c(P,1));
      ptext->AddText(name);
      sprintf(name,"Probability with %.0f %% bkg uncertainty:%.1e (%.1f#sigma)",100*error,PwithBkgUncertainty,ROOT::Math::gaussian_quantile_c(PwithBkgUncertainty,1));
      ptext->AddText(name);
@@ -416,7 +331,7 @@ string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION
 
      ptext->AddText("Bkg estimate includes both CR and gammas");
      sprintf(name,"Estimator v.%s, data files v.%s",
-             ((TNamed*)fEst[0]->Get("Estimator_Version"))->GetTitle(),((TNamed*)fEst[0]->Get("DataFiles_Version"))->GetTitle());
+             ((TNamed*)fEst->Get("Estimator_Version"))->GetTitle(),((TNamed*)fEst->Get("DataFiles_Version"))->GetTitle());
      ptext->AddText(name);
 
      ptext->SetTextSize(0.03);
@@ -439,8 +354,7 @@ string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION
 //    sprintf(name,"rm %s/*_burst_exposure.fits 2>/dev/null",GRB_DIR);    result=system(name);
     c->Update();
 
-    if (Combine)  sprintf(name,"%s/%s-%s_FRONT+BACK_Results_%.1f_%.1f.png",GRB_DIR,GRB_NAME.c_str(),Est[0]->DataClass.c_str(),MET,DURATION);
-    else          sprintf(name,"%s/%s-%s_Results_%.1f_%.1f.png",GRB_DIR,GRB_NAME.c_str(),Est[0]->DataClass.c_str(),MET,DURATION);
+    sprintf(name,"%s/%s-%s_Results_%.1f_%.1f.png",GRB_DIR,GRB_NAME.c_str(),Est->DataClass.c_str(),MET,DURATION);
     FILE * ff = fopen(name,"r");
 
     if (ff && !OverwritePlots && !OverwriteResults) {fclose(ff); return ResultsFilename;}
@@ -464,12 +378,9 @@ string BKGE_NS::PlotBackground(string Interval_name, double MET, double DURATION
     fout->Close();
 
  //Cleanup
- for (int iEst=0;iEst<EstMax;iEst++) {
-     if (fEst[iEst]) fEst[iEst]->Close();
-     if (fSig[iEst]) fSig[iEst]->Close();
-     if (Est[iEst]) delete Est[iEst];
- }
- if (!WasBatch) gROOT->SetBatch(kFALSE);
+     if (fEst) fEst->Close();
+     if (fSig) fSig->Close();
+     if (Est) delete Est;
  
  first=false;
  return ResultsFilename;
