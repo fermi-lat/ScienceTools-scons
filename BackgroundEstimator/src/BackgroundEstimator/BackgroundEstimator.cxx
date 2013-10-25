@@ -18,7 +18,7 @@ BackgroundEstimator::~BackgroundEstimator()
 BackgroundEstimator::BackgroundEstimator(string aClass, double EMin, double EMax, int EBins, bool initialize, bool ShowLogo):
 Energy_Min_datafiles(0),Energy_Max_datafiles(0),Energy_Bins_datafiles(0),
 Energy_Min_user(EMin),Energy_Max_user(EMax),Energy_Bins_user(EBins),UsingDefaultBinning(true),
-DataClass(aClass),EstimatorVersion(4),Residuals_version(2.0),RateFit_version(2.0),ThetaPhiFits_version(2.0),EastWest_version(2.0),TimeCorrectionFactors_version(3.0),
+DataClass(aClass),FT1ZenithTheta_Cut(100),EstimatorVersion(4),Residuals_version(2.0),RateFit_version(2.0),ThetaPhiFits_version(2.0),EastWest_version(2.0),TimeCorrectionFactors_version(3.0),
 StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposure(0),fRateFit(0),fThetaPhiFits(0),fCorrectionFactors(0)
 {
  
@@ -171,7 +171,7 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
   fitsfile *fptr;
   int status = 0;	
   long nrows;
-  int hdutype,res,anynul;
+  int hdutype,anynul;
   FILE * ftemp;
 
   //1. PREPARE FILES  
@@ -277,7 +277,7 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
                 char gtltcube_Filename[100];
                 sprintf(gtltcube_Filename,"ltCube_%s.fits",DataClass.c_str());
                 printf("%s: Creating exposure map %s...\n",__FUNCTION__,name); 
-                TOOLS::Run_gtexpcube(DataDir, StartTime, EndTime, FT2_FILE, DataClass, FT1ZenithTheta_Cut, name, Energy_Min_datafiles,Energy_Max_datafiles,Energy_Bins_datafiles, 5, "@"+FitsAllSkyFilesList, gtltcube_Filename);
+                TOOLS::Run_gtexpcube(DataDir, StartTime, EndTime, FT2_FILE, DataClass, FT1ZenithTheta_Cut, name, Energy_Min_datafiles,Energy_Max_datafiles, Energy_Bins_datafiles, 5, gtltcube_Filename);
                 //sprintf(buffer,"gtexpcube infile=%s/ltCube_%s.fits evfile=@%s cmfile=NONE outfile=%s irfs=%s nxpix=1 nypix=1 pixscale=1 coordsys=GAL xref=0 yref=0 axisrot=0 proj=CAR emin=%f emax=%f enumbins=%d bincalc=CENTER clobber=yes 2>&1",DataDir.c_str(),DataClass.c_str(),FitsAllSkyFilesList.c_str(),name,DataClass.c_str(),Energy_Min_datafiles,Energy_Max_datafiles,Energy_Bins_datafiles);
           } 
           else fclose(ftemp); 
