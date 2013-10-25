@@ -180,7 +180,7 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
 
   //2.READ TIMES FROM GENERATED FILES    
   ftemp = fopen(FitsAllSkyFilesList.c_str(),"r");
-  res=fscanf(ftemp,"%s",name);
+  int res=fscanf(ftemp,"%s",name);
   status=0;
   fits_open_file(&fptr, name, READONLY, &status);
   if (status) fits_report_error(stderr, status);  status=0;

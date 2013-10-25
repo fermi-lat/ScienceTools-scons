@@ -4,21 +4,21 @@
 #define _BackgroundEstimator_H
 
 #include "BKGE_Tools.h"
+#include "TProfile.h"
 
 //this enum helps with monitoring the different data formats
-typedef enum {DATA_FORMAT_P6_OLD,DATA_FORMAT_P6_NEW,DATA_FORMAT_P7};
+enum {DATA_FORMAT_P6_OLD,DATA_FORMAT_P6_NEW,DATA_FORMAT_P7};
 
 /// LAT Background estimation for transient events
 
 namespace BKGE_NS{
     ///Calculate the background map
-    int CalculateBackground(string Interval_name, double MET, double DURATION, string FT1_FILE, string FT2_FILE, string DATACLASS, double Energy_Min_user, double Energy_Max_user, int Energy_Bins_user, float FT1ZenithTheta_Cut, int verbosity=1,bool Calc_Residual=true);
+    int CalculateBackground(string Interval_name, double MET, double DURATION, string FT1_FILE, string FT2_FILE, string DATACLASS, double Energy_Min_user, double Energy_Max_user, int Energy_Bins_user,int verbosity=1,bool Calc_Residual=true);
     ///Integrate the background map over the ROI
-    string PlotBackground(string Interval_name, double MET, double DURATION, string FT1_FILE, string FT2_FILE, string DATACLASS, double Energy_Min_user, double Energy_Max_user, int Energy_Bins_user, float FT1ZenithTheta_Cut,  bool OverwritePlots=true, int verbosity=1, double MET_FOR_THETA=-1, bool Save_Earth_Coo_Map=false);
-    int MakeGtLikeTemplate(float gtlike_ROI, string GRB_DIR, string DATACLASS, float ZTheta_Cut, double &GALGAMMAS_BKG, double &CR_EGAL_BKG, int verbosity=1);
-    ///Plot a bkg-subtracted light curve et al.
-    void PlotAfterglow(double GRB_TRIGGER_TIME, string TIMEDATA_FILE, string DATACLASS, int MinBin=-1, int MaxBin=-1, float a=-2.0);
-    void Calc_TimeCorrectionFactors(vector<string> GRB_folders, vector  <double> METs, vector <double> GRB_L, vector <double> GRB_B,  string Dataclass, double MinE, double MaxE, int NBins, const int Max_iE_For_Correction=25);
+    string PlotBackground(string Interval_name, double MET, double DURATION, string FT1_FILE, string FT2_FILE, string DATACLASS, double Energy_Min_user, double Energy_Max_user, int Energy_Bins_user, bool OverwritePlots=true, int verbosity=1, double MET_FOR_THETA=-1);
+    int MakeGtLikeTemplate(float gtlike_ROI, string GRB_DIR, string DATACLASS);
+    void Calc_TimeCorrectionFactors(vector<string> GRB_folders, vector  <double> METs, string Dataclass, double MinE, double MaxE, int NBins);
+
 };
 
 
@@ -29,18 +29,16 @@ class BackgroundEstimator{
   } ;
 
   public:
-    BackgroundEstimator(string aClass, double EMin=-1, double EMax=-1, int EBins=-1, float ZTheta_Cut=-1, bool initialize=true, bool ShowLogo=true);
+    BackgroundEstimator(string aClass, double EMin=-1, double EMax=-1, int EBins=-1, bool initialize=true, bool ShowLogo=true);
     ~BackgroundEstimator();
     ///Create the data files used for the background estimation. Normal users don't need to run that
-    void CreateDataFiles(string FitsAllSkyFilesList, string FT2_FILE, double StartTime=0, double EndTime=0); 
+    void CreateDataFiles(string FitsAllSkyFilesList, string FT2_FILE, double StartTime=0, double EndTime=0, float ZenithThetaCut=100); 
 
     ///Calculate a background skymap. This is the first part of the bkg estimation
     int Make_Background_Map(string FT1_FILE, string FT2File, string GRB_DIR, double Burst_t0, double Burst_Dur,int verbosity=1, bool Calc_Residual=true, bool Save_Earth_Coo_Map=false); 
 
     ///Integrate a background map over the ROI to produce the final bkg estimate
-    int FillBackgroundHist(string GRB_DIR, TH1F * hROI_Max, double RA_BURST, double DEC_BURST, short int type, int verbosity=0, TH1F* hROI_Min=0, TH1F * hCtsvsEnergy_Est=0);
-
-    void Make_TimeCorrectionFactor(string FitsAllSkyFile, const float DeltaT);
+    int FillBackgroundHist(string GRB_DIR, TH1F * hROI_Max, double RA_BURST, double DEC_BURST, short int type, int verbosity=0);
 
     ///Min and max energy in MeV of the datafiles
     double Energy_Min_datafiles, Energy_Max_datafiles;
@@ -50,8 +48,7 @@ class BackgroundEstimator{
     double Energy_Min_user, Energy_Max_user;
     ///Number of logarithmically-spaced bins for the bkg estimate of the user
     int Energy_Bins_user;
-    ///Zenith Theta cut -- can be used to override the default cut
-    float FT1ZenithTheta_Cut;
+    
     ///Flag that shows if the user is using the energy binning of the data files (set by the bkge)
     bool UsingDefaultBinning;
 
@@ -68,16 +65,15 @@ class BackgroundEstimator{
 
  private:
     void SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimulatedSky[], vector <double> GTI_Start, vector <double> GTI_End, const int nEnergy, TH2F* hSimulatedSky_Earth[]=0, float TimeStep_user=0,float hSimulatedSky_Earth_Map_Min_B=20);
-    void SimulateSkyMC(Plots_Struct myPlots_Struct, TH2F* hSimulatedSky,  vector <double> STARTGTI, vector <double> ENDGTI, const long int IterationsPerSec, const int iEnergy, TH2F* hMAP_ZTheta_EAzimuth); ///Simulate the background to make a background map
     double GimmeCorrectionFactor(short int ie, double MET);
     ///Data Files
     void CalcResiduals(string FitsAllSkyFile);
     void Make_McIlwainL_Fits(string FitsAllSkyFile);
     void Make_ThetaPhi_Fits(string FitsAllSkyFile);
     bool PassesCuts(fitsfile * fptr, long int i, int format);
-
+    float FT1ZenithTheta_Cut;
     ///Correction factors
-    vector <TH1F*> RatiovsTime;
+    vector <TProfile*> pRatiovsTime;
 
     float EstimatorVersion,Residuals_version,RateFit_version,ThetaPhiFits_version,EastWest_version,TimeCorrectionFactors_version;
     double StartTime, EndTime, StopTime;
