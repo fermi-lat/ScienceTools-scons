@@ -159,8 +159,8 @@ void BackgroundEstimator::Make_ThetaPhi_Fits(string FitsAllSkyFile){
      }
 
      for (int j=0;j<=hThetavsPhi_unrestricted->GetNbinsY();j++) {
-         hThetavsPhi_unrestricted->SetBinContent(i,j,hThetavsPhi_unrestricted->GetBinContent(i,j)/sum1);
-         hThetavsPhi_restricted->SetBinContent(i,j,hThetavsPhi_restricted->GetBinContent(i,j)/sum2);
+         if (sum1) hThetavsPhi_unrestricted->SetBinContent(i,j,hThetavsPhi_unrestricted->GetBinContent(i,j)/sum1);
+         if (sum2) hThetavsPhi_restricted->SetBinContent(i,j,hThetavsPhi_restricted->GetBinContent(i,j)/sum2);
      } 
   }
   
