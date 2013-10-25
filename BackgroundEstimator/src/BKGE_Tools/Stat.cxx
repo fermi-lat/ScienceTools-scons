@@ -55,36 +55,3 @@ double TOOLS::WeightedP(int nev, double bkg, double dbkg) {
 
 
 
-
-void TOOLS::GetQuantiles(TH1F * h, double CL, double &xmin, double &xmax, double &CL_actual) {
-
-  int i0_best=0,i1_best=0;
-  const int bins=h->GetNbinsX();
-  //double overflow=h->GetBinContent(bins+1);
-  //double integral=h->Integral()+overflow; //include overflow
-  const double integral=h->Integral(); //do not inlude
-  int awidth_best=99999;
-  for (int i0=1;i0<h->GetNbinsX();i0++) { //loop over starting bins
-      double integral_pre = h->Integral(1,i0);
-      if (integral_pre/integral>(1-CL)) break;
-      double frac=0;
-      int i1=i0+1;
-      for (;i1<bins && frac<CL;i1++) { //loop until we find 68% starting from i0+1
-          //double frac=(integral_pre+h->Integral(i1,bins)+overflow)/integral;
-          frac=h->Integral(i0,i1)/integral;
-          //printf("%d %d %f\n",i0,i1,frac);
-      }
-      if (awidth_best>(i1-i0)) {
-         awidth_best=i1-i0;
-         i0_best=i0;
-         i1_best=i1;
-         xmin=h->GetBinCenter(i0_best);
-         xmax=h->GetBinCenter(i1_best);
-         //printf("found new best width %f for xmin/xmax=%f/%f\n", xmax-xmin,xmin,xmax);
-      }
-  }
-  xmin=h->GetXaxis()->GetBinLowEdge(i0_best);
-  xmax=h->GetXaxis()->GetBinUpEdge(i1_best);
-  CL_actual= h->Integral(i0_best,i1_best)/integral;
-
-}
