@@ -55,21 +55,3 @@ string TOOLS::GetDataClassVersion(string DataClass) {
 
 
 
-
-double TOOLS::GimmeLumDistance(double z) {
-
-  double Wm=0.27,Wl=0.73,Wr=0,//,Wr=0,
-         H0=71*3.240779289e-20, //H0 in 1/sec
-         Wk=1-Wm-Wl-Wr;
-  double c=3e8;//m/sec
-
-  double ZInt=0;
-  double dz=z/10000.;
-  for (double zz=0;zz<z;zz+=dz) {
-     ZInt+=dz/sqrt(Wr*pow(1+zz,4)+Wm*pow(1+zz,3)+Wk*pow(1+zz,2)+Wl);
-  }
-  double LumDist=c/H0*(1+z)*ZInt;
- return LumDist;
-}
-
-
