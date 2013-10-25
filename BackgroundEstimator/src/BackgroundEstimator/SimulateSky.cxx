@@ -1,5 +1,4 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
-// $Header$
 #include "BackgroundEstimator/BackgroundEstimator.h"
 #include <cmath>
 #include <ctime>
@@ -85,7 +84,7 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
 
   float TimeStep;
   if (TimeStep_user) TimeStep=TimeStep_user;
-  else if ((TIME_END-TIME_START)<200) TimeStep=10;
+  else if ((TIME_END-TIME_START)<200) TimeStep=5;
   else TimeStep =30;
   
   #ifdef SAVE_DEBUG_MAPS
@@ -96,6 +95,7 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
   //time_t start,end;
   //double dif;      
   //time (&start);  
+  bool showed_rocking_angle_warning=false;
   
   while (1) {
       double fraction_done=(TIME_0-TIME_START)/(TIME_END-TIME_START);
@@ -151,7 +151,6 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
       int i_0=myPlots_Struct.hMcIlwainLvsTime->GetXaxis()->FindBin(TIME_0);
       int i_1=myPlots_Struct.hMcIlwainLvsTime->GetXaxis()->FindBin(TIME_1);
       int imid=(i_0+i_1)/2;
-
       
       //if (i_0%100==0) {printf("%.3f   %f - %f   \r",i_0/float(TimeBins),TIME_1,GTI_End[GTI_End.size()-2]);fflush(0);}
       //2.CALCULATE RATE    
@@ -161,7 +160,14 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
              printf("%s: GTI data start\end: %f %f\n",__FUNCTION__,GTI_Start[igti],GTI_End[igti]);
              exit(1);
       }
-
+      if (RockingAngle>70 & !showed_rocking_angle_warning) {
+        printf("%s: WARNING - the rocking angle of the spacecraft exceeded 70degrees during your observation (ARR?). \n",__FUNCTION__);
+        printf("For high rocking-angle observations, the contamination from the Earth limb becomes higher. \n");
+        printf("Since the BKGE does not fully take into account such contamination, its final estimates may be erroneously lower\n");
+        printf("See discussion in associated publication http://arxiv.org/abs/1307.4284\n");
+        printf("To see for how long the rocking angle was at high values see the file Plots.root in the output directory\n");
+        showed_rocking_angle_warning=true;
+      }
     
       float McIlwainL=myPlots_Struct.hMcIlwainLvsTime->GetBinContent(imid);
       if (!McIlwainL) {
@@ -172,6 +178,7 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
       float AllSkyRate[nEnergy+1];
       for (int iEnergy=1;iEnergy<=nEnergy;iEnergy++) {
           float ScaleFactor = hScaleFactor->GetBinContent(hScaleFactor->GetXaxis()->FindBin(RockingAngle),iEnergy);
+          //printf("ie=%d rock=%f fac=%f\n",iEnergy,RockingAngle,ScaleFactor);
           if (ScaleFactor<=0 && RockingAngle<170) {printf("%s: Scalefactor=%f, rocking angle=%f TIME_0=%f i_0=%d gti=%d %f/%f\n",__FUNCTION__,ScaleFactor,RockingAngle,TIME_0,i_0,igti,GTI_Start[igti],GTI_End[igti]); exit(1);}
           //printf("%d ratefit=%f mcilwainl=%f scalefactor=%f rockingangle=%f\n",iEnergy,RateFit[iEnergy]->Eval(McIlwainL),McIlwainL,ScaleFactor,RockingAngle);
           AllSkyRate[iEnergy] = RateFit[iEnergy]->Eval(McIlwainL)*ScaleFactor;
@@ -271,7 +278,10 @@ void BackgroundEstimator::SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimul
               float BinPhi=atan2(yy,xx)*RAD_TO_DEG;
               if (BinPhi<0) BinPhi+=360;
               float BinTheta=acos(LocalDir().z())/DEG_TO_RAD;
-              if (BinTheta>84 || BinPhi<0 || BinPhi>360){  printf("bintheta=%f BinPhi=%f L=%f/%d PtL/B=%f/%f \n",BinTheta,BinPhi,Bin_L,iL,SCz.l(),SCz.b()); exit(1);}
+              if (BinTheta>84 || BinPhi<0 || BinPhi>360){  
+                 printf("bintheta=%f BinPhi=%f L=%f/%d PtL/B=%f/%f \n",BinTheta,BinPhi,Bin_L,iL,SCz.l(),SCz.b()); 
+                 BinTheta=80;
+              }
               /////////////////////////////////////////////////
                                           
               //float BinTheta_rad=SCBin.difference(SCz);
