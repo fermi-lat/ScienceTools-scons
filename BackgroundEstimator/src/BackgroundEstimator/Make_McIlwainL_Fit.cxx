@@ -11,6 +11,7 @@ void BackgroundEstimator::Make_McIlwainL_Fits(string FitsAllSkyFile){
   TH1F* hPtRazvsTime     = (TH1F*)fPlots->Get("hPtRazvsTime;1");
   TH1F* hPtDeczvsTime    = (TH1F*)fPlots->Get("hPtDeczvsTime;1");
   TH1F* hMcIlwainLvsTime = (TH1F*)fPlots->Get("hMcIlwainLvsTime;1");
+  TH1F* hRockingAnglevsTime = (TH1F*)fPlots->Get("hRockingAnglevsTime;1");
   if (!hPtRazvsTime || !hPtDeczvsTime || !hMcIlwainLvsTime) {printf("%s: Can't read plots from file %s\n",__FUNCTION__,name); exit(1);}
 
   
@@ -32,21 +33,21 @@ void BackgroundEstimator::Make_McIlwainL_Fits(string FitsAllSkyFile){
   //This factor comes from the ThetaPhi_Fits produced earlier.
 
   //I decreased maxtheta so that MaxTheta+RockAngle<=earth_limb_ztheta
-  float MaxTheta=50; //for !DIFFUSE
+  float MaxTheta=48;
+  
   //We can use MaxTheta to also try to avoid the gamma rays from the galactic diffuse
   //A part of the theta>MaxTheta data (for the Phis that point towards the plane) have increased gamma ray contribution
   //By reducing MaxTheta we can reduce the gamma contamination of the McIlwainL fit
-  if (DataClass.find("DIFFUSE")!=string::npos) MaxTheta=60; //for DIFFUSE
 
   //round up MaxTheta to the upper edge of the correspond bin in hTheta_away. 
   //This will avoid any accuracy problems in calculating the correction factor below.
   const int iMaxTheta = hTheta_away[1]->FindBin(MaxTheta);
   MaxTheta = hTheta_away[1]->GetXaxis()->GetBinUpEdge(iMaxTheta);
-  printf("%s: MaxTheta=%.2f deg\n",__FUNCTION__,MaxTheta);
+  const float MaxRockingAngle=FT1ZenithTheta_Cut-MaxTheta; //for ztheta_cut=100 and maxtheta=48, 3% of the observation time is rejected
+  printf("%s: MaxTheta=%.2fdeg MaxRockingAngle=%f deg\n",__FUNCTION__,MaxTheta);
 
   unsigned short int McIlwainLBins[Energy_Bins_user+1];
-  if (DataClass.find("DIFFUSE")!=string::npos) for (int i=0;i<=Energy_Bins_user;i++) McIlwainLBins[i]=10;
-  else                                         for (int i=0;i<=Energy_Bins_user;i++) McIlwainLBins[i]=20;
+  for (int i=0;i<=Energy_Bins_user;i++) McIlwainLBins[i]=10;
   //note if you make McIlwainLBins depend in i then it messes up hRateAll but this is OK
 
   TH1F *hEvents[Energy_Bins_user+1],*hEvents_Cut[Energy_Bins_user+1] ,*hRate[Energy_Bins_user+1],*hTime[Energy_Bins_user+1];
@@ -124,7 +125,8 @@ void BackgroundEstimator::Make_McIlwainL_Fits(string FitsAllSkyFile){
             else    {printf("%s: there is a gap in the plots? %f %d\n",__FUNCTION__,PtTime,itimebin); continue;}
             itimebin=ibin;
          }
-
+         if (hRockingAnglevsTime->GetBinContent(itimebin)>MaxRockingAngle) continue; //reject event if detected during a high rocking angle period
+         
          TOOLS::Galactic((double)hPtRazvsTime->GetBinContent(itimebin),(double)hPtDeczvsTime->GetBinContent(itimebin),&PtL,&PtB);
          //exclude observations near the galactic plane
          if (fabs(PtB)<B_Cut || !PassesCuts(fptr,i,format)) continue;
