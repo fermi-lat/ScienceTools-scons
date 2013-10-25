@@ -15,39 +15,29 @@ BackgroundEstimator::~BackgroundEstimator()
  if(fCorrectionFactors)    fCorrectionFactors->Close();
 }
 
-
-//BackgroundEstimator::BackgroundEstimator():
-//fResidualOverExposure(0),fRateFit(0),fThetaPhiFits(0),fCorrectionFactors(0){};
-
-BackgroundEstimator::BackgroundEstimator(string aClass, double EMin, double EMax, int EBins, float ZTheta_Cut,  bool initialize, bool ShowLogo):
+BackgroundEstimator::BackgroundEstimator(string aClass, double EMin, double EMax, int EBins, bool initialize, bool ShowLogo):
 Energy_Min_datafiles(0),Energy_Max_datafiles(0),Energy_Bins_datafiles(0),
-Energy_Min_user(EMin),Energy_Max_user(EMax),Energy_Bins_user(EBins),FT1ZenithTheta_Cut(ZTheta_Cut),UsingDefaultBinning(true),
-DataClass(aClass),EstimatorVersion(2.0),Residuals_version(2.0),RateFit_version(2.0),ThetaPhiFits_version(2.0),EastWest_version(2.0),TimeCorrectionFactors_version(2.0),
+Energy_Min_user(EMin),Energy_Max_user(EMax),Energy_Bins_user(EBins),UsingDefaultBinning(true),
+DataClass(aClass),EstimatorVersion(4),Residuals_version(2.0),RateFit_version(2.0),ThetaPhiFits_version(2.0),EastWest_version(2.0),TimeCorrectionFactors_version(3.0),
 StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposure(0),fRateFit(0),fThetaPhiFits(0),fCorrectionFactors(0)
 {
- if (ShowLogo) {
+ 
+  if (ShowLogo) {
    printf("*----------------------------------------------*\n");
-   printf("|               Background Estimator           |\n");
-   printf("|                 v%.1f 03/Oct/2012             |\n",EstimatorVersion);
+   printf("|           Background Estimator (public)      |\n");
+   printf("|              v%.0f September/2013               |\n",EstimatorVersion);
    printf("|                                              |\n");
    printf("| contact:     Vlasios Vasileiou               |\n");
-   printf("|              vlasios.vasileiou@lupm.in2p3.fr |\n");
-   printf("| http://confluence.slac.stanford.edu/x/ApIeAg |\n");
+   printf("|              vlasisva@gmail.com              |\n");
+   printf("| http://arxiv.org/abs/1307.4284               |\n");
    printf("*----------------------------------------------*\n");
  }
 
   L_BINS = 720;
   B_BINS = 360;
   vector <string> VALID_CLASSES;
-  VALID_CLASSES.push_back("P6_V3_TRANSIENT::FRONT");
-  VALID_CLASSES.push_back("P6_V3_TRANSIENT::BACK");
   VALID_CLASSES.push_back("P6_V3_TRANSIENT");
-  VALID_CLASSES.push_back("P6_V3_DIFFUSE::FRONT");
-  VALID_CLASSES.push_back("P6_V3_DIFFUSE::BACK");
-  VALID_CLASSES.push_back("P6_V3_DIFFUSE");
   VALID_CLASSES.push_back("P7TRANSIENT_V6");
-  //VALID_CLASSES.push_back("P7TRANSIENT_V6::FRONT");
-  //VALID_CLASSES.push_back("P7TRANSIENT_V6::BACK");
 
   bool goodClass=false;
   for (unsigned int i=0;i<VALID_CLASSES.size();i++) {
@@ -105,15 +95,10 @@ StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposu
    	 else                     printf("User's Energy:     (%.1f-%.1f)MeV - %d bins\n",Energy_Min_user,Energy_Max_user,Energy_Bins_user);
       }
       
-      float FT1ZenithTheta_Cut_datafiles;
-      sscanf(fResidualOverExposure->Get("FT1ZenithTheta_Cut")->GetTitle(),"%f",&FT1ZenithTheta_Cut_datafiles);
-      if (FT1ZenithTheta_Cut<=0) FT1ZenithTheta_Cut=FT1ZenithTheta_Cut_datafiles;
-      else if (fabs(FT1ZenithTheta_Cut-FT1ZenithTheta_Cut_datafiles)>0.1 && ShowLogo) {
-          printf("%s: WARNING: You are overriding the default FT1ZenithTheta_Cut (%.1fdeg). New value is %.0fdeg. Note: BKG Estimates do not include albedos.\n", __FUNCTION__,FT1ZenithTheta_Cut_datafiles,FT1ZenithTheta_Cut);
-      }	     
-
-      if (ShowLogo) printf("Data Files FT1ZenithTheta_Cut: %.1fdeg\n",FT1ZenithTheta_Cut_datafiles);
+     
+      sscanf(fResidualOverExposure->Get("FT1ZenithTheta_Cut")->GetTitle(),"%f",&FT1ZenithTheta_Cut);
       
+
       float aversion=atof(fResidualOverExposure->Get("version")->GetTitle());
       if (aversion<Residuals_version) {
            printf("%s: Warning! You are using a Residuals data file that has an older version than the latest (v%.2f) one.\n",__FUNCTION__,Residuals_version);
@@ -150,29 +135,30 @@ StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposu
       //Read Correction factors
       sprintf(name,"%s/TimeCorrectionFactor_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),TimeCorrectionFactors_version);
       fCorrectionFactors= TFile::Open(name);
-      if (!fCorrectionFactors) {printf("%s: Can't open file %s\n",__FUNCTION__,name); }
+      for (int iE=0;iE<Energy_Bins_datafiles;iE++) pRatiovsTime.push_back(0);
       
-      for (int iE=0;iE<=Energy_Bins_datafiles;iE++) {
-          if (!fCorrectionFactors)  RatiovsTime.push_back(0);
-          else {
-             sprintf(name,"RatiovsTime_%d",iE);
-             TH1F * h = (TH1F*)fCorrectionFactors->Get(name);
-             if (!h) {
-                 sprintf(name,"hCorrectionFactor_%d",iE);
-                 h = (TH1F*)fCorrectionFactors->Get(name);
-             }
-             if (fCorrectionFactors)  RatiovsTime.push_back(h);
-          }
-      }
-   }
-   
+      if (!fCorrectionFactors) printf("%s: Can't open file %s\n",__FUNCTION__,name); 
+      else {
+         TCanvas * cCorr = (TCanvas*)fCorrectionFactors->Get("cRatiovsTime");
+         if (cCorr) {
+            for (int iE=0;iE<Energy_Bins_datafiles;iE++) {
+               sprintf(name,"RatiovsTime_%d",iE);
+               pRatiovsTime[iE]=(TProfile*)(cCorr->GetPad(iE+1)->FindObject(name));
+               if (pRatiovsTime[iE]==NULL){ printf("%s: error reading TimeCorrectionFactors for %d\n",__FUNCTION__,iE); exit(1);}
+            }      
+         }
+     } 
+        
+  }    
+     
 }
 
 
 //#define DEBUG
 
-void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2_FILE, double StartTime_user, double EndTime_user){
+void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2_FILE, double StartTime_user, double EndTime_user, float ZenithThetaCut){
 
+  FT1ZenithTheta_Cut=ZenithThetaCut;
   TimeStep=1.0; //don't change that - left for debugging purposes
   Energy_Min_datafiles=Energy_Min_user;
   Energy_Max_datafiles=Energy_Max_user;
@@ -187,8 +173,8 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
   long nrows;
   int hdutype,res,anynul;
   FILE * ftemp;
-  //1. PREPARE FILES
-  
+
+  //1. PREPARE FILES  
   FILE * fOldFitsList = fopen(FitsAllSkyFilesList.c_str(),"r");
   if (!fOldFitsList) {printf("%s: file %s cannot be read.\n",__FUNCTION__,FitsAllSkyFilesList.c_str()); return;}
 
@@ -215,9 +201,14 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
      if (status) fits_report_error(stderr, status);  status=0;
      fits_get_num_rows(fptr, &nrows, &status);
      if (status) fits_report_error(stderr, status);  status=0;
-     double anEndTime;
+     double anEndTime,aStartTime;
+     fits_read_col (fptr,TDOUBLE,10,1, 1, 1, NULL,&aStartTime, &anynul, &status);
+     if (status) fits_report_error(stderr, status);  status=0;
      fits_read_col (fptr,TDOUBLE,10,nrows, 1, 1, NULL,&anEndTime, &anynul, &status);
+     if (status) fits_report_error(stderr, status);  status=0;
      fits_close_file(fptr, &status);
+     if (status) fits_report_error(stderr, status);  status=0;
+     printf("%s: %f (%f) to %f\n",name,aStartTime,aStartTime-EndTime,anEndTime);
      if (anEndTime>EndTime) EndTime=anEndTime;
   }
   
@@ -240,12 +231,12 @@ void BackgroundEstimator::CreateDataFiles(string FitsAllSkyFilesList, string FT2
   if (!ftemp) {
        printf("%s: Making plots...\n",__FUNCTION__);
        double midtime=(StopTime+StartTime)/2;
-       TOOLS::Make_Plots(midtime-StartTime+10,StopTime-midtime+10,midtime,name,FT2_FILE,1,5);
+       TOOLS::Make_Plots(midtime-StartTime+10,StopTime-midtime+10,midtime,name,FT2_FILE,99,10);
   }
   else  fclose(ftemp);
-
+  
   //4. MAKE THETA/PHI DISTRIBUTIONS
-  sprintf(name,"%s/ThetaPhi_Fits_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),TimeCorrectionFactors_version);
+  sprintf(name,"%s/ThetaPhi_Fits_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),ThetaPhiFits_version);
   ftemp = fopen(name,"r"); 
   if (!ftemp) { 
     printf("%s: Making Theta & Phi fits...\n",__FUNCTION__); 
@@ -403,7 +394,7 @@ bool BackgroundEstimator::PassesCuts(fitsfile * fptr, long int i, int format) {
     else {printf("%s: what is going on?\n",__FUNCTION__); exit(1);}
     if   (CTBClassLevel<MinCTBClassLevel) return false; //apply class cut
   }
-  //printf("ctb %d %d\n",CTBClassLevel,MinCTBClassLevel);
+
 
 
   if (ConversionType!=-1) { //if !BOTH
@@ -415,25 +406,27 @@ bool BackgroundEstimator::PassesCuts(fitsfile * fptr, long int i, int format) {
 
   static double FT1Energy=0;
   fits_read_col (fptr,TDOUBLE,1,i, 1, 1, NULL,&FT1Energy, &anynul, &status);
-  //printf("energy %f %f %f\n",FT1Energy,Energy_Min,Energy_Max_datafiles);
-  if (FT1Energy<Energy_Min_datafiles || FT1Energy>Energy_Max_datafiles) return false; //energy cut
+  //printf("energy %f %f %f\n",FT1Energy,Energy_Min_datafiles,Energy_Max_datafiles);
+  if (FT1Energy<=Energy_Min_datafiles || FT1Energy>=Energy_Max_datafiles) return false; //energy cut
 
   static double FT1ZenithTheta=0;
   fits_read_col (fptr,TDOUBLE,8,i, 1, 1, NULL,&FT1ZenithTheta, &anynul, &status);
   //printf("zt %f %f\n",FT1ZenithTheta,FT1ZenithTheta_Cut);
-  if (FT1ZenithTheta>FT1ZenithTheta_Cut) return false; //ZTheta cut
+  if (FT1ZenithTheta>=FT1ZenithTheta_Cut) return false; //ZTheta cut
 
   return true;
 }
 
 double BackgroundEstimator::GimmeCorrectionFactor(short int ie, double MET) {
+  
+  int idx=ie-1; //ie (the energy index) goes from 1 to =EnergyBins. idx goes from 0 to EnergyBins
+  if (pRatiovsTime[idx]==0) return 0;
 
-  if (RatiovsTime[ie]==NULL) return 1;
   if (ie<=0 || ie>Energy_Bins_datafiles) {printf("%s: energy bin that is out of bounds %d submitted\n",__FUNCTION__,ie); return 1;}
-  double CorrectionCoeff = RatiovsTime[ie]->GetBinContent(RatiovsTime[ie]->FindBin(MET));
-  //printf("met=%f bin=%d cor=%f\n",MET,RatiovsTime[ie]->FindBin(MET),RatiovsTime[ie]->GetBinContent(RatiovsTime[ie]->FindBin(MET)));
-  if (CorrectionCoeff==0) return 1;
-
-  return 1./CorrectionCoeff; //CorrectionCoeff = 1/ratio. (ratio=bkg/sig)
+  int timebin=pRatiovsTime[idx]->FindBin(MET);
+  if (timebin==0 || timebin>pRatiovsTime[idx]->GetNbinsX()) return 0;
+  return pRatiovsTime[idx]->GetBinContent(timebin); //CorrectionCoeff = (est-act)/est 
+  //printf("met=%f bin=%d cor=%f\n",MET,RatiovsTime[ie]->FindBin(MET),RatiovsTime[ie]->GetBinContent(RatiovsTime[ie]->FindBin(MET)));   
+  
 }
 
