@@ -93,6 +93,7 @@ def plot_counts(roi,fignum=1, event_class=None, outfile=None,
         ax.set_yscale('log')
         en,obs,tot = count_data['energies'],count_data['observed'],count_data['total']
         for name, data in count_data['models']:
+            if np.any(data<=0): continue # ignore models with no predicted counts
             assert len(en)==len(data), 'energy, data mismatch'
             if len(name)>20: name=name[:17]+'...'
             tmodel_kw = model_kw.copy()
