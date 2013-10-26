@@ -245,8 +245,8 @@ def stacked_plots(roi, source_name=None, outdir=None, fignum=6, **kwargs):
     source = roi.get_source(source_name)
     if not hasattr(source, 'sedrec'):
         roi.get_sed(source_name)
-    
-    p = Plot(source)
+    kw = dict(energy_flux_unit=kwargs.pop('energy_flux_unit', 'eV'))
+    p = Plot(source, **kw)
     kwargs.update(outdir=None)
     suffix = kwargs.pop('suffix', '_sed')
     p(axes=axes[0],  **kwargs)
