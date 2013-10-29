@@ -496,7 +496,7 @@ class Factory(roisetup.ROIfactory):
 
 
 @decorate_with(roisetup.ROIfactory, append_init=True)
-def factory(  modeldir='.', dataspec=None,     **kwargs    ):
+def factory(  modeldir='.',   **kwargs ):
     """ will then return a ROI_user object 
     """
-    return Factory(modeldir,  dataspec,  **kwargs)
+    return Factory(modeldir, **kwargs)
