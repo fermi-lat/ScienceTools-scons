@@ -301,7 +301,8 @@ class ROIBand(object):
     def __init__(self, band, psf, exposure,  skydir, radius):
     
         self.psf, self.exposure, self.sd, self.b = psf, exposure, skydir, band
-        self.radius_in_rad = np.radians(radius)
+        self.radius_in_rad = np.radians(radius) ## deprecated
+        self.radius       = radius
         self.wsdl = skymaps.WeightedSkyDirList(band,skydir,self.radius_in_rad,False)
         self.pix_counts   = np.asarray([x.weight() for x in self.wsdl]) if len(self.wsdl)>0 else []
         self.npix         = self.wsdl.total_pix()
