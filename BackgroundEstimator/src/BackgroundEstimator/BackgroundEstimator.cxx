@@ -36,7 +36,6 @@ StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposu
   L_BINS = 720;
   B_BINS = 360;
   vector <string> VALID_CLASSES;
-  VALID_CLASSES.push_back("P6_V3_TRANSIENT");
   VALID_CLASSES.push_back("P7TRANSIENT_V15");
 
   bool goodClass=false;
