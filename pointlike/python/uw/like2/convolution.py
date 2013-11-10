@@ -54,7 +54,7 @@ class FillMixin(object):
         # check for nans, replace with zeros if not full ROI
         nans = np.isnan(self.bg_vals)
         if np.all(nans):
-            raise eException('Diffuse source %s has no overlap with ROi' % dm.filename)
+            raise Exception('Diffuse source %s has no overlap with ROi' % dm.filename)
         if np.any(nans) and ignore_nan:
             self.bg_vals[nans]=0
             
