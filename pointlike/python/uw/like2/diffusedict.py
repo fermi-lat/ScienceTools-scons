@@ -93,7 +93,8 @@ class MapCube(DiffuseBase, skymaps.DiffuseFunction):
         if  self.loaded: return
         self.loaded=True
         if not interpolate: 
-            print 'loading diffuse file %s: warning, not interpolating' %self.filename
+            pass
+            #print 'loading diffuse file %s: warning, not interpolating' %self.filename
         super(MapCube,self).__init__(self.filename, 1000., interpolate)
 
 class Healpix(DiffuseBase):

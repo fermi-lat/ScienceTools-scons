@@ -119,7 +119,7 @@ class PointSource(Source):
         ret.model = self.model.copy()
         return ret
     def response(self, band, **kwargs):
-        return response.PointResponse(self, band)
+        return response.PointResponse(self, band, **kwargs)
         
 class GlobalSource(Source):
     def __init__(self, **kwargs):
@@ -140,7 +140,7 @@ class GlobalSource(Source):
                 )[self.dmodel.type]
         except Exception, msg:
             raise Exception('Could not find a response class for source %s:"%s"' %(self,msg))
-        return resp_class(self,band,**kwargs) 
+        return resp_class(self,band, **kwargs) 
     
 
 class GlobalSourceList(list):
