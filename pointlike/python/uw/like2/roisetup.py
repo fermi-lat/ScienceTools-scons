@@ -4,7 +4,7 @@ Set up an ROI factory object
 $Header$
 
 """
-import os, sys, types, pickle, zipfile
+import os, sys, types, pickle, zipfile, copy
 import numpy as np
 import pandas as pd
 import skymaps
@@ -181,7 +181,7 @@ class ROImodel(object):
         """ return a list of sources, and a list of the ones with free parameters for BandLike 
             order as global, local, neighbors
             """
-        tmp = self.global_sources
+        tmp = self.global_sources[:]
         tmp += self.local_sources
         tmp += self.neighbor_sources
         free = np.array([np.any(src.free) for src in tmp])
