@@ -127,6 +127,12 @@ class GlobalSource(Source):
         self.dmodel= kwargs.get('dmodel', None)
         assert self.skydir is None # used as a flag
 
+    def copy(self):
+        """ return a new PointSource object, with a copy of the model, others"""
+        ret = GlobalSource(**self.__dict__)
+        ret.model = self.model.copy()
+        return ret
+
     def response(self, band, **kwargs):
         """ return a Response class for the band"""
         assert self.dmodel, 'Need DiffuseBase object to determine response'
