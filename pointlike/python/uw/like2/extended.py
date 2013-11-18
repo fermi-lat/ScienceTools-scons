@@ -40,7 +40,7 @@ class ExtendedCatalog( roi_catalogs.ExtendedSourceCatalog):
     def __init__(self, extended_catalog_name, **kwargs):
         """ initialize by also filling an array with all source spectral models"""
         self.alias = kwargs.pop('alias', dict())
-        self.quiet = kwargs.pop('quiet', False)
+        self.quiet = kwargs.pop('quiet', True)
         extended_catalog_name = \
             os.path.expandvars(os.path.join('$FERMI','catalog',extended_catalog_name))
         if not os.path.exists(extended_catalog_name):
