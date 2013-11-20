@@ -5,6 +5,7 @@
  * $Header$
  */
 
+#include <sstream>
 #include "optimizers/NewMinuit.h"
 #include "optimizers/Parameter.h"
 #include "Minuit2/MnUserParameters.h"
@@ -129,7 +130,20 @@ namespace optimizers {
       m_min->SetErrorDef(level/2.);
     }
     ROOT::Minuit2::MnMinos mns(m_FCN, *m_min, m_strategy);
-    std::pair<double,double> results=mns(n);
+    ROOT::Minuit2::MinosError minos_error(mns.Minos(n));
+    if (!minos_error.LowerValid()) {
+       std::ostringstream message;
+       message << "Minuit2::MnMinos could not find valid lower limit for "
+               << "parameter number " << n;
+       throw Exception(message.str());
+    }
+    if (!minos_error.UpperValid()) {
+       std::ostringstream message;
+       message << "Minuit2::MnMinos could not find valid upper limit for "
+               << "parameter number " << n;
+       throw Exception(message.str());
+    }
+    std::pair<double,double> results(minos_error());
     //Back to default
     if(level!=1.){
       m_FCN.SetErrorDef(0.5);
