@@ -339,18 +339,6 @@ class ROImodel(list):
                 names.append(source_name.strip()+'_'+pname)
         return np.array(names)
     
-    #def get_parameters(self):
-    #    """ array of free parameters (fitter rep)"""
-    #    if len(self.models)==0: return []
-    #    return np.concatenate([m.get_parameters() for m in self.models])
-    #
-    #def set_parameters(self,parameters):
-    #    """ set the (fitter rep) parameters"""
-    #    current_position=0
-    #    for m in self.models:
-    #        cp,nn = current_position, current_position+ sum(m.free)
-    #        m.set_parameters(parameters[cp:nn])
-    #        current_position += nn-cp
 
     def find_source(self, source_name):
         """ Search for the source with the given name
