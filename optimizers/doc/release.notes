@@ -5,6 +5,7 @@
     @verbatim
     EOH
 
+ optimizers-02-22-01 19-Nov-2013 jchiang throw exception from NewMinuit::Minos if Minuit2::MnMinos does not find a valid lower or upper confidence limit
  optimizers-02-22-00 10-Jan-2013 jchiang add access to abcissa values in Function objects
  optimizers-02-21-04 10-Nov-2012 jchiang ensure setupEnvironment() is called exactly once via st_facilities::Environment
  optimizers-02-21-03 24-Apr-2012 jchiang move Gaussian.h to public directory so that Likelihood package can apply ScaleFactor decorator
