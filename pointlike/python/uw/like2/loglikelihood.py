@@ -465,7 +465,7 @@ class PoissonFitter(object):
     array([ 50.,   1.,  10.])
     
     """
-    def __init__(self, func, scale=1., tol=0.02):
+    def __init__(self, func, scale=1., tol=0.025):
         """
         parameters
         ----------
@@ -488,6 +488,10 @@ class PoissonFitter(object):
         self.fit()
         self.maxdev=self.check(tol)[0]
         
+    def __repr__(self):
+        return '%s.%s : %s' % (self.__module__,self.__class__.__name__, 
+            str(self._poiss))
+    
     @property
     def poiss(self):
         return self._poiss
