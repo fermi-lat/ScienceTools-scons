@@ -95,9 +95,13 @@ class Source(object):
             raise Exception('model %s for source %s was not converted to new format'\
                     % (self.model.name, self.name))
             
-    @property
-    def spectral_model(self): #an alias for the model
+    def get_spectral_model(self):
         return self.model
+    def set_spectral_model(self, newmodel):
+        t =self.model
+        self.model = newmodel
+        return t
+    spectral_model = property(get_spectral_model, set_spectral_model)
 
     def freeze(self, freeze):
         self.model.free[:] = False if freeze else self.free
