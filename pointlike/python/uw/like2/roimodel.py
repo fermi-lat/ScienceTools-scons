@@ -61,8 +61,14 @@ class ParameterSet(object):
         self.index = np.array([ss, ii])
     
     def __getitem__(self, i):
-        """ access the ith parameter"""
-        source, k = self.index[:,i]
+        """ access the ith parameter, or all parameters with [:] """
+        if isinstance(i, slice):
+            if i==slice(None,None,None):
+                return self.get_parameters()
+            else:
+                raise Exception('slice format not supported')
+        else:
+            source, k = self.index[:,i]
         return source.model.get_parameters()[k]
     
     def __setitem__(self,i,x):

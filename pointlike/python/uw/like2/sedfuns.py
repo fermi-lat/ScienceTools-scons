@@ -48,6 +48,7 @@ class SourceFlux(tools.WithMixin):
     def __repr__(self):
         return '%s.%s : %d bands selected, energy range %.0f-%.0f'% (
                     self.__module__, self.__class__.__name__,len(self.rs.selected), self.emin, self.emax)
+    
     def select(self, index, event_type=None, poisson_tolerance=0.05):
         """ Select an energy band or bands
         parameters:
@@ -80,8 +81,8 @@ class SourceFlux(tools.WithMixin):
         return np.array(pp)
         
     def restore(self):
-        self.func.restore()
         self.rs.select()
+        self.func.restore()
         
     def __call__(self, eflux):
         """eflux : float or array of float
