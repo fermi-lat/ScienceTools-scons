@@ -349,6 +349,8 @@ class BandLikeList(list):
         assert abs(fzero-self.log_like())<1e-2
         return hess 
        
+    ### The following methods return views for specific analyses
+    
     def energy_flux_view(self, source_name, energy=None, **kw):
         """ a functor for a source, which returns log likelihood as a 
                 function of the differential energy flux, in eV units, at the given energy
@@ -363,15 +365,15 @@ class BandLikeList(list):
             func = self.fitter_view(source_name+'_Norm')
         except Exception, msg:
             raise Exception('could not create energy flux function for source %s;%s' %(source_name, msg))
-        return views.EnergyFluxLikelihood(self, func, energy, **kw)
+        return views.EnergyFluxView(self, func, energy, **kw)
         
     def fitter_view(self, select=None, **kwargs):
         """ return a object to use with a fitter.
             Two versions, one with full set of parameters, other if a subset is specified
         """
         if select is None:
-            return views.FitFunction(self, **kwargs)
-        return views.LikeFunctor(self, select, **kwargs)
+            return views.FitterView(self, **kwargs)
+        return views.SubsetFitterView(self, select, **kwargs)
         
     def tsmap_view(self, source_name, **kw):
         """Return TSmap function for the source
@@ -380,6 +382,6 @@ class BandLikeList(list):
             func = self.fitter_view(source_name+'_Norm')
         except Exception, msg:
             raise Exception('could not create tsmap function for source %s;%s' %(source_name, msg))
-        return views.TSmap(self, func, **kw)
+        return views.TSmapView(self, func, **kw)
        
     
