@@ -59,6 +59,7 @@ class ParameterSet(object):
                 ss.append(s) 
                 ii.append(j)
         self.index = np.array([ss, ii])
+        self.mask = np.ones(len(ss),bool)
     
     def __getitem__(self, i):
         """ access the ith parameter, or all parameters with [:] """
@@ -102,6 +103,20 @@ class ParameterSet(object):
                 source.changed=True
             i =j
             
+    @property
+    def model_parameters(self):
+        if len(self.free_sources)==0: return []
+        return np.concatenate([s.model.free_parameters for s in self.free_sources])
+    
+    @property
+    def uncertainties(self):
+        """ return relative uncertainties 
+        """
+        variances = np.concatenate([s.model.get_cov_matrix().diagonal()[s.model.free] \
+            for s in self.free_sources])[self.mask]
+        variances[variances<0]=0
+        return np.sqrt(variances) / (np.abs(self.model_parameters) +1e-20) #avoid divide by zero
+
     @property 
     def bounds(self):
         """ fitter representation of applied bounds """
@@ -250,6 +265,18 @@ class ParSubSet(ParameterSet):
     def bounds(self):
         t = super(ParSubSet, self).bounds
         return t[self.mask]
+    @property
+    def model_parameters(self):
+        t = super(ParSubSet, self).model_parameters
+        return t[self.mask]
+
+#    @property
+#    def uncertainties(self):
+#        """ return relative uncertainties 
+#        """
+#        return super(ParSubSet, self).uncertainties #mask applied in superclass
+#
+        
 
 class ROImodel(list):
     """ construct the model, or list of sources, for an ROI, reading the zipped pickle format
