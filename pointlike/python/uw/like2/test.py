@@ -413,8 +413,8 @@ class TestSED(TestSetup):
         self.assertAlmostEquals(self.init, likeviews.log_like())
 
     def test_sourceflux(self, sourcename='W28', checks=(61.695, 63.816, 4889, 5025)):
-        """\tcreate and check the SourceFlux object"""
-        with sedfuns.SourceFlux(likeviews, sourcename) as sf:
+        """-->create and check the SED object"""
+        with sedfuns.SED(likeviews, sourcename) as sf:
             poiss = sf.full_poiss
             errors =poiss.errors
             pp = sf.all_poiss()
