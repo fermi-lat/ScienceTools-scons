@@ -258,8 +258,9 @@ class BandLikeList(list):
         else:
             energy = self.all_energies[index]
             type_select = lambda x : True if event_type is None else x==event_type
-            selected_bands = filter(lambda b: b.band.energy==energy and type_select(b.band.event_type), self)
-            assert len(selected_bands)>0, 'did not find any bands for energy %.1f' % energy
+            selected_bands = filter(lambda b: abs(b.band.energy-energy)<1 and type_select(b.band.event_type), self)
+            if len(selected_bands)==0:
+                raise Exception( 'did not find any bands for energy %.1f: %s are available' %( energy, self.energies))
         self.selected = selected_bands
 
     @property
@@ -273,10 +274,10 @@ class BandLikeList(list):
         return  np.sort(list(set([ sm.band.energy for sm in self._selected])))
     @property
     def emin(self):
-        return np.array([b.band.emin for b in self.__selected]).min()
+        return np.array([b.band.emin for b in self._selected]).min()
     @property
     def emax(self):
-        return np.array([b.band.emax for b in self.__selected]).max()
+        return np.array([b.band.emax for b in self._selected]).max()
         
     def __repr__(self):
         sel = '%d bands'%len(self.bands) if len(self.selected)==len(self) else '%d / %d selected bands'\
