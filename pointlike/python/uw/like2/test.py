@@ -473,7 +473,6 @@ class TestUser(TestSetup):
         pass
         
     
-    
 class TestAssociations(TestSetup):
     def test(self):
         assoc = associate.SrcId()
@@ -483,9 +482,12 @@ class TestAssociations(TestSetup):
         self.assertAlmostEquals(2.614, t['deltats'][0], delta=0.001)
      
     
-test_cases = (TestConfig, 
-    TestPoint, TestDiffuse, 
-   # TestExtended, 
+test_cases = (
+    TestConfig, 
+    TestPoint, 
+    TestDiffuse, 
+    # currently disabled due to low energy coverage
+    # TestExtended, 
     TestROImodel, 
     TestBands, 
     TestLikelihood,
@@ -493,7 +495,7 @@ test_cases = (TestConfig,
     TestSED,
     TestLocalization,
     TestAssociations,
-    #### no memory to do this at the same time since it creates duplicate large objects
+    # no memory to do this at the same time since it creates duplicate large objects
     #TestUser,
     )
     
@@ -510,7 +512,6 @@ def run(t='all', loader=unittest.TestLoader(), debug=False):
         suite.debug()
     else:
         unittest.TextTestRunner(stream=sys.stdout,verbosity=2).run(suite)
-    
     
 if __name__=='__main__':
     run()
