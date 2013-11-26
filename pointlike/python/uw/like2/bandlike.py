@@ -228,6 +228,7 @@ class BandLikeList(list):
             
         self.set_selected(self)# set selected for a subset?
         self.all_energies = self.energies[:]
+        self.roi_dir = roi_bands.roi_dir
         
     #  the band selection mechanism, used by log_like, update and gradient   
     def set_selected(self, values):

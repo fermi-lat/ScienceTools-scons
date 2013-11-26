@@ -83,6 +83,7 @@ class BandSet(list):
             for et in range(2):
                 self.append(Bandlite(None, config, roi_index, event_type=et, emin=emin,emax=emax))
         self.has_data = False
+        self.roi_dir = skymaps.Band(12).dir(roi_index) # could be defined otherwise
     
     def __repr__(self):
         ret = '%s.%s : %d bands %d-%d MeV for ROI %d' % (
