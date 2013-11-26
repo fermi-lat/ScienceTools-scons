@@ -220,7 +220,7 @@ def sed_table(roi, source_name=None):
                 index=np.array(np.sqrt(si.elow*si.ehigh),int), columns='flux lflux uflux mflux TS pull'.split())
                 
 
-def stacked_plots(roi, source_name=None, outdir=None, fignum=6, **kwargs):
+def stacked_plots(sed,  outdir=None, fignum=6, **kwargs):
     """ 
     Make stacked plots
         
@@ -242,9 +242,9 @@ def stacked_plots(roi, source_name=None, outdir=None, fignum=6, **kwargs):
 
     axes[0].set_position([left, bottom+(1-fraction)*height, width, fraction*height])
     axes[1].set_position([left, bottom, width, (1-fraction)*height])
-    source = roi.get_source(source_name)
-    if not hasattr(source, 'sedrec'):
-        roi.get_sed(source_name)
+    source = sed.func.source
+    #if not hasattr(source, 'sedrec'):
+    #    roi.get_sed(source_name)
     kw = dict(energy_flux_unit=kwargs.pop('energy_flux_unit', 'eV'))
     p = Plot(source, **kw)
     kwargs.update(outdir=None)
