@@ -300,7 +300,7 @@ class Background(roi_info.ROIinfo):
  
     def gal_correction_maps(self, bands=4):
         """galactic correction maps
-        The following maps show the distribution of the first %(nmaps)d corrections.
+        The following maps show the distribution of the first %(nmaps)d corrections, exractred from
         %(correction_info)s
         %(gal_corr_maps)s
         

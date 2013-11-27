@@ -31,7 +31,7 @@ class ROIinfo(analysis_base.AnalysisBase):
                     or os.path.getmtime(filename)<os.path.getmtime('pickle.zip') )
         if refresh:
             files, pkls = self.load_pickles('pickle')
-            assert len(files)==1728, 'Expected to find 1728 files'
+            assert len(files)==1728, 'Expected to find 1728 files, found %d' % len(files)
             rdict= dict()
             exclude = ('sources', 'name')
             for pkl in pkls:

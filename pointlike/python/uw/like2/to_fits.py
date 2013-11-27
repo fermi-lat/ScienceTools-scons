@@ -252,7 +252,7 @@ class MakeCat(object):
         # make the FITS stuff
         table = pyfits.new_table(self.cols)
         table.header.update('ERPOSFAC','%.3f'% localization_systematic[0], 'Systematic factor applied to conf95')
-        table.header.update('ERPOSABS','%.4f'% localization_systematic[1], 'systematic value (deg) added in quadratrue conf95')
+        table.header.update('ERPOSABS','%.4f'% localization_systematic[1], 'systematic value (deg) added in quadrature conf95')
         table.name = '4year_LAT_Source_Catalog' 
         if os.path.exists(outfile):
             os.remove(outfile)

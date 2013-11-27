@@ -14,7 +14,7 @@ from . import analysis_base
 
 
 class FrontBackSedPlots(analysis_base.AnalysisBase):
-    """ 
+    """Front/back analysis of SED information 
     Analysis of a special "sedinfo" run, which records SED information for all sources
         with fits to front and back only, as well as both.
     """

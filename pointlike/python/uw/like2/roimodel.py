@@ -9,7 +9,7 @@ import numpy as np
 import skymaps
 from .. utilities import keyword_options
 from . import (sources, 
-      diffusedict as diffuse,
+              diffuse,
       )
 class ROImodelException(Exception):pass
 
@@ -94,15 +94,37 @@ class ParameterSet(object):
         """ set parameters, checking to see if changed"""
         i =0
         for source, n in self.ms:
-            j = i+n
             model = source.model
             oldpars = model.get_parameters()
-            newpars = pars[i:j]
+            newpars = pars[i:i+n]
             if np.any(oldpars != newpars):
                 source.model.set_parameters(newpars)
                 source.changed=True
-            i =j
-            
+            i += n
+    
+    def get_covariance(self, nomask=False):
+        na,nt =len(self.mask), sum(self.mask)
+        cov = np.matrix( np.zeros(na*na).reshape(na,na))
+        i = 0
+        for source, n in self.ms:
+            model = source.model
+            mcov = model.internal_cov_matrix[np.outer(model.free,model.free)]
+            cov[i:i+n,i:i+n] = mcov.reshape(n,n)
+            i += n
+        if nomask: return cov
+        return np.matrix(cov[np.outer(self.mask, self.mask)].reshape(nt,nt))
+    
+    def set_covariance(self, cov):
+        cnow = np.asarray(self.get_covariance(nomask=True)).flatten()
+        cnow[np.outer(self.mask, self.mask).flatten()] = cov.flatten()
+        na = len(self.mask)
+        cnew = cnow.reshape(na,na)
+        i = 0
+        for source, n in self.ms:
+            model = source.model
+            model.set_cov_matrix(cnew[i:i+n, i:i+n])
+            i += n
+    
     @property
     def model_parameters(self):
         if len(self.free_sources)==0: return []
@@ -110,7 +132,7 @@ class ParameterSet(object):
     
     @property
     def uncertainties(self):
-        """ return relative uncertainties 
+        """ return relative uncertainties from diagonals of individual covariance matrices 
         """
         variances = np.concatenate([s.model.get_cov_matrix().diagonal()[s.model.free] \
             for s in self.free_sources])[self.mask]

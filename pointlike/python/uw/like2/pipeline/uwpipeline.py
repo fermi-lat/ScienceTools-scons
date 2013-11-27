@@ -96,11 +96,11 @@ stagenames = dict(
     # List of possible stages, with proc to run, parameters for it,  summary string
     # list is partly recognized by check_converge.py, TODO to incoprorate it here, especially the part that may start a new stream
     create      =  Stage(pipe.Create,  sum='environment counts menu', help='Create a new skymodel, follow with update_full',),
-    update_full =  Stage(pipe.Update, dict( dampen=1.0,),sum='counts',help='refit, full update' ),
-    update      =  Stage(pipe.Update, dict( dampen=0.5,),sum='counts',help='refit, half update' ),
+    update_full =  Stage(pipe.Update, dict( dampen=1.0,),sum='config counts',help='refit, full update' ),
+    update      =  Stage(pipe.Update, dict( dampen=0.5,),sum='config counts',help='refit, half update' ),
     update_beta =  Stage(pipe.Update, dict( dampen=1.0, fix_beta=True),sum='sourceinfo',help='check beta', ),
     update_pivot=  Stage(pipe.Update, dict( dampen=1.0, repivot=True), sum='sourceinfo',help='update pivot', ), 
-    update_only =  Stage(pipe.Update, dict( dampen=1.0), sum='counts sourceinfo', help='update, no additional stage', ), 
+    update_only =  Stage(pipe.Update, dict( dampen=1.0), sum='config counts sourceinfo', help='update, no additional stage', ), 
     finish      =  Stage(pipe.Finish,  sum='sourceinfo localization',help='perform localization', ),
     tables      =  Stage(pipe.Tables,  sum='hptables', job_list='joblist8.txt', help='create HEALPix tables: ts kde counts', ),
     sedinfo     =  Stage(pipe.Update, dict( processor='processor.full_sed_processor',sedfig_dir='"sedfig"',), sum='frontback',

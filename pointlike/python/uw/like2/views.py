@@ -160,7 +160,7 @@ class FitterMixin(object):
         if not quiet:
             print ret[2]
         f = ret 
-        cov = self.hessian(f[0]).I
+        self.covariance = cov = self.hessian(f[0]).I
         diag = cov.diagonal().copy()
         bad = diag<0
         if np.any(bad):
@@ -168,7 +168,18 @@ class FitterMixin(object):
                 %np.asarray(self.parameter_names)[bad] 
             diag[bad]=np.nan
         return f[1], f[0], np.array(np.sqrt(diag)).flatten()
+    
         
+    def modify(self, fraction):
+        """change iniital set to fraction of current change; restore will make it permanent
+        """
+        if fraction==0 : return
+        delta = self.get_parameters()-self.initial_parameters
+        self.initial_parameters += fraction * delta
+        
+    def restore(self):
+        self.set_parameters(self.initial_parameters)
+
     def check_gradient(self, delta=1e-5):
         """compare the analytic gradient with a numerical derivative"""
         
@@ -238,6 +249,14 @@ class FitterView(FitPlotMixin, FitterMixin, FitterSummaryMixin, tools.WithMixin)
     def set_parameters(self, pars):
         self.parameters.set_parameters(pars)
         self.blike.update()
+        
+    def modify(self, fraction):
+        """change iniital set to fraction of current change; restore will make it permanent
+        """
+        if fraction==0 : return
+        delta = self.get_parameters()-self.initial_parameters
+        self.initial_parameters += fraction * delta
+        
     def restore(self):
         self.set_parameters(self.initial_parameters)
     @property 
@@ -295,6 +314,7 @@ class SubsetFitterView(roimodel.ParSubSet, FitPlotMixin, FitterMixin, FitterSumm
         if pars is not None: self.set_parameters(pars)
         self.calls +=1
         return -self.blike.log_like()
+        
     def log_like(self, summed=True):
         """assume that parameters are set, possibility of individual likelihoods"""
         return self.blike.log_like(summed)
