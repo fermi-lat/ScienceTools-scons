@@ -42,5 +42,21 @@ class WithMixin(object):
     def __exit__(self, type, value, traceback):
         self.restore()
 
+class OutputTee(object):
+    def __init__(self, logfile):
+        self.logstream = open(logfile, 'a')
+        self.stdout = sys.stdout
+        sys.stdout = self
+    def write(self, stuff):
+        self.logstream.write(stuff)
+        self.stdout.write(stuff)
+    def close(self):
+        sys.stdout =self.stdout
+        self.logstream.close()
+    def flush(self):
+        self.stdout.flush()
+    def set_parent(self, parent):
+        self.stdout.set_parent(parent) #needed??
+        
     
       
