@@ -1,10 +1,8 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
 // $Header$
-#include "BackgroundEstimator/BackgroundEstimator.h"
+#include "BackgroundEstimator/BackgroundEstimator_ext.h"
 
-ClassImp(BackgroundEstimator)
-
-void BackgroundEstimator::Make_McIlwainL_Fits(string FitsAllSkyFile){
+void BackgroundEstimator_ext::Make_McIlwainL_Fits(string FitsAllSkyFile){
 
   sprintf(name,"%s/Plots_%s.root",DataDir.c_str(),DataClass.c_str());
   TFile * fPlots = TFile::Open(name);

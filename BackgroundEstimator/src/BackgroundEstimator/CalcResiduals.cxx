@@ -1,12 +1,8 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
 // $Header$
-#include "BackgroundEstimator/BackgroundEstimator.h"
+#include "BackgroundEstimator/BackgroundEstimator_ext.h"
 
-#define DEBUG
-
-ClassImp(BackgroundEstimator)
-
-void BackgroundEstimator::CalcResiduals(string FitsAllSkyFile){
+void BackgroundEstimator_ext::CalcResiduals(string FitsAllSkyFile){
 
  const float hSimulatedSky_Earth_Map_Min_B=20;
  sprintf(name,"%.2f",Residuals_version);

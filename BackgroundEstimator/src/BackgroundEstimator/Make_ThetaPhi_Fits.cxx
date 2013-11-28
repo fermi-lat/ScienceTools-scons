@@ -1,12 +1,10 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
 // $Header$
-#include "BackgroundEstimator/BackgroundEstimator.h"
-
-ClassImp(BackgroundEstimator)
+#include "BackgroundEstimator/BackgroundEstimator_ext.h"
 
 void MakeFits(string DataDir, string DataDirs, int Energy_Bins_user, int nPhi, TFile * fout);
 
-void BackgroundEstimator::Make_ThetaPhi_Fits(string FitsAllSkyFile){
+void BackgroundEstimator_ext::Make_ThetaPhi_Fits(string FitsAllSkyFile){
 
   sprintf(name,"%s/ThetaPhi_Fits_%s_%.1f.root",DataDir.c_str(),DataClass.c_str(),ThetaPhiFits_version);
   FILE * ftemp = fopen(name,"r");

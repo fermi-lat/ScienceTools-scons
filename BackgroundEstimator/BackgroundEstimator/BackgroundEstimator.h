@@ -17,22 +17,14 @@ namespace BKGE_NS{
     ///Integrate the background map over the ROI
     string PlotBackground(string Interval_name, double MET, double DURATION, string FT1_FILE, string FT2_FILE, string DATACLASS, double Energy_Min_user, double Energy_Max_user, int Energy_Bins_user, bool OverwritePlots=true, int verbosity=1, double MET_FOR_THETA=-1);
     int MakeGtLikeTemplate(float gtlike_ROI, string GRB_DIR, string DATACLASS);
-    void Calc_TimeCorrectionFactors(vector<string> GRB_folders, vector  <double> METs, string Dataclass, double MinE, double MaxE, int NBins);
-
 };
 
 
 class BackgroundEstimator{
-  struct Plots_Struct{
-     TH1F* hPtRazvsTime,* hPtDeczvsTime,* hPtRaxvsTime,* hPtDecxvsTime,* hRAZenithvsTime,* hDecZenithvsTime;
-     TH1F* hRockingAnglevsTime,* hMcIlwainLvsTime;
-  } ;
 
   public:
     BackgroundEstimator(string aClass, double EMin=-1, double EMax=-1, int EBins=-1, bool initialize=true, bool ShowLogo=true);
     ~BackgroundEstimator();
-    ///Create the data files used for the background estimation. Normal users don't need to run that
-    void CreateDataFiles(string FitsAllSkyFilesList, string FT2_FILE, double StartTime=0, double EndTime=0, float ZenithThetaCut=100); 
 
     ///Calculate a background skymap. This is the first part of the bkg estimation
     int Make_Background_Map(string FT1_FILE, string FT2File, string GRB_DIR, double Burst_t0, double Burst_Dur,int verbosity=1, bool Calc_Residual=true, bool Save_Earth_Coo_Map=false); 
@@ -61,15 +53,16 @@ class BackgroundEstimator{
 
     unsigned short int Energy2Bin(float Energy);
     float Bin2Energy(unsigned short int bin);
+    struct Plots_Struct{
+     TH1F* hPtRazvsTime,* hPtDeczvsTime,* hPtRaxvsTime,* hPtDecxvsTime,* hRAZenithvsTime,* hDecZenithvsTime;
+     TH1F* hRockingAnglevsTime,* hMcIlwainLvsTime;
+    } ;
 
+  
 
- private:
+ protected:
     void SimulateSky(Plots_Struct myPlots_Struct, TH2F * hSimulatedSky[], vector <double> GTI_Start, vector <double> GTI_End, const int nEnergy, TH2F* hSimulatedSky_Earth[]=0, float TimeStep_user=0,float hSimulatedSky_Earth_Map_Min_B=20);
     double GimmeCorrectionFactor(short int ie, double MET);
-    ///Data Files
-    void CalcResiduals(string FitsAllSkyFile);
-    void Make_McIlwainL_Fits(string FitsAllSkyFile);
-    void Make_ThetaPhi_Fits(string FitsAllSkyFile);
     bool PassesCuts(fitsfile * fptr, long int i, int format);
     float FT1ZenithTheta_Cut;
     ///Correction factors
@@ -84,12 +77,11 @@ class BackgroundEstimator{
     float BinSize;
     double TimeStep;
     int L_BINS, B_BINS; ///Number of longitude and latitude map bins 
-    TFile * fResidualOverExposure,*fRateFit,*fThetaPhiFits,*fCorrectionFactors;
 
     char name[2000];
     string DataDir;
-    ClassDef(BackgroundEstimator,1)
-
+    TFile * fResidualOverExposure,*fRateFit,*fThetaPhiFits,*fCorrectionFactors;
+    
 };
 
 #endif

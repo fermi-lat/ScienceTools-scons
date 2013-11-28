@@ -1,13 +1,13 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
 //$Header$
 
-#include "BackgroundEstimator/BackgroundEstimator.h"
+#include "BackgroundEstimator/BackgroundEstimator_ext.h"
 #include <algorithm>
 #include "TProfile.h"
 #include "TLine.h"
 #include "TGraphErrors.h"
 
-void BKGE_NS::Calc_TimeCorrectionFactors(vector<string> GRB_folders, vector <double> METs, string Dataclass, double MinE, double MaxE, int NBins){
+void BKGE_NS_EXT::Calc_TimeCorrectionFactors(vector<string> GRB_folders, vector <double> METs, string Dataclass, double MinE, double MaxE, int NBins){
  gStyle->SetLineScalePS(0.01);
  gStyle->SetPadTopMargin(0.07);
  gStyle->SetPadLeftMargin(0.13);
