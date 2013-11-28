@@ -48,7 +48,7 @@ class ParameterSet(object):
     """
     def __init__(self, sources, **kw):
         self.free_sources = [source for source in sources if np.any(source.model.free)]
-        self.clear_changed()
+        # dangerous? self.clear_changed()
         # make two indexing arrays:
         #  ms : list of (source, npar) for each source
         #  index :  (source, index within that source) for each parameter
@@ -315,8 +315,9 @@ class ROImodel(list):
             ROI index, from 0 to 1727
         """
         keyword_options.process(self, kwargs)
-        self.pickle_file = os.path.join(config.configdir, 'pickle.zip')
-        assert os.path.exists(self.pickle_file)
+        self.pickle_file = os.path.join(config.modeldir, 'pickle.zip')
+        if not os.path.exists(self.pickle_file):
+            raise Exception('Expected file "pickle.zip" not found in %s' % config.configdir)
         self.config = config
         self.index = roi_index
         self._z = zipfile.ZipFile(os.path.expandvars(self.pickle_file))
