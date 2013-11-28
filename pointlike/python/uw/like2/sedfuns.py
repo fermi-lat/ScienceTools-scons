@@ -131,6 +131,8 @@ def makesed_all(roi, **kwargs):
     """
     from scipy import stats # for chi2 
     sedfig_dir = kwargs.pop('sedfig_dir', None)
+    if sedfig_dir is not None and sedfig_dir[0]=='$':
+        sedfig_dir = os.path.expandvars(sedfig_dir)
     ndf = kwargs.pop('ndf', 10) 
     if sedfig_dir is not None and not os.path.exists(sedfig_dir): os.mkdir(sedfig_dir)
     showts = kwargs.pop('showts', True)
@@ -138,7 +140,7 @@ def makesed_all(roi, **kwargs):
 
     sources = [s for s in roi.sources if s.skydir is not None and np.any(s.spectral_model.free)]
     for source in sources:
-        with SourceFlux(roi, source.name, ) as sf:
+        with SED(roi, source.name, ) as sf:
             try:
                 source.sedrec = sf.sed_rec()
                 source.ts = roi.TS(source.name)
@@ -146,7 +148,7 @@ def makesed_all(roi, **kwargs):
                 pval = 1.- stats.chi2.cdf(qual, ndf)
                 if sedfig_dir is not None:
                     annotation =(0.04,0.88, 'TS=%.0f\npvalue %.1f%%'% (source.ts,pval*100.)) if showts else None 
-                    plotting.sed.stacked_plots(roi, source.name, #gev_scale=True, energy_flux_unit='eV',
+                    plotting.sed.stacked_plots(sf,  #gev_scale=True, energy_flux_unit='eV',
                          galmap=source.skydir, outdir=sedfig_dir, 
                             annotate=annotation, **kwargs)
                         
