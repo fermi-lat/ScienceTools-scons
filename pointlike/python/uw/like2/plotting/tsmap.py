@@ -71,7 +71,7 @@ def plot(localizer, name=None, center=None, size=0.5, pixelsize=None, outdir=Non
         sigma = np.sqrt(loc[2]*loc[3]) #loc['a']*loc['b']) #?? scale factor needed?
         qual = loc[5] #'qual']
         if sigma<1 and qual <50:
-            tsp.overplot(loc, sigma)
+            tsp.overplot(loc)
         else:
             print 'bad fit sigma %g, >1 or qual %.1f >50' % (sigma, qual)
     tsp.show(colorbar=False)

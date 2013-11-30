@@ -152,6 +152,8 @@ class FitterMixin(object):
         if not quiet: print 'using optimize.fmin_l_bfgs_b with parameter bounds %s\n, kw= %s'% (
                             self.bounds, kwargs)
         parz = self.get_parameters()
+        winit = self.log_like()
+        assert len(parz)==len(self.gradient()), 'tracking a bug'
         ret = optimize.fmin_l_bfgs_b(self, parz, 
                 bounds=self.bounds,  fprime=self.gradient, **kwargs)
         if ret[2]['warnflag']>0: 

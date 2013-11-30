@@ -17,7 +17,9 @@ def PLSuperExpCutoff(*pars, **kw): return Models.PLSuperExpCutoff(p=pars, **kw)
 def Constant(*pars, **kw):   return Models.Constant(p=pars, **kw)
 def FBconstant(f,b, **kw): return Models.FrontBackConstant(f,b, **kw)
     
-    
+def ismodel(model):
+    """ check that model is an instance of Models.Model"""
+    return isinstance(model, Models.Model)
 
 class Source(object):
     """ base class for various sources
