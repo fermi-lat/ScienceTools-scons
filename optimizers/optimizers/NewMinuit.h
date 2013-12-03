@@ -65,13 +65,23 @@ namespace optimizers {
     virtual int find_min(int verbose=0, double tole = 1e-5, int tolType = ABSOLUTE);
     virtual int find_min_only(int verbose=0, double tole = 1e-5, int tolType = ABSOLUTE);
     void setStrategy(unsigned int strat = 1) {
+       m_strategy_value = strat;
        m_strategy=ROOT::Minuit2::MnStrategy(strat);
     }
+     unsigned int getStrategy() const {
+        return m_strategy_value;
+     }
+
     double getDistance(void) const {return m_distance;};
     virtual const std::vector<double> & getUncertainty(bool useBase = false);
     virtual std::vector<std::vector<double> > covarianceMatrix() const;
     virtual std::ostream& put (std::ostream& s) const;
     std::pair<double,double> Minos(unsigned int n, double level=1.);
+
+     /// Compute the lower bound error using Minos.
+     double minos_lower_error(unsigned int n, double level=1.);
+     /// Compute the upper bound error using Minos.
+     double minos_upper_error(unsigned int n, double level=1.);
 
     /// Run a MNCONTOUR dynamic CONTOUR analysis
     void MnContour(unsigned int par1, unsigned int par2,
@@ -82,9 +92,14 @@ namespace optimizers {
     double m_tolerance;
     ROOT::Minuit2::MnStrategy m_strategy;
     ROOT::Minuit2::FunctionMinimum * m_min;
+
+     unsigned int m_strategy_value;
+
     void setTolerance(double tol, int tolType);
     void hesse(int verbose = 0);
     int checkResults();
+
+     void checkParValues(unsigned int n, std::vector<double> & parValues) const;
   };
 
 }

@@ -18,6 +18,8 @@
 #include <iostream>
 #include <vector>
 
+#include "Minuit2/MnPrint.h"
+
 #include "optimizers/Amoeba.h"
 #include "optimizers/ChiSq.h"
 #include "optimizers/dArg.h"
@@ -48,6 +50,7 @@
 #include "ConstantValue.h"
 #include "PowerLaw.h"
 #include "Rosen.h"
+#include "RosenBounded.h"
 #include "RosenND.h"
 #include "AbsEdge.h"
 
@@ -65,6 +68,7 @@ void test_Function_class();
 void test_PowerLaw_class();
 void test_CompositeFunction();
 void test_Optimizers();
+void test_Minos();
 void test_Mcmc();
 void test_ChiSq();
 void test_Amoeba();
@@ -82,6 +86,7 @@ int main() {
    test_PowerLaw_class();
    test_CompositeFunction();
    test_Optimizers();
+   test_Minos();
    test_Mcmc();
    test_ChiSq();
    test_Amoeba();
@@ -345,6 +350,137 @@ void test_Optimizers() {
    std::cout << "*** test_Optimizers: all tests completed ***\n" << std::endl;
 }
 // test_Optimizers
+
+/**************/
+/* Test Minos */
+/**************/
+void test_Minos() {
+   std::cout << "*** test_Minos ***\n" << std::endl;
+   RosenBounded my_rosen;
+
+   std::vector<Parameter> params;
+   int verbose;
+   double tol;
+
+// First, determine unconstrained Minos errors
+   std::cout << "****************************" << std::endl;
+   std::cout << "* Testing NewMinuit::Minos *" << std::endl;
+   std::cout << "****************************" << std::endl;
+   my_rosen.getParams(params);
+   params[0].setValue(0.5);
+   params[0].setBounds(-10.0, 10.0);  // Well outside the 1 sigma errors
+   params[1].setValue(0.5);
+   params[1].setBounds(-10.0, 10.0);
+   my_rosen.setParams(params);
+   Optimizer * new_minuit(OptimizerFactory::instance().create("NewMinuit",
+                                                              my_rosen));
+   new_minuit->find_min(verbose=0, tol=1e-5, ABSOLUTE);
+   my_rosen.getParams(params);
+ 
+   double xopt(params[0].getValue());
+   double yopt(params[1].getValue());
+
+   my_rosen.setParam("x", xopt);
+   my_rosen.setParam("y", yopt);
+
+   double my_rosen_min = my_rosen.value();
+
+   // Asymmetric 1-sigma errors.
+   std::pair<double, double> x_errors = new_minuit->Minos(0);
+   std::pair<double, double> y_errors = new_minuit->Minos(1);
+   std::cout << "Unconstrained Minuit2::Minos errors:" << std::endl
+             << "x: " << xopt << "  " 
+             << x_errors.first << "  " 
+             << x_errors.second << std::endl
+             << "y: " << yopt << "  " 
+             << y_errors.first << "  "
+             << y_errors.second << std::endl
+             << std::endl;
+   delete new_minuit;
+
+   /// NewMinuit with bounds
+   std::cout << "****************************************" << std::endl;
+   std::cout << "* Testing NewMinuit::Minos with bounds *" << std::endl;
+   std::cout << "****************************************" << std::endl;
+   std::cout << "Set the x lower bound inside the 1-sigma limit" << std::endl;
+   std::cout << "Set the y upper bound inside the 1-sigma limit" << std::endl;
+   
+   double bound_frac(0.8);
+   char * _bound_frac = ::getenv("BOUND_FRAC");
+   if (_bound_frac) {
+      bound_frac = std::atof(_bound_frac);
+   }
+   double xmin = xopt + x_errors.first*bound_frac;
+   double xmax = 10.;
+   double ymin = -10.;
+   double ymax = yopt + y_errors.second*bound_frac;
+
+   my_rosen.getParams(params);
+   params[0].setValue(xopt);
+   params[0].setBounds(xmin, xmax);
+   params[1].setValue(yopt);
+   params[1].setBounds(ymin, ymax);
+   my_rosen.setParams(params);
+
+   my_rosen.set_xbounds(xmin, xmax);
+   my_rosen.set_ybounds(ymin, ymax);
+
+   Optimizer * new_minuit_b(OptimizerFactory::instance().create("NewMinuit",
+                                                                my_rosen));
+   new_minuit_b->find_min(verbose=0, tol=1e-5, ABSOLUTE);
+
+   std::cout << "Compute explictly valid, one-sided errors:\n";
+   std::cout << "x: ";
+   try {
+      std::cout << new_minuit_b->minos_lower_error(0) << "  ";
+   } catch(std::runtime_error & eObj) {
+      std::cout << eObj.what() << std::endl;
+   }
+   try {
+      std::cout << new_minuit_b->minos_upper_error(0) << std::endl;
+   } catch(std::runtime_error & eObj) {
+      std::cout << eObj.what() << std::endl;
+   }
+
+   std::cout << "y: ";
+   try {
+      std::cout << new_minuit_b->minos_lower_error(1) << "  "; 
+   } catch(std::runtime_error & eObj) {
+      std::cout << eObj.what() << std::endl;
+   }
+   try {
+      std::cout << new_minuit_b->minos_upper_error(1) << std::endl;
+   } catch(std::runtime_error & eObj) {
+      std::cout << eObj.what() << std::endl;
+   }
+      
+   std::cout << "Errors using NewMinuit::Minos(...)" << std::endl;
+   std::pair<double, double> errors;
+   for (size_t i(0); i < 2; i++) {
+      errors = new_minuit_b->Minos(i);
+      std::cout << errors.first << "  " << errors.second << std::endl;
+   }
+   delete new_minuit_b;
+
+   /// Test Minuit with same bounds.
+   std::cout << "*************************************" << std::endl;
+   std::cout << "* Testing Minuit::Minos with bounds *" << std::endl;
+   std::cout << "*************************************" << std::endl;
+   my_rosen.getParams(params);
+   params[0].setValue(xopt);
+   params[0].setBounds(xmin, xmax);
+   params[1].setValue(yopt);
+   params[1].setBounds(ymin, ymax);
+   my_rosen.setParams(params);
+   Optimizer * minuit(OptimizerFactory::instance().create("Minuit", my_rosen));
+   minuit->find_min(verbose=0, tol=1e-5, ABSOLUTE);
+
+   for (size_t i(0); i < 2; i++) {
+      std::pair<double, double> errors = minuit->Minos(i);
+      std::cout << errors.first << "  " << errors.second << std::endl;
+   }
+   delete minuit;
+} // test_Minos
 
 void test_CompositeFunction() {
 

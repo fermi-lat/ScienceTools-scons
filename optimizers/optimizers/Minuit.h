@@ -90,6 +90,10 @@ namespace optimizers {
     /// Set the minimization strategy
     void setStrategy(unsigned int strat = 1); 
 
+     unsigned int getStrategy() const {
+        return m_strategy_value;
+     }
+
   private:
     
     int minimize(int verbose, double tol, int tolType, bool doHesse);
@@ -99,6 +103,8 @@ namespace optimizers {
     int m_quality;
     double m_distance;
     double m_val;
+
+     unsigned int m_strategy_value;
 
   };
   

@@ -63,6 +63,22 @@ public:
       throw Exception("MnContour function is not enabled for this optimizer");
       return ;
    }
+   
+   virtual void setStrategy(unsigned int strat=1) {
+      throw Exception("setStrategy is only enabled for Minuit and NewMinuit");
+   }
+
+   virtual unsigned int getStrategy() const {
+      throw Exception("getStrategy is only enabled for Minuit and NewMinuit");
+   }
+
+   virtual double minos_lower_error(unsigned int n, double level=1.) {
+      throw Exception("minos_lower_error is only enabled for NewMinuit");
+   }
+
+   virtual double minos_upper_error(unsigned int n, double level=1.) {
+      throw Exception("minos_lower_error is only enabled for NewMinuit");
+   }
 
    Statistic & stat() {
       return *m_stat;

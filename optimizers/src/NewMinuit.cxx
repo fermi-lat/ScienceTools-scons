@@ -20,6 +20,7 @@
 #include "Minuit2/MnPrint.h"
 #include "optimizers/Exception.h"
 #include "optimizers/OutOfBounds.h"
+#include "StMnMinos.h"
 #ifndef BUILD_WITHOUT_ROOT
 #include "RVersion.h"
 #endif
@@ -31,7 +32,8 @@ namespace optimizers {
   // Constructor
   NewMinuit::NewMinuit(Statistic & stat) 
   : Optimizer(stat), m_FCN(stat), 
-    m_tolerance(1e-3), m_strategy(ROOT::Minuit2::MnStrategy(1)), m_min(0) {}
+    m_tolerance(1e-3), m_strategy(ROOT::Minuit2::MnStrategy(1)), m_min(0),
+    m_strategy_value(1) {}
 
   //  =
   NewMinuit & NewMinuit::operator=(const NewMinuit & rhs) {
@@ -43,15 +45,16 @@ namespace optimizers {
       m_strategy = rhs.m_strategy;
       delete m_min;
       m_min = new ROOT::Minuit2::FunctionMinimum(*(rhs.m_min));
+      m_strategy_value = rhs.m_strategy_value;
       return *this;
   }
 
   //Copy constructor
-  NewMinuit::NewMinuit(const NewMinuit & x) : Optimizer(x), 
-        m_FCN(x.m_FCN), m_distance(x.m_distance), m_tolerance(x.m_tolerance),
-        m_strategy(x.m_strategy)
-  {
-      m_min = new ROOT::Minuit2::FunctionMinimum(*(x.m_min));
+  NewMinuit::NewMinuit(const NewMinuit & x) 
+     : Optimizer(x), 
+       m_FCN(x.m_FCN), m_distance(x.m_distance), m_tolerance(x.m_tolerance),
+       m_strategy(x.m_strategy), m_strategy_value(x.m_strategy_value) {
+     m_min = new ROOT::Minuit2::FunctionMinimum(*(x.m_min));
   }
 
   // Call Minuit's MIGRAD to find the minimum of the function
@@ -120,16 +123,13 @@ namespace optimizers {
   // Call MINOS
   std::pair<double,double> NewMinuit::Minos(unsigned int n, double level) {
     std::vector<double> parValues;
-    m_stat->getFreeParamValues(parValues);
-    unsigned int npar = m_min->UserParameters().Params().size();
-    if (n >= npar) {
-      throw Exception("Parameter number out of range in Minos", n);
-    }
+    checkParValues(n, parValues);
     if(level!=1.){
       m_FCN.SetErrorDef(level/2.);
       m_min->SetErrorDef(level/2.);
     }
-    ROOT::Minuit2::MnMinos mns(m_FCN, *m_min, m_strategy);
+//    ROOT::Minuit2::MnMinos mns(m_FCN, *m_min, m_strategy);
+    StMnMinos mns(m_FCN, *m_min, m_strategy);
     ROOT::Minuit2::MinosError minos_error(mns.Minos(n));
     if (!minos_error.LowerValid()) {
        std::ostringstream message;
@@ -152,6 +152,51 @@ namespace optimizers {
     m_stat->setFreeParamValues(parValues);
     return results;
   }
+
+   double NewMinuit::minos_lower_error(unsigned int n, double level) {
+      std::vector<double> parValues;
+      checkParValues(n, parValues);
+      if (level != 1) {
+         m_FCN.SetErrorDef(level/2.);
+         m_min->SetErrorDef(level/2.);
+      }
+      StMnMinos minos(m_FCN, *m_min, m_strategy);
+      double lower = minos.Lower_valid(n);
+      // Reset to defaults.
+      if (level != 1.) {
+         m_FCN.SetErrorDef(0.5);
+         m_min->SetErrorDef(0.5);
+      }
+      m_stat->setFreeParamValues(parValues);
+      return lower;
+   }
+
+   double NewMinuit::minos_upper_error(unsigned int n, double level) {
+      std::vector<double> parValues;
+      checkParValues(n, parValues);
+      if (level != 1) {
+         m_FCN.SetErrorDef(level/2.);
+         m_min->SetErrorDef(level/2.);
+      }
+      StMnMinos minos(m_FCN, *m_min, m_strategy);
+      double upper = minos.Upper_valid(n);
+      // Reset to defaults.
+      if (level != 1.) {
+         m_FCN.SetErrorDef(0.5);
+         m_min->SetErrorDef(0.5);
+      }
+      m_stat->setFreeParamValues(parValues);
+      return upper;
+   }
+      
+   void NewMinuit::checkParValues(unsigned int n,
+                                  std::vector<double> & parValues) const {
+      m_stat->getFreeParamValues(parValues);
+      unsigned int npar = m_min->UserParameters().Params().size();
+      if (n >= npar) {
+         throw Exception("Parameter number out of range in Minos", n);
+      }
+   }
 
   // Call MNCONTOUR
   void NewMinuit::MnContour(unsigned int par1, unsigned int par2,
@@ -192,7 +237,7 @@ namespace optimizers {
     try {m_stat->setFreeParamValues(params);}
     catch (OutOfBounds & e) {
       std::cerr << e.what() << std::endl;
-      std::cerr << "Value " << e.value() << " is not between"
+      std::cerr << "Value " << e.value() << " is not between "
                 << e.minValue() << " and " << e.maxValue() << std::endl;
       throw;
     }

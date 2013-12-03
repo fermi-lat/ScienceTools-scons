@@ -34,6 +34,7 @@ namespace optimizers {
   }
 
   void Minuit::setStrategy(unsigned int strat) {
+     m_strategy_value = strat;
       std::ostringstream s_strategy;
       s_strategy << "SET STRATEGY " << strat;
       doCmd(s_strategy.str());
