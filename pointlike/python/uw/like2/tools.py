@@ -58,5 +58,17 @@ class OutputTee(object):
     def set_parent(self, parent):
         self.stdout.set_parent(parent) #needed??
         
+class RecArray(object):
+    def __init__(self, names, dtype=None):
+        self.names = names
+        self.fields=list([list() for i in range(len(names))])
+        self.dtype=dtype
+
+    def append(self,*arg):
+        for i,x in enumerate(arg):
+            self.fields[i].append(x)
+    def __call__(self):
+        """ return finished recarray"""
+        return np.rec.fromarrays(self.fields, names=self.names, dtype=self.dtype)
     
       
