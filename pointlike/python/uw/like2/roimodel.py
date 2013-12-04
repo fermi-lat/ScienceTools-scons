@@ -8,7 +8,7 @@ import os ,zipfile, pickle, types
 import numpy as np
 import skymaps
 from .. utilities import keyword_options
-from . import (sources,  diffuse, extended  )
+from . import (sources,  diffuse, extended, to_xml)
 from . sources import (PowerLaw, PLSuperExpCutoff, LogParabola)
 
 class ROImodelException(Exception):pass
@@ -425,3 +425,13 @@ class ROImodel(list):
         sources.set_default_bounds(model)
         self.initialize()
         return src, old_model
+        
+    def to_xml(self, filename):
+        """Create an XML representation
+        
+        filename : string
+            the xml filename
+        """
+        with open(filename, 'w') as out:
+            to_xml.from_roi(self, stream = out)
+
