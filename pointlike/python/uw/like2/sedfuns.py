@@ -9,7 +9,7 @@ import numpy as np
 from uw.utilities import (makerec, keyword_options)
 from . import ( plotting, tools, loglikelihood)
 
-        
+       
 class SED(tools.WithMixin):
     """ measure the energy flux vs. energy for a given source
     It can be set for all bands, just the band(s) at given energy, or a single band:
@@ -73,7 +73,8 @@ class SED(tools.WithMixin):
            delta_ts         -- TS difference, fit-model
            pull             -- signed square root of delta_ts
         """
-        rec = makerec.RecArray('elow ehigh flux lflux uflux ts mflux delta_ts pull maxdev'.split())
+        names = 'elow ehigh flux lflux uflux ts mflux delta_ts pull maxdev'.split()
+        rec = tools.RecArray(names, dtype=dict(names=names, formats=['>f4']*len(names)) )
         for i,energy in enumerate(self.energies):
             pf = self.select(i, event_type=event_type, poisson_tolerance=tol)
             w = pf.poiss
