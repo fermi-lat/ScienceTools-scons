@@ -102,7 +102,9 @@ class Configuration(object):
         if not os.path.exists(os.path.join(self.configdir, 'pickle.zip')) and input_model is not None:
             self.modeldir = os.path.expandvars(input_model['path'])
             if not os.path.exists(self.modeldir):
-                raise Exception('No soure model file found')
+                t = os.path.expandvars(os.path.join('$FERMI', self.modeldir))
+                if not os.path.exists(t):
+                    raise Exception('No source model file found in %s' %(self.modeldir, t) )
             
     def __repr__(self):
         return '%s.%s: %s' %(self.__module__, self.__class__.__name__, self.configdir)
