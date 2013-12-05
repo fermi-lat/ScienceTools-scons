@@ -14,6 +14,8 @@ from uw.utilities import keyword_options
 class Configuration(object):
     """
     Manage an analysis configuration: the IRF, exposure and data
+    This is used by the band class EnergyBand to set up the PSF and exposure for the energy 
+    range and sky position.
     """
     defaults =(
         ('event_type_names', ('front', 'back'), 'names to describe event classes'),

@@ -195,7 +195,6 @@ def stacked_plots(roi, counts_dir=None, fignum=6, title=None, **kwargs):
 
     axes[0].set_xlabel('') 
     axes[0].set_ylim(ymin=0.3)
-    #axes[1].set_ylabel('fract. dev')
     if title is None:
         if hasattr(roi,'name'): fig.suptitle(roi.name)
     else: fig.suptitle(title)
@@ -206,4 +205,4 @@ def stacked_plots(roi, counts_dir=None, fignum=6, title=None, **kwargs):
             fout = counts_dir
         fig.savefig(fout)
         print 'saved counts plot to %s' % fout
-    return axes
+    return fig

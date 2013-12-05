@@ -106,7 +106,7 @@ def from_roi(roimodel, title=None, stream=None, strict=True, maxi=None):
     Create an XML file describing the complete data model for an ROI
     
     roimodel : roimodel.ROImodel object
-        Expect a list of sources.Source objects
+        Expect to be a list of sources.Source objects
     """
     Element.stream = stream
     m2x = xml_parsers.Model_to_XML(strict=strict)

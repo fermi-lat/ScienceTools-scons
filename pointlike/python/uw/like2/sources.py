@@ -48,7 +48,20 @@ def set_default_bounds( model, force=False):
     model.bounds = np.array(bounds) # convert to array so can mask with free
 
 class Source(object):
-    """ base class for various sources
+    """ base class for all pointlike/like2 sources
+    Subclasses are:
+        PointSource
+        ExtendedSource
+        GlobalSource
+        
+    All instances have the folloiwng properties:
+    * model, a Models.Model object
+    * skydir : [skymaps.Skydir  | None]
+        
+    Subclasses must implement a function response(band), which, given a BandLite parameter, 
+        returns a Response object appropriate for the source. This provides the angular dependence 
+        of the response specific the band energy and event type.
+    
     """
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)

@@ -11,7 +11,7 @@ from uw.like import srcid  # gtsrcid work-alike from Eric
 
 class SrcId(srcid.SourceAssociation):
     """
-    adapter to simplify source association
+    adapter to Eric Wallace's source association code
     """
     def __init__(self, catalog_path='$FERMI/catalog/', classes='all_but_gammas', quiet=True):
         """ 

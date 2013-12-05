@@ -170,7 +170,7 @@ class CachedMapCube(DiffuseBase):
         if len(t)==1729: # if ziped with foldername
             t = t[1:]
         self.files = sorted(t) 
-        assert len(self.files)==1728, 'wrong number of files: expected 1728, found %d' % len(files)
+        assert len(self.files)==1728, 'wrong number of files: expected 1728, found %d' % len(self.files)
         self.opener = z.open
 
     def __repr__(self):
