@@ -105,6 +105,7 @@ class Configuration(object):
                 t = os.path.expandvars(os.path.join('$FERMI', self.modeldir))
                 if not os.path.exists(t):
                     raise Exception('No source model file found in %s' %(self.modeldir, t) )
+                self.modeldir=t
             
     def __repr__(self):
         return '%s.%s: %s' %(self.__module__, self.__class__.__name__, self.configdir)
