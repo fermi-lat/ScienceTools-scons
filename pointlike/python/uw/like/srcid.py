@@ -310,7 +310,7 @@ class Catalog(object):
         """Find and return HDU with catalog information."""
         #First check for HDUS with CAT-NAME or EXTNAME in header.
         for hdu in fits_cat:
-            cards = pf.CardList(self.hdu.header.cards) ## replaced this function: ascardlist()
+            cards = pf.CardList(hdu.header.cards) ## replaced this function: ascardlist()
             try:
                 self.cat_name = cards['CAT-NAME'].value
                 return hdu
@@ -363,8 +363,10 @@ class Catalog(object):
         """Find columns containing position info and return a list of SkyDirs"""
 
         cards = pf.CardList(self.hdu.header.cards) #ascardlist()
-        ucds = cards.filterList('TBUCD*')
-        ttypes = cards.filterList('TTYPE*')
+        #ucds = cards.filterList('TBUCD*')
+        #ttypes = cards.filterList('TTYPE*')
+        ucds = cards.filter_list('TBUCD*')
+        ttypes = cards.filter_list('TTYPE*')
         lon_key = lat_key = ''
         if not lon_key:
             if 'POS_EQ_RA_MAIN' in ucds.values():
