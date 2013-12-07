@@ -35,7 +35,7 @@ blike = None
 likeviews = None
 roi = None
 config_file='''{
-'input_model': dict( path= '$HOME/skymodels/P202/uw29'),
+'input_model': dict( path= 'skymodels/P202/uw29'),
 
 'datadict': {'dataname': 'P7_P202',},
 
@@ -99,7 +99,8 @@ class TestSetup(unittest.TestCase):
         self.skydir = Band(12).dir(2)#SkyDir()
         
 class TestConfig(TestSetup):
-    """Test aspects of the configuration    
+    """Test aspects of the configuration
+    
     """
     def test_psf(self):
         """check that the PSF is set up
@@ -110,7 +111,8 @@ class TestConfig(TestSetup):
         self.assertEquals(133, psf.energy)
         self.assertAlmostEqual(81.0904920, psf(0)[0], msg='value expected with IRF for pass 7')
         
-    def test_exposure(self):        exposure = self.config.exposureman(1, 1000)
+    def test_exposure(self):
+        exposure = self.config.exposureman(1, 1000)
         self.assertDictContainsSubset(dict(et=1, energy=1000), exposure.__dict__, 'full dict: %s'%exposure.__dict__)
         exposure.setEnergy(133)
         self.assertEquals(133, exposure.energy)
