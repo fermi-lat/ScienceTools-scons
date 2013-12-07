@@ -113,7 +113,7 @@ class Healpix(DiffuseBase):
         self.fits = pyfits.open(self.filename)
         table = self.fits[1]
         self.columns = table.data
-        self.col_names = [t.name for t in table.get_coldefs()]
+        self.col_names = [t.name for t in table.columns]
         self.energies = self.fits[2].data.field('MeV')
 
     def setEnergy(self, energy):
