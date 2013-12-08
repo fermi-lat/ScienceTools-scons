@@ -14,7 +14,7 @@ class ROImodelException(Exception):pass
         
 
 class ROImodel(list):
-    """ Manage the model, or list of sources, for an ROI. Not that it inherits from list.
+    """ Manage the model, or list of sources, for an ROI. Note that it inherits from list.
     
     In particular, provide an interface to serialize the set of free parameters, or define a subset thereof.
     This is delegated to the classes ParameterSet and ParSubSet in the module parameterset

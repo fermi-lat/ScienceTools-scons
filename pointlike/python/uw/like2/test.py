@@ -81,7 +81,7 @@ def setup(name):
         roi_bands.load_data()
         blike = bandlike.BandLikeList(roi_bands, roi_sources)
         print '\n****blike', blike
-    if name=='likeviews'  or name=='likeviews'and likeviews is None:
+    if name=='likeviews' and likeviews is None:
         assert roi_bands is not None and roi_sources is not None
         if roi_bands.pixels==0:
             roi_bands.load_data()

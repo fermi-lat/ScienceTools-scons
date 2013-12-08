@@ -7,7 +7,7 @@ $Header$
 import os
 import numpy as np
 from skymaps import SkyDir
-from uw.like import quadform, srcid
+from uw.like import quadform
 from uw.utilities import keyword_options
 from . import (sources, plotting )
 

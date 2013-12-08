@@ -6,7 +6,7 @@ $Header$
 """
 import os, pickle
 import numpy as np
-from uw.utilities import (makerec, keyword_options)
+from uw.utilities import ( keyword_options)
 from . import ( plotting, tools, loglikelihood)
 
        
