@@ -186,7 +186,7 @@ class DataSet(dataman.DataSpec):
                                 % (pyfile, interval, msg))
             else: gti_mask=None
             if dataset in ldict: 
-                if not quiet: print 'found dataset %s in %s' % (dataset, folder)
+                if not quiet: print 'Opening dataset %s from key in %s' % (dataset, dict_file)
                 # translate event class name to appropriate bit
                 ddict=ldict[dataset]
                 #ddict['event_class_bit']= 4 ######FOR PASS8 now 
