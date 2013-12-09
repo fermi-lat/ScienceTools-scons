@@ -143,7 +143,11 @@ class Source(object):
         
     @property
     def isextended(self):
-        return hasattr(self, 'dmodel')
+        return hasattr(self, 'dmodel') and not self.isglobal
+
+    @property
+    def isglobal(self):
+        return self.skydir is None
 
 class PointSource(Source):
     def __init__(self, **kwargs):
