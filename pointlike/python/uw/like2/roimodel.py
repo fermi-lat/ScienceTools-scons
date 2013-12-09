@@ -41,6 +41,10 @@ class ROImodel(list):
         if self.ecat is None: #speed up if already loaded
             self.ecat = extended.ExtendedCatalog(self.config.extended, quiet=self.quiet)
 
+        # clear if called again
+        while len(self)>0:
+            self.pop()
+            
         # sources loaded by a subclass that must implement this function
         self.load_sources(roi_spec)
         
