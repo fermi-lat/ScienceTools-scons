@@ -4,7 +4,7 @@ Tools for ROI analysis
 $Header$
 
 """
-import os
+import os, sys
 import numpy as np
 
 def ufunc_decorator(f): # this adapts a bound function
