@@ -5,6 +5,7 @@
     @verbatim
     EOH
 
+ optimizers-02-23-01 11-Dec-2013 jchiang Johann's fixes for StMnMinos scaling of error calculations affected by user-specified bounds
  optimizers-02-23-00 02-Dec-2013 jchiang add StMnMinos class to handle user-specified bounds properly in Minuit2/Minos error estimates
  optimizers-02-22-01 19-Nov-2013 jchiang throw exception from NewMinuit::Minos if Minuit2::MnMinos does not find a valid lower or upper confidence limit
  optimizers-02-22-00 10-Jan-2013 jchiang add access to abcissa values in Function objects
