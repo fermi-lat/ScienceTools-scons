@@ -79,9 +79,11 @@ namespace optimizers {
     std::pair<double,double> Minos(unsigned int n, double level=1.);
 
      /// Compute the lower bound error using Minos.
-     double minos_lower_error(unsigned int n, double level=1.);
+     double minos_lower_error(unsigned int n, double level=1.,
+                              double tol=1e-3);
      /// Compute the upper bound error using Minos.
-     double minos_upper_error(unsigned int n, double level=1.);
+     double minos_upper_error(unsigned int n, double level=1.,
+                              double tol=1e-3);
 
     /// Run a MNCONTOUR dynamic CONTOUR analysis
     void MnContour(unsigned int par1, unsigned int par2,

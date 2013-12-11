@@ -72,11 +72,13 @@ public:
       throw Exception("getStrategy is only enabled for Minuit and NewMinuit");
    }
 
-   virtual double minos_lower_error(unsigned int n, double level=1.) {
+   virtual double minos_lower_error(unsigned int n, double level=1.,
+                                    double tol=1e-3) {
       throw Exception("minos_lower_error is only enabled for NewMinuit");
    }
 
-   virtual double minos_upper_error(unsigned int n, double level=1.) {
+   virtual double minos_upper_error(unsigned int n, double level=1.,
+                                    double tol=1e-3) {
       throw Exception("minos_lower_error is only enabled for NewMinuit");
    }
 

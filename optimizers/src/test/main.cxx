@@ -398,88 +398,92 @@ void test_Minos() {
              << std::endl;
    delete new_minuit;
 
-   /// NewMinuit with bounds
+   /// NewMinuit with various bounds
    std::cout << "****************************************" << std::endl;
    std::cout << "* Testing NewMinuit::Minos with bounds *" << std::endl;
    std::cout << "****************************************" << std::endl;
    std::cout << "Set the x lower bound inside the 1-sigma limit" << std::endl;
    std::cout << "Set the y upper bound inside the 1-sigma limit" << std::endl;
    
-   double bound_frac(0.8);
-   char * _bound_frac = ::getenv("BOUND_FRAC");
-   if (_bound_frac) {
-      bound_frac = std::atof(_bound_frac);
-   }
-   double xmin = xopt + x_errors.first*bound_frac;
-   double xmax = 10.;
-   double ymin = -10.;
-   double ymax = yopt + y_errors.second*bound_frac;
+   double bound_fracs[] = {0.5, 0.7, 1.0, 1.2, 1.3};
+   for (size_t k(0); k < 5; k++) {
+      std::cout << std::endl;
+      std::cout << "**********************************************************\n";
+      std::cout << "* Setting bound at fraction " << bound_fracs[k]
+                << " of unbounded Minos error *" << std::endl;
+      std::cout << "**********************************************************\n";
+      double xmin = xopt + x_errors.first*bound_fracs[k];
+      double xmax = 10.;
+      double ymin = -10.;
+      double ymax = yopt + y_errors.second*bound_fracs[k];
 
-   my_rosen.getParams(params);
-   params[0].setValue(xopt);
-   params[0].setBounds(xmin, xmax);
-   params[1].setValue(yopt);
-   params[1].setBounds(ymin, ymax);
-   my_rosen.setParams(params);
+      my_rosen.getParams(params);
+      params[0].setValue(xopt);
+      params[0].setBounds(xmin, xmax);
+      params[1].setValue(yopt);
+      params[1].setBounds(ymin, ymax);
+      my_rosen.setParams(params);
 
-   my_rosen.set_xbounds(xmin, xmax);
-   my_rosen.set_ybounds(ymin, ymax);
-
-   Optimizer * new_minuit_b(OptimizerFactory::instance().create("NewMinuit",
-                                                                my_rosen));
-   new_minuit_b->find_min(verbose=0, tol=1e-5, ABSOLUTE);
-
-   std::cout << "Compute explictly valid, one-sided errors:\n";
-   std::cout << "x: ";
-   try {
-      std::cout << new_minuit_b->minos_lower_error(0) << "  ";
-   } catch(std::runtime_error & eObj) {
-      std::cout << eObj.what() << std::endl;
-   }
-   try {
-      std::cout << new_minuit_b->minos_upper_error(0) << std::endl;
-   } catch(std::runtime_error & eObj) {
-      std::cout << eObj.what() << std::endl;
-   }
-
-   std::cout << "y: ";
-   try {
-      std::cout << new_minuit_b->minos_lower_error(1) << "  "; 
-   } catch(std::runtime_error & eObj) {
-      std::cout << eObj.what() << std::endl;
-   }
-   try {
-      std::cout << new_minuit_b->minos_upper_error(1) << std::endl;
-   } catch(std::runtime_error & eObj) {
-      std::cout << eObj.what() << std::endl;
-   }
+      my_rosen.set_xbounds(xmin, xmax);
+      my_rosen.set_ybounds(ymin, ymax);
       
-   std::cout << "Errors using NewMinuit::Minos(...)" << std::endl;
-   std::pair<double, double> errors;
-   for (size_t i(0); i < 2; i++) {
-      errors = new_minuit_b->Minos(i);
-      std::cout << errors.first << "  " << errors.second << std::endl;
-   }
-   delete new_minuit_b;
+      Optimizer * new_minuit_b(OptimizerFactory::instance().create("NewMinuit",
+                                                                   my_rosen));
+      new_minuit_b->find_min(verbose=0, tol=1e-5, ABSOLUTE);
+      
+      std::cout << "Compute explictly valid, one-sided errors:\n";
+      std::cout << "x: ";
+      try {
+         std::cout << new_minuit_b->minos_lower_error(0) << "  ";
+      } catch(std::runtime_error & eObj) {
+         std::cout << eObj.what() << std::endl;
+      }
+      try {
+         std::cout << new_minuit_b->minos_upper_error(0) << std::endl;
+      } catch(std::runtime_error & eObj) {
+         std::cout << eObj.what() << std::endl;
+      }
 
-   /// Test Minuit with same bounds.
-   std::cout << "*************************************" << std::endl;
-   std::cout << "* Testing Minuit::Minos with bounds *" << std::endl;
-   std::cout << "*************************************" << std::endl;
-   my_rosen.getParams(params);
-   params[0].setValue(xopt);
-   params[0].setBounds(xmin, xmax);
-   params[1].setValue(yopt);
-   params[1].setBounds(ymin, ymax);
-   my_rosen.setParams(params);
-   Optimizer * minuit(OptimizerFactory::instance().create("Minuit", my_rosen));
-   minuit->find_min(verbose=0, tol=1e-5, ABSOLUTE);
+      std::cout << "y: ";
+      try {
+         std::cout << new_minuit_b->minos_lower_error(1) << "  "; 
+      } catch(std::runtime_error & eObj) {
+         std::cout << eObj.what() << std::endl;
+      }
+      try {
+         std::cout << new_minuit_b->minos_upper_error(1) << std::endl;
+      } catch(std::runtime_error & eObj) {
+         std::cout << eObj.what() << std::endl;
+      }
+      
+      std::cout << "Errors using NewMinuit::Minos(...)" << std::endl;
+      std::pair<double, double> errors;
+      for (size_t i(0); i < 2; i++) {
+         errors = new_minuit_b->Minos(i);
+         std::cout << errors.first << "  " << errors.second << std::endl;
+      }
+      delete new_minuit_b;
 
-   for (size_t i(0); i < 2; i++) {
-      std::pair<double, double> errors = minuit->Minos(i);
-      std::cout << errors.first << "  " << errors.second << std::endl;
+      /// Test Minuit with same bounds.
+      std::cout << "*************************************" << std::endl;
+      std::cout << "* Testing Minuit::Minos with bounds *" << std::endl;
+      std::cout << "*************************************" << std::endl;
+      my_rosen.getParams(params);
+      params[0].setValue(xopt);
+      params[0].setBounds(xmin, xmax);
+      params[1].setValue(yopt);
+      params[1].setBounds(ymin, ymax);
+      my_rosen.setParams(params);
+      Optimizer * minuit(OptimizerFactory::instance().create("Minuit",
+                                                             my_rosen));
+      minuit->find_min(verbose=0, tol=1e-5, ABSOLUTE);
+
+      for (size_t i(0); i < 2; i++) {
+         std::pair<double, double> errors = minuit->Minos(i);
+         std::cout << errors.first << "  " << errors.second << std::endl;
+      }
+      delete minuit;
    }
-   delete minuit;
 } // test_Minos
 
 void test_CompositeFunction() {

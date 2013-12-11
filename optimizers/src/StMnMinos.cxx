@@ -7,6 +7,15 @@
  *                                                                    *
  **********************************************************************/
 
+/**
+ * @brief Modifications from J. Chiang and J. Cohen-Tanugi to add
+ * Lower_valid and Upper_valid member functions and to enforce
+ * user-specified bounds on parameters and resulting scaling
+ * differences applied in MnFunctionCross.
+ * 
+ * $Header$
+ */
+
 #include <stdexcept>
 
 //#include "Minuit2/MnMinos.h"
@@ -53,7 +62,18 @@ double StMnMinos::Lower(unsigned int par, unsigned int maxcalls,
                         double toler) const {
    // Get lower error for parameter par
    ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
-   double err = m_fMinimum.UserState().Error(par);
+//    double err = m_fMinimum.UserState().Error(par);
+
+   // Account for different scaling when lower bound restriction has
+   // be applied.
+   double err;
+   if (!m_lower_rescaled) {
+      ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
+      err = m_fMinimum.UserState().Error(par);
+   } else {
+      ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
+      err = upar.Parameter(par).LowerLimit() - upar.Value(par);
+   }
    
    ROOT::Minuit2::MnCross aopt = Loval(par, maxcalls, toler);
    
@@ -78,7 +98,18 @@ double StMnMinos::Upper(unsigned int par, unsigned int maxcalls,
    ROOT::Minuit2::MnCross aopt = Upval(par, maxcalls,toler);
    
    ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
-   double err = m_fMinimum.UserState().Error(par);
+//    double err = m_fMinimum.UserState().Error(par);
+
+   // Account for different scaling when upper bound restriction has
+   // be applied.
+   double err;
+   if (!m_upper_rescaled) {
+      ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
+      err = m_fMinimum.UserState().Error(par);
+   } else {
+      ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
+      err = upar.Parameter(par).UpperLimit() - upar.Value(par);
+   }
    
 //    double upper = aopt.IsValid() ? err*(1.+ aopt.Value()) : (aopt.AtLimit() ? upar.Parameter(par).UpperLimit() : upar.Value(par));
    double upper;
@@ -98,11 +129,19 @@ double StMnMinos::Upper(unsigned int par, unsigned int maxcalls,
 double StMnMinos::Lower_valid(unsigned int par, unsigned int maxcalls,
                               double toler) const {
    // Get lower error for parameter par
-   ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
-   double err = m_fMinimum.UserState().Error(par);
-   
    ROOT::Minuit2::MnCross aopt = Loval(par, maxcalls, toler);
    
+   // Account for different scaling when lower bound restriction has
+   // be applied.
+   double err;
+   if (!m_lower_rescaled) {
+      ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
+      err = m_fMinimum.UserState().Error(par);
+   } else {
+      ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
+      err = upar.Parameter(par).LowerLimit() - upar.Value(par);
+   }
+
    if (!aopt.IsValid()) {
       throw std::runtime_error("Invalid lower error found.");
    }
@@ -118,11 +157,19 @@ double StMnMinos::Lower_valid(unsigned int par, unsigned int maxcalls,
 double StMnMinos::Upper_valid(unsigned int par, unsigned int maxcalls,
                               double toler) const {
    // Get upper error for parameter par
-   ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
-   double err = m_fMinimum.UserState().Error(par);
-
    ROOT::Minuit2::MnCross aopt = Upval(par, maxcalls, toler);
-   
+
+   // Account for different scaling when upper bound restriction has
+   // be applied.
+   double err;
+   if (!m_upper_rescaled) {
+      ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
+      err = m_fMinimum.UserState().Error(par);
+   } else {
+      ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
+      err = upar.Parameter(par).UpperLimit() - upar.Value(par);
+   }
+
    if (!aopt.IsValid()) {
       throw std::runtime_error("Invalid upper error found.");
    }
@@ -174,6 +221,8 @@ StMnMinos::FindCrossValue(int direction, unsigned int par,
    ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
    double err = direction*upar.Error(par);
    double val = upar.Value(par) + err;
+   m_lower_rescaled = false;
+   m_upper_rescaled = false;
 
    // Enforce bounds on parameter value.
    double my_lower_limit = upar.Parameter(par).LowerLimit();
@@ -181,9 +230,11 @@ StMnMinos::FindCrossValue(int direction, unsigned int par,
    if (val < my_lower_limit) {
       err = my_lower_limit - upar.Value(par);
       val = my_lower_limit;
+      m_lower_rescaled = true;
    } else if (val > my_upper_limit) {
       err = my_upper_limit - upar.Value(par);
       val = my_upper_limit;
+      m_upper_rescaled = true;
    }
 
    std::vector<double> xmid(1, val);
@@ -192,7 +243,7 @@ StMnMinos::FindCrossValue(int direction, unsigned int par,
    double up = m_fFCN.Up();
    unsigned int ind = upar.IntOfExt(par);
    // get error matrix (methods return a copy)
-   ROOT::Minuit2::MnAlgebraicSymMatrix m = m_fMinimum.Error().Matrix();  
+   ROOT::Minuit2::MnAlgebraicSymMatrix m = m_fMinimum.Error().Matrix();
    // get internal paramaters 
    const ROOT::Minuit2::MnAlgebraicVector & xt = m_fMinimum.Parameters().Vec();
    // LM:  change to use err**2 (m(i,i) instead of err as in F77 version
@@ -217,7 +268,7 @@ StMnMinos::FindCrossValue(int direction, unsigned int par,
    upar.SetValue(par, val);
 
    ROOT::Minuit2::MnFunctionCross cross(m_fFCN, upar, m_fMinimum.Fval(),
-                                        m_fStrategy);   
+                                        m_fStrategy);
    ROOT::Minuit2::MnCross aopt = cross(para, xmid, xdir, toler, maxcalls);
    
    return aopt;

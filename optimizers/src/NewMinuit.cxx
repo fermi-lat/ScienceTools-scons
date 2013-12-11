@@ -153,7 +153,8 @@ namespace optimizers {
     return results;
   }
 
-   double NewMinuit::minos_lower_error(unsigned int n, double level) {
+   double NewMinuit::minos_lower_error(unsigned int n, double level,
+                                       double tol) {
       std::vector<double> parValues;
       checkParValues(n, parValues);
       if (level != 1) {
@@ -161,7 +162,9 @@ namespace optimizers {
          m_min->SetErrorDef(level/2.);
       }
       StMnMinos minos(m_FCN, *m_min, m_strategy);
-      double lower = minos.Lower_valid(n);
+      unsigned int maxcalls;
+      double toler;
+      double lower = minos.Lower_valid(n, maxcalls=0, toler=tol);
       // Reset to defaults.
       if (level != 1.) {
          m_FCN.SetErrorDef(0.5);
@@ -171,7 +174,8 @@ namespace optimizers {
       return lower;
    }
 
-   double NewMinuit::minos_upper_error(unsigned int n, double level) {
+   double NewMinuit::minos_upper_error(unsigned int n, double level, 
+                                       double tol) {
       std::vector<double> parValues;
       checkParValues(n, parValues);
       if (level != 1) {
@@ -179,7 +183,9 @@ namespace optimizers {
          m_min->SetErrorDef(level/2.);
       }
       StMnMinos minos(m_FCN, *m_min, m_strategy);
-      double upper = minos.Upper_valid(n);
+      unsigned int maxcalls;
+      double toler;
+      double upper = minos.Upper_valid(n, maxcalls=0, toler=tol);
       // Reset to defaults.
       if (level != 1.) {
          m_FCN.SetErrorDef(0.5);

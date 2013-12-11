@@ -1,3 +1,14 @@
+/**
+ * @file StMnMinos.h
+ *
+ * @brief Modifications of Minuit2::MnMinos to add Lower_valid and
+ * Upper_valid member functions and to enforce user-specified bounds
+ * on parameters and resulting scaling differences applied in
+ * MnFunctionCross.
+ *
+ * $Header$ 
+ */
+
 #ifndef optimizers_StMnMinos_h
 #define optimizers_StMnMinos_h
 
@@ -54,6 +65,8 @@ private:
    const ROOT::Minuit2::FCNBase & m_fFCN;
    const ROOT::Minuit2::FunctionMinimum & m_fMinimum;
    ROOT::Minuit2::MnStrategy m_fStrategy;
+   mutable bool m_lower_rescaled;
+   mutable bool m_upper_rescaled;
 
    /// Get crossing value via MnFunctionCross
    ROOT::Minuit2::MnCross FindCrossValue(int dir , unsigned int,
