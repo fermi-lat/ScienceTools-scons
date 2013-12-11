@@ -72,7 +72,7 @@ double StMnMinos::Lower(unsigned int par, unsigned int maxcalls,
       err = m_fMinimum.UserState().Error(par);
    } else {
       ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
-      err = upar.Parameter(par).LowerLimit() - upar.Value(par);
+      err = upar.Value(par) - upar.Parameter(par).LowerLimit();
    }
    
    ROOT::Minuit2::MnCross aopt = Loval(par, maxcalls, toler);
@@ -139,7 +139,7 @@ double StMnMinos::Lower_valid(unsigned int par, unsigned int maxcalls,
       err = m_fMinimum.UserState().Error(par);
    } else {
       ROOT::Minuit2::MnUserParameterState upar = m_fMinimum.UserState();
-      err = upar.Parameter(par).LowerLimit() - upar.Value(par);
+      err = upar.Value(par) - upar.Parameter(par).LowerLimit();
    }
 
    if (!aopt.IsValid()) {
