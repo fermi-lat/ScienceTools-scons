@@ -5,8 +5,7 @@ $Header$
 import os, sys, glob, zipfile, logging, datetime
 import numpy as np
 
-from uw.like2.pipeline import pipe, processor
-from uw.like2 import dataset
+from uw.like2 import (dataset, tools)
 
 def main(args=None):
 
@@ -28,7 +27,7 @@ def main(args=None):
     absskymodel = os.path.join(pointlike_dir, skymodel)
 
     if args is not None:
-        tee = processor.OutputTee(os.path.join(absskymodel, 'summary_log.txt'))
+        tee = tools.OutputTee(os.path.join(absskymodel, 'summary_log.txt'))
 
     current = str(datetime.datetime.today())[:16]
     print '\n%s stage %s stream %s model %s ' % (current, stage, stream,  absskymodel)

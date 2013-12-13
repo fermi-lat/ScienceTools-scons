@@ -12,7 +12,7 @@ import os, sys, glob, zipfile, logging, datetime, argparse
 import numpy as np
 import pandas as pd
 
-from uw.like2.pipeline import pipe, processor
+from uw.like2 import (tools, )
 from uw.like2.pub import healpix_map
 
 
@@ -79,7 +79,7 @@ def main(args):
 
 
     if not args.test:
-        tee = processor.OutputTee(os.path.join(absskymodel, 'summary_log.txt'))
+        tee = tools.OutputTee(os.path.join(absskymodel, 'summary_log.txt'))
 
     streamInfo(stream, absskymodel)
 
