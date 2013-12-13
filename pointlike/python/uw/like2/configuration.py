@@ -111,6 +111,8 @@ class Configuration(object):
                 if not os.path.exists(t):
                     raise Exception('No source model file found in %s or %s' %(self.modeldir, t) )
                 self.modeldir=t
+        if not self.quiet:
+            print 'Will load healpix sources from %s/pickle.zip' % self.modeldir
             
     def __repr__(self):
         return '%s.%s: %s' %(self.__module__, self.__class__.__name__, self.configdir)
