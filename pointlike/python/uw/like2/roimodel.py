@@ -28,6 +28,7 @@ class ROImodel(list):
     defaults = (
         ('quiet', True, 'set False for info'),
         ('ecat',  None, 'If present, use for catalog'),
+        ('load_kw', {}, 'a dict specific for the loading'),
         )
     @keyword_options.decorate(defaults)
     def __init__(self, config, roi_spec, **kwargs):
@@ -46,7 +47,7 @@ class ROImodel(list):
             self.pop()
             
         # sources loaded by a subclass that must implement this function
-        self.load_sources(roi_spec)
+        self.load_sources(roi_spec, **self.load_kw)
         
         self.selected_source = None
         self.initialize()
