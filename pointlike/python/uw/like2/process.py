@@ -6,7 +6,7 @@ $Header$
 import os, sys, time
 import numpy as np
 from uw.utilities import keyword_options
-from uw.like2 import (main, tools)
+from uw.like2 import (main, tools,)
 
 class Process(main.MultiROI):
 
@@ -82,8 +82,7 @@ class Process(main.MultiROI):
                     if not self.betafix(roi):
                         print 'betafix requested, but no refit needed, quitting'
             except Exception, msg:
-                print '============== fit failed, aborting!! %s'%msg
-                return False
+                print '============== fit failed, no update!! %s'%msg
         
         def getdir(x ):
             if x is None or outdir is None: return None
