@@ -80,7 +80,7 @@ class ROI(views.LikelihoodViews):
         config_dir : string
             file path to a folder containing a file config.txt
             see configuration.Configuration
-        roi_index : integer or TODO (ra,dec) tuple, name of an xml file
+        roi_spec : integer or TODO (ra,dec) tuple, name of an xml file
             
         """
         keyword_options.process(self, kwargs)
@@ -100,7 +100,10 @@ class ROI(views.LikelihoodViews):
         roi_bands = bands.BandSet(config, roi_index)
         roi_bands.load_data()
         super(ROI, self).__init__( roi_bands, roi_sources)
-
+    
+    def __repr__(self):
+        return '%s.%s : %s' % (self.__module__, self.__class__.__name__, self.config)
+        
     def fit(self, select=None, exclude=None,  summarize=True,  **kwargs):
         """ Perform fit, return fitter object to examine errors, or refit
         
@@ -158,7 +161,7 @@ class ROI(views.LikelihoodViews):
                 fv.summary() # 
                 if ignore_exception: return 
                 else: raise
-        return wfit, pfit, cov
+        return # wfit, pfit, cov
     
     def summarize(self, select=None, exclude=None):
         with self.fitter_view(select, exclude=exclude) as fv:
