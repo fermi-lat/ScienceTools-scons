@@ -23,7 +23,7 @@ libEnv['rootcint_node'] = BackgroundEstimatorCint
 
 libsources = listFiles(['src/BKGE_Tools/*.cxx']) + listFiles(['src/BackgroundEstimator/*.cxx']) + ['BackgroundEstimator/BackgroundEstimator_rootcint.cxx']
 
-BackgroundEstimatorLib  = libEnv.RootDynamicLibrary('BackgroundEstimator', libsources)
+BackgroundEstimatorLib  = libEnv.RootDynamicLibrary('BKGE', libsources)
 
 progEnv.Tool('registerTargets', package = 'BackgroundEstimator',
              rootcintSharedCxts = [[BackgroundEstimatorLib,libEnv]],
