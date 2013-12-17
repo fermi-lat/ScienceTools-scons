@@ -1,13 +1,14 @@
+#!/usr/bin/env python
+
 #authors Vlasios Vasileiou with help from Giacomo Vianello, Nicola Omodei
-
 import ROOT,os,sys
-
-try: 
+try:
 	print("Loading BKGE...");
 	ROOT.gSystem.Load("libBKGE.so")
 except:
 	print("Could not load BKGE library (file libBKGE.so). Did you compile it?")
 	sys.exit()
+	pass
 print "Success!"	
 
 from ROOT import TOOLS, BKGE_NS
@@ -84,6 +85,7 @@ def CalculateBackground(start, stop , grb_trigger_time, RA, DEC, FT1, FT2, OUTPU
         BKGE_NEXP = float(ROOTFile.BKGE_NEXP.GetTitle())
         BKGE_SIGNIF = float(ROOTFile.BKGE_SIGNIF.GetTitle())
         BKGE_SIGNIF_WITH_UNCERTAINTY = float(ROOTFile.BKGE_SIGNIF_WITH_UNCERTAINTY.GetTitle())
+	if chatter: print 'results saved in ==> ' ,ResultsFilename
         return BKGE_NDET,BKGE_NEXP,BKGE_SIGNIF,BKGE_SIGNIF_WITH_UNCERTAINTY
     else :
         return -1,-1,-1,-1
@@ -120,8 +122,10 @@ def Make_BKG_PHA(start, stop, grb_trigger_time, RA, DEC, FT1, FT2, emin, emax, e
        GRB_NAME="GRB_MET_%.2f" %grb_trigger_time
 
     pha_filename = "%s_%.2f_%.2f_%s.pha" %(ResponseFunction,start,duration,suffix)
-    output_path  = "%s/%s/%.2f_%.2f" %(OUTPUT_DIR,GRB_NAME,start,stop)
-    if chatter: print "Results will be saved in file %s/%s" %(output_path,pha_filename)
+    output_path  = "%s/Bkg_Estimates/%.2f_%.2f" %(OUTPUT_DIR,start,stop)
+    pha_file_name="%s/%s" %(output_path,pha_filename)
+
+    if chatter: print "Results will be saved in file %s" %(pha_file_name)
         
     CalculateBackground(start, stop , grb_trigger_time, RA, DEC, FT1, FT2, OUTPUT_DIR, emin, emax, ebins, chatter, overwrite,True, True,\
        ROI_Calculate, ROI_Containment, ROI_Localization_Error, ROI_Radius, ROI_Max_Radius, GRB_NAME, ROI_RadiusFile)
@@ -132,24 +136,23 @@ def Make_BKG_PHA(start, stop, grb_trigger_time, RA, DEC, FT1, FT2, emin, emax, e
     tmp_filename = "%s/%s_bkg_for_PHA_%.0f_%.0f.txt" %(output_path,ResponseFunction,emin,emax)
     tmp_file = open(tmp_filename,"w")
     try: 
-       for i in range(1,bkg.GetNbinsX()+1):
-           tmp_file.write("%d %e\n" %(i,bkg.GetBinContent(i)/duration))
+       for i in range(1,bkg.GetNbinsX()+1): tmp_file.write("%d %e\n" %(i,bkg.GetBinContent(i)/duration))
        tmp_file.close()
     except:
        print "BKGE did not finish ok!"
        sys.exit()
-       
+       pass
     #I am doing this cd to dir thing and then execute ascii2pha locally because (if I remember correctly) ascii2pha had some maximum arguments length that was being broken by a too long command.   
     tmp_filename = "%s_bkg_for_PHA_%.0f_%.0f.txt" %(ResponseFunction,emin,emax)
-    cmd = "cd %s/%s/%.2f_%.2f ;ascii2pha infile=%s chantype=PI outfile=%s chanpres=yes dtype=2 qerror=no rows=- fchan=1 detchans=%d pois=no telescope=GLAST instrume=LAT detnam=LAT filter=NONE tlmin=1 exposure=%f clobber=yes" \
-        %(OUTPUT_DIR,GRB_NAME,start,stop,tmp_filename,pha_filename,ebins,duration)
+    cmd = "cd %s/Bkg_Estimates/%.2f_%.2f ;ascii2pha infile=%s chantype=PI outfile=%s chanpres=yes dtype=2 qerror=no rows=- fchan=1 detchans=%d pois=no telescope=GLAST instrume=LAT detnam=LAT filter=NONE tlmin=1 exposure=%f clobber=yes" \
+        %(OUTPUT_DIR,start,stop,tmp_filename,pha_filename,ebins,duration)
     status,output=commands.getstatusoutput(cmd)
     if chatter:
         print cmd
         print output
-    pass
-    
-    pha_file = pyfits.open("%s/%s" %(output_path,pha_filename),"update")
+	pass
+
+    pha_file = pyfits.open(pha_file_name,"update")
     pha_file[1].header.add_comment("Created by the BKGE - vlasisva@gmail.com")
     del pha_file[1].header['SYS_ERR']
     del pha_file[1].header['STAT_ERR']
@@ -160,6 +163,7 @@ def Make_BKG_PHA(start, stop, grb_trigger_time, RA, DEC, FT1, FT2, emin, emax, e
         #print pha_file[1].data[ibkg][1]
         stat_err.append(0.01*pha_file[1].data[ibkg][1]) #STAT_ERR is in units of events
         sys_err.append(TOOLS.Get("BKG_ESTIMATE_ERROR")) #SYST_ERR is in units of percent (fractional)
+	pass
     #stat_err_col=pyfits.Column(name="STAT_ERR",format="E",array=numpy.ones(len(pha_file[1].data)))
     stat_err_col=pyfits.Column(name="STAT_ERR",format="E",array=stat_err)
     sys_err_col=pyfits.Column(name="SYS_ERR",format="E",array=sys_err)
@@ -211,16 +215,15 @@ def Make_BKG_PHA(start, stop, grb_trigger_time, RA, DEC, FT1, FT2, emin, emax, e
 
 
     pha_file.close()
-   
-
+    return pha_file_name
 
 
 def Make_BKG_PHA2(grb_trigger_time, RA, DEC, FT1, FT2, emin, emax, ebins,
-    ROI_Calculate, ROI_Localization_Error=0, ROI_Max_Radius=12, ROI_Radius=12, ROI_Containment=0.95, ROI_RadiusFile="", 
-    OUTPUT_DIR="output/",GRB_NAME="" , 
-    chatter=1, overwrite=False,     
-    Time_bins_def_file="", start=-1, stop=-1, dt=-1  #these are used to define the time intervals
-    ):
+		  ROI_Calculate, ROI_Localization_Error=0, ROI_Max_Radius=12, ROI_Radius=12, ROI_Containment=0.95, ROI_RadiusFile="", 
+		  OUTPUT_DIR="output/",GRB_NAME="" , 
+		  chatter=1, overwrite=False,     
+		  Time_bins_def_file="", start=-1, stop=-1, dt=-1  #these are used to define the time intervals
+		  ):
     ''' Produces a PHA II file containing the expected background of a series of observations'''
 
     print "Warning: Code is in BETA version!"
@@ -239,7 +242,7 @@ def Make_BKG_PHA2(grb_trigger_time, RA, DEC, FT1, FT2, emin, emax, ebins,
     if (GRB_NAME==""):
       GRB_NAME="GRB_MET_%.2f" %grb_trigger_time
 
-    output_path  = "%s/%s/%.2f_%.2f" %(OUTPUT_DIR,GRB_NAME,start,stop)
+    output_path  = "%s/Bkg_Estimates/%.2f_%.2f" %(OUTPUT_DIR,start,stop)
     
     #time bins setup
     at0=[]; at1=[]; adt=[]
@@ -299,7 +302,7 @@ def Make_BKG_PHA2(grb_trigger_time, RA, DEC, FT1, FT2, emin, emax, ebins,
         CalculateBackground(at0[i],at1[i],grb_trigger_time, RA, DEC, FT1, FT2, OUTPUT_DIR, emin, emax, ebins, chatter, overwrite, True, True, ROI_Calculate, \
         ROI_Containment, ROI_Localization_Error, ROI_Radius, ROI_Max_Radius, GRB_NAME,ROI_RadiusFile)
 
-        an_output_path  = "%s/%s/%.2f_%.2f" %(OUTPUT_DIR,GRB_NAME,at0[i],at1[i])
+        an_output_path  = "%s/%.2f_%.2f" %(OUTPUT_DIR,at0[i],at1[i])
         
         results_filename = "%s/%s_bkg_%.0f_%.0f.root" %(an_output_path,ResponseFunction,emin,emax)
         dfile = ROOT.TFile(results_filename,"r")
@@ -403,7 +406,7 @@ def Make_BKG_PHA2(grb_trigger_time, RA, DEC, FT1, FT2, emin, emax, ebins,
 
 
     #write!
-    hdulist=pyfits.HDUList([hdu,data_tab,ebounds_tab,gti_tab])    
-    hdulist.writeto("%s/%s" %(output_path,pha_filename))
-    
-    return ("%s/%s" %(output_path,pha_filename))
+    hdulist=pyfits.HDUList([hdu,data_tab,ebounds_tab,gti_tab])
+    pha_file_name = "%s/%s" %(output_path,pha_filename)
+    hdulist.writeto(pha_file_name)    
+    return pha_file_name
