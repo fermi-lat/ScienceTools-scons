@@ -241,7 +241,8 @@ class PoissonFitter(object):
             s_high = self.smax*10
         else:
             s_high = scale
-        while func(s_high)<0: s_high*=2
+        while func(s_high)<0 and s_high<1e6: 
+            s_high*=2
         s_high = optimize.brentq(func,self.smax,s_high, xtol=xtol)
         if not np.all(np.isreal([s_low,s_high])):
             print '%s.find_delta Failed to find two roots!' % self.__class__.__name__
