@@ -2,7 +2,7 @@
 #
 # $Id$
 # Authors: Giacomo Vianello <giacomov@slac.stanford.edu>
-# Version: pyBurstAnalysisGUI-01-00-00
+# Version: pyBurstAnalysisGUI-01-01-00
 
 Import('baseEnv')
 Import('listFiles')
@@ -11,7 +11,11 @@ progEnv = baseEnv.Clone()
 gtburstBin = progEnv.Program('gtburst', 'src/gtburst.cxx')
 
 progEnv.Tool('registerTargets', package = 'pyBurstAnalysisGUI', 
-             data = listFiles(['data/*']),
+             data = (listFiles(['data/*']),
+                     listFiles(['data/templates/*']),
+                     listFiles(['data/tcl_extensions/*']),
+                     listFiles(['data/tcl_extensions/fsdialog/*']),
+                     listFiles(['data/tcl_extensions/msgcat/*'])),
              python = (listFiles(['python/*.py']) +
                        listFiles(['python/GtBurst/*.py']) +
                        listFiles(['python/GtBurst/aplpy/*.py']) +
