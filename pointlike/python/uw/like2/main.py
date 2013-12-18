@@ -329,4 +329,5 @@ class MultiROI(ROI):
         roi_bands = bands.BandSet(self.config, roi_index)
         roi_bands.load_data()
         roi_sources = from_healpix.ROImodelFromHealpix(self.config, roi_index, ecat=self.ecat,)
+        self.name = 'HP12_%04d' % roi_index
         self.setup( roi_bands, roi_sources)
