@@ -2,6 +2,10 @@
 Main entry for the UW all-sky pipeline
 $Header$
 """
+import os, types, glob, pickle
+import numpy as np
+from uw.like2 import tools
+
 def roirec(version, nside=12):
     roi_files = glob.glob('uw%02d/pickle/*.pickle'%version)
     roi_files.sort()
@@ -12,7 +16,7 @@ def roirec(version, nside=12):
         print 'misssing roi files: %s' % missing
         raise Exception('misssing roi files: %s' % missing)
         
-    recarray = makerec.RecArray('name chisq loglike'.split())
+    recarray = tools.RecArray('name chisq loglike'.split())
     for fname in roi_files:
         p = pickle.load(open(fname))
         counts = p['counts']
@@ -50,7 +54,7 @@ def roirec(outdir, check=False):
         if check: return missing    
     if check: return[]#    return None # raise Exception('misssing roi files: %s' % missing)
         
-    recarray = makerec.RecArray('name chisq loglike prevlike niter'.split())
+    recarray = tools.RecArray('name chisq loglike prevlike niter'.split())
     bad = []
     for fname in roi_files:
         p = pickle.load(open(fname))

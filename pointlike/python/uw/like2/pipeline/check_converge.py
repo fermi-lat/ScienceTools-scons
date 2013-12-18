@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 
 from uw.like2 import (tools, )
+from uw.like2.pipeline import pipe 
 from uw.like2.pub import healpix_map
 
 
@@ -29,7 +30,7 @@ def streamInfo( stream, path='.'):
         etimes.append(float(text.split('\n')[-2].split()[-1][:-1]))
         nex.append( sum(np.array(['setup' in line for line in text.split('\n') ] )))
         substream.append( int(f.split('.')[-2]) )
-    print '\t found %d streamlog files...' %(len(streamlogs),), 
+    print '\t found %d streamlog files for stream %s ...' %(len(streamlogs), stream), 
     times = pd.DataFrame(dict(etimes=etimes,nex=nex), index=pd.Index(substream, name='substream'))#,name='stream%d'%stream)
     etimes = times.etimes
     print '\texecution times: mean=%.1f, max=%.1f'% (etimes.mean(), etimes.max())
@@ -67,8 +68,8 @@ def main(args):
         print ' zipped into file %s.zip' %fname
         
     def create_stream(newstage, other=''):
-        cmd = 'cd %s;  /afs/slac/g/glast/ground/bin/pipeline  createStream -D "stage=%s, SKYMODEL_SUBDIR=%s %s" UWpipeline '\
-            %(pointlike_dir, newstage, skymodel, other)
+        cmd = '/afs/slac/g/glast/ground/bin/pipeline  createStream -D "stage=%s, POINTLIKE_DIR=%s, SKYMODEL_SUBDIR=%s %s" UWpipeline '\
+            %( newstage, pointlike_dir, skymodel, other)
         if args.test:
             print 'Test mode: would have submitted %s'%cmd
             return
