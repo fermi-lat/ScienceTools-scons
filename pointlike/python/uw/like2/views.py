@@ -208,14 +208,15 @@ class FitterMixin(object):
             print ret[2]
         f = ret 
         self.covariance = cov = self.hessian(f[0]).I
-        diag = cov.diagonal().copy()
+        diag = np.array(cov.diagonal()).flatten()
         bad = diag<0
         if np.any(bad):
-            if not quiet: print 'Minimizer warning: bad errors for values %s'\
+            print 'Minimizer warning: bad errors for values %s'\
                 %np.asarray(self.parameter_names)[bad] 
-            diag[bad]=np.nan
-        return f[1], f[0], np.array(np.sqrt(diag)).flatten()
+            diag[bad]=0
+        return f[1], f[0], np.sqrt(diag)
     
+        
         
     def modify(self, fraction):
         """change iniital set to fraction of current change; restore will make it permanent
@@ -297,6 +298,13 @@ class FitterView(FitPlotMixin, FitterMixin, FitterSummaryMixin, tools.WithMixin)
         self.parameters.set_parameters(pars)
         self.blike.update()
         
+    def save_covariance(self):
+        """ store source submatrices of the fit covariance matrix into the models.
+        this loses the correlations between sources
+        """
+        assert hasattr(self, 'covariance'), 'maximize was not run: no covariance to save'
+        self.parameters.set_covariance(self.covariance)
+    
     def modify(self, fraction):
         """change iniital set to fraction of current change; restore will make it permanent
         """
@@ -350,6 +358,13 @@ class SubsetFitterView(parameterset.ParSubSet, FitPlotMixin, FitterMixin, Fitter
         return '%s.%s: %s '% (self.__module__, self.__class__.__name__, self.selection_description)
     def restore(self):
         self.set_parameters(self.initial_parameters)
+
+    def save_covariance(self):
+        """ store source submatrices of the fit covariance matrix into the models.
+        this loses the correlations between sources
+        """
+        assert hasattr(self, 'covariance'), 'maximize was not run: no covariance to save'
+        self.set_covariance(self.covariance)
 
     @property
     def parameters(self):

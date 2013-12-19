@@ -41,6 +41,9 @@ class Process(main.MultiROI):
         
     def process_roi(self, index):
         self.setup_roi(index)
+        self.process()
+        
+    def process(self):
         roi=self
         dampen=self.dampen 
         outdir = self.outdir
