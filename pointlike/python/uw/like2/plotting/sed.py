@@ -256,7 +256,9 @@ def stacked_plots(sed,  outdir=None,  **kwargs):
     #    roi.get_sed(source_name)
     p = Plot(source, **kw)
     kwargs.update(outdir=None)
-    suffix = kwargs.pop('suffix', '_sed')
+    suffix = kwargs.pop('suffix', None)
+    if suffix is None:
+        suffix = '_sed_' + '_'.join(os.getcwd().split('/')[-4:])
     p(axes=axes[0],  **kwargs)
     axes[0].set_xlabel('') 
 
