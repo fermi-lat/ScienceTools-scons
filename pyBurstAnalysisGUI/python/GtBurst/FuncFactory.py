@@ -5,9 +5,6 @@ model Functions.
 
 @author J. Chiang <jchiang@slac.stanford.edu>
 """
-#
-# $Header$
-#
 
 import copy
 from xml.dom import minidom
