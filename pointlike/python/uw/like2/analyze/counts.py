@@ -56,7 +56,7 @@ class CountPlots(analysis_base.AnalysisBase):
         self.rois = pd.DataFrame(rdict).transpose()
         self.rois['singlat'] = np.sin(np.radians(np.asarray(self.rois.glat,float)))
         self.rois['glon'] = np.asarray(self.rois.glon, float)
-        #self.iteration_info()
+        self.iteration_info()
         
     def iteration_info(self):
         # dict of dataframes with count info. columns are energies
