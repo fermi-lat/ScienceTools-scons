@@ -96,6 +96,7 @@ class ROImodelFromHealpix(roimodel.ROImodel):
         p = pickle.load(self._z.open('pickle/HP12_%04d.pickle' % index[0]))
         if not neighbors:
             self.prev_logl = p.get('prev_logl', []) # make history available
+            self.history = p.get('history', []) # will manage history of likelihood, stage, time, stream, cpu time
             global_sources = [load_global_source(name, rec) for name, rec \
                 in zip(p['diffuse_names'], p['diffuse']) if name not in self.ecat.names]
             self.global_count = len(global_sources)
