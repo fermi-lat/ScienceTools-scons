@@ -515,16 +515,22 @@ class ParFile(dict):
     def is_binary(self):
         return 'BINARY' in self.keys()
 
-    def add_key(self,key,val,allow_duplicates=False):
+    def add_key(self,key,val,allow_duplicates=False,stringify=True):
         """ Insert a key, placed at bottom of file.  If key already
             present, update its entry.  NB will NOT make a duplicate."""
         if key not in self.ordered_keys:
             self.ordered_keys.append(key)
-            self[key] = str(val)
+            if stringify:
+                self[key] = str(val)
+            else:
+                self[key] = val
         elif allow_duplicates:
             self.duplicates[key].append(val)
         else:
-            self[key] = str(val)
+            if stringify:
+                self[key] = str(val)
+            else:
+                self[key] = val
 
     def delete_key(self,key):
         try:
