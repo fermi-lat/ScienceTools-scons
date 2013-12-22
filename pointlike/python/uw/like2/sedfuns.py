@@ -147,7 +147,7 @@ def makesed_all(roi, **kwargs):
     for source in sources:
         with SED(roi, source.name, ) as sf:
             try:
-                source.sedrec = sf.sed_rec(tol=poisson_tolerance)
+                source.sedrec = sf.sed_rec( tol=poisson_tolerance)
                 source.ts = roi.TS(source.name)
                 qual = sum(source.sedrec.pull**2)
                 pval = 1.- stats.chi2.cdf(qual, ndf)

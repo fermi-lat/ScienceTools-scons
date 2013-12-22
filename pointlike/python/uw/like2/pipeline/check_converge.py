@@ -76,14 +76,14 @@ def main(args):
             print 'Test mode: would have submitted %s'%cmd
             return
         print '-->'+cmd  
-        try:
-            args = '"stage=%s, POINTLIKE_DIR=%s, SCRIPTS=%S, SKYMODEL_SUBDIR=%s, %s"'%( newstage, pointlike_dir, pointlike_dir, skymodel, other)
-            subprocess.check_output(['/afs/slac/g/glast/ground/bin/pipeline', 'createStream', '-D', args])
-        except:
-        #rc=os.system(cmd)
-        #if rc==0:
-        #    print '\n----> started new stream with stage %s'% newstage
-        #else: print '\n***** Failed to create new stream: tried %s'%cmd
+        #try:
+        #    args = '"stage=%s, POINTLIKE_DIR=%s, SCRIPTS=%S, SKYMODEL_SUBDIR=%s, %s"'%( newstage, pointlike_dir, pointlike_dir, skymodel, other)
+        #    subprocess.check_output(['/afs/slac/g/glast/ground/bin/pipeline', 'createStream', '-D', args])
+        #except:
+        rc=os.system(cmd)
+        if rc==0:
+            print '\n----> started new stream with stage %s'% newstage
+        else: print '\n***** Failed to create new stream: tried %s'%cmd
 
 
     if not args.test:
