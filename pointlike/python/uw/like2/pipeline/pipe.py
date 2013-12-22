@@ -64,8 +64,18 @@ def roirec(outdir, check=False):
         counts = p['counts']
         obs,mod = counts['observed'], counts['total']
         chisq =  ((obs-mod)**2/mod).sum()
-        logl_list = p.get('prev_logl', [0])
-        recarray.append(p['name'], chisq, p['logl'], logl_list[-1], len(logl_list))
+        history = p.get('history', None)
+        if history is not None:
+            # new format
+            logl = history[-1]['logl']
+            histlen = len(history)
+            prevlike = history[-2]['logl'] if histlen>1 else logl
+        else:
+            logl_list = p.get('prev_logl', [0])
+            histlen = len( logl_list )
+            logl = p.get('logl', 0)
+            prevlike = logl_list[-1]
+        recarray.append(p['name'], chisq, logl, prevlike, histlen)
     if len(bad)>0:
         print 'no fit info in file(s) %s' % bad if len(bad)<10 else (str(bad[:10])+'...')
     return recarray()
