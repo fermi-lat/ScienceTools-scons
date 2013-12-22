@@ -286,7 +286,7 @@ class ROI(views.LikelihoodViews):
                 associate.make_association(source, tsv, self.srcid)
 
         if source_name=='all':
-            sources = [s for s in self.sources if s.skydir is not None and np.any(s.spectral_model.free)]
+            sources = filter(lambda s: np.any(s.model.free) and not s.isglobal and not s.isextended, self.sources)
             for source in sources:
                 find_one(source)
         else:
