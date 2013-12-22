@@ -5,7 +5,7 @@ $Header$
 import os, pickle, time
 import numpy as np
 
-def pickle_dump(roi,  pickle_dir, dampen=1, **kwargs):
+def pickle_dump(roi,  pickle_dir, dampen, **kwargs):
     """ dump the source information from an ROI constructed from the sources here
     """
     assert os.path.exists(pickle_dir), 'output folder not found: %s' %pickle_dir
