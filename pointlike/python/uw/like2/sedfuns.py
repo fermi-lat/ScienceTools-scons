@@ -34,7 +34,7 @@ class SED(tools.WithMixin):
                     self.__module__, self.__class__.__name__,len(self.rs.selected), self.source_name, 
                     self.rs.emin, self.rs.emax)
     
-    def select(self, index, event_type=None, poisson_tolerance=0.05):
+    def select(self, index, event_type=None, poisson_tolerance=0.10):
         """ Select an energy band or bands
         parameters:
             index: None or integer
