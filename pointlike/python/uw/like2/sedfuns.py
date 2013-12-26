@@ -65,11 +65,19 @@ class SED(tools.WithMixin):
         pf = loglikelihood.PoissonFitter(self.func, tol=poisson_tolerance)
         return pf
 
-    def all_poiss(self, event_type=None, tol=0.1):
+    def all_poiss(self, event_type=None, tol=0.1, debug=False):
         """ return array of Poisson objects for each energy band """
         pp = []
         for i,e in enumerate(self.energies):
-            pp.append(self.select(i, event_type=event_type,poisson_tolerance=tol).poiss)
+            if debug: print '%3i %8.0f' % (i,e),
+            try:
+                pf = self.select(i, event_type=event_type,poisson_tolerance=tol)
+                pp.append(pf.poiss)
+                if debug: print pf
+            except Exception, msg:
+                print msg
+                pp.append(None)
+                
         self.restore()
         return np.array(pp)
         
