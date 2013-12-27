@@ -231,7 +231,7 @@ class ROI(views.LikelihoodViews):
             return
         source = self.sources.find_source(source_name)
         showts = kwargs.pop('showts', True)
-        if kwargs.pop('update', False) or not hasattr(self.'sedrec') or self.sedrec is None:
+        if kwargs.pop('update', False) or not hasattr(self,'sedrec') or self.sedrec is None:
             self.get_sed(update=True)
         annotation =(0.04,0.88, 'TS=%.0f' % source.ts ) if showts and hasattr(source, 'ts') else None 
         kwargs.update(galmap=self.roi_dir, annotate=annotation)
