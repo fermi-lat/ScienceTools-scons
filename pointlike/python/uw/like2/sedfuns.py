@@ -40,7 +40,7 @@ class SED(tools.WithMixin):
                     self.__module__, self.__class__.__name__,len(self.rs.selected), self.source_name, 
                     self.rs.emin, self.rs.emax)
     
-    def select(self, index, event_type=None, poisson_tolerance=0.10):
+    def select(self, index, event_type=None, poisson_tolerance=0.10, **kwargs):
         """ Select an energy band or bands
         parameters:
             index: None or integer
@@ -62,7 +62,7 @@ class SED(tools.WithMixin):
             energy = self.rs.energies[0]
             self.func.set_energy(energy)
             assert self.func(0) != self.func(1), 'Function not variable? energy %.0f' % energy
-        pf = loglikelihood.PoissonFitter(self.func, tol=poisson_tolerance)
+        pf = loglikelihood.PoissonFitter(self.func, tol=poisson_tolerance, **kwargs)
         return pf
 
     def all_poiss(self, event_type=None, tol=0.1, debug=False):

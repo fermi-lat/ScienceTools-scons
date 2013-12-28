@@ -185,7 +185,7 @@ class PoissonFitter(object):
     array([ 50.,   1.,  10.])
     
     """
-    def __init__(self, func, scale=1., tol=0.05, delta=0.01):
+    def __init__(self, func, scale=1., tol=0.05, delta=0.1, dd=-0.1):
         """
         parameters
         ----------
@@ -203,7 +203,7 @@ class PoissonFitter(object):
         # depending on how peaked the function is, this will be from 5 to 8 
         # The Poisson will be fit to this set of values
         dlist = np.array([0.5, 1.0, 2.0, 4.0])
-        if s < -10:
+        if s < dd:
             # large negative derivative: this will be just an exponential
             if s < -100: s=-100. #cut off for now
             self.dom = - dlist/s
