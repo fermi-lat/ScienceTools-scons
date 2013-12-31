@@ -64,7 +64,7 @@ def pickle_dump(roi,  pickle_dir, dampen, **kwargs):
             pivot_energy = pivot_energy,
             # if ellipse or adict not done, but already in pickle, keep them
             ellipse= s.__dict__.get('ellipse', None), 
-            associations = s.__dict__.get('adict',None),
+            associations = s.__dict__.get('associations',None),
             )
     output.update(kwargs) # add additional entries from kwargs
     with open(filename,'wb') as f:  #perhaps overwrite
