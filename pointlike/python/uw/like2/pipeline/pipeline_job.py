@@ -89,8 +89,8 @@ def main( factory=None, **args):
             g(s)
         except Exception, msg:
             print '***Exception raised for roi %d, "%s'  %(s,msg)
-            with open('failed_rois.txt', 'wa') as bad:
-                bad.write('s')
+            with open('failed_rois.txt', 'a+') as bad:
+                bad.write('%d\n' %s)
         tprev, tnow= tnow, logging.time.time()
         logging.info('Finish: elapsed= %.1f (total %.1f)' % ( tnow-tprev, tnow-tzero ))
         print 'Elapsed time: %.1f' % (tnow-tprev)

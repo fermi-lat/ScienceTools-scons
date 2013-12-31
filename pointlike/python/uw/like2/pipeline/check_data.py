@@ -17,7 +17,7 @@ def main(args=None):
         stage = os.environ.get('stage', 'create' )
         nocreate = False
     if stage!='create':
-        print 'assume validated'
+        print 'Not creating a model: assume data validated'
         return
         
 
@@ -33,7 +33,7 @@ def main(args=None):
     print '\n%s stage %s stream %s model %s ' % (current, stage, stream,  absskymodel)
 
     rc = dataset.validate(absskymodel, nocreate=nocreate)
-    print 'Validated' if rc else 'NOT validated'
+    print 'Data is validated' if rc else 'NOT validated'
     if args is not None:
         tee.close()
 
