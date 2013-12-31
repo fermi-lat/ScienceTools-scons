@@ -58,7 +58,7 @@ class CPUtime(object):
 
             text = open(fn).read()
             lines = text.split('\n')
-            hc = lines[0].split()[-1][:4]
+            hc = lines[0].split()[-1][:-4]
             j = 0
             while lines[j].find('Start setup')>0 and lines[j+1].find('elapsed=')<0: j+=1
             setup = search(r'elapsed=(.*) \(',lines[j+1])
