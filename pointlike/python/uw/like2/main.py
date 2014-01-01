@@ -259,7 +259,7 @@ class ROI(views.LikelihoodViews):
                     loc.localize()
                     loc.summary()
                 tsize = kwargs.pop('size', source.ellipse[2]*15.) # scale according to major axis s
-                plot_kw.update(size=tsize, pixelsize=tsize/15.)
+                plot_kw.update(size=tsize, pixelsize=kwargs.pop('pixelsize', tsize/15.))
             except Exception, e:
                 print 'Failed localization for source %s: %s' % (source.name, e)
             tsp = plotting.tsmap.plot(loc, **plot_kw)
