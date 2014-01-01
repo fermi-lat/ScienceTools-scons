@@ -58,12 +58,14 @@ class ExtendedCatalog( roi_catalogs.ExtendedSourceCatalog):
         if source.model.name=='BrokenPowerLaw': #convert this
             model = Models.LogParabola()
         else: model = source.model
-        if model.name=='LogParabola': model.free[-1]=False # E_break ne free
+        if model.name=='LogParabola': 
+           model.free[-1]=False # E_break ne free
+
         ### seems to be necessary for some models created from 
         if model.mappers[0].__class__.__name__== 'LimitMapper':
             print 'wrong mappers: converting model for source %s, model %s' % (name, model.name)
             model = eval('Models.%s(p=%s)' % (model.name, list(model.get_all_parameters())))
-        extsource= sources.ExtendedSource(name=self.realname(aname), 
+        extsource = sources.ExtendedSource(name=self.realname(aname), 
             skydir=source.skydir,
             model = model, 
             dmodel= source.spatial_model
