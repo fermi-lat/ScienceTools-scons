@@ -406,7 +406,7 @@ class TSmapView(tools.WithMixin):
         self.wzero = func.log_like()
     
     def __repr__(self):
-        return '%s.%s: source %s' % self.source.name
+        return '%s.%s: source %s' % (self.__module__, self.__class__.__name__, self.source.name)
         
     def set_dir(self, skydir):
         self.source.skydir = skydir
