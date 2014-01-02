@@ -84,6 +84,10 @@ class ROImodelFromHealpix(roimodel.ROImodel):
             if neighbors: src.free[:]=False # not sure this is necessary
             src.index = index
             src.model.free[:len(src.free)] = src.free # Don't think I still need this second copy of free
+            if src.model.name=='LogParabola':
+                src.model.free[-1] = False
+                src.free[-1] = False    
+
             return src
         
         def load_global_source(name, rec):
