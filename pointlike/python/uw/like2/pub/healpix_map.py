@@ -189,10 +189,14 @@ class HPskyfun(HParray):
     def __repr__(self):
         return '%-10s %s, nside=%d' % (self.__class__.__name__, self.name, self.nside)
     def __getitem__(self, index):
-        try:
-            return self.skyfun(self.dirfun(index))
-        except:
-            return np.nan
+        sdir = self.dirfun(index)
+        t = self.skyfun(sdir)
+        # problem with C++ code at exactly 180 deg.
+        if np.isnan(t):
+            sdir = SkyDir(sdir.l()+1e-3, sdir.b(), SkyDir.GALACTIC)
+            t = self.skyfun(sdir)
+        assert not np.isnan(t), 'Failed for index %d' % index
+        return t
         
     def getcol(self, type=np.float32):
         return np.asarray([self[index] for index in xrange(12*self.nside**2)],type)
@@ -323,6 +327,7 @@ def mapcube_to_healpix(inputfile,
         inputfile.replace('.fits', suffix+'.fits')))
     if os.path.exists(fulloutfile):
         os.remove(fulloutfile)
+    print 'writing output file %s' %fulloutfile
     pyfits.HDUList(hdus).writeto(fulloutfile)
 
 
