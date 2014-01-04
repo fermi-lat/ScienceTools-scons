@@ -56,6 +56,18 @@ class FitterSummaryMixin(object):
             if gradient:
                 fmt +='%10.1f'; tup += (grad[index],)
             print >>out,  fmt % tup
+    
+    def delta_w(self):
+        """ estimate change in log likelihood from current gradient 
+        """
+        try:
+            gm = np.matrix(self.gradient())
+            H = self.hessian()
+            return (gm * H.I * gm.T)[0,0]/4
+        except Exception, msg:
+            print 'Failed log likelihood estimate, returning 99.: %s' % msg
+            return 99.
+
 
 class FitPlotMixin(object):
     """mixin  for likelihood function to generate a plot, or set of all plots"""
