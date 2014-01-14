@@ -66,6 +66,9 @@ class TOAGenerator(object):
             pe   = self.polyco.getentry(tmid)
             freq = pe.evalfreq(tmid)
             period = 1.0/freq
+            if period < 0:
+                raise ValueError(
+                    'Something went horribly wrong with the folding period.')
 
             # Compute phase at start of observation or at midpoint
             phase_time = tmid if use_midpoint else mjdstart
