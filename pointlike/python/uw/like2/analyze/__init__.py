@@ -12,6 +12,7 @@ __all__=[
  'counts',
  'collection',
  'config',
+ 'cputime',
  'data',
  'diffuse_info',
  'environment',
