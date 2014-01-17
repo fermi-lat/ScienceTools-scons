@@ -58,15 +58,13 @@ def roirec(outdir, check=False):
     bad = []
     for fname in roi_files:
         p = pickle.load(open(fname))
-        if 'counts' not in p.keys():
-            bad.append(fname)
-            continue
-        counts = p['counts']
-        if counts is None: 
-           bad.append(fname)
-           continue
-        obs,mod = counts['observed'], counts['total']
-        chisq =  ((obs-mod)**2/mod).sum()
+        if 'counts' in p.keys() and p['counts'] is not None:
+            # this available if count plots made
+            counts = p['counts']
+            obs,mod = counts['observed'], counts['total']
+            chisq =  ((obs-mod)**2/mod).sum()
+        else:
+            chisq = 0
         history = p.get('history', None)
         if history is not None:
             # new format
