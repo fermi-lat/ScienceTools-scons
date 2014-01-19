@@ -560,7 +560,7 @@ class SourceInfo(analysis_base.AnalysisBase): #diagnostics.Diagnostics):
         <b>Right</b>: position in the sky of flagged sources <br>
         """
         hassed = np.array([self.df.ix[i]['sedrec'] is not None for i in range(len(self.df))]) 
-        nosed = (self.df.ts>10) & ! hassed
+        nosed = (self.df.ts>10) & ~ hassed
         if sum(nosed)>0:
             print '+++Warning: %d TS>10 sources without sed info' % sum(nosed)
             print self.df[~hassed]['ts roiname'.split()][:min(20, sum(nosed))]
