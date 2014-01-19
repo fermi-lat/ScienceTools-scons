@@ -43,7 +43,7 @@ def html_table( df, columns={}, name='temp', heading='', href=True, maxlines=10,
     
     if href:
         for n in df.index:
-            fnpat = 'sedfig/' + n.replace(' ','_').replace('+','p') + '*.png'
+            fnpat = 'sedfig/' + n.replace(' ','_').replace('+','p') + '_sed*.png'
             q = glob.glob(fnpat)
             if len(q) !=1: 
                 print '**File %s not found' % fnpat
