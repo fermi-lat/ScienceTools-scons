@@ -160,7 +160,7 @@ def source_library(source_list, title='sources', stream=None, strict=False, maxi
     with Element('source_library', title=title) as sl:
         for name,source in source_list.iterrows():
             stype = 'ExtendedSource' if np.isnan(source['locqual']) else 'PointSource'
-            with Element('source', type=stype, name=name, ignore=('model','sedrec', 'free'),
+            with Element('source', type=stype,  ignore=('model','sedrec', 'free'),
                         **source) as src:
                 m2x = xml_parsers.Model_to_XML(strict=strict)
                 m2x.process_model(pmodel(source))
@@ -169,8 +169,13 @@ def source_library(source_list, title='sources', stream=None, strict=False, maxi
                     src.text(xml_parsers.makePSSpatialModel(SkyDir(source['ra'],source['dec']),tablevel=0))
                     ns +=1
                 else:
+                    sname = source['name']
+                    if sname not in extended.index:
+                        print 'Failed to find %s, with no localizaiton, in extended sources' %sname
+                        print 'Skipping ...'
+                        continue
                     with Element('spatialModel', type='SpatialMap', 
-                            file="%s" % extended.ix[name]['Spatial_Filename'].strip() ) as sm:
+                            file="%s" % extended.ix[sname]['Spatial_Filename'].strip() ) as sm:
                         SimpleElement('parameter', name='Prefactor', value=1.0, free=0, max=1e3,min=1e-3, scale=1.0)
                     ne += 1
             if maxi is not None and i>maxi: break
