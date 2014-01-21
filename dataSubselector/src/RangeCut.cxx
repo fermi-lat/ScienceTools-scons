@@ -109,8 +109,15 @@ std::string RangeCut::filterString() const {
    } else if (m_intervalType == MAXONLY) {
       filter << m_fullName << " <= " << m_max;
    } else {
-      filter << m_min << " < " << m_fullName << " && "
-             << m_fullName << " <= " << m_max;
+      if (m_min == m_max) {
+         // Fully closed interval to support selecting on a specific value.
+         filter << m_min << " <= " << m_fullName << " && "
+                << m_fullName << " <= " << m_max;
+      } else {
+         // Half open interval to avoid overlap of intervals at end points.
+         filter << m_min << " < " << m_fullName << " && "
+                << m_fullName << " <= " << m_max;
+      }
    }
    return filter.str();
 }
