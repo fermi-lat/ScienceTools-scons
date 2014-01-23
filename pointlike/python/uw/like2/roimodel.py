@@ -156,7 +156,7 @@ class ROImodel(list):
         if newsource.name in self.source_names:
             raise ROImodelException('Attempt to add source "%s": a source with that name already exists' % newsource.name)
         self.append(newsource)
-        self.initilize()
+        self.initialize()
         return newsource
  
     def del_source(self, source_name):
