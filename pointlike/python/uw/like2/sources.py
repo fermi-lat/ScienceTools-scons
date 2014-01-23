@@ -164,6 +164,7 @@ class PointSource(Source):
     def response(self, band, **kwargs):
         return response.PointResponse(self, band, **kwargs)
 
+
 class ExtendedSource(Source):
 
     def __str__(self):
@@ -188,7 +189,6 @@ class ExtendedSource(Source):
         return response.ExtendedResponse(self, band, **kwargs)
 
         
-
 class GlobalSource(Source):
     def __init__(self, **kwargs):
         super(GlobalSource, self).__init__(**kwargs)
@@ -210,6 +210,7 @@ class GlobalSource(Source):
                 MapCube   =response.DiffuseResponse,
                 CachedMapCube=response.CachedDiffuseResponse,
                 Healpix   =response.DiffuseResponse,
+                HealpixCube = response.DiffuseResponse,
                 IsotropicSpectralFunction = response.IsotropicResponse,
                 )[self.dmodel.type]
         except Exception, msg:
