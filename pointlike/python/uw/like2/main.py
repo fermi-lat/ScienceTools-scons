@@ -153,7 +153,7 @@ class ROI(views.LikelihoodViews):
 
         with self.fitter_view(select, exclude=exclude) as fv:
             qual = fv.delta_w()
-            if qual < tolerance:
+            if qual < tolerance and qual>0:
                 if summarize:
                     print 'Not fitting, estimated improvement, %.2f, is less than tolerance= %.1f' % (qual, tolerance)
                 return
