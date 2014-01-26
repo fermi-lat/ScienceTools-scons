@@ -158,7 +158,7 @@ def source_library(source_list, title='sources', stream=None, strict=False, maxi
         raise Exception('Failed to find the Extended archive: %s' %msg)
 
     with Element('source_library', title=title) as sl:
-        for name,source in source_list.iterrows():
+        for i,source in source_list.iterrows():
             stype = 'ExtendedSource' if np.isnan(source['locqual']) else 'PointSource'
             with Element('source', type=stype,  ignore=('model','sedrec', 'free'),
                         **source) as src:

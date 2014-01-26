@@ -75,8 +75,16 @@ class Source(object):
         elif hasattr(self.skydir, '__iter__'): #allow a tuple of (ra,dec)
             self.skydir = SkyDir(*self.skydir)
         if 'model' not in kwargs or self.model is None:
-            self.model=LogParabola(1e-14, 2.2, 1e-3, 1e3)
+            self.model=LogParabola(1e-14, 2.2, 0, 1e3)
             self.model.free[2:]=False
+        elif type(self.model)==str:
+            try:
+                t =eval(self.model)
+            except Exception, exp:
+                print 'Failed to evaluate model expression, %s: %s' %(model, exp)
+                raise
+            self.model=t
+                
         self.free = self.model.free.copy()
         if self.model.name=='PowerLaw':
             par,sig = self.model.statistical()

@@ -128,3 +128,4 @@ def band_summary(roi, event_type=0):
     df = pd.DataFrame(d, index =snames).T
     return df
         
+        

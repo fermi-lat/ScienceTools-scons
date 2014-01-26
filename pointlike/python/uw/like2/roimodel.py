@@ -151,7 +151,7 @@ class ROImodel(list):
         if newsource is not None:
             assert isinstance(newsource, sources.Source)
         else:
-            newsource = source.PointSource(**kw)
+            newsource = sources.PointSource(**kw)
             
         if newsource.name in self.source_names:
             raise ROImodelException('Attempt to add source "%s": a source with that name already exists' % newsource.name)

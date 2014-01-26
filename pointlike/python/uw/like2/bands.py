@@ -76,13 +76,15 @@ class EnergyBand(object):
 class BandSet(list):
     """ manage the list of EnergyBand objects
     """
-    def __init__(self, config, roi_index, max=None):
+    def __init__(self, config, roi_index, load=False):
         """create a list of energy bands
         
         config : configuration.Configuration object
         roi_index : int | (float,float)
             specify direction, either as nside=12 index, or an (ra,dec) pair
             the actual center is the center of the corresponding nside=12 HEALPix pixel
+        load : bool
+            if False, do not load data into the pixels
         """
         self.config = config
         if hasattr(roi_index,'__iter__') and len(roi_index)==2:
@@ -94,6 +96,9 @@ class BandSet(list):
                 self.append(EnergyBand(None, config, roi_index, event_type=et, emin=emin,emax=emax))
         self.has_data = False
         self.roi_dir = skymaps.Band(12).dir(roi_index) # could be defined otherwise
+        
+        if load:
+            self.load_data()
     
     def __repr__(self):
         ret = '%s.%s : %d bands %d-%d MeV for ROI %d' % (
