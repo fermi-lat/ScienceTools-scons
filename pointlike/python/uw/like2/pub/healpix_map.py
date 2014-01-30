@@ -10,8 +10,6 @@ from skymaps import Band, SkyDir, Hep3Vector, PySkyFunction, SkyImage, Healpix
 import skymaps
 from pointlike import IntVector
 from uw.utilities import image
-#from uw.like import pycaldb
-#from .. import skymodel # for DisplayMap
 
 class HParray(object):
     """ base class, implement a HEALPix array, provide AIT plot
@@ -50,6 +48,8 @@ class HParray(object):
             plot(norm=LogNorm(vmin=1,vmax=10))
         It returns a image.AIT object, which has a colorbar member that can be adjusted.
         """
+        cbtext = kwargs.pop('cbtext', '')
+        ait_kw.update(cbtext=cbtext)
         band = Band(self.nside)
         def skyplotfun(v):
             skydir = SkyDir(Hep3Vector(v[0],v[1],v[2]))
@@ -270,7 +270,7 @@ class HEALPixFITS(list):
             print 'appended column %s' %col.name
     
     def make_table(self, unit=None):        
-        makecol = lambda v: pyfits.Column(name=v.name, format='E', unit=unit, array=v.vec)
+        makecol = lambda v: pyfits.Column(name=v.name, format='E', unit=unit, array=v.getcol())
         cols = map(makecol, self)
         nside = self.nside
         cards = [pyfits.Card(*pars) for pars in [ 
