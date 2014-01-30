@@ -280,6 +280,7 @@ class AIT(object):
         ('earth',     False, 'if looking down at Earth'),
         ('axes',      None,   'set to use, otherwise create figure if necessary'),
         ('nocolorbar',False,  'set to turn off colorbar' ),
+        ('cbtext',    None,   'text for colorbar'),
         ('background',None,   'if set, a value to apply to NaN: default is to not set pixels\n' 
                                 'nb: do not set 0 if log scale'),
         )
@@ -345,7 +346,8 @@ class AIT(object):
         return [(r[i]-self.center[i])/self.scale[i] for i in range(2)]
 
     def plot_coord(self, sdir):
-        """ return x,y plot coordinates given a SkyDir"""
+        """ return x,y plot coordinates given a SkyDir, or (ra,dec) tuple"""
+        if not isinstance(sdir, SkyDir): sdir=SkyDir(*sdir)
         if self.galactic:
             return self(sdir.l(),sdir.b())
         return self(sdir.ra(), sdir.dec())
@@ -447,6 +449,7 @@ class AIT(object):
                                         
         if not nocolorbar:
             self.colorbar =self.axes.figure.colorbar(m, ax=self.axes, **cb_kw)
+            self.colorbar.set_label(self.cbtext)
             self.mappable = self.colorbar.mappable
         else:
             self.mappable=m
