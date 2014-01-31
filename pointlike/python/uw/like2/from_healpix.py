@@ -42,6 +42,8 @@ class ROImodelFromHealpix(roimodel.ROImodel):
         self.pickle_file = os.path.join(self.config.modeldir, 'pickle.zip')
         if not os.path.exists(self.pickle_file):
             raise Exception('Expected file "pickle.zip" not found in %s' % config.configdir)
+        if hasattr(roi_index, '__len__'):
+            roi_index = skymaps.Band(12).dir(skymaps.SkyDir(*roi_index))
         self.index = roi_index
         self.roi_dir = skymaps.Band(12).dir(roi_index)
         self.name = 'HP12_%04d' % roi_index
