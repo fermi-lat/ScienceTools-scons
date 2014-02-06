@@ -642,8 +642,11 @@ class Model(object):
                 En. Flux  : 1.11e-10 (DERIVED)
 
         """
-        p,hi_p,lo_p = self.statistical(absolute=absolute,two_sided=True)
-        if not self.background:
+        try:
+            p, hi_p, lo_p = self.statistical(absolute=absolute,two_sided=True)
+        except:
+            p, hi_p, lo_p = self.get_all_parameters(), [0]*self.npar, [0]*self.npar
+        if not self.background and hi_p is not None:
             if not np.all(self.internal_cov_matrix==0):
                 f,fhi,flo    = self.i_flux(e_weight=0,emax=3e5,two_sided=True,cgs=True,error=True)
                 e,ehi,elo    = self.i_flux(e_weight=1,emax=3e5,two_sided=True,cgs=True,error=True)
