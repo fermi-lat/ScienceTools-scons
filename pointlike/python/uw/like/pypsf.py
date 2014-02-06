@@ -99,7 +99,7 @@ class CALDBPsf(Psf):
 
         h = self.CALDBhandles # tuple with handles to front and back CALDB
         ne,nc = len(self.e_los),len(self.c_his)
-        self.newstyle = 'SCORE' in [x.name for x in h[0][1].get_coldefs()]
+        self.newstyle = 'SCORE' in [x.name for x in h[0][1].columns] ### changed from get_columns()
 
         def proc(ct,pname):
             """ Return the parameters from CALDB for conversion type
