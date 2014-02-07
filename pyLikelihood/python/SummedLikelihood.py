@@ -195,6 +195,23 @@ class SummedLikelihood(AnalysisBase):
         self.composite.setErrors(my_errors)
         for component in self.components:
             component.model = SourceModel(component.logLike)
+    def minosError(self, srcname, parname, level=1):
+        freeParams = pyLike.ParameterVector()
+        self.composite.getFreeParams(freeParams)
+        saved_values = [par.getValue() for par in freeParams]
+        par_index = self.components[0].par_index(srcname, parname)
+        index = self.composite.findIndex(par_index)
+        if index == -1:
+            raise RuntimeError("Invalid parameter specification")
+        try:
+            errors = self.optObject.Minos(index, level)
+            self.composite.setFreeParamValues(saved_values)
+            return errors
+        except RuntimeError, message:
+            print "Minos error encountered for parameter %i" % index
+            self.composite.setFreeParamValues(saved_values)
+    def par_index(self, srcname, parname):
+        return self.components[0].par_index(srcname, parname)
     def Ts(self, srcName, reoptimize=False, approx=True,
            tol=None, MaxIterations=10, verbosity=0):
         if verbosity > 0:
