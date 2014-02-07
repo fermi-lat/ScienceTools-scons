@@ -188,13 +188,13 @@ class SummedLikelihood(AnalysisBase):
             self.covar_is_current = True
         else:
             self.covar_is_current = False
-        for component in self.components:
-            j = 0
-            for i in range(len(component.model.params)):
-                if component.model[i].isFree():
-                    component.model[i].setError(errors[j])
-                    j += 1
+        self._set_errors(errors)
         return errors
+    def _set_errors(self, errors):
+        my_errors = list(errors)
+        self.composite.setErrors(my_errors)
+        for component in self.components:
+            component.model = SourceModel(component.logLike)
     def Ts(self, srcName, reoptimize=False, approx=True,
            tol=None, MaxIterations=10, verbosity=0):
         if verbosity > 0:
