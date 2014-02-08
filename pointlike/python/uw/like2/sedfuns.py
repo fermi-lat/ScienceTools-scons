@@ -100,7 +100,7 @@ class SED(tools.WithMixin):
                 xlo,xhi = self.rs.emin,self.rs.emax
             except Exception, msg:
                 print 'Fail poiss fit for %.0f MeV: %s ' % (energy,msg)
-                rec.append(xlo, xhi, 0, 0, np.nan, 0, np.nan, np.nan, np.nan, np.nan )
+                rec.append(np.nan, np.nan, 0, 0, np.nan, 0, np.nan, np.nan, np.nan, np.nan )
                 continue
             w = pf.poiss
             err = pf.maxdev
