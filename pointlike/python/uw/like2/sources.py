@@ -138,7 +138,7 @@ class Source(object):
         self.model.freeze(parname)
         if value is not None: self.model.setp(parname, value)
         self.changed=True
-        assert sum(self.model.free)>0, 'cannot freeze all parameters this way'
+        #assert sum(self.model.free)>0, 'cannot freeze all parameters this way'
 
     def thaw(self, parname):
         self.model.freeze(parname, freeze=False)
@@ -220,6 +220,7 @@ class GlobalSource(Source):
                 Healpix   =response.DiffuseResponse,
                 HealpixCube = response.DiffuseResponse,
                 IsotropicSpectralFunction = response.IsotropicResponse,
+                AziLimb = response.IsotropicResponse,
                 )[self.dmodel.type]
         except Exception, msg:
             raise Exception('Could not find a response class for source %s:"%s"' %(self,msg))

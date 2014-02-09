@@ -163,6 +163,7 @@ class BandLike(object):
                 return
         raise Exception('source "%s" not found to delete' % source.name)
     
+    
     def fill_grid(self, sdirs):
         """ fill a grid with values, which are counts/sr, so must be multiplied by the pixel size
         """
@@ -430,4 +431,33 @@ class BandLikeList(list):
         for u in zip(self.sources.parameter_names, self.sources.parameters, self.gradient()):
             print >>out, '%-21s %8.2f %8.1f' % u
        
-    
+    def freeze(self, parname, source_name=None, value=None):
+        """ freeze the parameter, optionally set the value
+        
+        parname : name or index
+        source_name: None or string
+            if None, use currently selected source
+        value : float or None
+            if float, set the value
+        """
+        source = self.get_source(source_name)
+        source.freeze(parname, value)
+        self.sources.initialize()
+        self.initialize()
+       
+    def thaw(self, parname, source_name=None):
+        """ thaw the parameter
+        
+        parname : name or index
+            if a string with an underscore, interpret as source_parname
+        source_name: None or string
+            if None, use currently selected source
+        """
+        if parname.find('_')>0 and source_name is None:
+            source_name, parname = parname.split('_')
+        source = self.get_source(source_name)
+        source.thaw(parname)
+        self.sources.initialize()
+        self.initialize()
+
+

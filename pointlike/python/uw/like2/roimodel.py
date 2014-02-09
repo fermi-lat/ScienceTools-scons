@@ -8,7 +8,7 @@ import os
 import numpy as np
 from  uw.utilities import keyword_options
 from . import (sources, parameterset, diffuse, extended, to_xml)
-from . sources import (PowerLaw, PLSuperExpCutoff, LogParabola)
+from . sources import (PowerLaw, PLSuperExpCutoff, LogParabola, Constant)
 
 class ROImodelException(Exception):pass
         
