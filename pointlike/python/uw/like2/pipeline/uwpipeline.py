@@ -117,6 +117,7 @@ stagenames = dict(
     update_pivot=  StageBatchJob( dict( repivot_flag=True),  sum='sourceinfo',help='update pivot', ), 
     update_only =  StageBatchJob( dict(),                   sum='config  sourceinfo', help='update, no additional stage', ), 
     finish      =  StageBatchJob( dict(finish=True),     sum='counts sourceinfo localization associations', help='localize, associations, sedfigs', ),
+    residuals   =  StageBatchJob( dict(residual_flag=True),      help='generate residual tables for all sources', ),
     )
 disabled="""
     tables      =  Stage(pipe.Tables,  sum='hptables', job_list='joblist8.txt', help='create HEALPix tables: ts kde counts', ),

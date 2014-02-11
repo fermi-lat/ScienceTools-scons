@@ -151,6 +151,7 @@ class Configuration(object):
         etnames = self.event_type_names
         try:
             if type(which)==str:
+                which = which.lower()
                 return etnames.index(which)
             t = etnames[which]
             return which
