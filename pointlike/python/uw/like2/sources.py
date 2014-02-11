@@ -221,6 +221,7 @@ class GlobalSource(Source):
                 HealpixCube = response.DiffuseResponse,
                 IsotropicSpectralFunction = response.IsotropicResponse,
                 AziLimb = response.IsotropicResponse,
+                GulliLimb = response.IsotropicResponse,
                 )[self.dmodel.type]
         except Exception, msg:
             raise Exception('Could not find a response class for source %s:"%s"' %(self,msg))
