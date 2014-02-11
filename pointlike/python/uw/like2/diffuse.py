@@ -434,7 +434,9 @@ def diffuse_factory(value, event_type_names=('front', 'back')):
     if isinstance(value, str):
         if ':' in value:
             type,value = value.split(':')
-        if '*' in value:
+        if '**' in value:
+            value = [value.replace('**', et.upper()) for et in event_type_names]
+        elif '*' in value:
             value = [value.replace('*',et) for et in event_type_names]
         
     if not hasattr(value, '__iter__') or isdict:
