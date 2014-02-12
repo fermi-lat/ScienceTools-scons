@@ -36,6 +36,7 @@ __all__=[
  'ptstable',
  'pulsarseedcheck',
  #'roi_info',
+ 'residuals',
  'seedcheck',
  'sourcecomparison',
  'sourceinfo',
