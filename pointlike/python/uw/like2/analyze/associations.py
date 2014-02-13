@@ -160,6 +160,7 @@ class Associations(sourceinfo.SourceInfo):
         self.atable += html_table(latsel,
                     dict(ts='TS,Test Statistic', ROI_index='ROI Index,Index of the ROI, a HEALPix ring index'),
                     heading = '<p>%d LAT catalog entries not in the model (TS shown as NaN), or too weak.' % sum(missing),
+                    name=self.plotfolder+'/missing', maxlines=20,
                     float_format=(FloatFormat(2)))
         far = lat.delta>0.25
         if sum(far)>0:
