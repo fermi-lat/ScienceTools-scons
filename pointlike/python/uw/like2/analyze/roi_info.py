@@ -50,7 +50,6 @@ class ROIinfo(analysis_base.AnalysisBase):
         else:
             print 'loading %s' % filename
             self.df = pd.load(filename)
-        if True: return    
         # move this into refresh?
         rois = self.df
         rx = rois['ra dec glat glon'.split()] 
