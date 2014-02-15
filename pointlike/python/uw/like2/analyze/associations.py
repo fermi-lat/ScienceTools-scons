@@ -215,6 +215,8 @@ class Associations(sourceinfo.SourceInfo):
             z.plot(ax, xlabel=r'$\Delta TS$')
             print '%s: localization factor=%.2f' %(name, z.factor)
 
+    def all_plots(self):    
+        self.runfigures([self.summary, self.pulsar_check, self.association_vs_ts, self.localization_check,])
 
 
 class FitExponential(object):
