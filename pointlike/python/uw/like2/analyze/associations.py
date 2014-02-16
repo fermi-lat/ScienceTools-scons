@@ -211,7 +211,7 @@ class Associations(sourceinfo.SourceInfo):
         fig, axx = plt.subplots(1,3, figsize=(14,5))
 
         for sel, name, ax in zip((agn, psr,otherid), ('AGN','LAT pulsars', 'other ids'), axx):
-            z = FitExponential(select(sel), name)
+            z = FitExponential(select(sel), name, vmax=dtsmax)
             z.plot(ax, xlabel=r'$\Delta TS$')
             print '%s: localization factor=%.2f' %(name, z.factor)
 
@@ -230,7 +230,7 @@ class FitExponential(object):
         self.vcut=vcut = v[v<vmax]
         self.vmean = vmean = vcut.mean() 
         # find factor that has same average over the interval
-        self.factor = optimize.brentq( lambda x : self.cfactors(x)[3]-self.vmean, 1.0, 1.2)
+        self.factor = optimize.brentq( lambda x : self.cfactors(x)[3]-self.vmean, 1.0, 1.5)
         beta, c0, c1, r = self.cfactors(self.factor)
         self.alpha = len(vcut) / c0 * binsize
         self.beta=beta

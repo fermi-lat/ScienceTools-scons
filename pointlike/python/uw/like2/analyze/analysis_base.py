@@ -69,7 +69,7 @@ def load_pickles_from_zip(zipfilename='pickle.zip'):
     """
     pkls = []
     
-    assert os.path.exists(zipfilename)
+    assert os.path.exists(zipfilename), 'Zip File not found: %s' % zipfilename
     print 'unpacking file %s ...' % (os.getcwd()+'/'+zipfilename ,),
     z = zipfile.ZipFile(zipfilename)
     files = sorted( filter( lambda n:  n.endswith('.pickle'), z.namelist() ) ) 

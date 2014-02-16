@@ -14,7 +14,7 @@ from . import sourceinfo
 from . analysis_base import FloatFormat, html_table
 
 class UWsourceComparison(sourceinfo.SourceInfo):
-    r"""Comparision with another UW model: %(othermodel)s
+    r"""Comparision with another UW model
     <br>Ratios are %(skymodel)s/%(othermodel)s.
     
     """
@@ -132,7 +132,6 @@ class UWsourceComparison(sourceinfo.SourceInfo):
             cut=df.beta<0.01
             y = df.pindex/df.pindex_old
             plot_ratio(ax, y, cut, ylim, 'index')
-            ax.set_xlabel('TS')
         def plot_ts(ax, rdts=ts_lim):
             y = df.ts/(df.ts_old +0.1)
             cut=df.ts>10
