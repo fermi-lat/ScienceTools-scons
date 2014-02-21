@@ -21,6 +21,7 @@ class EnergyBand(object):
         
         """
         # define bin boundaries
+
         self.skydir=roi_dir if roi_dir is not None else  skymaps.Band(12).dir(roi_index)
         self.radius =5
         self.event_type = event_type
@@ -89,7 +90,7 @@ class BandSet(list):
         self.config = config
         if hasattr(roi_index,'__iter__') and len(roi_index)==2:
             dir = skymaps.SkyDir(*roi_index)
-            roi_index = Band(12).index(dir)
+            roi_index = skymaps.Band(12).index(dir)
         self.roi_index = roi_index
         for emin, emax  in zip(energybins[:-1], energybins[1:]):
             for et in range(2):

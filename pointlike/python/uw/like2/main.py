@@ -97,6 +97,11 @@ class ROI(views.LikelihoodViews):
             self.name = 'HP12_%04d' % roi_index
         elif isinstance(roi_spec, str):
             roi_sources =from_xml.ROImodelFromXML(config, roi_spec)
+            #this will not work : index expects an integer. We are missing a function retrieving roi_dir from FT1 and
+            #passing it down to the code where it is needed  
+            #roi_index = roi_sources.index(eval(config.dataset.dss[0]["VAL"].strip('CIRCLE')[:-4]+')'))
+            #the line below does not work for ROImodelFromXML as .index is a function, not a parameter. So there is an API
+            #mismatch between ROImodelFromXML and ROImodelFromHealpix
             roi_index = roi_sources.index
             self.name = roi_spec
         else:

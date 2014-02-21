@@ -12,8 +12,10 @@ class ROImodelFromXML(roimodel.ROImodel):
         handler = xml_parsers.parse_sourcelib(xmlfile)
         self.source_library = handler.outerElements[0]
         # get the HEALPix index from the source_library element
-        self.index = int(self.source_library['index'])
-        
+        try:
+            self.index = int(self.source_library['index'])
+        except KeyError:
+            pass
         if self.ecat is None: #speed up if already loaded
             self.ecat = extended.ExtendedCatalog(self.config.extended, quiet=self.quiet)
         

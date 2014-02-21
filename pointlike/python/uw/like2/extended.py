@@ -18,8 +18,11 @@ class ExtendedCatalog( roi_catalogs.ExtendedSourceCatalog):
         self.alias = kwargs.pop('alias', dict())
         self.quiet = kwargs.pop('quiet', True)
         self.catname = extended_catalog_name
-        extended_catalog_name = \
-            os.path.expandvars(os.path.join('$FERMI','catalog',extended_catalog_name))
+        if os.path.isabs(self.catname):
+            extended_catalog_name = self.catname
+        else:
+            extended_catalog_name = \
+                os.path.expandvars(os.path.join('$FERMI','catalog',extended_catalog_name))
         if not os.path.exists(extended_catalog_name):
             raise Exception('extended source folder "%s" not found' % extended_catalog_name)
         if not self.quiet:

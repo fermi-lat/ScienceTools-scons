@@ -44,6 +44,7 @@ def get_pass(ft1):
     v = h.get('PASS_VER')
     if (v is not None):
         if str(v).strip()[:2]=='P7': return 7
+        if str(v).strip()[:2]=='P8': return 8
     if 'CTBCLASSLEVEL' in h.keys(): return 6
     return 7
 

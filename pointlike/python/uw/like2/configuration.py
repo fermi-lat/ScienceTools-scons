@@ -106,15 +106,19 @@ class Configuration(object):
         self.modeldir = self.configdir
         if not os.path.exists(os.path.join(self.configdir, 'pickle.zip')) and input_model is not None:
             self.modeldir = os.path.expandvars(input_model['path'])
+            try:
+                self.modelname = input_model['file']
+            except KeyError:
+                self.modelname = 'pickle.zip'
             if not os.path.exists(self.modeldir):
                 t = os.path.expandvars(os.path.join('$FERMI', self.modeldir))
                 if not os.path.exists(t):
                     raise Exception('No source model file found in %s or %s' %(self.modeldir, t) )
                 self.modeldir=t
-        if not os.path.exists(os.path.join(self.modeldir, 'pickle.zip')):
+        if not os.path.exists(os.path.join(self.modeldir, self.modelname)):
             print 'WARNING: pickle.zip not found in %s: no model to load' % self.modeldir
         elif not self.quiet:
-            print 'Will load healpix sources from %s/pickle.zip' % self.modeldir
+            print 'Will load healpix sources from %s/%s' % (self.modeldir,self.modelname)
             
     def __repr__(self):
         return '%s.%s: %s' %(self.__module__, self.__class__.__name__, self.configdir)
