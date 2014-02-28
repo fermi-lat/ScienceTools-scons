@@ -65,6 +65,9 @@ if baseEnv['PLATFORM'] == "darwin":
     version = commands.getoutput("sw_vers -productVersion")
     cpu = commands.getoutput("arch")
     baseEnv['MACHINENAME'] = cpu
+    if version.startswith("10.8"):
+        variant="mountainlion-"
+        baseEnv['OSNAME'] = "mountainlion"
     if version.startswith("10.6"):
         variant="snowleopard-"
         baseEnv['OSNAME'] = "snowleopard"
@@ -75,7 +78,7 @@ if baseEnv['PLATFORM'] == "darwin":
         variant="tiger-"
         baseEnv['OSNAME'] = "tiger"
     variant+=cpu+"-"
-    if cpu.endswith("64"):
+    if cpu.endswith("64") or "mountainlion" == baseEnv['OSNAME']:
         variant+="64bit"
         baseEnv['ARCHNAME'] = '64bit'
     else:
