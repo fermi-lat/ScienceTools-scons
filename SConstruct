@@ -67,6 +67,7 @@ if baseEnv['PLATFORM'] == "darwin":
     baseEnv['MACHINENAME'] = cpu
     if version.startswith("10.8"):
         variant="mountainlion-"
+        cpu = "x86_64"
         baseEnv['OSNAME'] = "mountainlion"
     if version.startswith("10.6"):
         variant="snowleopard-"
@@ -78,7 +79,7 @@ if baseEnv['PLATFORM'] == "darwin":
         variant="tiger-"
         baseEnv['OSNAME'] = "tiger"
     variant+=cpu+"-"
-    if cpu.endswith("64") or "mountainlion" == baseEnv['OSNAME']:
+    if cpu.endswith("64"):
         variant+="64bit"
         baseEnv['ARCHNAME'] = '64bit'
     else:
