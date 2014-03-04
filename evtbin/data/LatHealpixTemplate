@@ -30,14 +30,14 @@ NAXIS2   =                    0 / Number of rows
 PCOUNT   =                    0 / Normally 0 (no varying arrays)
 GCOUNT   =                    1 / Required value
 TFIELDS  =                    0 / Number of columns in table
-EXTNAME  =              SKYMAPS / Extension name
+EXTNAME  =               SKYMAP / Extension name
 TELESCOP =                GLAST / Telescope or mission name
 INSTRUME =                  LAT / Instrument name
 FILTER   =                 NONE / Instrument filter in use (if any)
 CHANTYPE =                   PI / Energy channel type
 HDUCLASS =                 OGIP / Format confirms to OGIP standard
 HDUCLAS1 =             RESPONSE / Extension contains response data
-HDUCLAS2 =              SKYMAPS / Extension contains response matrix
+HDUCLAS2 =               SKYMAP / Extension contains response matrix
 PIXTYPE =               HEALPIX / HEALPIX scheme
 HDUVERS  =                1.2.0 / Version number of the format
 DATE-OBS                        / Start Date and Time of the observation (UTC)

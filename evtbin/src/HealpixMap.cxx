@@ -60,12 +60,52 @@ namespace evtbin {
     adjustTimeKeywords(sc_file, sc_table);     
    }
 
+  HealpixMap::HealpixMap(const std::string & healpixmap_file)
+    : DataProduct(healpixmap_file, "SKYMAP",evtbin::Gti(healpixmap_file)) {
+    //access SKYMAP extension
+    std::auto_ptr<tip::Table> output_table(tip::IFileSvc::instance().editTable(healpixmap_file, "SKYMAP"));
+    tip::Header & header(output_table->getHeader());
+    header["ORDERING"].get(m_hpx_ordering_scheme);
+    header["ORDER"].get(m_hpx_order);
+    std::string gal("");
+    header["COORDSYS"].get(gal);
+    m_use_lb = (gal=="GAL")?true:false;
+    
+    m_hpx_binner = new HealpixBinner(m_hpx_ordering_scheme, m_hpx_order, m_use_lb);
+    readEbounds(healpixmap_file);
+    //in principle it should be possible to build the following correctly from the bounds....
+    m_ebinner = 0;
+  }
 
+  //From Likelihood/CountsMap/readEbounds
+  void HealpixMap::readEbounds(const std::string & healpixmap_file)
+  {
+    std::auto_ptr<const tip::Table> 
+      ebounds(tip::IFileSvc::instance().readTable(healpixmap_file, "EBOUNDS"));
+    tip::Table::ConstIterator it = ebounds->begin();
+    tip::Table::ConstRecord & row = *it;
+    std::vector<double> energies(ebounds->getNumRecords() + 1);
+    double emax;
+    for (int i = 0 ; it != ebounds->end(); ++it, i++) {
+      row["E_MIN"].get(energies.at(i));
+      row["E_MAX"].get(emax);
+    }
+    energies.back() = emax;
+    
+    m_energies.clear();
+    for (size_t k(0); k < energies.size(); k++) {
+      m_energies.push_back(energies[k]/1e3);
+    }
+  }
+  
 //Destructeur
   HealpixMap::~HealpixMap() throw() 
   {
-    delete m_ebinner;
-    delete m_hpx_binner;
+    try{
+      delete m_ebinner;
+      delete m_hpx_binner;
+    } catch(...)
+      {;}
   }
 
  
@@ -106,12 +146,12 @@ void HealpixMap::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIter
     // Standard file creation from base class.
     createFile(creator, out_file, facilities::commonUtilities::joinPath(m_data_dir, "LatHealpixTemplate"));
 
-    //access SKYMAPS extension
-    std::auto_ptr<tip::Table> output_table(tip::IFileSvc::instance().editTable(out_file, "SKYMAPS"));
+    //access SKYMAP extension
+    std::auto_ptr<tip::Table> output_table(tip::IFileSvc::instance().editTable(out_file, "SKYMAP"));
     tip::Header & header(output_table->getHeader());
    
 
-    // Write the SKYMAPS  extension
+    // Write the SKYMAP  extension
     writeSkymaps(out_file);
         
     // Write the history that came from the skymaps extension.
@@ -119,6 +159,11 @@ void HealpixMap::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIter
 
     // Write DSS keywords to preserve cut information.
     writeDssKeywords(header);
+    //access primary header to add DSS keywords there as well
+    std::auto_ptr<tip::Image> primimage(tip::IFileSvc::instance().editImage(out_file, ""));
+    tip::Header & primheader = primimage->getHeader();
+    writeDssKeywords(primheader);
+
 
     // Write the EBOUNDS extension.
     if(m_hpx_ebin){ writeEbounds(out_file, m_ebounds);}
@@ -131,7 +176,7 @@ void HealpixMap::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIter
   
   void HealpixMap::writeSkymaps(const std::string & out_file) const {
     //Open the skymap extension
-    std::auto_ptr<tip::Table> output_table(tip::IFileSvc::instance().editTable(out_file, "SKYMAPS"));
+    std::auto_ptr<tip::Table> output_table(tip::IFileSvc::instance().editTable(out_file, "SKYMAP"));
     //resize the table to have as many records as there are healpixels
     output_table->setNumRecords(m_hpx_binner->getNumBins());
     
@@ -153,7 +198,7 @@ void HealpixMap::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIter
     } else {
       coordsys = "EQU"; 
     }
-    int long Nside=pow((long double)2,m_hpx_order);
+    int long Nside=nside();
     int long lastpix=12*Nside*Nside-1;
    // int long nbrbins= nbchannel;
     
