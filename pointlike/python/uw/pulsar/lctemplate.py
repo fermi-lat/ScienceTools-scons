@@ -327,6 +327,17 @@ class LCTemplate(object):
         lct.norms.free[:] = norms_free
         return lct
 
+    def add_primitive(self,prim,norm=0.1):
+        """ [Convenience] -- return a new LCTemplate with the specified
+            LCPrimitive added and renormalized."""
+        norms,prims = self.norms,self.primitives
+        nprims = [prim] + [deepcopy(prims[i]) for i in xrange(len(prims))]
+        nnorms = np.asarray([norm]+[norms()[i] for i in xrange(len(prims))])
+        norms_free = [True]+[norms.free[i] for i in xrange(len(prims))]
+        lct = LCTemplate(nprims,nnorms*norms().sum()/nnorms.sum())
+        lct.norms.free[:] = norms_free
+        return lct
+
     def order_primitives(self,indices,zeropt=0,order_by_amplitude=False):
         """ Order the primitives specified by the indices by position.
             x0 specifies an alternative zeropt.
