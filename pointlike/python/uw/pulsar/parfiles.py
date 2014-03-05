@@ -916,7 +916,8 @@ def get_resids(par,tim,emax=None,phase=False,get_mjds=False,latonly=False,
 
 def get_toa_strings(tim):
     """ Return a list of strings for all TOA entries."""
-    lines = map(str.strip,file(tim).readlines())
+    lines = filter(lambda l: len(l) > 0,
+        map(str.strip,file(tim).readlines()))
     if not lines[0].startswith('FORMAT 1'):
         raise ValueError('Cannot parse non-tempo2 style TOA files.')
     lines = filter(id_toa_line,lines)
