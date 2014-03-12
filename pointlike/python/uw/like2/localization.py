@@ -187,6 +187,8 @@ def localize_all(roi, **kwargs):
             os.makedirs(tsmap_dir)
     associator = kwargs.pop('associator', None)
     tsfits = kwargs.pop('tsfits', True) 
+    if len(kwargs.keys())>0:
+        print 'Warning: unrecognized args to localize_all: %s' %kwargs
     initw = roi.log_like()
     
     for source in vpsources:

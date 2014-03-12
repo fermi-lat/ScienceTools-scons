@@ -235,6 +235,7 @@ class DiffuseCorrection(object):
             corr_file = os.path.expandvars(os.path.join('$FERMI','diffuse', corr_file))
         try:
             self.correction = pd.read_csv(corr_file, index_col=0) 
+            print self.correction
         except Exception, msg:
             raise Exception('Error loading correction file %s: %s'% (corr_file,msg))
             

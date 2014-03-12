@@ -58,7 +58,8 @@ class ParameterSet(object):
         
     def get_parameters(self):
         """ return array of all parameters"""
-        return np.concatenate([s.model.get_parameters() for s in self.free_sources])
+        t = [s.model.get_parameters() for s in self.free_sources]
+        return np.concatenate(t) if len(t)>0 else []
         
     def set_parameters(self, pars):
         """ set parameters, checking to see if changed"""
@@ -138,9 +139,12 @@ class ParameterSet(object):
         """formatted summary of parameter names, values, gradient
         out : None or open stream
         """
-        print >>out,'\n%-21s %8s %8s' % ('parameter', 'value', 'gradient')
+        if len(self.parameter_names)==0:
+            print 'No free parameters'
+            return
+        print >>out,'\n%-21s %8s %8s' % ('parameter', 'value', 'error(%)')
         print >>out,  '%-21s %8s %8s' % ('---------', '-----', '--------')
-        for u in zip(self.parameter_names, self.get_parameters(), self.gradient()):
+        for u in zip(self.parameter_names, self.get_parameters(), self.uncertainties):
             print >>out, '%-21s %8.2f %8.1f' % u
 
 

@@ -134,15 +134,15 @@ class TestConfig(TestSetup):
         # need to check value print f2, f(model.gradient), (f(sources.PowerLaw(1.1e-11,2))-f(model))
         
     def test_bandlite(self):
-        band = bands.EnergyBand(self.skydir, self.config)
+        band = bands.EnergyBand(self.config, self.skydir)
         self.assertDictContainsSubset(dict(radius=5, event_type=1), band.__dict__, str(band.__dict__))
 
 class TestDiffuse(TestSetup):
     
     def setUp(self, **kwargs):
         super(TestDiffuse,self).setUp(**kwargs)
-        self.back_band = bands.EnergyBand(self.skydir,self.config, event_type=1)
-        self.front_band = bands.EnergyBand(self.skydir,self.config, event_type=0)
+        self.back_band = bands.EnergyBand(self.config,self.skydir, event_type=1)
+        self.front_band = bands.EnergyBand(self.config,self.skydir, event_type=0)
         
     def test_factory(self):
         for t in ['junk.txt', ('junk.txt','t'),'tst_PowerLaw(1e-11, c )', 
@@ -260,7 +260,7 @@ class TestDiffuse(TestSetup):
 class TestPoint(TestSetup):
     def setUp(self, **kwargs):
         super(TestPoint,self).setUp(**kwargs)
-        self.back_band = bands.EnergyBand(self.skydir,self.config)
+        self.back_band = bands.EnergyBand(self.config, self.skydir)
   
     
     def test_point(self):
@@ -303,7 +303,7 @@ class TestExtended(TestSetup):
         roi_index=roi if roi is not None else b12.index(source.skydir)
         roi_dir = b12.dir(roi_index) 
         difference = np.degrees(roi_dir.difference(source.skydir))
-        band1 = bands.EnergyBand(roi_dir, self.config)
+        band1 = bands.EnergyBand(self.config, roi_dir)
         if not quiet:
             print 'Using ROI #%d, distance=%.2f deg' %( roi_index, difference)
             print 'Testing source "%s at %s" with band parameters' % (source, source.skydir)

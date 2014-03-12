@@ -50,6 +50,7 @@ class ROImodel(list):
         self.load_sources(roi_spec, **self.load_kw)
         
         self.selected_source = None
+
         self.initialize()
 
     
