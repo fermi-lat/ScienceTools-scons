@@ -99,6 +99,7 @@ class ROI(views.LikelihoodViews):
         elif isinstance(roi_spec, int):
             roi_sources = from_healpix.ROImodelFromHealpix(config, roi_spec, ecat=ecat,load_kw=self.load_kw)
             roi_index = roi_spec
+            config.roi_spec = configuration.ROIspec(healpix_index=roi_spec)
         else:
             raise Exception('Did not recoginze roi_spec: %s' %roi_spec)
         self.name = config.roi_spec.name
