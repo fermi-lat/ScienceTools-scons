@@ -197,8 +197,9 @@ class Residuals(roi_info.ROIinfo):
         for i, ax in enumerate(axx.flatten()):
             z = [maxl[j][gcut,i].clip(*xlim) for j in range(len(etnames))]
             ax.hist(z, np.linspace( *xlim), histtype='step', color=('g','r', 'k'), label=etnames);
+            ax.text(0.1,0.9, '%d'%self.energy[i],  transform = ax.transAxes)
             ax.axvline(1.0, ls = '--')
-            plt.setp(ax, xlabel='normalization factor')
+        fig.text(0.5, 0.05, 'normalization factor', ha='center')
         return fig
 
         
