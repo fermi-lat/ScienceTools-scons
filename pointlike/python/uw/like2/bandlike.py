@@ -240,7 +240,6 @@ class BandLikeList(list):
             self.pop()
         for band in roi_bands:
             bl = BandLike(band, self.sources, self.sources.free) 
-            print bl ####################
             self.append( bl)
             
         self.set_selected(self)# set selected for a subset?
