@@ -191,10 +191,13 @@ class SummedLikelihood(AnalysisBase):
         self._set_errors(errors)
         return errors
     def _set_errors(self, errors):
+        source_attributes = self.components[0].getExtraSourceAttributes()
         my_errors = list(errors)
         self.composite.setErrors(my_errors)
         for component in self.components:
             component.model = SourceModel(component.logLike)
+            for src in source_attributes:
+                component.model[src].__dict__.update(source_attributes[src])
     def minosError(self, srcname, parname, level=1):
         freeParams = pyLike.ParameterVector()
         self.composite.getFreeParams(freeParams)
