@@ -241,6 +241,7 @@ class ROItables(object):
             self.process_table(skyfun(roi, **fun[2]), fun[1], pos_list, 
                 os.path.join(self.subdirs[i], roi.name+'.pickle'))
 
+
 class DisplayTable(object):
     """display the table from an ROI as an image
     """
