@@ -164,8 +164,11 @@ class ResidualTS(object):
         self.roi.calls =0
         self.roi.initialize(self.sourcename)
         self.model[0]=1e-14 # initial value above limit
-        self.func.maximize(estimate_errors=False)
-        ts = self.roi.TS()
+        try:
+            self.func.maximize(estimate_errors=False)
+            ts = self.roi.TS()
+        except:
+            ts=0
         return max(0, ts)
         
     def __call__(self, v):
