@@ -144,6 +144,9 @@ bool RangeCut::accept(double value) const {
       return m_min < value;
    } else if (m_intervalType == MAXONLY) {
       return value <= m_max;
+   } else if (m_min == m_max) {
+      // Fully closed interval to support selecting on a specific value.
+      return m_min <= value && value <= m_max;
    }
    return m_min < value && value <= m_max;
 }
