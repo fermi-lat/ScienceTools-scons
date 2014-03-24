@@ -207,7 +207,7 @@ class ROI(views.LikelihoodViews):
                 print 'Failed localization for source %s: %s' % (tsm.source.name, e)
                 return None
         if update:
-            tsm.source.skydir = skymaps.SkyDir(t['ra'], t['dec'])
+            tsm.source.skydir = SkyDir(t['ra'], t['dec'])
     
     def get_model(self, source_name=None):
         return self.sources.find_source(source_name).spectral_model
