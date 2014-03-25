@@ -120,6 +120,7 @@ stagenames = dict(
     residuals   =  StageBatchJob( dict(residual_flag=True), sum='residuals',  help='generate residual tables for all sources', ),
     counts      =  StageBatchJob( dict(counts_dir='counts_dir', dampen=0, outdir='.'), sum='counts',  help='generate counts info, plots', ), 
     tables      =  StageBatchJob( dict(tables_flag=True, dampen=0), sum='hptables', job_list='joblist8.txt', help='Create tsmap and kde maps'),
+    seedcheck   =  StageBatchJob( dict(seed_flag=True, dampen=0), sum='seedcheck', help='Check seeds'),
     )
 disabled="""
     sedinfo     =  Stage(pipe.Update, dict( processor='processor.full_sed_processor',sedfig_dir='"sedfig"',), sum='frontback',
