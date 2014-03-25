@@ -245,8 +245,10 @@ def makesed_all(roi, **kwargs):
     initw = roi.log_like()
 
     sources = [s for s in roi.sources if s.skydir is not None and np.any(s.spectral_model.free)]
+    print 'sources:', [s.name for s in sources]
     for source in sources:
         with SED(roi, source.name, ) as sf:
+            print source.name,':',
             try:
                 source.sedrec = sf.sed_rec( tol=poisson_tolerance)
                 source.ts = roi.TS(source.name)
