@@ -53,7 +53,11 @@ class ROIinfo(analysis_base.AnalysisBase):
         # move this into refresh?
         rois = self.df
         rx = rois['ra dec glat glon'.split()] 
-        rx['chisq'] = [r['chisq'] for r in rois['counts']]
+        try:
+            rx['chisq'] = [r['chisq'] for r in rois['counts']]
+        except:
+            print '***Failed to find counts, skip creating rois.csv'
+            return
         rx['npar'] = [len(p) for p in rois.parameters]
         rx.index.name='name'
         ###
