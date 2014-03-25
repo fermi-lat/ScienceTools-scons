@@ -140,7 +140,7 @@ class ROI(views.LikelihoodViews):
                 if set, run the fit in a try block and return None
         update_by : float
             set to zero to not change parameters, or a number between 0 and 1 to make a partial update
-        tolerance : float, default 0.1
+        tolerance : float, default 0.2
             If current fit quality, an estimate of potential improvent of the log likelihood, which is
             based on gradient and hessian is less than this, do not fit
             
@@ -151,7 +151,7 @@ class ROI(views.LikelihoodViews):
         """
         ignore_exception = kwargs.pop('ignore_exception', False)
         update_by = kwargs.pop('update_by', 1.0)
-        tolerance = kwargs.pop('tolerance', 0.1)
+        tolerance = kwargs.pop('tolerance', 0.2)
         
         fit_kw = dict(use_gradient=True, estimate_errors=True)
         fit_kw.update(kwargs)
