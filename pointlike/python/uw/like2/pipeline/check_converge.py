@@ -46,8 +46,9 @@ def main(args):
     """ 
     """
     def fixpath(s):
-        r= s.replace('/a/wain025/g.glast.u55','/afs/slac/g/glast/users')
-        assert os.path.exists(r), 'does not exist: %s' % r
+        if os.path.exists(s): return s
+        r= s.replace('/a/wain025/g.glast.u55','/afs/slac/g/glast/groups')
+        assert os.path.exists(r), 'paths do not exist: %s or %s' % (s,r)
         return r
     pointlike_dir=fixpath(args.pointlike_dir) # = os.environ.get('POINTLIKE_DIR', '.')
     skymodel     =fixpath(args.skymodel) # = os.environ.get('SKYMODEL_SUBDIR', sys.argv[1] )
@@ -119,7 +120,7 @@ def main(args):
         q = pipe.check_converge(absskymodel, add_neighbors=False)
         open(os.path.join(pointlike_dir,'update_roi_list.txt'), 'w').write('\n'.join(map(str, sorted(qq))))
         if stage!='update_only':
-            if max(r.niter)<8 and len(q)>1:
+            if  len(q)>1:
                 if len(qq)> 200:
                     create_stream('update')
                 else:
