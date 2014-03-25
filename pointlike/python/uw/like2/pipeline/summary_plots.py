@@ -26,7 +26,7 @@ def main(args):
         stage, nextstage = t 
     else: stage,nextstage = t[0], None
 
-    if stage.split('_')[0]=='update':
+    if stage.split('_')[0]=='update' or stage=='counts':
         diagnostic_plots.main('counts');
 
     elif stage=='sedinfo':
