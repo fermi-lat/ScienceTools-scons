@@ -163,6 +163,7 @@ class HPtables(HParray):
         nf = len(files)
         assert nf>0, 'no pickle files found in %s' % os.path.join(outdir, folder)
         if nf<1728: print 'warning: missing %d files in folder %s_table; will fill with %s' % ((1728-nf), tname,fill)
+        self._indexfun = Band(self.nside).index
 
         self.vec = np.zeros(12*nside**2)
         self.vec.fill(fill)
@@ -172,7 +173,11 @@ class HPtables(HParray):
         for index, pk in zip(i12,pklist):
             indeces = index_table[index]
             for i,v in enumerate(pk):
-                self.vec[indeces[i]] = tmap(v)  
+                self.vec[indeces[i]] = tmap(v) 
+        bad = sum(self.vec==fill)
+        if bad>0: print 'WARNING: %d pixels not filled in table %s' % (bad, tname)
+        else:
+            print 'Table %s Filled ok' % tname
     
 class HPskyfun(HParray):
     """generate from a sky function: base class for below
