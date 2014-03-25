@@ -298,8 +298,8 @@ class Process(main.MultiROI):
             pickle.dump(resids, out)
             print 'wrote file %s' %filename
             
-    def tables(self):
-        rt = maps.ROItables(self.outdir, 256)
+    def tables(self, nside=512):
+        rt = maps.ROItables(self.outdir, nside)
         rt(self)
 
 class BatchJob(Process):
