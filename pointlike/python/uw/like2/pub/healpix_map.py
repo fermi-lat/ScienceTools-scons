@@ -150,12 +150,12 @@ class HPtables(HParray):
         """
         self.name = tname
         self.nside = nside
-        if os.path.exists('%s_table.zip'%tname):
-            z=zipfile.ZipFile('%s_table.zip'%tname)
+        folder = '%s_table_%d'% (tname, nside)
+        if os.path.exists('%s.zip' % folder):
+            z=zipfile.ZipFile('%s.zip'% folder)
             files = sorted(z.namelist()) # skip  folder?
             opener = z.open
         else:
-            folder = '%s_table'%tname
             if not os.path.exists(folder):
                 raise Exception('Did not find zip file %s.zip or folder  %s'% (folder,folder))
             opener = open
@@ -349,7 +349,7 @@ def assemble_tables(table_names, outputfile=None, folder= '.', nside=512):
     """
     tables = [HPtables(name, folder, nside=nside) for name in table_names]
     if outputfile is None:
-        outputfile='hptables_'+'_'.join(table_names)+'.fits'
+        outputfile='hptables_'+'_'.join(table_names)+'_%d.fits' %nside
     f = HEALPixFITS(tables)
     f.write(os.path.join(folder,outputfile))
         
