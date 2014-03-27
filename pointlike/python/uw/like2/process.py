@@ -32,7 +32,7 @@ class Process(main.MultiROI):
         ('finish',        False,  'set True to turn on all "finish" output flags'),
         ('residual_flag', False,  'set True for special residual run; all else ignored'),
         ('tables_flag',   False,  'set True for tables run; all else ignored'),
-        ('tables_nside',  256,    'nside to use for table generation'),
+        ('tables_nside',  512,    'nside to use for table generation'),
         ('seed_flag',     False,  'set True for seed check run'),
     )
     
@@ -311,7 +311,7 @@ class Process(main.MultiROI):
         rt = maps.ROItables(self.outdir, nside=self.tables_nside,
                skyfuns= ( 
                 (maps.ResidualTS, 'ts', dict(photon_index=2.2),) , 
-                #(maps.KdeMap,     'kde', dict()),
+                (maps.KdeMap,     'kde', dict()),
               ),
 )
         rt(self)
