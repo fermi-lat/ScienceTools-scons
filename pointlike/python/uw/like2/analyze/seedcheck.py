@@ -1,5 +1,5 @@
 """
-Description here
+Analyze seeds
 
 $Header$
 
@@ -8,11 +8,12 @@ import os
 import numpy as np
 import pylab as plt
 import pandas as pd
-
+import skymaps
 from . import sourceinfo, diagnostics, _html
 from ._html import HTMLindex
-from .diagnostics import FloatFormat
+from .analysis_base import FloatFormat
 
+b12index = skymaps.Band(12).index
 
 class SeedCheck(sourceinfo.SourceInfo):
     """Analysis of a set of seeds
@@ -62,7 +63,7 @@ class SeedCheck(sourceinfo.SourceInfo):
                 par2_unc = errs[2] if errs[2]>0 else np.nan,
                 e0 = model.e0,
                 aprob = source.adict['prob'][0] if has_adict else 0,
-                index = source.index,
+                index = b12index(source.skydir),
                 #gflux  = model.i_flux(), ## photon flux
                 )
             assoc[name] = dict(

@@ -22,8 +22,9 @@ class HPtables(analysis_base.AnalysisBase):
     """
     require = 'ts_table' ## fix.
     def setup(self, **kw):
-        fnames = glob.glob('hptables_ts_*.fits')
-        assert len(fnames)==1, 'expect one hptable*.fits file'
+        nside = kw.pop('nside', 512)
+        fnames = glob.glob('hptables_*_%d.fits') % nside
+        assert len(fnames)==1, 'expect one hptable*%d.fits file' %nside
         self.fname=fnames[0]
         self.tables = pd.DataFrame(pyfits.open(self.fname)[1].data)
         self.plotfolder = 'hptables'

@@ -149,7 +149,7 @@ def main(args):
     elif stage=='limb':
         make_zip('limb')
 
-    elif stage=='finish':
+    elif stage=='finish' or stage=='counts':
         make_zip('pickle')
 
     elif stage=='tables':
