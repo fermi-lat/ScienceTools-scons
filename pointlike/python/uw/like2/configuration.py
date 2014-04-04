@@ -161,11 +161,17 @@ class Configuration(object):
         #   sources in an XML file, which is either external or generated from a HEALPix ROI
         # in the latter case, 
         
-        input_model = config.get('input_model', None)
+        input_model = self.input_model = config.get('input_model', None)
             
         self.modeldir = self.configdir
         self.modelname='pickle.zip'
         if not os.path.exists(os.path.join(self.configdir, self.modelname)) and input_model is not None:
+            if not isinstance(input_model, dict):
+                raise Exception('input_model must be a dictionary')
+            model_keys = ['xml_file','path', 'auxcat']
+            if not set(input_model.keys()).issubset(model_keys):
+                raise Exception('input model key(s), %s, not recognized: expect %s'
+                    % (list(set(input_model.keys).difference(model_keys)), model_keys))
             input_xml   = input_model.get('xml_file', None)
 
             # no pickle.zip in config: check path if set
@@ -251,6 +257,13 @@ class Configuration(object):
         except Exception, msg:
             print 'Bad event type, "%s": %s\nMust be one of %s or a valid index' % (which, msg, etnames)
             raise
-
+    @property
+    def auxcat(self):
+        """get the auxillary catalog, if any"""
+        acat = self.input_model.get('auxcat', None)
+        if acat is None: return None
+        if os.path.isabs(acat): return acat
+        return os.path.join(self.modeldir, acat)
+        
  
  
