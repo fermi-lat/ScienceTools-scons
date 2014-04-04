@@ -1,7 +1,7 @@
 # -*- python -*-
 #
 # $Header$
-# Authors: James Chiang <jchiang@slac.stanford.edu>, Pat Nolan <pln@razzle.stanford.edu>
+# Authors: James Chiang <jchiang@slac.stanford.edu>
 # Version: optimizers-02-23-01
 import sys
 Import('baseEnv')
