@@ -439,7 +439,7 @@ class AnalysisBase(object):
         for item in source_attributes:
             if self.model[item] is not None:
                 self.model[item].__dict__.update(source_attributes[item])
-    def writeCountsSpectra(self, outfile='counts_spectra.fits'):
+    def writeCountsSpectra(self, outfile='counts_spectra.fits', nee=21):
 
         '''Writes a FITS file with the name "outfile" that contains
         the counts spectra of all of the sources in the active model.
@@ -449,7 +449,7 @@ class AnalysisBase(object):
         counts = pyLike.CountsSpectra(self.logLike)
         try:
             emin, emax = self.observation.observation.roiCuts().getEnergyCuts()
-            counts.setEbounds(emin, emax, 21)
+            counts.setEbounds(emin, emax, nee)
         except:
             pass
         counts.writeTable(outfile)

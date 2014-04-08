@@ -121,7 +121,7 @@ using optimizers::Exception;
    try {
       $action
    } catch (std::exception & eObj) {
-      PyErr_SetString(PyExc_RuntimeError, const_cast<char*>(eObj.what()));
+      PyErr_SetString(PyExc_RuntimeError, const_cast<char *>(eObj.what()));
       return NULL;
    }
 }
@@ -480,7 +480,7 @@ using optimizers::Exception;
 }
 %extend st_app::StApp {
    static st_app::AppParGroup parGroup(const std::string & appName) {
-      char * argv[] = {"dummy_app"};
+      char * argv[] = {const_cast<char *>("dummy_app")};
       int argc(1);
       st_app::StApp::processCommandLine(argc, argv);
       StAppInterface foo(appName);
