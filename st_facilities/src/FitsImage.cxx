@@ -151,10 +151,18 @@ void FitsImage::read_fits_image() {
       m_axes.resize(dims.size());
    }
 
-   char * crval[] = {"CRVAL1", "CRVAL2", "CRVAL3"};
-   char * cdelt[] = {"CDELT1", "CDELT2", "CDELT3"};
-   char * crpix[] = {"CRPIX1", "CRPIX2", "CRPIX3"};
-   char * ctype[] = {"CTYPE1", "CTYPE2", "CTYPE3"};
+   char * crval[] = {const_cast<char *>("CRVAL1"), 
+                     const_cast<char *>("CRVAL2"), 
+                     const_cast<char *>("CRVAL3")};
+   char * cdelt[] = {const_cast<char *>("CDELT1"), 
+                     const_cast<char *>("CDELT2"), 
+                     const_cast<char *>("CDELT3")};
+   char * crpix[] = {const_cast<char *>("CRPIX1"), 
+                     const_cast<char *>("CRPIX2"), 
+                     const_cast<char *>("CRPIX3")};
+   char * ctype[] = {const_cast<char *>("CTYPE1"), 
+                     const_cast<char *>("CTYPE2"), 
+                     const_cast<char *>("CTYPE3")};
 
    const tip::Header & header = image->getHeader();
    for (unsigned int i = 0; i < dims.size(); i++) {

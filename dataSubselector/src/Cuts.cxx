@@ -510,7 +510,10 @@ void Cuts::removeDssKeywords(tip::Header & header) const {
    int ndskeys(0);
    try {
       header["NDSKEYS"].get(ndskeys);
-      char * dskeys[] = {"DSTYP", "DSUNI", "DSVAL", "DSREF"};
+      char * dskeys[] = {const_cast<char *>("DSTYP"), 
+                         const_cast<char *>("DSUNI"), 
+                         const_cast<char *>("DSVAL"),
+                         const_cast<char *>("DSREF")};
       for (int i = 0; i < ndskeys; i++) {
          for (int j = 0; j < 4; j++) {
             std::ostringstream keyname;
