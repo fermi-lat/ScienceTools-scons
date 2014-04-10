@@ -7,7 +7,7 @@
 #include <list>
 #include <memory>
 #include <sstream>
-
+#include <iostream>
 #include "fitsio.h"
 
 #include "FitsColumn.h"
@@ -193,6 +193,43 @@ namespace tip {
       ReportExpected("TestColumn::test() was not able to read/write null value in a double column", x);
     }
 
+    // Write and read back a maximum 32-bit binary value to test read/write of CFITSIO 32X type
+        try {
+          FitsTable table("a1-copy.pha", "SPECTRUM", "", false);
+          // Create a new field to hold the test data
+          table.appendField("TBIT_COL", "32X");
+
+          BitStruct writeVal = 0x7F3F1F0F;
+          table.getColumn(table.getFieldIndex("TBIT_COL"))->set(0, writeVal);
+
+          BitStruct readVal;
+          table.getColumn(table.getFieldIndex("TBIT_COL"))->get(0, readVal);
+
+          // Confirm that the data read is equivalent to the data written
+          if (readVal.m_bit != writeVal.m_bit) {
+            ReportUnexpected("TestColumn::test() did not read 0x7F3F1F0F!");
+          } else {
+		  ReportExpected("TestColumn::test() wrote/read equivalent 32X values.");
+          }
+	
+          std::cout << "One more time, just for kicks! \n" << std::endl;
+
+          // Read/Write to a new row to confirm everything is A-OK.
+          writeVal = 0x0F1F3F7F;
+          table.getColumn(table.getFieldIndex("TBIT_COL"))->set(1, writeVal);
+	  
+          table.getColumn(table.getFieldIndex("TBIT_COL"))->get(1, readVal);
+
+          if (readVal.m_bit != writeVal.m_bit) {
+            ReportUnexpected("TestColumn::test() did not read 0x0F1F3F7F!");
+          } else {
+            ReportExpected("TestColumn::test() wrote/read equivalent 32X values, for the second time.");
+          }
+
+        } catch (const TipException & x) {
+	  ReportUnexpected("TestColumn::test() failed to read/write equivalent values!", x);
+        }
+
     // Check for valid behavior for boolean values with leading/trailing blanks, scalar and vector behavior.
     try {
       // Set file names.
@@ -212,6 +249,7 @@ namespace tip {
       table->appendField("3L_COLUMN", "3L");
       table->appendField("3I_COLUMN", "3I");
       table->appendField("PI_COLUMN", "PI");
+      table->appendField("TBIT_COL", "32X");
 
       // Add one row to the FITS table.
       table->setNumRecords(1);
