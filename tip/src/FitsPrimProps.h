@@ -6,6 +6,7 @@
 */
 #ifndef tip_FitsPrimProps_h
 #define tip_FitsPrimProps_h
+#include <limits>
 
 namespace tip {
 

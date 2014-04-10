@@ -42,6 +42,7 @@ namespace tip {
       virtual void get(Index_t, unsigned int &) const { unsupported("get(Index_t, unsigned int &)"); }
       virtual void get(Index_t, unsigned long &) const { unsupported("get(Index_t, unsigned long &)"); }
       virtual void get(Index_t, std::string &) const { unsupported("get(Index_t, std::string &)"); }
+      virtual void get(Index_t, BitStruct &) const { unsupported("get(Index_t, BitStruct &)"); }
 
       virtual void get(Index_t, std::vector<bool> &) const { unsupported("get(Index_t, std::vector<bool> &)"); }
       virtual void get(Index_t, std::vector<double> &) const { unsupported("get(Index_t, std::vector<double> &)"); }
@@ -56,6 +57,7 @@ namespace tip {
       virtual void get(Index_t, std::vector<unsigned int> &) const { unsupported("get(Index_t, std::vector<unsigned int> &)"); }
       virtual void get(Index_t, std::vector<unsigned long> &) const { unsupported("get(Index_t, std::vector<unsigned long> &)"); }
       virtual void get(Index_t, std::vector<std::string> &) const { unsupported("get(Index_t, std::vector<std::string> &)"); }
+      virtual void get(Index_t, std::vector<BitStruct> &) const { unsupported("get(Index_t, std::vector<BitStruct> &)"); }
 
       virtual void set(Index_t, const bool &) { unsupported("get(Index_t, bool &)"); }
       virtual void set(Index_t, const double &) { unsupported("set(Index_t, const double &)"); }
@@ -71,6 +73,7 @@ namespace tip {
       virtual void set(Index_t, const unsigned long &) { unsupported("set(Index_t, const unsigned long &)"); }
       virtual void set(Index_t, const char *) { unsupported("set(Index_t, const char *)"); }
       virtual void set(Index_t, const std::string &) { unsupported("set(Index_t, const std::string &)"); }
+      virtual void set(Index_t, const BitStruct &) { unsupported("get(Index_t, BitStruct &)"); }
 
       virtual void set(Index_t, const std::vector<bool> &) { unsupported("set(Index_t, const std::vector<bool> &)"); }
       virtual void set(Index_t, const std::vector<double> &) { unsupported("set(Index_t, const std::vector<double> &)"); }
@@ -94,6 +97,8 @@ namespace tip {
         { unsupported("set(Index_t, const std::vector<unsigned long> &)"); }
       virtual void set(Index_t, const std::vector<std::string> &)
         { unsupported("set(Index_t, const std::vector<std::string> &)"); }
+      virtual void set(Index_t, const std::vector<BitStruct> &)
+        { unsupported("set(Index_t, const std::vector<BitStruct> &)"); }
 
       virtual bool isNull(Index_t) const { unsupported("isNull() const"); return true; }
       virtual bool getNull(Index_t, bool &) const { unsupported("getNull(Index_t, bool &) const"); return true; }

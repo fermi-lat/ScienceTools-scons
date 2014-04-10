@@ -19,6 +19,12 @@
 
 namespace tip {
 
+  struct BitStruct {
+    unsigned long m_bit;
+    BitStruct(unsigned long bit = 0) : m_bit(bit){}
+    operator unsigned long() const {return m_bit;}
+  };
+
   class Header;
 
   /** \class Keyword
@@ -212,6 +218,8 @@ namespace tip {
         { unsupported("getKeyword(const std::string &, unsigned long &) const"); }
       virtual void getKeyword(const std::string &, std::string &) const
         { unsupported("getKeyword(const std::string &, std::string &) const"); }
+      virtual void getKeyword(const std::string &, BitStruct &) const
+      { unsupported("getKeyword(const std::string &, BitStruct &) const"); }
 
       virtual void getKeyRecord(const std::string &, std::string &) const
         { unsupported("getKeyRecord(const std::string &, std::string &) const"); }
@@ -248,6 +256,8 @@ namespace tip {
         { unsupported("setKeyword(const std::string &, const std::string &)"); }
       virtual void setKeyword(const std::string &, const char * const &)
         { unsupported("setKeyword(const std::string &, const char * const &)"); }
+      virtual void setKeyword(const std::string &, const BitStruct &)
+        { unsupported("setKeyword(const std::string &, const BitStruct &)"); }
 
       virtual void setKeyRecord(const std::string &, const std::string &)
         { unsupported("setKeyRecord(const std::string &, const std::string &)"); }

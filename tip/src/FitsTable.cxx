@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <sstream>
 
+#include "fitsio.h"
 #include "FitsColumn.h"
 #include "FitsPrimProps.h"
 #include "FitsTable.h"
@@ -138,6 +139,7 @@ namespace tip {
 //      case TFLOAT: value = &FitsPrimProps<float>::undefined(); break;
 //      case TDOUBLE: value = &FitsPrimProps<double>::undefined(); break;
       case TLONGLONG: value = &FitsPrimProps<long long>::undefined(); break;
+//    case TBIT: value = &FitsPrimProps<BitStruct>::undefined(); break;
       default: break;
     }
 
@@ -166,6 +168,7 @@ namespace tip {
     if (std::string::npos == filter.find_first_not_of(" \t\n")) return;
 
     int status = 0;
+    fits_flush_file(m_header.getFp(), &status);
     fits_select_rows(m_header.getFp(), m_header.getFp(), const_cast<char *>(filter.c_str()), &status);
     if (0 != status) throw TipException(status, formatWhat("filterRows had an error applying the filtering expression " + filter));
 
@@ -286,6 +289,9 @@ namespace tip {
       case TSTRING:
         m_columns.push_back(new FitsColumn<std::string>(this, col_name, col_num));
         break;
+      case TBIT:
+      	m_columns.push_back(new FitsColumn<BitStruct>(this, col_name, col_num));
+      	break;
       default: {
           std::ostringstream os;
           os << "Unsupported column type " << type_code;

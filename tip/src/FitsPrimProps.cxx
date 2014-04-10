@@ -8,6 +8,7 @@
 #include "fitsio.h"
 
 #include "FitsPrimProps.h"
+#include "tip/Header.h"
 
 #include <limits>
 #include <string>
@@ -22,17 +23,19 @@ namespace {
   signed char s_signed_char_undef = std::numeric_limits<signed char>::min();
   signed short s_signed_short_undef = std::numeric_limits<signed short>::min();
   signed int s_signed_int_undef = std::numeric_limits<signed int>::min();
-  // Note: this is not a typo: use int limits for long's indef, for 32/4 bit compatibiliy.
+  // Note: this is not a typo: use int limits for long's indef, for 32/4 bit compatibility.
   signed long s_signed_long_undef = std::numeric_limits<signed int>::min();
   unsigned char s_unsigned_char_undef = std::numeric_limits<unsigned char>::min();
   unsigned short s_unsigned_short_undef = std::numeric_limits<unsigned short>::min();
   unsigned int s_unsigned_int_undef = std::numeric_limits<unsigned int>::min();
   unsigned long s_unsigned_long_undef = std::numeric_limits<unsigned long>::min();
-  long long s_long_long_undef = std::numeric_limits<long long>::min();
-}
+  long long s_long_long_undef = std::numeric_limits<long long>::min(); 
+  //Need to use a structure (BitStruct in Header.h) to hold limits for TBIT, since the unsigned long primitive is already used above.
+  tip::BitStruct s_bit_undef(std::numeric_limits<unsigned long>::min()) ;
+ }
 
 namespace tip {
-
+  
   // Currently these codes are not defined for complex and double complex cfitsio types.
   template <> int FitsPrimProps<char *>::dataTypeCode() { return TSTRING; }
   template <> int FitsPrimProps<const char *>::dataTypeCode() { return TSTRING; }
@@ -50,6 +53,7 @@ namespace tip {
   template <> int FitsPrimProps<unsigned int>::dataTypeCode() { return TUINT; }
   template <> int FitsPrimProps<unsigned long>::dataTypeCode() { return TULONG; }
   template <> int FitsPrimProps<long long>::dataTypeCode() { return TLONGLONG; }
+  template <> int FitsPrimProps<BitStruct>::dataTypeCode() { return TBIT; }
 
   template <> char * & FitsPrimProps<char *>::undefined() { return s_cp_undef; }
   template <> const char * & FitsPrimProps<const char *>::undefined() { return s_ccp_undef; }
@@ -66,5 +70,6 @@ namespace tip {
   template <> unsigned int & FitsPrimProps<unsigned int>::undefined() { return s_unsigned_int_undef; }
   template <> unsigned long & FitsPrimProps<unsigned long>::undefined() { return s_unsigned_long_undef; }
   template <> long long & FitsPrimProps<long long>::undefined() { return s_long_long_undef; }
+  template <> BitStruct & FitsPrimProps<BitStruct>::undefined() { return s_bit_undef; }
 
 }

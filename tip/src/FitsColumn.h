@@ -44,6 +44,7 @@ namespace tip {
       virtual void get(Index_t record_index, unsigned short & dest) const { getScalar(record_index, dest); }
       virtual void get(Index_t record_index, unsigned int & dest) const { getScalar(record_index, dest); }
       virtual void get(Index_t record_index, unsigned long & dest) const { getScalar(record_index, dest); }
+      //      virtual void get(Index_t record_index, BitStruct & dest) const { getScalar(record_index, dest); }
 
       virtual void get(Index_t record_index, std::vector<double> & dest) const { getVector(record_index, dest); }
       virtual void get(Index_t record_index, std::vector<float> & dest) const { getVector(record_index, dest); }
@@ -56,6 +57,7 @@ namespace tip {
       virtual void get(Index_t record_index, std::vector<unsigned short> & dest) const { getVector(record_index, dest); }
       virtual void get(Index_t record_index, std::vector<unsigned int> & dest) const { getVector(record_index, dest); }
       virtual void get(Index_t record_index, std::vector<unsigned long> & dest) const { getVector(record_index, dest); }
+      virtual void get(Index_t record_index, std::vector<BitStruct> & dest) const { getVector(record_index, dest); }
 
       virtual void set(Index_t record_index, const double & src) { setScalar(record_index, src); }
       virtual void set(Index_t record_index, const float & src) { setScalar(record_index, src); }
@@ -68,6 +70,7 @@ namespace tip {
       virtual void set(Index_t record_index, const unsigned short & src) { setScalar(record_index, src); }
       virtual void set(Index_t record_index, const unsigned int & src) { setScalar(record_index, src); }
       virtual void set(Index_t record_index, const unsigned long & src) { setScalar(record_index, src); }
+      //      virtual void set(Index_t record_index, const BitStruct & src) { setScalar(record_index, src); }
 
       virtual void set(Index_t record_index, const std::vector<double> & src) { setVector(record_index, src); }
       virtual void set(Index_t record_index, const std::vector<float> & src) { setVector(record_index, src); }
@@ -80,6 +83,7 @@ namespace tip {
       virtual void set(Index_t record_index, const std::vector<unsigned short> & src) { setVector(record_index, src); }
       virtual void set(Index_t record_index, const std::vector<unsigned int> & src) { setVector(record_index, src); }
       virtual void set(Index_t record_index, const std::vector<unsigned long> & src) { setVector(record_index, src); }
+      virtual void set(Index_t record_index, const std::vector<BitStruct> & src) { setVector(record_index, src); }
 
       virtual void get(Index_t record_index, std::string & dest) const {
         char * buf = 0;
@@ -297,6 +301,45 @@ namespace tip {
         delete [] tmp_src;
         if (0 != status)
           throw TipException(status, "FitsColumn::set(Index_t, const std::vector<bool> &) failed to write vector cell value");
+      }
+
+      virtual void set(Index_t record_index, const BitStruct & dest) {
+	typedef BitStruct U;
+		// Create an unsigned long to store the user's input
+      	unsigned long lval = dest.m_bit;
+       	// Write the input into a 4 byte char array before passing to fits_write_col to prevent byte swapping problems
+      	unsigned char BitArr [4] = {0,0,0,0};
+       	BitArr[0] = (lval >> 24);
+        BitArr[1] = (lval >> 16);
+       	BitArr[2] = (lval >> 8);
+       	BitArr[3] = lval;
+        // Prevent accidental calling for bool or string. The optimizer will swallow this.
+        assert(typeid(U) != typeid(bool) && typeid(U) != typeid(std::string));
+        //if (!m_scalar) throw TipException("FitsColumn::setScalar called but field is not a scalar");
+        int status = 0;
+        if (m_ext->readOnly()) throw TipException("FitsColumn::setScalar called for a read-only file");       
+        fits_write_colnull(m_ext->getFp(), TBYTE, m_field_index, record_index + 1, 1, 4,
+			   const_cast<void *>(static_cast<const void *>(&BitArr)), &FitsPrimProps<U>::undefined().m_bit, &status);
+        if (0 != status) throw TipException(status, "FitsColumn::setScalar failed to write scalar cell value");
+      }
+
+      virtual void get(Index_t record_index, BitStruct & dest) const {
+ 	typedef BitStruct U;
+		// Prevent accidental calling for bool or string. The optimizer will swallow this.
+        assert(typeid(U) != typeid(bool) && typeid(U) != typeid(std::string));
+        // if (!m_scalar) throw TipException("FitsColumn::getScalar was called but field is not a scalar");
+        int status = 0;
+        int any_null = 0;
+        // Create a 4 byte char array to story data read from FITS file
+        unsigned char BitArr [4] = {0,0,0,0};
+        fits_read_col(m_ext->getFp(), TBYTE, m_field_index, record_index + 1, 1, 4,
+      		      &FitsPrimProps<U>::undefined().m_bit, const_cast<void *>(static_cast<const void *>(&BitArr)), &any_null, &status);
+        // Read the array back into an unsigned long to prevent byte swapping problems
+        unsigned long lval = 0;
+		lval = (BitArr[0] << 24) + (BitArr[1] << 16) + (BitArr[2] << 8) + BitArr[3];
+		// Pass back FITS data as unsigned long
+		dest.m_bit = lval;
+		if (0 != status) throw TipException(status, "FitsColumn::getScalar failed to read scalar cell value");
       }
 
       virtual bool isNull(Index_t record_index) const {
