@@ -5,6 +5,7 @@
 @verbatim
  * EOH *
 
+ tip-02-18-03 10-Apr-2014 asercion Fixed 'CFITSIO ERROR 314: null value not defined' error for case TBIT
  tip-02-18-02 09-Apr-2014 asercion FSSC Tip updates to enable read/write of bit array columns in FITS binary tables
  tip-02-18-01 11-Nov-2012 jchiang test program fix
  tip-02-18-00 17-Aug-2012    jrb for Windows no-install-headers
