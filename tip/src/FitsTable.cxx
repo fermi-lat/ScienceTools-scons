@@ -139,7 +139,7 @@ namespace tip {
 //      case TFLOAT: value = &FitsPrimProps<float>::undefined(); break;
 //      case TDOUBLE: value = &FitsPrimProps<double>::undefined(); break;
       case TLONGLONG: value = &FitsPrimProps<long long>::undefined(); break;
-//    case TBIT: value = &FitsPrimProps<BitStruct>::undefined(); break;
+      case TBIT: type_code = TBYTE; value = &FitsPrimProps<BitStruct>::undefined(); break;
       default: break;
     }
 
