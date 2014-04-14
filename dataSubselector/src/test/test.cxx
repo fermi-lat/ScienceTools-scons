@@ -13,6 +13,7 @@
 #include <cmath>
 #include <cstdio>
 
+#include <iomanip>
 #include <iostream>
 #include <stdexcept>
 
@@ -50,12 +51,9 @@ class DssTests : public CppUnit::TestFixture {
    CPPUNIT_TEST(test_DssFormatting);
    CPPUNIT_TEST(test_removeRangeCuts);
    CPPUNIT_TEST(test_mergeRangeCuts);
-
    CPPUNIT_TEST(test_BitMaskCut);
    CPPUNIT_TEST(test_VersionCut);
-
    CPPUNIT_TEST(test_irfName);
-
    CPPUNIT_TEST(test_rangeCut);
 
    CPPUNIT_TEST_SUITE_END();
@@ -560,6 +558,49 @@ void DssTests::test_BitMaskCut() {
    CPPUNIT_ASSERT(!cut.accept(pars));
 
    CPPUNIT_ASSERT(cut.filterString() == "((EVENT_CLASS/4)%2 == 1)");
+
+   /// Check post-Pass 7 behavior.
+   // 0324 (octal) = 212 (decimal) = 11010100 (binary)
+   dataSubselector::BitMaskCut p8_cut("EVENT_TYPE", 0324, "P8");
+   std::string filter(p8_cut.filterString());
+   CPPUNIT_ASSERT(filter == "((EVENT_TYPE&o324) != o0)");
+
+   pars["EVENT_TYPE"] = 212;
+   CPPUNIT_ASSERT(p8_cut.accept(pars));
+
+   pars["EVENT_TYPE"] = 212 + 1;
+   CPPUNIT_ASSERT(p8_cut.accept(pars));
+
+   pars["EVENT_TYPE"] = 212 + 2;
+   CPPUNIT_ASSERT(p8_cut.accept(pars));
+
+   pars["EVENT_TYPE"] = 212 + 8;
+   CPPUNIT_ASSERT(p8_cut.accept(pars));
+
+   pars["EVENT_TYPE"] = 212 + 32;
+   CPPUNIT_ASSERT(p8_cut.accept(pars));
+
+   pars["EVENT_TYPE"] = 1;
+   CPPUNIT_ASSERT(!p8_cut.accept(pars));
+
+   pars["EVENT_TYPE"] = 2;
+   CPPUNIT_ASSERT(!p8_cut.accept(pars));
+
+   pars["EVENT_TYPE"] = 3;
+   CPPUNIT_ASSERT(!p8_cut.accept(pars));
+
+   pars["EVENT_TYPE"] = 8;
+   CPPUNIT_ASSERT(!p8_cut.accept(pars));
+
+   pars["EVENT_TYPE"] = 10;
+   CPPUNIT_ASSERT(!p8_cut.accept(pars));
+
+   pars["EVENT_TYPE"] = 11;
+   CPPUNIT_ASSERT(!p8_cut.accept(pars));
+
+   pars["EVENT_TYPE"] = 256;
+   CPPUNIT_ASSERT(!p8_cut.accept(pars));
+
 }
 
 void DssTests::test_VersionCut() {

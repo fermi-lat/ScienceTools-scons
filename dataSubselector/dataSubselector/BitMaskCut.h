@@ -1,6 +1,6 @@
 /**
  * @file BitMaskCut.h
- * @brief Cuts based on a single bit mask applied to an unsigned int
+ * @brief Cuts based on a single bit mask applied to an unsigned long
  * column.  This is used for filtering on the EVENT_CLASS column for
  * Pass 7 IRFs and later.
  *
@@ -25,7 +25,8 @@ class BitMaskCut : public CutBase {
 
 public:
 
-   BitMaskCut(const std::string & colname, unsigned int bitPosition,
+   BitMaskCut(const std::string & colname,
+              unsigned long bitPosition,
               const std::string & pass_ver="");
 
    virtual ~BitMaskCut() {}
@@ -44,7 +45,7 @@ public:
       return m_colname;
    }
    
-   unsigned int bitPosition() const {
+   unsigned long bitPosition() const {
       return m_bitPosition;
    }
 
@@ -62,12 +63,16 @@ protected:
 private:
 
    std::string m_colname;
-   unsigned int m_bitPosition;
-   unsigned int m_mask;
+   unsigned long m_bitPosition;
+   unsigned long m_mask;
 
    std::string m_pass_ver;
 
-   bool accept(unsigned int value) const;
+   bool m_post_P7;
+
+   bool accept(unsigned long value) const;
+
+   bool post_P7() const;
 
 };
 
