@@ -16,6 +16,7 @@
 
 #include "astro/SkyDir.h"
 
+#include "dataSubselector/BitMaskCut.h"
 #include "dataSubselector/CutController.h"
 #include "dataSubselector/Gti.h"
 
@@ -71,6 +72,11 @@ CutController::CutController(st_app::AppParGroup & pars,
       } catch (const hoops::Hexception &) {
          // Assume INDEF is given as the parameter value for evclass,
          // so use default of applying no EVENT_CLASS cut.
+      }
+      if (BitMaskCut::post_P7(m_passVer)) {
+         /// Handle any EVENT_TYPE cut supplied by the user.
+         int evtype = pars["evtype"];
+         m_cuts.addBitMaskCut("EVENT_TYPE", evtype, m_passVer);
       }
    }
    double zmax = pars["zmax"];

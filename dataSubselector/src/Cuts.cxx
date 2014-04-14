@@ -108,7 +108,7 @@ namespace dataSubselector {
 Cuts::Cuts(const std::vector<std::string> & eventFiles,
            const std::string & extname, bool check_columns,
            bool skipTimeRangeCuts, bool skipEventClassCuts) 
-   : m_irfName("NONE") {
+   : m_irfName("NONE"), m_post_P7(false) {
    std::vector<Cuts> my_cuts;
    for (size_t i = 0; i < eventFiles.size(); i++) {
       my_cuts.push_back(Cuts(eventFiles.at(i), extname, check_columns,
@@ -774,6 +774,7 @@ void Cuts::setIrfs(const std::string & irfName) {
    std::string event_class(irfName.substr(0, delim_pos - 1));
    std::string irf_ver;
    extract_irf_versions(event_class, m_pass_ver, irf_ver);
+   m_post_P7 = BitMaskCut::post_P7(m_pass_ver);
    
    std::map<std::string, unsigned int> irfs;
    try {

@@ -53,6 +53,8 @@ public:
       return m_pass_ver;
    }
 
+   static bool post_P7(const std::string & pass_ver);
+
 protected:
 
    virtual bool equals(const CutBase & rhs) const;
@@ -71,8 +73,6 @@ private:
    bool m_post_P7;
 
    bool accept(unsigned long value) const;
-
-   bool post_P7() const;
 
 };
 
