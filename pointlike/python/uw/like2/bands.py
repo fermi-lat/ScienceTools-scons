@@ -87,7 +87,7 @@ class BandSet(list):
             if False, do not load data into the pixels
         """
         self.config = config
-        if roi_index is None:
+        if roi_index is None or roi_index<0:
             self.roi_dir = config.roi_spec.pos
             self.radius = config.roi_spec.radius
             roi_index = None
