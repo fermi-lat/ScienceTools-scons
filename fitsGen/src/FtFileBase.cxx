@@ -34,6 +34,7 @@ void FtFileBase::init(const std::string & templateFile,
                       const std::string & extname) {
    std::string ft_template(templateFile);
    if (templateFile == "ft1.tpl" || 
+       templateFile == "ft1_p7.tpl" || 
        templateFile == "ft2.tpl" ||
        templateFile == "lle.tpl") {
       ft_template = facilities::commonUtilities::joinPath(
