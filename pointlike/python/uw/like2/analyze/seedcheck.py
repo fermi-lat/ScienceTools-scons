@@ -88,9 +88,11 @@ class SeedCheck(sourceinfo.SourceInfo):
         self.assoc.index.name = 'name'
         
         # analyze associations, make summary
-        if sum(self.assoc.aprob==0):
+        if all(self.assoc.aprob)==0):
             print "No associations found: running the standard logic"
             self.association()
+        else:
+            print "Using associations from uwpipeline run"
             
         acat=list(self.assoc.ix[self.assoc.aprob>0.8]['acat'].values)
         sa = list(set(acat))
