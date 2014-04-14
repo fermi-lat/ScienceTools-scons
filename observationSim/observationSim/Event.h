@@ -18,20 +18,20 @@ namespace observationSim {
  * @brief Simple data structure to hold Event data.
  * @author J. Chiang
  *
- * $Header$
  */
 
 class Event {
 
 public:
 
-   Event(double time, double energy, const astro::SkyDir &appDir, 
-         const astro::SkyDir &srcDir, const astro::SkyDir &zAxis, 
-         const astro::SkyDir &xAxis, const astro::SkyDir &zenith, 
-         int eventType=4, double trueEnergy = 0., double flux_theta=0.,
-         double flux_phi=0., int eventId=0) :
+   Event(double time, double energy, const astro::SkyDir & appDir, 
+         const astro::SkyDir & srcDir, const astro::SkyDir & zAxis, 
+         const astro::SkyDir & xAxis, const astro::SkyDir & zenith, 
+         int convType, unsigned long eventType=0, double trueEnergy=0.,
+         double flux_theta=0., double flux_phi=0., int eventId=0) :
       m_time(time), m_energy(energy), m_appDir(appDir), m_srcDir(srcDir),
-      m_zAxis(zAxis), m_xAxis(xAxis), m_zenith(zenith), m_eventType(eventType),
+      m_zAxis(zAxis), m_xAxis(xAxis), m_zenith(zenith), 
+      m_convType(convType), m_eventType(eventType),
       m_trueEnergy(trueEnergy), m_flux_theta(flux_theta), 
       m_flux_phi(flux_phi), m_eventId(eventId) {}
 
@@ -58,21 +58,19 @@ public:
    const astro::SkyDir & zenith() const {return m_zenith;}
 
    /// Event type (for ascertaining which set of IRFs to use).
-   int eventType() const {return m_eventType;}
+   unsigned long eventType() const {return m_eventType;}
 
-   void setEventClass(int eventClass) {
+   void setEventClass(unsigned long eventClass) {
       m_eventClass = eventClass;
    }
 
-   int eventClass() const {
+   unsigned long eventClass() const {
       return m_eventClass;
    }
 
    /// Conversion type (0=front, 1=back), 
-   /// Computed from m_eventType assuming IRF event types are ordered 
-   /// front, back, front, back,....
    int conversionType() const {
-      return m_eventType % 2;
+      return m_convType;
    }
 
    /// True photon energy in MeV.
@@ -99,18 +97,8 @@ public:
       return zenith().difference(appDir())*180./M_PI;
    }                                 
 
-   /// Pick a conversion layer.
-   short convLayer() const {
-      if (eventType() == 0) { // Front
-         return 0;
-      } else if (eventType() == 1) { // Back
-         return 15;
-      } 
-   // Default: pick at random
-      return static_cast<int>(rand()*16);
-   }
-
    double fluxTheta() const {return m_flux_theta;}
+
    double fluxPhi() const {return m_flux_phi;}
 
    int eventId() const {return m_eventId;}
@@ -126,8 +114,9 @@ private:
    astro::SkyDir m_xAxis;
    astro::SkyDir m_zenith;
 
-   int m_eventType;
-   int m_eventClass;
+   int m_convType;
+   unsigned long m_eventType;
+   unsigned long m_eventClass;
 
    double m_trueEnergy;
    double m_flux_theta;

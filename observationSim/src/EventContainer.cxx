@@ -155,10 +155,12 @@ bool EventContainer::addEvent(EventSource * event,
    setEventId(srcName, eventId);
 
    m_srcSummaries[srcName].incidentNum += 1;
-   if (respPtrs.empty()) {
+   if (respPtrs.empty()) { 
+      // This case for pass-through irfs, i.e., the irfs=none option
+      // for gtobssim.
       m_events.push_back( Event(time, energy, 
                                 sourceDir, sourceDir, zAxis, xAxis,
-                                ScZenith(time), 0, energy, flux_theta,
+                                ScZenith(time), 0, 0, energy, flux_theta,
                                 flux_phi, m_srcSummaries[srcName].id) );
       if (flush || m_events.size() >= m_maxNumEntries) {
          writeEvents();
@@ -204,10 +206,13 @@ bool EventContainer::addEvent(EventSource * event,
                              << eventId << std::endl;
             accepted = false;
          } else {
+            int convType;
+            int eventType;
             m_srcSummaries[srcName].acceptedNum += 1;
             m_events.push_back( Event(time, appEnergy, 
-                                      appDir, sourceDir, zAxis, xAxis,
-                                      ScZenith(time), respPtr->irfID(), 
+                                      appDir, sourceDir, 
+                                      zAxis, xAxis, ScZenith(time), 
+                                      convType=respPtr->irfID(), eventType=0,
                                       energy, flux_theta, flux_phi,
                                       m_srcSummaries[srcName].id) );
             m_events.back().setEventClass(m_eventClass);
@@ -263,10 +268,27 @@ double EventContainer::earthAzimuthAngle(double ra, double dec,
 void EventContainer::writeEvents(double obsStopTime) {
 
    std::string ft1File(outputFileName());
-   fitsGen::Ft1File ft1(ft1File, m_events.size(), m_tablename);
+
+   /// For backwards compatibility, use ft1_p7.tpl for Pass versions
+   /// prior to Pass 8, so that EVENT_CLASS is an 32-bit integer
+   /// instead of 32 bit-array
+   std::string ft1Template("ft1_p7.tpl");
+   dataSubselector::Cuts * cuts;
+   if (m_cuts) {
+      cuts = new dataSubselector::Cuts(*m_cuts);
+   } else {
+      cuts = new dataSubselector::Cuts();
+   }
+   if (cuts->pass_ver().substr(0, 2) != "P7" && cuts->pass_ver() != "NONE") {
+      ft1Template = "ft1.tpl";
+   }
+
+   fitsGen::Ft1File ft1(ft1File, m_events.size(), m_tablename,
+                        ft1Template);
    ft1.appendField("MC_SRC_ID", "1J");
    ft1.appendField("MCENERGY", "1E");
 
+   size_t my_count(0);
    std::vector<Event>::iterator evt = m_events.begin();
    for ( ; ft1.itor() != ft1.end() && evt != m_events.end(); 
          ft1.next(), ++evt) {
@@ -284,12 +306,19 @@ void EventContainer::writeEvents(double obsStopTime) {
       ft1["phi"].set(evt->phi());
       ft1["zenith_angle"].set(evt->zenAngle());
       ft1["earth_azimuth_angle"].set(earthAzimuthAngle(ra, dec, time));
-      ft1["event_class"].set(evt->eventClass());
+      if (ft1Template == "ft1_p7.tpl") {
+         ft1["event_class"].set(evt->eventClass());
+      } else {
+         tip::BitStruct event_class(evt->eventClass());
+         ft1["event_class"].set(event_class);
+      }
+      tip::BitStruct event_type(evt->eventType());
+      ft1["event_type"].set(event_type);
       ft1["conversion_type"].set(evt->conversionType());
       ft1["mc_src_id"].set(evt->eventId());
       ft1["mcenergy"].set(evt->trueEnergy());
+      my_count++;
    }
-
 // Set stop time to be arrival time of last event if obsStopTime is
 // negative (i.e., not set);
    double stop_time(m_events.back().time() - Spectrum::startTime());
@@ -299,17 +328,8 @@ void EventContainer::writeEvents(double obsStopTime) {
    ft1.setObsTimes(m_startTime + Spectrum::startTime(),
                    stop_time + Spectrum::startTime());
    
-   dataSubselector::Cuts * cuts;
-   if (m_cuts) {
-      cuts = new dataSubselector::Cuts(*m_cuts);
-   } else {
-      cuts = new dataSubselector::Cuts();
-   }
-
 // Write PASS_VER keyword.
-   if (cuts->bitMaskCut()) {
-      ft1.header()["PASS_VER"].set(cuts->bitMaskCut()->pass_ver());
-   }
+   ft1.header()["PASS_VER"].set(cuts->pass_ver());
 
 // Fill the GTI extension with the entire observation in a single GTI.
    dataSubselector::Gti gti;
