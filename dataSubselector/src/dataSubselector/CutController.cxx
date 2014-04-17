@@ -74,9 +74,14 @@ CutController::CutController(st_app::AppParGroup & pars,
          // so use default of applying no EVENT_CLASS cut.
       }
       if (BitMaskCut::post_P7(m_passVer)) {
-         /// Handle any EVENT_TYPE cut supplied by the user.
-         int evtype = pars["evtype"];
-         m_cuts.addBitMaskCut("EVENT_TYPE", evtype, m_passVer);
+         try {
+            /// Handle any EVENT_TYPE cut supplied by the user.
+            int evtype = pars["evtype"];
+            m_cuts.addBitMaskCut("EVENT_TYPE", evtype, m_passVer);
+         } catch (const hoops::Hexception &) {
+            // Assume INDEF is given as the parameter value for evtype,
+            // so use default of applying no EVENT_TYPE cut.
+         }
       }
    }
    double zmax = pars["zmax"];
