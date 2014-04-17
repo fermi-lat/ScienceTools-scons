@@ -5,6 +5,7 @@
     @verbatim
     * EOH *
 
+ dataSubselector-08-07-01 17-Apr-2014 jchiang handle evtype=INDEF in gtselect
  dataSubselector-08-07-00 14-Apr-2014 jchiang Pass 8 bit masking support
  dataSubselector-08-06-04 08-Apr-2014 jchiang const fixes
  dataSubselector-08-06-03 20-Mar-2014 jchiang bug-fix for row-by-row filtering
