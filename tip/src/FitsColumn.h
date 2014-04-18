@@ -318,8 +318,8 @@ namespace tip {
         //if (!m_scalar) throw TipException("FitsColumn::setScalar called but field is not a scalar");
         int status = 0;
         if (m_ext->readOnly()) throw TipException("FitsColumn::setScalar called for a read-only file");       
-        fits_write_colnull(m_ext->getFp(), TBYTE, m_field_index, record_index + 1, 1, 4,
-			   const_cast<void *>(static_cast<const void *>(&BitArr)), &FitsPrimProps<U>::undefined().m_bit, &status);
+        fits_write_col(m_ext->getFp(), TBYTE, m_field_index, record_index + 1, 1, 4,
+			   const_cast<void *>(static_cast<const void *>(&BitArr)), &status);
         if (0 != status) throw TipException(status, "FitsColumn::setScalar failed to write scalar cell value");
       }
 
