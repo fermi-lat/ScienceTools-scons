@@ -309,9 +309,9 @@ if baseEnv.GetOption('userRelease'):
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['TOOLDIR'])
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['TESTDIR'])
         baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['TESTSCRIPTDIR'])
+        baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['PYTHONDIR'])
         if (baseEnv.GetOption('containerName') != 'TMineExt'):
             baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['XMLDIR'])
-            baseEnv.Tar(baseEnv.GetOption('userRelease'), baseEnv['PYTHONDIR'])
     else:
         baseEnv.Default(baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['LIBDIR']))
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['BINDIR'])
@@ -326,9 +326,9 @@ if baseEnv.GetOption('userRelease'):
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['TOOLDIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['TESTDIR'])
         baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['TESTSCRIPTDIR'])
+        baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['PYTHONDIR'])
         if (baseEnv.GetOption('containerName') != 'TMineExt'):
             baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['XMLDIR'])
-            baseEnv.Zip(baseEnv.GetOption('userRelease'), baseEnv['PYTHONDIR'])
     Return()
 
 if baseEnv.GetOption('sourceRelease'):
