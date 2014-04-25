@@ -121,6 +121,7 @@ private:
    std::vector<Event> m_events;
    
    int m_eventClass;
+   int m_eventType;
 
    /// Event summaries keyed by source name.
    std::map<std::string, SourceSummary> m_srcSummaries;
