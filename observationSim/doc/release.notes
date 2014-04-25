@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ observationSim-09-03-02 25-Apr-2014 jchiang changes to support event_type in FT1
  observationSim-09-03-01 14-Apr-2014 jchiang Pass 8 bit masking support
  observationSim-09-03-00 27-Aug-2013 jchiang changes for FSSC-requested irfs handling
  observationSim-09-02-07 03-Aug-2013 jchiang use Earth Azimuth calculation from GLEAM
