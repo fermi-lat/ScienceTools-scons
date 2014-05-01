@@ -107,7 +107,7 @@ class Process(main.MultiROI):
                     # repivot, iterating a few times
                     n = 3
                     while n>0:
-                        if not self.repivot(roi, fit_sources): break
+                        if not self.repivot( fit_sources): break
                         n-=1
                 if self.betafix_flag:
                     if not self.betafix(roi):
