@@ -88,7 +88,7 @@ class SeedCheck(sourceinfo.SourceInfo):
         self.assoc.index.name = 'name'
         
         # analyze associations, make summary
-        if all(self.assoc.aprob)==0):
+        if all(self.assoc.aprob==0):
             print "No associations found: running the standard logic"
             self.association()
         else:
