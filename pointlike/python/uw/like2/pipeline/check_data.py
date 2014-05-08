@@ -32,6 +32,9 @@ def main(args=None):
     current = str(datetime.datetime.today())[:16]
     print '\n%s stage %s stream %s model %s ' % (current, stage, stream,  absskymodel)
 
+    if 'CUSTOM_IRF_DIR' not in os.environ and os.path.exists(os.path.expandvars('$FERMI/custom_irfs')):
+        os.environ['CUSTOM_IRF_DIR'] = os.path.expandvars('$FERMI/custom_irfs')
+
     rc = dataset.validate(absskymodel, nocreate=nocreate)
     print 'Data is validated' if rc else 'NOT validated'
     if args is not None:
