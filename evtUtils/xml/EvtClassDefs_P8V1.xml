@@ -3,62 +3,62 @@
   <EventMap altName="EVENT_CLASS" mapName="FT1EventClass">
     <EventCategory bit="0" name="TRANSIENT_ALLTKR_R100">
       <ShortCut>
-        AllTkrFilter&amp;&amp;P8TRANSIENT_R100_V1_AllProbFilter
+        AllTkrFilter&amp;&amp;P8V1_TRANSIENT_R100_AllProbFilter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="1" name="TRANSIENT_TKRONLY_R100">
       <ShortCut>
-        P8TRANSIENT_R100_V1_AllProbFilter&amp;&amp;TkrOnlyFilter&amp;&amp;TkrOnlyQualityFilter
+        P8V1_TRANSIENT_R100_AllProbFilter&amp;&amp;TkrOnlyFilter&amp;&amp;TkrOnlyQualityFilter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="2" name="TRANSIENT_R100">
       <ShortCut>
-        P8TRANSIENT_R100_V1_AllProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
+        P8V1_TRANSIENT_R100_AllProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="3" name="TRANSIENT_TKRONLY_R020">
       <ShortCut>
-        P8TRANSIENT_R100_V1_AllProbFilter&amp;&amp;TkrOnlyFilter&amp;&amp;TkrOnlyQualityFilter
+        P8V1_TRANSIENT_R020_AllProbFilter&amp;&amp;P8V1_TRANSIENT_AllBkProbFilter&amp;&amp;TkrOnlyFilter&amp;&amp;TkrOnlyQualityFilter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="4" name="TRANSIENT_R020">
       <ShortCut>
-        P8TRANSIENT_R100_V1_AllProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
+        P8V1_TRANSIENT_R020_AllProbFilter&amp;&amp;P8V1_TRANSIENT_AllBkProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="5" name="TRANSIENT_TKRONLY_R010">
       <ShortCut>
-        P8TRANSIENT_R100_V1_AllProbFilter&amp;&amp;TkrOnlyFilter&amp;&amp;TkrOnlyQualityFilter
+        P8V1_TRANSIENT_R010_AllProbFilter&amp;&amp;P8V1_TRANSIENT_AllBkProbFilter&amp;&amp;TkrOnlyFilter&amp;&amp;TkrOnlyQualityFilter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="6" name="TRANSIENT_R010">
       <ShortCut>
-        P8TRANSIENT_R100_V1_AllProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
+        P8V1_TRANSIENT_R010_AllProbFilter&amp;&amp;P8V1_TRANSIENT_AllBkProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="7" name="SOURCE">
       <ShortCut>
-        P8SOURCE_V1_AllProbFilter&amp;&amp;P8SOURCE_V1_AllBkProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
+        P8V1_SOURCE_AllProbFilter&amp;&amp;P8V1_SOURCE_AllBkProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="8" name="CLEAN">
       <ShortCut>
-        P8CLEAN_V1_AllProbFilter&amp;&amp;P8SOURCE_V1_AllBkProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
+        P8V1_CLEAN_AllProbFilter&amp;&amp;P8V1_SOURCE_AllBkProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="9" name="ULTRACLEAN">
       <ShortCut>
-        P8ULTRACLEAN_V1_AllProbFilter&amp;&amp;P8SOURCE_V1_AllBkProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
+        P8V1_ULTRACLEAN_AllProbFilter&amp;&amp;P8V1_SOURCE_AllBkProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="15" name="TRANSIENT_SFR">
       <ShortCut>
-        P8TRANSIENT_SFR_V1_CalTkrProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
+        P8V1_TRANSIENT_SFR_CalTkrProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="16" name="LLE">
       <ShortCut>
-        P8LLE_V1_Filter
+        P8V1_LLE_Filter
       </ShortCut>
     </EventCategory>
   </EventMap>
@@ -75,60 +75,48 @@
     </EventCategory>
     <EventCategory bit="2" name="PSF0">
       <ShortCut>
-        P8PSF0_V1_PSFCoreFilter
+        WP8CTPSFCore &gt;= 0.0 &amp;&amp; !P8V1_PSFCore25Filter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="3" name="PSF1">
       <ShortCut>
-        P8PSF1_V1_PSFCoreFilter
+        P8V1_PSFCore25Filter &amp;&amp; !P8V1_PSFCore50Filter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="4" name="PSF2">
       <ShortCut>
-        P8PSF2_V1_PSFCoreFilter
+        P8V1_PSFCore50Filter &amp;&amp; !P8V1_PSFCore75Filter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="5" name="PSF3">
       <ShortCut>
-        P8PSF3_V1_PSFCoreFilter
+        P8V1_PSFCore75Filter &amp;&amp; WP8CTPSFCore &lt;= 1.0
       </ShortCut>
     </EventCategory>
     <EventCategory bit="6" name="EDISP0">
       <ShortCut>
-        P8EDISP0_V1_BestEnergyProbFilter
+        WP8CTBestEnergyProb &gt;= 0.0 &amp;&amp; !P8V1_BestEnergyProb25Filter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="7" name="EDISP1">
       <ShortCut>
-        P8EDISP1_V1_BestEnergyProbFilter
+        P8V1_BestEnergyProb25Filter &amp;&amp; !P8V1_BestEnergyProb50Filter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="8" name="EDISP2">
       <ShortCut>
-        P8EDISP2_V1_BestEnergyProbFilter
+        P8V1_BestEnergyProb50Filter &amp;&amp; !P8V1_BestEnergyProb75Filter
       </ShortCut>
     </EventCategory>
     <EventCategory bit="9" name="EDISP3">
       <ShortCut>
-        P8EDISP3_V1_BestEnergyProbFilter
+        P8V1_BestEnergyProb75Filter &amp;&amp; WP8CTBestEnergyProb &lt;= 1.0
       </ShortCut>
     </EventCategory>
   </EventMap>
   <AliasDict>
     <Alias name="AllTkrFilter">
       FswGamFilter&amp;&amp;TracksFilter
-    </Alias>
-    <Alias name="Back">
-      Tkr1FirstLayer &lt;= 5.5
-    </Alias>
-    <Alias name="BestEnergyProb25Filter">
-      WP8CTBestEnergyProb &gt;= (0.110718)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 2.375000)*((0.110718)*(1.0)+(1.381677)*(pow((EvtJointLogEnergy-1.250000)/1.125000,1))+(-1.355198)*(pow((EvtJointLogEnergy-1.250000)/1.125000,2))+(0.441444)*(pow((EvtJointLogEnergy-1.250000)/1.125000,3)))+(EvtJointLogEnergy &gt; 2.375000)*((0.578641)*(1.0)+(-0.004386)*(pow((EvtJointLogEnergy-2.375000)/1.125000,1))+(-0.030865)*(pow((EvtJointLogEnergy-2.375000)/1.125000,2))+(0.018204)*(pow((EvtJointLogEnergy-2.375000)/1.125000,3))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (0.779201)*(EvtJointLogEnergy &gt; 5.750000)
-    </Alias>
-    <Alias name="BestEnergyProb50Filter">
-      WP8CTBestEnergyProb &gt;= (0.387748)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 2.375000)*((0.387748)*(1.0)+(1.046925)*(pow((EvtJointLogEnergy-1.250000)/1.125000,1))+(-1.014458)*(pow((EvtJointLogEnergy-1.250000)/1.125000,2))+(0.335942)*(pow((EvtJointLogEnergy-1.250000)/1.125000,3)))+(EvtJointLogEnergy &gt; 2.375000)*((0.756158)*(1.0)+(0.025836)*(pow((EvtJointLogEnergy-2.375000)/1.125000,1))+(-0.006631)*(pow((EvtJointLogEnergy-2.375000)/1.125000,2))+(0.005059)*(pow((EvtJointLogEnergy-2.375000)/1.125000,3))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (0.910564)*(EvtJointLogEnergy &gt; 5.750000)
-    </Alias>
-    <Alias name="BestEnergyProb75Filter">
-      WP8CTBestEnergyProb &gt;= (0.592294)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 2.375000)*((0.592294)*(1.0)+(0.852970)*(pow((EvtJointLogEnergy-1.250000)/1.125000,1))+(-0.872340)*(pow((EvtJointLogEnergy-1.250000)/1.125000,2))+(0.297094)*(pow((EvtJointLogEnergy-1.250000)/1.125000,3)))+(EvtJointLogEnergy &gt; 2.375000)*((0.870018)*(1.0)+(-0.000429)*(pow((EvtJointLogEnergy-2.375000)/1.125000,1))+(0.018942)*(pow((EvtJointLogEnergy-2.375000)/1.125000,2))+(-0.002090)*(pow((EvtJointLogEnergy-2.375000)/1.125000,3))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (0.982765)*(EvtJointLogEnergy &gt; 5.750000)
     </Alias>
     <Alias name="CalTkrFilter">
       FswGamFilter&amp;&amp;TracksFilter&amp;&amp;EvtCalCsIRLn&gt;4 &amp;&amp; CalTrackAngleFilter
@@ -142,95 +130,56 @@
     <Alias name="CalTrackAngleLog">
       log10(max(CalTrackAngle,1E-4))
     </Alias>
-    <Alias name="Front">
-      Tkr1FirstLayer &gt; 5.5
-    </Alias>
     <Alias name="FswGamFilter">
       FswGamState==0
     </Alias>
-    <Alias name="P8CLEAN_V1_AllProbFilter">
+    <Alias name="P8V1_BestEnergyProb25Filter">
+      WP8CTBestEnergyProb &gt;= (0.194051)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 2.375000)*((0.194051)*(1.0)+(1.131677)*(pow((EvtJointLogEnergy-1.250000)/1.125000,1))+(-1.105198)*(pow((EvtJointLogEnergy-1.250000)/1.125000,2))+(0.358111)*(pow((EvtJointLogEnergy-1.250000)/1.125000,3)))+(EvtJointLogEnergy &gt; 2.375000)*((0.578641)*(1.0)+(-0.004386)*(pow((EvtJointLogEnergy-2.375000)/1.125000,1))+(-0.030865)*(pow((EvtJointLogEnergy-2.375000)/1.125000,2))+(0.018204)*(pow((EvtJointLogEnergy-2.375000)/1.125000,3))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (0.779201)*(EvtJointLogEnergy &gt; 5.750000)
+    </Alias>
+    <Alias name="P8V1_BestEnergyProb50Filter">
+      WP8CTBestEnergyProb &gt;= (0.387748)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 2.375000)*((0.387748)*(1.0)+(1.046925)*(pow((EvtJointLogEnergy-1.250000)/1.125000,1))+(-1.014458)*(pow((EvtJointLogEnergy-1.250000)/1.125000,2))+(0.335942)*(pow((EvtJointLogEnergy-1.250000)/1.125000,3)))+(EvtJointLogEnergy &gt; 2.375000)*((0.756158)*(1.0)+(0.025836)*(pow((EvtJointLogEnergy-2.375000)/1.125000,1))+(-0.006631)*(pow((EvtJointLogEnergy-2.375000)/1.125000,2))+(0.005059)*(pow((EvtJointLogEnergy-2.375000)/1.125000,3))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (0.910564)*(EvtJointLogEnergy &gt; 5.750000)
+    </Alias>
+    <Alias name="P8V1_BestEnergyProb75Filter">
+      WP8CTBestEnergyProb &gt;= (0.592294)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 2.375000)*((0.592294)*(1.0)+(0.852970)*(pow((EvtJointLogEnergy-1.250000)/1.125000,1))+(-0.872340)*(pow((EvtJointLogEnergy-1.250000)/1.125000,2))+(0.297094)*(pow((EvtJointLogEnergy-1.250000)/1.125000,3)))+(EvtJointLogEnergy &gt; 2.375000)*((0.870018)*(1.0)+(-0.000429)*(pow((EvtJointLogEnergy-2.375000)/1.125000,1))+(0.018942)*(pow((EvtJointLogEnergy-2.375000)/1.125000,2))+(-0.002090)*(pow((EvtJointLogEnergy-2.375000)/1.125000,3))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (0.982765)*(EvtJointLogEnergy &gt; 5.750000)
+    </Alias>
+    <Alias name="P8V1_CLEAN_AllProbFilter">
       WP8CTAllProbLog &gt;= (0.080914)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.750000)*((0.080914)*(1.0)+(0.108897)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.377870)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.567682)*(1.0)+(0.864637)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(-0.182318)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((1.250000)*(1.0)+(0.500000)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(-0.085000)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((1.665000)*(1.0)+(0.330000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(-0.165000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((1.830000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.516152)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((2.346152)*(1.0)+(1.032303)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(-0.516152)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 4.250000)*(EvtJointLogEnergy &lt;= 4.750000))*((2.862303)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(0.268848)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2)))+(EvtJointLogEnergy &gt; 4.750000)*((3.131152)*(1.0)+(0.537697)*(pow((EvtJointLogEnergy-4.750000)/0.500000,1))+(-0.143848)*(pow((EvtJointLogEnergy-4.750000)/0.500000,2))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (3.631152)*(EvtJointLogEnergy &gt; 5.750000)
     </Alias>
-    <Alias name="P8EDISP0_V1_BestEnergyProbFilter">
-      WP8CTBestEnergyProb &gt;= 0.0 &amp;&amp; !BestEnergyProb25Filter
-    </Alias>
-    <Alias name="P8EDISP1_V1_BestEnergyProbFilter">
-      BestEnergyProb25Filter &amp;&amp; !BestEnergyProb50Filter
-    </Alias>
-    <Alias name="P8EDISP2_V1_BestEnergyProbFilter">
-      BestEnergyProb50Filter &amp;&amp; !BestEnergyProb75Filter
-    </Alias>
-    <Alias name="P8EDISP3_V1_BestEnergyProbFilter">
-      BestEnergyProb75Filter &amp;&amp; WP8CTBestEnergyProb &lt;= 1.0
-    </Alias>
-    <Alias name="P8LLE_V1_Filter">
+    <Alias name="P8V1_LLE_Filter">
       AllTkrFilter &amp;&amp; (GltEngine==6 || GltEngine==7 || GltEngine==9) &amp;&amp; EvtJointEnergy &gt; 0 &amp;&amp; ((FT1Theta&lt;=40)*(Acd2VetoCount==0)+(FT1Theta&gt;40)*(Acd2VetoFaces&lt;2 &amp;&amp; Acd2Tkr1TriggerEnergy45==0))
     </Alias>
-    <Alias name="P8PSF0_V1_PSFCoreFilter">
-      WP8CTPSFCore &gt;= 0.0 &amp;&amp; !PSFCore25Filter
-    </Alias>
-    <Alias name="P8PSF1_V1_PSFCoreFilter">
-      PSFCore25Filter &amp;&amp; !PSFCore50Filter
-    </Alias>
-    <Alias name="P8PSF2_V1_PSFCoreFilter">
-      PSFCore50Filter &amp;&amp; !PSFCore75Filter
-    </Alias>
-    <Alias name="P8PSF3_V1_PSFCoreFilter">
-      PSFCore75Filter &amp;&amp; WP8CTPSFCore &lt;= 1.0
-    </Alias>
-    <Alias name="P8SOURCE_V1_AllBkProbFilter">
-      WP8CTAllBkProb &gt;= (0.366167)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.541667)*((0.366167)*(1.0)+(0.028500)*(pow((EvtJointLogEnergy-1.250000)/0.291667,1))+(-0.056500)*(pow((EvtJointLogEnergy-1.250000)/0.291667,2))+(0.106667)*(pow((EvtJointLogEnergy-1.250000)/0.291667,3)))+((EvtJointLogEnergy &gt; 1.541667)*(EvtJointLogEnergy &lt;= 1.833333))*((0.444833)*(1.0)+(0.235500)*(pow((EvtJointLogEnergy-1.541667)/0.291667,1))+(0.263500)*(pow((EvtJointLogEnergy-1.541667)/0.291667,2))+(-0.162667)*(pow((EvtJointLogEnergy-1.541667)/0.291667,3)))+((EvtJointLogEnergy &gt; 1.833333)*(EvtJointLogEnergy &lt;= 2.125000))*((0.781167)*(1.0)+(0.274500)*(pow((EvtJointLogEnergy-1.833333)/0.291667,1))+(-0.224500)*(pow((EvtJointLogEnergy-1.833333)/0.291667,2))+(0.072667)*(pow((EvtJointLogEnergy-1.833333)/0.291667,3)))+(EvtJointLogEnergy &gt; 2.125000)*((0.903833)*(1.0)+(0.043500)*(pow((EvtJointLogEnergy-2.125000)/0.291667,1))+(-0.006500)*(pow((EvtJointLogEnergy-2.125000)/0.291667,2))+(-0.000333)*(pow((EvtJointLogEnergy-2.125000)/0.291667,3))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 3.000000) + (0.966833)*(EvtJointLogEnergy &gt; 3.000000)
-    </Alias>
-    <Alias name="P8SOURCE_V1_AllProbFilter">
-      WP8CTAllProbLog &gt;= (0.080914)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.750000)*((0.080914)*(1.0)+(0.108897)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.377870)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.567682)*(1.0)+(0.864637)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(-0.182318)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((1.250000)*(1.0)+(0.500000)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(-0.085000)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((1.665000)*(1.0)+(0.330000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(-0.165000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((1.830000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.285000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((2.115000)*(1.0)+(0.570000)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(-0.185000)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 4.250000)*(EvtJointLogEnergy &lt;= 4.750000))*((2.500000)*(1.0)+(0.200000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(0.100000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2)))+(EvtJointLogEnergy &gt; 4.750000)*((2.800000)*(1.0)+(0.400000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,1))+(-0.112171)*(pow((EvtJointLogEnergy-4.750000)/0.500000,2))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (3.151318)*(EvtJointLogEnergy &gt; 5.750000)
-    </Alias>
-    <Alias name="P8TRANSIENT_R010_V1_AllProbFilter">
-      WP8CTAllProbLog &gt;= (0.056385)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.750000)*((0.056385)*(1.0)+(0.092769)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.219018)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.368172)*(1.0)+(0.530806)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(0.006882)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((0.905859)*(1.0)+(0.544569)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(-0.265400)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((1.185029)*(1.0)+(0.013770)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(-0.006885)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((1.191914)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.554043)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((1.745957)*(1.0)+(1.108086)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(-0.554043)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 4.250000)*(EvtJointLogEnergy &lt;= 4.750000))*((2.300000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(0.000000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2)))+(EvtJointLogEnergy &gt; 4.750000)*((2.300000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,1))+(0.160000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,2))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (2.940000)*(EvtJointLogEnergy &gt; 5.750000)
-    </Alias>
-    <Alias name="P8TRANSIENT_R020_V0_AllProbFilter">
-      WP8CTAllProbLog &gt;= (EvtJointLogEnergy &lt;= 1.750000)*((0.071550)*(1.0)+(0.043526)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.172095)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2))+(-0.060798)*(pow((EvtJointLogEnergy-1.250000)/0.500000,3)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.226373)*(1.0)+(0.205321)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(-0.010299)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2))+(-0.015035)*(pow((EvtJointLogEnergy-1.750000)/0.500000,3)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((0.406359)*(1.0)+(0.139617)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(-0.055405)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2))+(0.009833)*(pow((EvtJointLogEnergy-2.250000)/0.500000,3)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((0.500404)*(1.0)+(0.058307)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(-0.025905)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2))+(0.099542)*(pow((EvtJointLogEnergy-2.750000)/0.500000,3)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((0.632348)*(1.0)+(0.305123)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.272722)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2))+(-0.035145)*(pow((EvtJointLogEnergy-3.250000)/0.500000,3)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((1.175049)*(1.0)+(0.745134)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(0.167288)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2))+(-0.154529)*(pow((EvtJointLogEnergy-3.750000)/0.500000,3)))+(EvtJointLogEnergy &gt; 4.250000)*((1.932942)*(1.0)+(0.616123)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(-0.296299)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2))+(0.075930)*(pow((EvtJointLogEnergy-4.250000)/0.500000,3)))
-    </Alias>
-    <Alias name="P8TRANSIENT_R020_V0_PreFilter">
-      CalTkrFilter &amp;&amp; WP8CTPSFTail &gt; 0.3
-    </Alias>
-    <Alias name="P8TRANSIENT_R020_V1_AllProbFilter">
-      WP8CTAllProbLog &gt;= (0.050089)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.750000)*((0.050089)*(1.0)+(0.080179)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.089151)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.219419)*(1.0)+(0.258480)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(-0.043569)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((0.434329)*(1.0)+(0.171341)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(-0.065671)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((0.540000)*(1.0)+(0.040000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(-0.020000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((0.560000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.805000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((1.365000)*(1.0)+(1.610000)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(-0.805000)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 4.250000)*(EvtJointLogEnergy &lt;= 4.750000))*((2.170000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(0.000000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2)))+(EvtJointLogEnergy &gt; 4.750000)*((2.170000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,1))+(0.115000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,2))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (2.630000)*(EvtJointLogEnergy &gt; 5.750000)
-    </Alias>
-    <Alias name="P8TRANSIENT_R050_V0_AllProbFilter">
-      (-log10(1.0-WP8CTAllProb)) &gt; (EvtJointLogEnergy &lt;= 1.750000)*((0.018312)*(1.0)+(-0.002860)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.116767)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2))+(-0.045583)*(pow((EvtJointLogEnergy-1.250000)/0.500000,3)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.086636)*(1.0)+(0.093926)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(-0.019981)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2))+(-0.006277)*(pow((EvtJointLogEnergy-1.750000)/0.500000,3)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((0.154304)*(1.0)+(0.035132)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(-0.038813)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2))+(0.020816)*(pow((EvtJointLogEnergy-2.250000)/0.500000,3)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((0.171438)*(1.0)+(0.019954)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(0.023635)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2))+(0.010491)*(pow((EvtJointLogEnergy-2.750000)/0.500000,3)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((0.225518)*(1.0)+(0.098696)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.055108)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2))+(0.151679)*(pow((EvtJointLogEnergy-3.250000)/0.500000,3)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((0.531001)*(1.0)+(0.663948)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(0.510144)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2))+(-0.273099)*(pow((EvtJointLogEnergy-3.750000)/0.500000,3)))+(EvtJointLogEnergy &gt; 4.250000)*((1.431993)*(1.0)+(0.864938)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(-0.309153)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2))+(0.071453)*(pow((EvtJointLogEnergy-4.250000)/0.500000,3)))
-    </Alias>
-    <Alias name="P8TRANSIENT_R050_V0_PreFilter">
-      CalTkrFilter &amp;&amp; WP8CTPSFTail &gt; 0.3
-    </Alias>
-    <Alias name="P8TRANSIENT_R100_V0_AllProbFilter">
-      (-log10(1.0-WP8CTAllProb)) &gt; (EvtJointLogEnergy &lt;= 1.750000)*((0.009187)*(1.0)+(-0.019600)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.138976)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2))+(-0.060305)*(pow((EvtJointLogEnergy-1.250000)/0.500000,3)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.068258)*(1.0)+(0.077437)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(-0.041939)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2))+(-0.000254)*(pow((EvtJointLogEnergy-1.750000)/0.500000,3)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((0.103502)*(1.0)+(-0.007203)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(-0.042701)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2))+(0.023099)*(pow((EvtJointLogEnergy-2.250000)/0.500000,3)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((0.076698)*(1.0)+(-0.023307)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(0.026597)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2))+(-0.004486)*(pow((EvtJointLogEnergy-2.750000)/0.500000,3)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((0.075502)*(1.0)+(0.016428)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.013138)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2))+(0.167036)*(pow((EvtJointLogEnergy-3.250000)/0.500000,3)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((0.272104)*(1.0)+(0.543814)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(0.514247)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2))+(-0.239807)*(pow((EvtJointLogEnergy-3.750000)/0.500000,3)))+(EvtJointLogEnergy &gt; 4.250000)*((1.090358)*(1.0)+(0.852886)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(-0.205175)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2))+(0.041456)*(pow((EvtJointLogEnergy-4.250000)/0.500000,3)))
-    </Alias>
-    <Alias name="P8TRANSIENT_R100_V0_PreFilter">
-      CalTkrFilter &amp;&amp; WP8CTPSFTail &gt; 0.3
-    </Alias>
-    <Alias name="P8TRANSIENT_R100_V1_AllProbFilter">
-      WP8CTAllProbLog &gt;= (0.010000)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.750000)*((0.010000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.018669)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.028669)*(1.0)+(0.037338)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(-0.017111)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((0.048897)*(1.0)+(0.003117)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(0.001967)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((0.053980)*(1.0)+(0.007050)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(-0.003525)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((0.057505)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.121963)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((0.179468)*(1.0)+(0.243925)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(0.493075)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 4.250000)*(EvtJointLogEnergy &lt;= 4.750000))*((0.916468)*(1.0)+(1.230076)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(-0.501532)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2)))+(EvtJointLogEnergy &gt; 4.750000)*((1.645012)*(1.0)+(0.227011)*(pow((EvtJointLogEnergy-4.750000)/0.500000,1))+(0.029483)*(pow((EvtJointLogEnergy-4.750000)/0.500000,2))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (2.216967)*(EvtJointLogEnergy &gt; 5.750000)
-    </Alias>
-    <Alias name="P8TRANSIENT_SFR_R020_V1_CalTkrProbFilter">
-      WP8CTCalTkrProbLog &gt;= (0.050089)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.750000)*((0.050089)*(1.0)+(0.080179)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.089151)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.219419)*(1.0)+(0.258480)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(-0.043569)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((0.434329)*(1.0)+(0.171341)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(-0.065671)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((0.540000)*(1.0)+(0.040000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(-0.020000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((0.560000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.805000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((1.365000)*(1.0)+(1.610000)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(-0.805000)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 4.250000)*(EvtJointLogEnergy &lt;= 4.750000))*((2.170000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(0.000000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2)))+(EvtJointLogEnergy &gt; 4.750000)*((2.170000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,1))+(0.115000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,2))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (2.630000)*(EvtJointLogEnergy &gt; 5.750000)
-    </Alias>
-    <Alias name="P8TRANSIENT_SFR_V1_CalTkrProbFilter">
-      WP8CTCalTkrProbLog &gt;=  -0.035931+ (   0.27029)*pow(EvtJointLogEnergy,1)+ (  -0.23349)*pow(EvtJointLogEnergy,2)+ (   0.07867)*pow(EvtJointLogEnergy,3)+ ( -0.005295)*pow(EvtJointLogEnergy,4)
-    </Alias>
-    <Alias name="P8TRANSIENT_V1_AllBkProbFilter">
-      WP8CTAllBkProb &gt;= (0.111667)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.541667)*((0.111667)*(1.0)+(0.005000)*(pow((EvtJointLogEnergy-1.250000)/0.291667,1))+(0.005000)*(pow((EvtJointLogEnergy-1.250000)/0.291667,2))+(-0.001667)*(pow((EvtJointLogEnergy-1.250000)/0.291667,3)))+((EvtJointLogEnergy &gt; 1.541667)*(EvtJointLogEnergy &lt;= 1.833333))*((0.120000)*(1.0)+(0.010000)*(pow((EvtJointLogEnergy-1.541667)/0.291667,1))+(0.000000)*(pow((EvtJointLogEnergy-1.541667)/0.291667,2))+(0.033333)*(pow((EvtJointLogEnergy-1.541667)/0.291667,3)))+((EvtJointLogEnergy &gt; 1.833333)*(EvtJointLogEnergy &lt;= 2.125000))*((0.163333)*(1.0)+(0.110000)*(pow((EvtJointLogEnergy-1.833333)/0.291667,1))+(0.100000)*(pow((EvtJointLogEnergy-1.833333)/0.291667,2))+(-0.045000)*(pow((EvtJointLogEnergy-1.833333)/0.291667,3)))+(EvtJointLogEnergy &gt; 2.125000)*((0.328333)*(1.0)+(0.175000)*(pow((EvtJointLogEnergy-2.125000)/0.291667,1))+(-0.035000)*(pow((EvtJointLogEnergy-2.125000)/0.291667,2))+(0.003333)*(pow((EvtJointLogEnergy-2.125000)/0.291667,3))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 3.000000) + (0.628333)*(EvtJointLogEnergy &gt; 3.000000)
-    </Alias>
-    <Alias name="P8ULTRACLEAN_V1_AllProbFilter">
-      WP8CTAllProbLog &gt;= (0.175000)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.750000)*((0.175000)*(1.0)+(0.650000)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.025000)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.850000)*(1.0)+(0.700000)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(0.050000)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((1.600000)*(1.0)+(0.800000)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(-0.250000)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((2.150000)*(1.0)+(0.300000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(-0.075000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((2.375000)*(1.0)+(0.150000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.200000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((2.725000)*(1.0)+(0.550000)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(-0.175000)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 4.250000)*(EvtJointLogEnergy &lt;= 4.750000))*((3.100000)*(1.0)+(0.200000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(0.100000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2)))+(EvtJointLogEnergy &gt; 4.750000)*((3.400000)*(1.0)+(0.400000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,1))+(-0.050000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,2))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (4.000000)*(EvtJointLogEnergy &gt; 5.750000)
-    </Alias>
-    <Alias name="PSFCore25Filter">
+    <Alias name="P8V1_PSFCore25Filter">
       WP8CTPSFCore &gt;= (0.428189)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 2.375000)*((0.428189)*(1.0)+(0.299237)*(pow((EvtJointLogEnergy-1.250000)/1.125000,1))+(-0.292244)*(pow((EvtJointLogEnergy-1.250000)/1.125000,2))+(0.095026)*(pow((EvtJointLogEnergy-1.250000)/1.125000,3)))+(EvtJointLogEnergy &gt; 2.375000)*((0.530208)*(1.0)+(-0.000173)*(pow((EvtJointLogEnergy-2.375000)/1.125000,1))+(-0.007166)*(pow((EvtJointLogEnergy-2.375000)/1.125000,2))+(-0.002005)*(pow((EvtJointLogEnergy-2.375000)/1.125000,3))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (0.411064)*(EvtJointLogEnergy &gt; 5.750000)
     </Alias>
-    <Alias name="PSFCore50Filter">
+    <Alias name="P8V1_PSFCore50Filter">
       WP8CTPSFCore &gt;= (0.510674)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 2.375000)*((0.510674)*(1.0)+(0.510241)*(pow((EvtJointLogEnergy-1.250000)/1.125000,1))+(-0.479927)*(pow((EvtJointLogEnergy-1.250000)/1.125000,2))+(0.158451)*(pow((EvtJointLogEnergy-1.250000)/1.125000,3)))+(EvtJointLogEnergy &gt; 2.375000)*((0.699439)*(1.0)+(0.025739)*(pow((EvtJointLogEnergy-2.375000)/1.125000,1))+(-0.004574)*(pow((EvtJointLogEnergy-2.375000)/1.125000,2))+(0.001717)*(pow((EvtJointLogEnergy-2.375000)/1.125000,3))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (0.781860)*(EvtJointLogEnergy &gt; 5.750000)
     </Alias>
-    <Alias name="PSFCore75Filter">
+    <Alias name="P8V1_PSFCore75Filter">
       WP8CTPSFCore &gt;= (0.643755)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 2.375000)*((0.643755)*(1.0)+(0.560076)*(pow((EvtJointLogEnergy-1.250000)/1.125000,1))+(-0.559747)*(pow((EvtJointLogEnergy-1.250000)/1.125000,2))+(0.192412)*(pow((EvtJointLogEnergy-1.250000)/1.125000,3)))+(EvtJointLogEnergy &gt; 2.375000)*((0.836496)*(1.0)+(0.017819)*(pow((EvtJointLogEnergy-2.375000)/1.125000,1))+(0.017489)*(pow((EvtJointLogEnergy-2.375000)/1.125000,2))+(-0.004528)*(pow((EvtJointLogEnergy-2.375000)/1.125000,3))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (0.925093)*(EvtJointLogEnergy &gt; 5.750000)
+    </Alias>
+    <Alias name="P8V1_SOURCE_AllBkProbFilter">
+      WP8CTAllBkProb &gt;= (0.366167)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.541667)*((0.366167)*(1.0)+(0.028500)*(pow((EvtJointLogEnergy-1.250000)/0.291667,1))+(-0.056500)*(pow((EvtJointLogEnergy-1.250000)/0.291667,2))+(0.106667)*(pow((EvtJointLogEnergy-1.250000)/0.291667,3)))+((EvtJointLogEnergy &gt; 1.541667)*(EvtJointLogEnergy &lt;= 1.833333))*((0.444833)*(1.0)+(0.235500)*(pow((EvtJointLogEnergy-1.541667)/0.291667,1))+(0.263500)*(pow((EvtJointLogEnergy-1.541667)/0.291667,2))+(-0.162667)*(pow((EvtJointLogEnergy-1.541667)/0.291667,3)))+((EvtJointLogEnergy &gt; 1.833333)*(EvtJointLogEnergy &lt;= 2.125000))*((0.781167)*(1.0)+(0.274500)*(pow((EvtJointLogEnergy-1.833333)/0.291667,1))+(-0.224500)*(pow((EvtJointLogEnergy-1.833333)/0.291667,2))+(0.072667)*(pow((EvtJointLogEnergy-1.833333)/0.291667,3)))+(EvtJointLogEnergy &gt; 2.125000)*((0.903833)*(1.0)+(0.043500)*(pow((EvtJointLogEnergy-2.125000)/0.291667,1))+(-0.006500)*(pow((EvtJointLogEnergy-2.125000)/0.291667,2))+(-0.000333)*(pow((EvtJointLogEnergy-2.125000)/0.291667,3))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 3.000000) + (0.966833)*(EvtJointLogEnergy &gt; 3.000000)
+    </Alias>
+    <Alias name="P8V1_SOURCE_AllProbFilter">
+      WP8CTAllProbLog &gt;= (0.080914)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.750000)*((0.080914)*(1.0)+(0.108897)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.377870)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.567682)*(1.0)+(0.864637)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(-0.182318)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((1.250000)*(1.0)+(0.500000)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(-0.085000)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((1.665000)*(1.0)+(0.330000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(-0.165000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((1.830000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.285000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((2.115000)*(1.0)+(0.570000)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(-0.185000)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 4.250000)*(EvtJointLogEnergy &lt;= 4.750000))*((2.500000)*(1.0)+(0.200000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(0.100000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2)))+(EvtJointLogEnergy &gt; 4.750000)*((2.800000)*(1.0)+(0.400000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,1))+(-0.112171)*(pow((EvtJointLogEnergy-4.750000)/0.500000,2))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (3.151318)*(EvtJointLogEnergy &gt; 5.750000)
+    </Alias>
+    <Alias name="P8V1_TRANSIENT_AllBkProbFilter">
+      WP8CTAllBkProb &gt;= (0.111667)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.541667)*((0.111667)*(1.0)+(0.005000)*(pow((EvtJointLogEnergy-1.250000)/0.291667,1))+(0.005000)*(pow((EvtJointLogEnergy-1.250000)/0.291667,2))+(-0.001667)*(pow((EvtJointLogEnergy-1.250000)/0.291667,3)))+((EvtJointLogEnergy &gt; 1.541667)*(EvtJointLogEnergy &lt;= 1.833333))*((0.120000)*(1.0)+(0.010000)*(pow((EvtJointLogEnergy-1.541667)/0.291667,1))+(0.000000)*(pow((EvtJointLogEnergy-1.541667)/0.291667,2))+(0.033333)*(pow((EvtJointLogEnergy-1.541667)/0.291667,3)))+((EvtJointLogEnergy &gt; 1.833333)*(EvtJointLogEnergy &lt;= 2.125000))*((0.163333)*(1.0)+(0.110000)*(pow((EvtJointLogEnergy-1.833333)/0.291667,1))+(0.100000)*(pow((EvtJointLogEnergy-1.833333)/0.291667,2))+(-0.045000)*(pow((EvtJointLogEnergy-1.833333)/0.291667,3)))+(EvtJointLogEnergy &gt; 2.125000)*((0.328333)*(1.0)+(0.175000)*(pow((EvtJointLogEnergy-2.125000)/0.291667,1))+(-0.035000)*(pow((EvtJointLogEnergy-2.125000)/0.291667,2))+(0.003333)*(pow((EvtJointLogEnergy-2.125000)/0.291667,3))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 3.000000) + (0.628333)*(EvtJointLogEnergy &gt; 3.000000)
+    </Alias>
+    <Alias name="P8V1_TRANSIENT_R010_AllProbFilter">
+      WP8CTAllProbLog &gt;= (0.056385)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.750000)*((0.056385)*(1.0)+(0.092769)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.219018)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.368172)*(1.0)+(0.530806)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(0.006882)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((0.905859)*(1.0)+(0.544569)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(-0.265400)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((1.185029)*(1.0)+(0.013770)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(-0.006885)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((1.191914)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.554043)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((1.745957)*(1.0)+(1.108086)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(-0.554043)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 4.250000)*(EvtJointLogEnergy &lt;= 4.750000))*((2.300000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(0.000000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2)))+(EvtJointLogEnergy &gt; 4.750000)*((2.300000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,1))+(0.160000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,2))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (2.940000)*(EvtJointLogEnergy &gt; 5.750000)
+    </Alias>
+    <Alias name="P8V1_TRANSIENT_R020_AllProbFilter">
+      WP8CTAllProbLog &gt;= (0.050089)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.750000)*((0.050089)*(1.0)+(0.080179)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.089151)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.219419)*(1.0)+(0.258480)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(-0.043569)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((0.434329)*(1.0)+(0.171341)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(-0.065671)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((0.540000)*(1.0)+(0.040000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(-0.020000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((0.560000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.805000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((1.365000)*(1.0)+(1.610000)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(-0.805000)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 4.250000)*(EvtJointLogEnergy &lt;= 4.750000))*((2.170000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(0.000000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2)))+(EvtJointLogEnergy &gt; 4.750000)*((2.170000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,1))+(0.115000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,2))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (2.630000)*(EvtJointLogEnergy &gt; 5.750000)
+    </Alias>
+    <Alias name="P8V1_TRANSIENT_R100_AllProbFilter">
+      WP8CTAllProbLog &gt;= (0.010000)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.750000)*((0.010000)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.018669)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.028669)*(1.0)+(0.037338)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(-0.017111)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((0.048897)*(1.0)+(0.003117)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(0.001967)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((0.053980)*(1.0)+(0.007050)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(-0.003525)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((0.057505)*(1.0)+(0.000000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.121963)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((0.179468)*(1.0)+(0.243925)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(0.493075)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 4.250000)*(EvtJointLogEnergy &lt;= 4.750000))*((0.916468)*(1.0)+(1.230076)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(-0.501532)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2)))+(EvtJointLogEnergy &gt; 4.750000)*((1.645012)*(1.0)+(0.227011)*(pow((EvtJointLogEnergy-4.750000)/0.500000,1))+(0.029483)*(pow((EvtJointLogEnergy-4.750000)/0.500000,2))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (2.216967)*(EvtJointLogEnergy &gt; 5.750000)
+    </Alias>
+    <Alias name="P8V1_TRANSIENT_SFR_CalTkrProbFilter">
+      WP8CTCalTkrProbLog &gt;=  -0.035931+ (   0.27029)*pow(EvtJointLogEnergy,1)+ (  -0.23349)*pow(EvtJointLogEnergy,2)+ (   0.07867)*pow(EvtJointLogEnergy,3)+ ( -0.005295)*pow(EvtJointLogEnergy,4)
+    </Alias>
+    <Alias name="P8V1_ULTRACLEAN_AllProbFilter">
+      WP8CTAllProbLog &gt;= (0.175000)*(EvtJointLogEnergy &lt; 1.250000) + ((EvtJointLogEnergy &lt;= 1.750000)*((0.175000)*(1.0)+(0.650000)*(pow((EvtJointLogEnergy-1.250000)/0.500000,1))+(0.025000)*(pow((EvtJointLogEnergy-1.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 1.750000)*(EvtJointLogEnergy &lt;= 2.250000))*((0.850000)*(1.0)+(0.700000)*(pow((EvtJointLogEnergy-1.750000)/0.500000,1))+(0.050000)*(pow((EvtJointLogEnergy-1.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.250000)*(EvtJointLogEnergy &lt;= 2.750000))*((1.600000)*(1.0)+(0.800000)*(pow((EvtJointLogEnergy-2.250000)/0.500000,1))+(-0.250000)*(pow((EvtJointLogEnergy-2.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 2.750000)*(EvtJointLogEnergy &lt;= 3.250000))*((2.150000)*(1.0)+(0.300000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,1))+(-0.075000)*(pow((EvtJointLogEnergy-2.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.250000)*(EvtJointLogEnergy &lt;= 3.750000))*((2.375000)*(1.0)+(0.150000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,1))+(0.200000)*(pow((EvtJointLogEnergy-3.250000)/0.500000,2)))+((EvtJointLogEnergy &gt; 3.750000)*(EvtJointLogEnergy &lt;= 4.250000))*((2.725000)*(1.0)+(0.550000)*(pow((EvtJointLogEnergy-3.750000)/0.500000,1))+(-0.175000)*(pow((EvtJointLogEnergy-3.750000)/0.500000,2)))+((EvtJointLogEnergy &gt; 4.250000)*(EvtJointLogEnergy &lt;= 4.750000))*((3.100000)*(1.0)+(0.200000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,1))+(0.100000)*(pow((EvtJointLogEnergy-4.250000)/0.500000,2)))+(EvtJointLogEnergy &gt; 4.750000)*((3.400000)*(1.0)+(0.400000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,1))+(-0.050000)*(pow((EvtJointLogEnergy-4.750000)/0.500000,2))))*(EvtJointLogEnergy &gt;= 1.250000 &amp;&amp; EvtJointLogEnergy &lt;= 5.750000) + (4.000000)*(EvtJointLogEnergy &gt; 5.750000)
     </Alias>
     <Alias name="TkrOnlyFilter">
       FswGamFilter&amp;&amp;TracksFilter&amp;&amp;TkrOnlyRLnFilter &amp;&amp; CalTrackAngleFilter
