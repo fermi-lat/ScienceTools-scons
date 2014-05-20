@@ -9,10 +9,11 @@
 #ifdef _DEBUG
 #undef _DEBUG /* Link with python24.lib and not python24_d.lib */ 
 #endif
+#include <iostream>
+
 #include <Python.h>
 
 #include <stdexcept>
-#include <iostream>
 #include <iomanip>
 #include <algorithm>
 #include <iterator>
