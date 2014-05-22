@@ -139,9 +139,9 @@ namespace tip {
           if (0 != it->compare("new_chan")) ++num_fields;
         }
 
-        // Test file has 2 fields:
-        if (2 == num_fields) ReportExpected(msg + " succeeded");
-        else ReportUnexpected(msg + " got " + toString(num_fields) + " fields, not 2");
+        // Test file has 3 fields:
+        if (3 == num_fields) ReportExpected(msg + " succeeded");
+        else ReportUnexpected(msg + " got " + toString(num_fields) + " fields, not 3");
 
       } catch (const TipException & x) {
         ReportUnexpected(msg + " failed", x);

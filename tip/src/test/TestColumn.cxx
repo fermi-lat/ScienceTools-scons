@@ -197,13 +197,13 @@ namespace tip {
         try {
           FitsTable table("a1-copy.pha", "SPECTRUM", "", false);
           // Create a new field to hold the test data
-          table.appendField("TBIT_COL", "32X");
+          table.appendField("TBIT_WRITE", "32X");
 
           BitStruct writeVal = 0x7F3F1F0F;
-          table.getColumn(table.getFieldIndex("TBIT_COL"))->set(0, writeVal);
+          table.getColumn(table.getFieldIndex("TBIT_WRITE"))->set(0, writeVal);
 
           BitStruct readVal;
-          table.getColumn(table.getFieldIndex("TBIT_COL"))->get(0, readVal);
+          table.getColumn(table.getFieldIndex("TBIT_WRITE"))->get(0, readVal);
 
           // Confirm that the data read is equivalent to the data written
           if (readVal.m_bit != writeVal.m_bit) {
@@ -216,9 +216,9 @@ namespace tip {
 
           // Read/Write to a new row to confirm everything is A-OK.
           writeVal = 0x0F1F3F7F;
-          table.getColumn(table.getFieldIndex("TBIT_COL"))->set(1, writeVal);
+          table.getColumn(table.getFieldIndex("TBIT_WRITE"))->set(1, writeVal);
 	  
-          table.getColumn(table.getFieldIndex("TBIT_COL"))->get(1, readVal);
+          table.getColumn(table.getFieldIndex("TBIT_WRITE"))->get(1, readVal);
 
           if (readVal.m_bit != writeVal.m_bit) {
             ReportUnexpected("TestColumn::test() did not read 0x0F1F3F7F!");
@@ -226,8 +226,98 @@ namespace tip {
             ReportExpected("TestColumn::test() wrote/read equivalent 32X values, for the second time.");
           }
 
+          std::cout << "Writing 0 to double check NULL functionality. \n" << std::endl;
+
+          // Read/Write 0 to double check NULL functionality.
+          writeVal = 0;
+          table.getColumn(table.getFieldIndex("TBIT_WRITE"))->set(2, writeVal);
+
+          table.getColumn(table.getFieldIndex("TBIT_WRITE"))->get(2, readVal);
+
+          if (readVal.m_bit != writeVal.m_bit) {
+            ReportUnexpected("TestColumn::test() did not read 0!");
+          } else {
+            ReportExpected("TestColumn::test() wrote/read equivalent 32X values, for the third time.");
+          }
+
         } catch (const TipException & x) {
 	  ReportUnexpected("TestColumn::test() failed to read/write equivalent values!", x);
+        }
+
+    // Try to copy table to test 32X vector read/write functionality.
+        try{
+        	   tip::IFileSvc & fileSvc(tip::IFileSvc::instance());
+
+        	   std::string file1("tip_32X_copy_test_1.fits");
+        	   std::string file2("tip_32X_copy_test_2.fits");
+        	   std::string extname("test_table");
+        	   std::string colname("BITARRAY");
+        	   std::string format("32X");
+        	   long nrows(1);
+
+        	   fileSvc.createFile(file1);
+        	   fileSvc.appendTable(file1, extname);
+        	   tip::Table * table1 = fileSvc.editTable(file1, extname);
+        	   table1->appendField(colname, format);
+        	   table1->setNumRecords(nrows);
+
+        	   fileSvc.createFile(file2);
+        	   fileSvc.appendTable(file2, extname);
+        	   tip::Table * table2 = fileSvc.editTable(file2, extname);
+        	   table2->appendField(colname, format);
+        	   table2->setNumRecords(nrows);
+
+        	   tip::Table::Iterator it1 = table1->begin();
+        	   tip::Table::Record & row1 = *it1;
+
+        	   tip::Table::Iterator it2 = table2->begin();
+        	   tip::Table::Record & row2 = *it2;
+
+        	   for (; it1 != table1->end(); ++it1, ++it2) {
+        	      row1 = row2;
+        	   }
+        	   delete table1;
+        	   delete table2;
+        	   ReportExpected("TestColumn::test() properly copied a 32X table.");
+        	} catch (const TipException & x) {
+        		ReportUnexpected("TestColumn::test() failed to properly copy a 32X table!", x);
+        	}
+
+    // Try to read from a fits column which already has type 32X defined in it.  (Not added by the append field function.)
+        try {
+          FitsTable table("a1-copy.pha", "SPECTRUM", "", false);
+          // Open the test column that holds the prewritten 32X values and read them out.  Loop over each row.
+          int n;
+          for (n=0 ; n<3 ; ++n) {
+    		BitStruct readVal = 0;
+    		table.getColumn(table.getFieldIndex("TBIT_READ"))->get(n, readVal);
+    		// Compare read values to expected values.
+    		switch(n) {
+    		case 0:
+    			if (readVal.m_bit != 0) {
+    				ReportUnexpected("TestColumn::test() did not read expected value in row 0!");
+    			} else {
+    				ReportExpected("TestColumn::test() read expected value in row 0.");
+    				}
+    			break;
+    		case 1:
+    			if (readVal.m_bit != 0x0F1F3F7F) {
+    				ReportUnexpected("TestColumn::test() did not read expected value in row 1!");
+    			} else {
+    				ReportExpected("TestColumn::test() read expected value in row 1.");
+    				}
+    			break;
+    		case 2:
+    			if (readVal.m_bit != 0x7F3F1F0F) {
+    				ReportUnexpected("TestColumn::test() did not read expected value in row 2!");
+    			} else {
+    				ReportExpected("TestColumn::test() read expected value in row 2.");
+    				}
+    			break;
+    			}
+          }
+        } catch (const TipException & x) {
+  	 ReportUnexpected("TestColumn::test() failed to read equivalent values!", x);
         }
 
     // Check for valid behavior for boolean values with leading/trailing blanks, scalar and vector behavior.

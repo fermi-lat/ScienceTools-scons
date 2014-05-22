@@ -873,10 +873,10 @@ namespace tip {
 
     // See if the header contains the expected number of keywords.
     Header::KeySeq_t::size_type num_keys = header.end() - header.begin();
-    if (144 != num_keys) {
+    if (148 != num_keys) {
       discrepancy = true;
       std::ostringstream os;
-      os << "TestExtensionData::testKeywordItor found " << num_keys << " keywords, not 144 as expected.";
+      os << "TestExtensionData::testKeywordItor found " << num_keys << " keywords, not 148 as expected.";
       ReportUnexpected(os.str());
     }
    

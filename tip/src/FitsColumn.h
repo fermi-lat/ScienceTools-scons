@@ -57,7 +57,7 @@ namespace tip {
       virtual void get(Index_t record_index, std::vector<unsigned short> & dest) const { getVector(record_index, dest); }
       virtual void get(Index_t record_index, std::vector<unsigned int> & dest) const { getVector(record_index, dest); }
       virtual void get(Index_t record_index, std::vector<unsigned long> & dest) const { getVector(record_index, dest); }
-      virtual void get(Index_t record_index, std::vector<BitStruct> & dest) const { getVector(record_index, dest); }
+      //      virtual void get(Index_t record_index, std::vector<BitStruct> & dest) const { getVector(record_index, dest); }
 
       virtual void set(Index_t record_index, const double & src) { setScalar(record_index, src); }
       virtual void set(Index_t record_index, const float & src) { setScalar(record_index, src); }
@@ -83,7 +83,7 @@ namespace tip {
       virtual void set(Index_t record_index, const std::vector<unsigned short> & src) { setVector(record_index, src); }
       virtual void set(Index_t record_index, const std::vector<unsigned int> & src) { setVector(record_index, src); }
       virtual void set(Index_t record_index, const std::vector<unsigned long> & src) { setVector(record_index, src); }
-      virtual void set(Index_t record_index, const std::vector<BitStruct> & src) { setVector(record_index, src); }
+      //      virtual void set(Index_t record_index, const std::vector<BitStruct> & src) { setVector(record_index, src); }
 
       virtual void get(Index_t record_index, std::string & dest) const {
         char * buf = 0;
@@ -303,8 +303,11 @@ namespace tip {
           throw TipException(status, "FitsColumn::set(Index_t, const std::vector<bool> &) failed to write vector cell value");
       }
 
+      //Specializations for TBIT
+
+      //Set TBIT Scalar
       virtual void set(Index_t record_index, const BitStruct & dest) {
-	typedef BitStruct U;
+    	typedef BitStruct U;
 		// Create an unsigned long to store the user's input
       	unsigned long lval = dest.m_bit;
        	// Write the input into a 4 byte char array before passing to fits_write_col to prevent byte swapping problems
@@ -323,8 +326,34 @@ namespace tip {
         if (0 != status) throw TipException(status, "FitsColumn::setScalar failed to write scalar cell value");
       }
 
+       //Set TBIT Vector
+       virtual void set(Index_t record_index, const std::vector<BitStruct> & src) {
+    	typedef BitStruct U;
+        // Prevent accidental calling for bool or string. The optimizer will swallow this.
+        assert(typeid(U) != typeid(bool) && typeid(U) != typeid(std::string));
+        if (m_scalar) throw TipException("FitsColumn::setVector called but field is not a vector");
+        if (m_ext->readOnly()) throw TipException("FitsColumn::setVector called for a read-only file");
+        int status = 0;
+        Index_t num_els = src.size();
+
+        if (!m_var_length && num_els > m_repeat) {
+          std::ostringstream os;
+          os << "FitsColumn::setVector attempted to write " << num_els << " elements into a cell of size " << m_repeat;
+          throw TipException(os.str());
+        }
+
+        U * src_tmp(new U[src.size()]);
+        for (std::size_t ii = 0; ii != src.size(); ++ii) src_tmp[ii] = src[ii];
+
+        fits_write_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
+            src_tmp, &status);
+        delete [] src_tmp;
+        if (0 != status) throw TipException(status, "FitsColumn::setVector failed to write vector cell value");
+      }
+
+      //Get TBIT scalar
       virtual void get(Index_t record_index, BitStruct & dest) const {
- 	typedef BitStruct U;
+    	typedef BitStruct U;
 		// Prevent accidental calling for bool or string. The optimizer will swallow this.
         assert(typeid(U) != typeid(bool) && typeid(U) != typeid(std::string));
         // if (!m_scalar) throw TipException("FitsColumn::getScalar was called but field is not a scalar");
@@ -340,6 +369,29 @@ namespace tip {
 		// Pass back FITS data as unsigned long
 		dest.m_bit = lval;
 		if (0 != status) throw TipException(status, "FitsColumn::getScalar failed to read scalar cell value");
+      }
+
+      //Get TBIT Vector
+      virtual void get(Index_t record_index, std::vector<BitStruct> & dest) const {
+    	typedef BitStruct U;
+        // Prevent accidental calling for bool or string. The optimizer will swallow this.
+        assert(typeid(U) != typeid(bool) && typeid(U) != typeid(std::string));
+        if (m_scalar) throw TipException("FitsColumn::getVector was called but field is not a vector");
+        int status = 0;
+        Index_t num_els = getNumElements(record_index);
+
+        U * dest_tmp(new U[num_els]);
+
+        int any_null = 0;
+        fits_read_col(m_ext->getFp(), FitsPrimProps<U>::dataTypeCode(), m_field_index, record_index + 1, 1, num_els,
+          &FitsPrimProps<U>::undefined().m_bit, dest_tmp, &any_null, &status);
+
+        if (0 != status) {
+          delete [] dest_tmp;
+          throw TipException(status, "FitsColumn::getVector failed to read vector cell value");
+        }
+        dest.assign(dest_tmp, dest_tmp + num_els);
+        delete [] dest_tmp;
       }
 
       virtual bool isNull(Index_t record_index) const {
