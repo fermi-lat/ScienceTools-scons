@@ -5,6 +5,7 @@
 @verbatim
  * EOH *
 
+ tip-02-18-05 22-May-2014 asercion Added 32X type write/read vector handling and additional 32X write/read tests to address issue STARCH-20.
  tip-02-18-04 18-Apr-2014 asercion Fix for TNULL issue with 32X type columns
  tip-02-18-03 10-Apr-2014 asercion Fixed 'CFITSIO ERROR 314: null value not defined' error for case TBIT
  tip-02-18-02 09-Apr-2014 asercion FSSC Tip updates to enable read/write of bit array columns in FITS binary tables
