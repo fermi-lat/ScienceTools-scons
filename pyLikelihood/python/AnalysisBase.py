@@ -368,6 +368,9 @@ class AnalysisBase(object):
         srcpars = pyLike.StringVector()
         self[srcName].src.spectrum().getFreeParamNames(srcpars)
         pars = ["::".join((srcName, x)) for x in srcpars]
+        if len(pars) == 0:
+            # All parameters are fixed so return zero
+            return 0
         for xpar in pars:
             ix = par_index_map[xpar]
             my_covar.append([covar[ix][par_index_map[ypar]] for ypar in pars])
