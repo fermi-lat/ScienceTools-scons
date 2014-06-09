@@ -1,5 +1,5 @@
 """
-Generaate pulsar seed plots
+Generate pulsar seed plots
 
 $Header$
 

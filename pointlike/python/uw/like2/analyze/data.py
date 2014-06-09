@@ -1,5 +1,5 @@
 """
-Description here
+Summary of the data
 
 $Header$
 
