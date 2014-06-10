@@ -118,13 +118,14 @@ def main(args):
         qq=pipe.check_converge(absskymodel, log=logto)
         r = pipe.roirec(absskymodel)
         q = pipe.check_converge(absskymodel, add_neighbors=False)
-        open(os.path.join(pointlike_dir,'update_roi_list.txt'), 'w').write('\n'.join(map(str, sorted(qq))))
+        #open(os.path.join(pointlike_dir,'update_roi_list.txt'), 'w').write('\n'.join(map(str, sorted(qq))))
+        open('update_roi_list.txt', 'w').write('\n'.join(map(str, sorted(qq))))
         if stage!='update_only':
             if  len(q)>1:
                 if len(qq)> 200:
                     create_stream('update')
                 else:
-                    create_stream('update', job_list='update_roi_list.txt')
+                    create_stream('update', job_list='$SKYMODEL_SUBDIR/update_roi_list.txt')
             else:
                 create_stream('finish')
             

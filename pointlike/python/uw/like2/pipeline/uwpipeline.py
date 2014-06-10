@@ -103,8 +103,10 @@ class Stage(dict):
         return self['proc'], self['pars']
 
 class StageBatchJob(Stage):
-    """Stage a batch job"""
-    def __init__(self, pars={}, job_list='joblist.txt', help='', **kwargs):
+    """Stage a batch job
+    Note that job_list default is '$POINTLIKE_DIR/joblist.txt', but can be overridden 
+    """
+    def __init__(self, pars={}, job_list='$POINTLIKE_DIR/joblist.txt', help='', **kwargs):
         super(StageBatchJob,self).__init__(process.BatchJob, pars, job_list, help, **kwargs)
         
 stagenames = dict(
@@ -119,7 +121,7 @@ stagenames = dict(
     finish      =  StageBatchJob( dict(finish=True),     sum='counts sourceinfo localization associations', help='localize, associations, sedfigs', ),
     residuals   =  StageBatchJob( dict(residual_flag=True), sum='residuals',  help='generate residual tables for all sources', ),
     counts      =  StageBatchJob( dict(counts_dir='counts_dir', dampen=0, outdir='.'), sum='counts',  help='generate counts info, plots', ), 
-    tables      =  StageBatchJob( dict(tables_flag=True, dampen=0), sum='hptables', job_list='joblist8.txt', help='Create tsmap and kde maps'),
+    tables      =  StageBatchJob( dict(tables_flag=True, dampen=0), sum='hptables', job_list='$POINTLIKE_DIR/joblist8.txt', help='Create tsmap and kde maps'),
     seedcheck   =  StageBatchJob( dict(seed_flag=True, dampen=0), sum='seedcheck', help='Check seeds'),
     )
 disabled="""
