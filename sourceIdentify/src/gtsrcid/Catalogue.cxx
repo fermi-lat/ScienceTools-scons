@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.57  2011/10/05 20:30:10  jurgen
+Correctly forward row information for missing source names
+
 Revision 1.56  2011/02/09 08:14:12  jurgen
 Add "Source_Name" to possible names in counterpart catalogues (srcid.py)
 
@@ -1205,9 +1208,10 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
           Log(Log_2, " Loaded catalogue '%s' descriptor from file.",
               catName.c_str());
 
-        // Try reading ERPOSABS keyword and convert in 2D 95% units
+        // Try reading ERPOSABS keyword from 2nd extension and convert in 2D 95% units
         fstatus = 0;
         fstatus = fits_open_file(&fptr, catName.c_str(), 0, &fstatus);
+        fstatus = fits_movabs_hdu(fptr, 2, NULL, &fstatus);
         fstatus = fits_read_key_dbl(fptr, "ERPOSABS", &in->erposabs, NULL, &fstatus);
         fstatus = fits_close_file(fptr, &fstatus);
         if (fstatus != 0) {
