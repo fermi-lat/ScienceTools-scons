@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.58  2014/06/11 16:59:29  jurgen
+Read absolute position error from 2nd FITS file extension.
+
 Revision 1.57  2011/10/05 20:30:10  jurgen
 Correctly forward row information for missing source names
 
@@ -1209,6 +1212,7 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
               catName.c_str());
 
         // Try reading ERPOSABS keyword from 2nd extension and convert in 2D 95% units
+        /*
         fstatus = 0;
         fstatus = fits_open_file(&fptr, catName.c_str(), 0, &fstatus);
         fstatus = fits_movabs_hdu(fptr, 2, NULL, &fstatus);
@@ -1222,7 +1226,11 @@ Status Catalogue::get_input_descriptor(Parameters *par, std::string catName,
             Log(Warning_2, " Assume ERPOSABS value of %f.", in->erposabs);
           }
         }
-        in->erposabs *= 2.4860;
+        */
+
+        // Set ERPOSABS keyword in 2D 95% units
+        // Do no longer read the keywords as the catalogue applies the corrections directly
+        in->erposabs = c_erposabs * 2.4860;
       }
 
       // Store input name

@@ -5,6 +5,9 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.44  2011/10/05 20:30:10  jurgen
+Correctly forward row information for missing source names
+
 Revision 1.43  2011/02/11 08:36:16  jurgen
 Increase maximum string length for columns to 8192 characters
 
@@ -310,13 +313,12 @@ namespace sourceIdentify {
 /* Class constants __________________________________________________________ */
 const double c_filter_maxsep  = 4.0;     //!< Minimum filter radius
 const double c_prob_min       = 1.0e-20; //!< Minimum probability threshold
-//const double c_filter_maxsep  = 180.0;   //!< Minimum filter radius
-//const double c_prob_min       = 0.0;     //!< Minimum probability threshold
 const int    c_iter_max       = 10;      //!< Maximum number of catch-22 iterations
 const double c_prob_prior     = 0.1;     //!< Initial catch-22 prior
 const double c_prob_prior_min = 1.0e-20; //!< Minimum catch-22 prior
 const double c_prob_prior_max = 1.00;    //!< Maximum catch-22 prior
-const double c_erposabs       = 0.0;     //!< Default absolute position error
+//const double c_erposabs       = 0.0;     //!< Default absolute position error
+const double c_erposabs       = 1.0e-4;  //!< Small position error to avoid round-off
 
 /* Mathematical constants ___________________________________________________ */
 const double pi          =  3.1415926535897931159979635;

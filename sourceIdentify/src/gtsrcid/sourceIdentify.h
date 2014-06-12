@@ -5,6 +5,11 @@ Revision ..: $Revision$
 Date ......: $Date$
 --------------------------------------------------------------------------------
 $Log$
+Revision 1.39  2012/01/17 11:07:42  jurgen
+Correct format string for logging
+Change CESR to IRAP
+Update version number to v2r3p4
+
 Revision 1.38  2011/10/05 20:30:10  jurgen
 Correctly forward row information for missing source names
 
@@ -130,9 +135,9 @@ Replace header information with CVS typeset information.
 
 /* Definitions ______________________________________________________________ */
 #define TOOL_NAME     "gtsrcid"
-#define TOOL_VERSION  "v2r3p4"
+#define TOOL_VERSION  "v2r4p0"
 #define TOOL_LOGFILE  "gtsrcid.log"
-#define TOOL_DATE     "12-Jan-2012"
+#define TOOL_DATE     "12-Jun-2014"
 #define HD_BORDER     "************************************************************"
 #define HD_SEP        "* -------------------------------------------------------- *"
 #define HD_NAME       "*                          gtsrcid                         *"
