@@ -7,6 +7,7 @@ $Id$
  --------- -----  --- -----------------------------------------------------------------------
         * EOH *
 
+ map_tools-07-07-01 12-Jun-2014 jchiang fix pcheck errors in test_map_tools.par
  map_tools-07-07-00 02-Oct-2012 jchiang add zmaxcut to support STGEN-133
  map_tools-07-06-00 29-Dec-2011 jchiang remove gtexpcube application
  map_tools-07-05-07 05-Jan-2011 jchiang patch tag to apply current CMT-style tag to files in src subdirectory
