@@ -1,7 +1,7 @@
 package sourceIdentify
-version sourceIdentify-02-03-04
+version sourceIdentify-02-04-00
 
-author Jurgen Knodlseder <knodlseder@cesr.fr>
+author Jurgen Knodlseder <jknodlseder@irap.omp.eu>
 
 use STpolicy *
 use hoops *
