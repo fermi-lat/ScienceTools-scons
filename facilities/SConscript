@@ -1,6 +1,6 @@
 # -*- python -*-
 # $Id$
-# Authors: T.Burnett <tburnett@u.washington.edu>, Navid Golpayegani <golpa@slac.stanford.edu>
+# Authors: J. Bogart <jrb@slac.stanford.edu>, T.Burnett <tburnett@u.washington.edu>
 # Version: facilities-02-23-00
 import os, os.path, re
 Import('baseEnv')

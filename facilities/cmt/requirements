@@ -2,7 +2,7 @@ package facilities
 version v2r23p0
 
 author T.Burnett <tburnett@u.washington.edu>
-author Navid Golpayegani <Navid.Golpayegani-1@nasa.gov>
+author Joanne Bogart <jrb@slac.stanford.edu>
 use GlastPolicy
 use swig * IExternal
 
