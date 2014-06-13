@@ -4,10 +4,10 @@
    <p> This package consists of simple utility classes.  One of them,
        Util, is a place for static routines with no other logical home.
     </p>
+   <p> commonUtilities does set-up (e.g. of environment variables)
+       needed for SCons builds
+   </p>
 
-<hr>
-  @section requirements requirements
-  @verbinclude requirements
 
 <hr>
  @section notes Release Notes
