@@ -95,7 +95,7 @@ proc_help = '\nproc names\n\t' \
     +'\n\t'.join(['%-15s: %s' % (key, procnames[key]['help'])  for key in sorted(procnames.keys())])
     
 class Stage(dict):
-    def __init__(self, proc, pars={}, job_list='joblist.txt', help='', **kwargs):
+    def __init__(self, proc, pars={}, job_list='$POINTLIKE_DIR/joblist.txt', help='', **kwargs):
         super(Stage,self).__init__(proc=proc, pars=pars, help=help, **kwargs)
         self['help']=help
         self['job_list']=job_list
