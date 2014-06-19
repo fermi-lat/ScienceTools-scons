@@ -13,9 +13,8 @@ import numpy as np
 import pandas as pd
 
 from uw.like2 import (tools, )
-from uw.like2.pipeline import pipe 
+from uw.like2.pipeline import pipe, stream 
 from uw.like2.pub import healpix_map
-from . uwpipeline import PipelineStream
 
 
 def streamInfo( stream, path='.'):
@@ -80,7 +79,7 @@ def main(args):
         print 'Starting stage %s' % newstage
         args = dict(stage=newstage, POINTLIKE_DIR=pointlike_dir, SCRIPT=pointlike_dir, SKYMODEL_SUBDIR=skymodel)
         args.update(**kw)
-        ps = PIpelineStream()
+        ps = stream.PipelineStream()
         
         #cmd = ['/afs/slac/g/glast/ground/bin/pipeline','createStream']
         #cmd += [' -D '] +  ['"' + ', '.join(['%s=%s' %item for item in args.items()]) + '"']
