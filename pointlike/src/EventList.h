@@ -124,19 +124,20 @@ public:
 		typedef std::forward_iterator_tag iterator_category;
 		typedef int difference_type; //??? needed, hope this kluge does not break anythin
 
-        Iterator(tip::Table::ConstIterator it, bool fits, bool selectid=false, bool use_mc_energy=false, bool pass7=false)
+    Iterator(tip::Table::ConstIterator it, bool fits, bool selectid=false, bool use_mc_energy=false, bool pass7=false, bool evclass_bitarray=true)
             : m_it(it)
             , m_fits(fits)
             , m_selectid(selectid)
             , m_use_mc_energy(use_mc_energy)
             , m_pass7(pass7)
+            , m_evclass_bitarray(evclass_bitarray)
         {}
         Photon operator*()const;             ///< dereference
         tip::Table::ConstIterator operator++(){return ++m_it;} ///< increment operator
         bool operator!=(const Iterator& other)const{return other.m_it!=m_it;}
     private:
         tip::Table::ConstIterator m_it;
-        bool m_fits, m_selectid, m_use_mc_energy, m_pass7;
+        bool m_fits, m_selectid, m_use_mc_energy, m_pass7, m_evclass_bitarray;
     };
 
     /// return iterator to access 
@@ -155,6 +156,7 @@ private:
     bool m_selectid;
     bool m_use_mc_energy;
     bool m_pass7;
+    bool m_evclass_bitarray;
 };
 
 #endif
