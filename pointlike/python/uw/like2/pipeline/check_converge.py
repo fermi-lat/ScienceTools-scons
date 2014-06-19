@@ -15,6 +15,7 @@ import pandas as pd
 from uw.like2 import (tools, )
 from uw.like2.pipeline import pipe 
 from uw.like2.pub import healpix_map
+from . uwpipeline import PipelineStream
 
 
 def streamInfo( stream, path='.'):
@@ -79,10 +80,14 @@ def main(args):
         print 'Starting stage %s' % newstage
         args = dict(stage=newstage, POINTLIKE_DIR=pointlike_dir, SCRIPT=pointlike_dir, SKYMODEL_SUBDIR=skymodel)
         args.update(**kw)
-        cmd = ['/afs/slac/g/glast/ground/bin/pipeline','createStream']
-        cmd += [' -D '] +  ['"' + ', '.join(['%s=%s' %item for item in args.items()]) + '"']
-        cmd += ['UWpipeline']
-        print '\n-->' + ' '.join(cmd)
+        ps = PIpelineStream()
+        
+        #cmd = ['/afs/slac/g/glast/ground/bin/pipeline','createStream']
+        #cmd += [' -D '] +  ['"' + ', '.join(['%s=%s' %item for item in args.items()]) + '"']
+        vars = ', '.join(['%s=%s' %item for item in args.items()]) 
+        #cmd += ['UWpipeline']
+        ps(newstage, vars)
+        #print '\n-->' + ' '.join(cmd)
         
         try:
             os.system(' '.join(cmd))
