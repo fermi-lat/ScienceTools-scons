@@ -114,12 +114,13 @@ void BitMaskCut::getKeyValues(std::string & type,
 }
 
 bool BitMaskCut::post_P7(const std::string & pass_ver) {
-   static size_t nvers(5);
+   static size_t nvers(6);
    char * old_pass_vers[] = {const_cast<char *>(""),
                              const_cast<char *>("NONE"),
                              const_cast<char *>("P6"),
                              const_cast<char *>("P7V6"),
-                             const_cast<char *>("P7REP")};
+                             const_cast<char *>("P7REP"),
+                             const_cast<char *>("P8R0")};
    for (size_t i(0); i < nvers; i++) {
       if (pass_ver == old_pass_vers[i]) {
          return false;

@@ -255,18 +255,18 @@ void DataFilter::copyTable(const std::string & extension,
 	    {
 	      // resize output file
 	      long newsize = nrows;
-#if 0 // AGGERSSIVE RESIZING SCHEME - SHOULD NOT BE USED I THINK
-	      if(infile+1 != m_inputFiles.end())
-		{
-		  // Guess size based on number of input files and number
-		  // of records read already
-		  long size_guess = 
-		    (long(nrows)*long(m_inputFiles.size()))/
-		    ((long(infile - m_inputFiles.begin()) + 1L));
-		  //size_guess = std::min(size_guess, nrows*10);
-		  newsize = std::max(newsize, size_guess);
-		}
-#endif
+// #if 0 // AGGERSSIVE RESIZING SCHEME - SHOULD NOT BE USED I THINK
+// 	      if(infile+1 != m_inputFiles.end())
+// 		{
+// 		  // Guess size based on number of input files and number
+// 		  // of records read already
+// 		  long size_guess = 
+// 		    (long(nrows)*long(m_inputFiles.size()))/
+// 		    ((long(infile - m_inputFiles.begin()) + 1L));
+// 		  //size_guess = std::min(size_guess, nrows*10);
+// 		  newsize = std::max(newsize, size_guess);
+// 		}
+// #endif
 	      //std::cerr << "Resizing: " << newsize << '\n';
 	      outputTable->setNumRecords(newsize);
 	      nsize = newsize;
