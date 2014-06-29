@@ -1430,7 +1430,7 @@ def process_diffuse_source(ds,strict=False,convert_extended=False,
                         file=filename)
                     m2x.process_model(model,scaling=True, expand_env_vars=expand_env_vars)
 
-                elif isinstance(m, Models.IsotropicConstant):
+                elif isinstance(m,IsotropicConstant):
                     model = ds.smodel
                     m2x.process_model(model,scaling=False, expand_env_vars=expand_env_vars)
 
