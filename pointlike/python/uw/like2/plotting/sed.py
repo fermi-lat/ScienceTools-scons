@@ -203,9 +203,9 @@ class Plot(object):
     def savefig(self,outdir, suffix=''):
         if os.path.isdir(outdir):
             fname = self.name.replace(' ','_').replace('+','p') + suffix
-            outf = os.path.join(outdir,'%s.png'% fname)
-            plt.savefig(outf)
-            print 'saved sedfig to %s' %outf
+            outf = os.path.join(outdir,'%s.jpg'% fname)
+            print 'saving sedfig to %s...' %outf, sys.stdout.flush()
+            plt.savefig(outf); print
         else :
             plt.savefig(outdir)
             print 'saved sedfig to %s' %outdir

@@ -215,6 +215,7 @@ def stacked_plots(roi, counts_dir=None, fignum=6, title=None, **kwargs):
             fout = os.path.join(counts_dir, ('%s_counts.png'%roi.name) )
         else:
             fout = counts_dir
+        print 'saving counts plot to %s ...' % fout, ; sys.stdout.flush()
         fig.savefig(fout)
-        print 'saved counts plot to %s' % fout
+        print 
     return fig

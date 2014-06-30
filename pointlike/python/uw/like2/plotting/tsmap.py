@@ -130,9 +130,10 @@ def plot(localizer, name=None, center=None, size=0.5, pixelsize=None, outdir=Non
         tsp.zea.axes.set_title('%s'% name, fontsize=16)  # big title
     if outdir is not None:
         filename = name.replace(' ','_').replace('+','p')
-        fout = os.path.join(outdir, ('%s_tsmap.png'%filename) )
+        fout = os.path.join(outdir, ('%s_tsmap.jpg'%filename) )
+        print 'saving tsplot to %s...' % fout , ; sys.stdout.flush()
         plt.savefig(fout, bbox_inches='tight', padinches=0.2) #cuts off outherwise
-        print 'saved tsplot to %s' % fout 
+        print
         if tsfits: 
             fitsname = os.path.join(outdir, '%s_tsmap.fits' % filename)
             tsp.zea.skyimage.reimage(tsp.zea.center,fitsname , pixelsize, size)
