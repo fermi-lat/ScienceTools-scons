@@ -10,7 +10,7 @@ __all__=[
  'associations',
 # 'components',
  'background', 
- #'counts',
+ 'counts',
  #'collection',
  'config',
  'cputime',
