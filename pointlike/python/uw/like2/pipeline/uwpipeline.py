@@ -21,7 +21,7 @@ class StartStream(object):
             job_list = args.job_list
             if job_list is None or job_list=='None':
                 job_list = stagenames[stage]['job_list']
-            ps(stage, job_list, test=True) #args.test)
+            ps(stage, job_list, test=args.test)
             
 class Summary(object):
     """ runs a sumamry job, via uw.like2.analyze.app"""
