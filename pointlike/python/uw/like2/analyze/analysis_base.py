@@ -17,7 +17,7 @@ class FloatFormat(): #simple formatting functor for to_html!
     def __call__(self, x): return self.fmt % x
     
 def html_table( df, columns={}, name='temp', heading='', href=True, 
-        href_pattern='sedfig/%s_sed*.png',
+        href_pattern='sedfig/%s_sed*.jpg',
         maxlines=10, **kw):
     """ utility to create and reformat a pandas-generated html table
     df : a DataFrame
