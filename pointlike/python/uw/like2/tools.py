@@ -42,7 +42,7 @@ class WithMixin(object):
     def __exit__(self, type, value, traceback):
         self.restore()
 
-class OutputTee(object):
+class OutputTee(WithMixin):
     def __init__(self, logfile):
         self.logstream = open(logfile, 'a')
         self.stdout = sys.stdout
@@ -57,6 +57,7 @@ class OutputTee(object):
         self.stdout.flush()
     def set_parent(self, parent):
         self.stdout.set_parent(parent) #needed??
+    def restore(self): self.close() #for with
         
 class RecArray(object):
     def __init__(self, names, dtype=None):

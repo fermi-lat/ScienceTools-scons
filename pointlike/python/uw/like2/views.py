@@ -523,10 +523,13 @@ class LikelihoodViews(bandlike.BandLikeList):
     * TSmap : tsmap_view : a FitterView with the source flux selected which can have the position changed.
     """
     
-    def fitter_view(self, select=None, **kwargs):
+    def fitter_view(self, select=None, setpars=None, **kwargs):
         """ return a object to use with a fitter.
             Two versions, one with full set of parameters, other if a subset is specified
         """
+        if setpars is not None: 
+            self.sources.parameters.setitems(setpars)
+
         if select is None:
             return FitterView(self, **kwargs)
         return SubsetFitterView(self, select, **kwargs)
