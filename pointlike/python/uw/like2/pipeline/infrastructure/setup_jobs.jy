@@ -8,9 +8,9 @@
 import os
 task = pipeline.getStream()
 #kluge
-if job_list=='joblist.txt' : job_list=POINTLIKE_DIR+'/joblist.txt'
+if job_list=='joblist.txt' or job_list=='' : job_list=POINTLIKE_DIR+'/joblist.txt'
 
-print 'processing stream %s with joblist %s' %(task, job_list)
+print 'processing stream %s with joblist "%s"' %(task, job_list)
 roi_list =[]
 f = open(os.path.expandvars(job_list))
 njobs=0
