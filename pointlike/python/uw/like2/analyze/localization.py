@@ -149,7 +149,7 @@ class Localization(sourceinfo.SourceInfo):
                         % (indeces[i], indeces[j], dist,t )
         self.close_tol = tol
         def hreftag(name):
-           fn = 'sedfig/' + name.replace(' ','_').replace('+','p') + '_sed.png'
+           fn = 'sedfig/' + name.replace(' ','_').replace('+','p') + '_sed.jpg'
            if not os.path.exists(fn): return name
            return '<a href="../../%s">%s</a>' %(fn,name)
 
@@ -227,7 +227,7 @@ class Localization(sourceinfo.SourceInfo):
             self.unlocalized_sources =html_table(unloc_table,
                 name=self.plotfolder+'/unlocalized',
                 heading='<h4>Table of %d unlocalized sources</h4>'%len(unloc_table),
-                href_pattern='tsmap_fail/%s*_tsmap*png',
+                href_pattern='tsmap_fail/%s*_tsmap*jpg',
                 float_format=FloatFormat(2))
         else:
             self.unlocalized_sources='<p>No unlocalized sources'
