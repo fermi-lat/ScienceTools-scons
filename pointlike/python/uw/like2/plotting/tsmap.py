@@ -4,7 +4,7 @@ Code to plot TS maps
 $Header$
 
 """
-import math, os
+import math, os, sys
 import numpy as np
 from uw.utilities import image
 import pylab as plt
