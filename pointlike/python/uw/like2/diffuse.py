@@ -27,10 +27,12 @@ class DiffuseBase(object):
     see http://stackoverflow.com/questions/42558/python-and-the-singleton-pattern
     """
     _instance_dict = dict()
+    #def __init__(self, filename, **kwargs):
+    #    assert False, 'base class init called'
+    #    
     def __new__(cls, filename, **kwargs):
         if filename not in cls._instance_dict:
-            cls._instance_dict[filename] = super(DiffuseBase, cls).__new__(
-                                cls, filename, **kwargs)
+            cls._instance_dict[filename] = super(DiffuseBase, cls).__new__(cls)
             #print 'diffuse: loaded ', filename
         return cls._instance_dict[filename]
     
@@ -157,7 +159,7 @@ class MapCube(DiffuseBase, skymaps.DiffuseFunction):
         if not interpolate: 
             pass
             #print 'loading diffuse file %s: warning, not interpolating' %self.filename
-        super(MapCube,self).__init__(self.filename, 1000., interpolate)
+        super(MapCube,self).__init__(self.filename) #, 1000., interpolate)
 
 class HealpixCube(DiffuseBase):
     """ Jean-Marc's vector format, or the column version
