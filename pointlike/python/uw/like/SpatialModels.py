@@ -317,10 +317,10 @@ class SpatialModel(object):
         self.coordsystem = cs
         if cs  == SkyDir.EQUATORIAL:
             self.param_names[0:2] = ['RA','DEC']
-            self.p[0:2] = [center.ra(),center.dec()]
+            self.p[0:2] = [self.center.ra(),self.center.dec()]
         elif cs == SkyDir.GALACTIC:
             self.param_names[0:2] = ['L','B']
-            self.p[0:2] = [center.l(),center.b()]
+            self.p[0:2] = [self.center.l(),self.center.b()]
 
         # Errors are no longer valid, so reset cov matrix.
         self.cov_matrix = np.zeros([len(self.p),len(self.p)]) 
@@ -1769,7 +1769,7 @@ class SpatialMap(SpatialModel):
 
         # The skyfun is not normalized. The normaliztaion happens later, after
         # the convolution step.
-
+        
         self.skyfun=SkyImage(path.expand(self.file),self.extension,self.interpolate)
 
         projection = p = self.skyfun.projector()

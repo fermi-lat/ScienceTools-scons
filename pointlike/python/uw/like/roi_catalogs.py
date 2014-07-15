@@ -322,7 +322,7 @@ class BaseCatalog2FGL(SourceCatalog):
 
             # remember the fits file template in case the XML needs to be saved out.
             # (for gtlike compatability)
-            self.extended_models[-1].original_template = os.path.join('$LATEXTDIR',template)
+            self.extended_models[-1].original_template = self.kluge_template_to_file_name(template)
             self.extended_models[-1].original_parameters = self.extended_models[-1].p.copy()
 
         self.extended_models = np.asarray(self.extended_models)
