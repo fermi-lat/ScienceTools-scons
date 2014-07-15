@@ -159,7 +159,7 @@ class MapCube(DiffuseBase, skymaps.DiffuseFunction):
         if not interpolate: 
             pass
             #print 'loading diffuse file %s: warning, not interpolating' %self.filename
-        super(MapCube,self).__init__(self.filename) #, 1000., interpolate)
+        super(MapCube,self).__init__(self.filename, 1000., interpolate)
 
 class HealpixCube(DiffuseBase):
     """ Jean-Marc's vector format, or the column version
