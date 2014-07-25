@@ -2476,7 +2476,7 @@ class InterpConstants(Model):
         raise NotImplementedError("No way to set flux for InterpConstants spectral model")
 
 class FileFunction(Model):
-    r""" Defines a spectral model from an ascii file with the same
+    """ Defines a spectral model from an ascii file with the same
         convention as gtlike. Each point is connected with a power-law
         interpolation.
         
