@@ -428,7 +428,7 @@ class TSmapView(tools.WithMixin):
         
     def set_dir(self, skydir):
         self.source.skydir = skydir
-        self.blike.initialize(self.source.name)
+        self.blike.initialize(sourcenane=self.source.name)
     
     def get_dir(self):
         return self.source.skydir

@@ -284,7 +284,7 @@ class ROI(views.LikelihoodViews):
 
             loc = localization.Localization(tsm)
             try: 
-                if not hasattr(source,'ellipse'):
+                if not hasattr(source,'ellipse') or source.ellipse is None:
                     loc.localize()
                     loc.summary()
                 tsize = kwargs.pop('size', source.ellipse[2]*15.) # scale according to major axis s
