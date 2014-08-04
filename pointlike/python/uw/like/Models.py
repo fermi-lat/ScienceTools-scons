@@ -716,7 +716,8 @@ class Model(object):
         """
 
         # check for a divergent flux
-        if 100*self(100) <= 1e5*self(1e5): emax = min(5e5,emax)
+        # ADW: This is very bad for hard sources...
+        #if 100*self(100) <= 1e5*self(1e5): emax = min(5e5,emax)
 
         try:
             func    = self if e_weight == 0 else lambda e: self(e)*e**e_weight
