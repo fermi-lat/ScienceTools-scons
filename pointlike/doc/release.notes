@@ -7,6 +7,7 @@ $Id$
  --------- -----   --- -----------------------------------------------------------------------
  * EOH *
 
+ pointlike-09-01-00 06-Aug-2014 echarles Collecting a few minor fixes and features for LMC analysis
  pointlike-09-00-03 19-Jul-2014 mdwood Minor bugfixes.
  pointlike-09-00-02 28-Jun-2014 mdwood Fixed unresolved reference in xml_parsers.
  pointlike-09-00-01 23-Jun-2014 mdwood Tag to partially support new FT1 format in P301.
