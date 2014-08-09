@@ -1,12 +1,13 @@
 /**
  * @file read_ephem.cc
- * @brief This file contains functions to read/calculate ephemeredis and the attitude calculation.
+ * @brief This file contains functions to read/calculate ephemerides and the attitude calculation.
  * @author Giuseppe Romeo
  * @date Created:  Nov 15, 2005
  * 
  * $Header$
  */
 
+#include <cstdio>
 #include "orbitSim/read_ephem.h"
 #include "orbitSim/functions.h"
 #include "orbitSim/atFunctions.h"
@@ -16,7 +17,6 @@
 
 #include <stdexcept>
 #include <string>
-#include <cstdio>
 
 #include <iostream>
 #include <iomanip>
@@ -87,7 +87,7 @@ Attitude * deallocateAttitude (Attitude *att) {
   att->Hei.clear();
   att->in_saa.clear();
   att->in_occ.clear();
-
+  att->rockAngle.clear();
 
 
   delete att;
@@ -130,7 +130,7 @@ Attitude * allocateAttitude(int num) {
   att->Hei.resize(size);
   att->in_saa.resize(size);
   att->in_occ.resize(size);
-
+  att->rockAngle.resize(size);
 
   return att;
 
@@ -154,8 +154,8 @@ Attitude * reallocateAttitude(int num, Attitude *att) {
   att->Hei.resize(num);
   att->in_saa.resize(num);
   att->in_occ.resize(num);
-
-
+  att->rockAngle.resize(num);
+  att->ent = num;
 
   return att;
 
@@ -223,7 +223,7 @@ EphemData * yyyy_eph(FILE *ifp, double StartTime, double EndTime,
   if(tmjd > StartTime) {
 
     std::ostringstream eBufT;
-    eBufT << "\n" << __FILE__ << ":" << __LINE__ << ", ERROR: Ephemeredis file does not cover the entire time interval\nEphemeredis file starts at " << tmjd << " while the interval of interest starts at " << StartTime << "\nPlease check. Exiting for now........\n\n" <<std::ends;
+    eBufT << "\n" << __FILE__ << ":" << __LINE__ << ", ERROR: Ephemeris file does not cover the entire time interval\nEphemeris file starts at " << tmjd << " while the interval of interest starts at " << StartTime << "\nPlease check. Exiting for now........\n\n" <<std::ends;
     throw std::runtime_error(eBufT.str());
 
   }
@@ -730,8 +730,6 @@ EphemData * tlederive(FILE *ifp, double StartTime,
 
 
 
-
-
 void MakeAtt(double start, double mjde, double mjds, double pra, 
 	     double pdec, double offset, double ra, double dec, int mode, 
 	     double res, EphemData *ephem, double *lpos, Attitude *OAtt, double TS ) {
@@ -741,14 +739,13 @@ void MakeAtt(double start, double mjde, double mjds, double pra,
 //  if the mode is 1, i.e. survey mode, then the final point for
 //  slewing must be calculated
 
-
   double Timespan = mjde - start;
   int inum = (int)((Timespan+res/2.0)/res);
   inum++;   // Delta plus 1 to get the end point 
 
 
   int oas = (int)(((mjde-TS)+res/2.0)/res);
-  int flgS = 0;
+  int flgS = 0;   // What is flgS for?
   Attitude *TOAtt = allocateAttitude(oas);
 
 
@@ -807,7 +804,7 @@ void MakeAtt(double start, double mjde, double mjds, double pra,
 	OAtt->Ydec[ii]   = TOAtt->Ydec[ii];
 	OAtt->Zra[ii]    = TOAtt->Zra[ii];
 	OAtt->Zdec[ii]   = TOAtt->Zdec[ii];
-
+        OAtt->rockAngle[ii] = TOAtt->rockAngle[ii];
 
 	osf.info(6) <<"ii="<<ii<<", Zra="<<TOAtt->Zra[ii]<<", Zdec="<<TOAtt->Zdec[ii]<<"\n";	
       }
@@ -1024,7 +1021,6 @@ void MakeSurvey(double start, double end, double res, double offset,
   int flgDir = 0;
   double dk;
 
-
   inum = (int) ((end-start+res/2.)/res);
   inum++;
 
@@ -1067,7 +1063,6 @@ void MakeSurvey(double start, double end, double res, double offset,
     vSat[0] = ephem->X[i]; 
     vSat[1] = ephem->Y[i];
     vSat[2] = ephem->Z[i]; 
-
     if(i+1 >= ephem->ent ) { // Mind the boundaries 
       amjd = mjd + res;
       vaSat[0] = InterPVect(mjd, amjd, vSat[0], vbSat[0], amjd);
@@ -1137,8 +1132,8 @@ void MakeSurvey(double start, double end, double res, double offset,
     OAtt->Ydec[k]   = ydec;
     OAtt->Zra[k]    = zra;
     OAtt->Zdec[k]   = zdec;
-
-
+    /* Store the rocking angle for output */
+    OAtt->rockAngle[k] = offset*RAD2DEG;
 
     k++;
 
@@ -1466,7 +1461,7 @@ void MakeSurvey(double start, double end, double res, double offset,
 	OAtt->Ydec[k]   = ydec;
 	OAtt->Zra[k]    = zra;
 	OAtt->Zdec[k]   = zdec;
-
+        OAtt->rockAngle[k] = offset*RAD2DEG;
 
 	k++;
 	if(k >=inum+j){
@@ -1550,6 +1545,7 @@ void DoSlew(double start, double mjds, double pra, double pdec, double ra,
   //  k++;
   reso = res*minInDay;
 
+  // SLEW_RATE is a constant set in functions.h as degrees/minute
   slewR = SLEW_RATE*reso;
 
 
@@ -1710,7 +1706,9 @@ void DoSlew(double start, double mjds, double pra, double pdec, double ra,
     OAtt->Ydec[k]   = RaDe[5];
     OAtt->Zra[k]    = RaDe[2];
     OAtt->Zdec[k]   = RaDe[3];
+    // in_occ = -99999  indicates this is a maneuver so it is ignored in the limb trace routine
     OAtt->in_occ[k] = -99999;
+
     k++;
   }
 
@@ -1835,8 +1833,15 @@ void MakePointed(double start, double end, double res, double ra,
     OAtt->Zra[k]    = zra;
     OAtt->Zdec[k]   = zdec;
 
-
-
+    /* For pointed observation, the rock angle is not used for calculating attitude. 
+     * In order to output the rock angle to the fits file, we need to calculate the
+     * rock angle here. 
+     * We need the satellite position vector and attitude to get the rock angle.
+     * Note by definition, the rock angle is the angle between zenith direction and 
+     * direction of satellite pointing perpendicular to the orbit plane.
+     */
+    OAtt->rockAngle[k] = GetPointedRock(RaDe)*RAD2DEG;
+    //std::cout<<"dbg rock angle="<<OAtt->rockAngle[k]<<"\n";
     k++;
   }
 
@@ -2264,7 +2269,7 @@ int getEndPoint (double mjdi, double *mjds, double ira, double idec,
 
 
 
-  int j;
+  int j = 0;
 
   osf.setMethod("getEndPoint");
 
@@ -2328,31 +2333,54 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
 		  double *tms, double *ofst, EphemData *ephem, Attitude *OAtt, double begin) {
 
 
+//    Calls doProfiled to compute the attitude (TAtt) based on the profile definition
+//    Then we compute the attitude during the slew from ira,idec to the profile (in progress)
+//    since the spacecraft won't instantaneously jump to the profile initial point.
+//    It takes some time to slew and the pointing is constantly changing during the slew
+//    The attitude during the slew is stored in OAtt
+//    then the profile attitude is copied from TAtt into OAtt after the slew ends
+//    With much error checking to obscure the logic
+
+  // profile duration (last profile time) MJM
   double period = tms[16]/secInDay;
+  // startT is the adjusted profile epoch
   double startT;
 
   osf.setMethod("MakeProfiled");
 
   osf.info(4) << "epoch = "<<epoch<<"\n";
   
+  // Adjust the profile epoch (startT)
+
   if(epoch <= start){
+    // The profile's epoch starts at or before the interval of interest start
+    // np is the number of profile cycles between the profile epoch and the start time
+    // startT is adjusted profile start, so we don't have to generate a bunch
+    // of unneeded profile cycles
     int np = (int)((start-epoch)/period);
     osf.info(4) << "epoch = "<<epoch<<", np = "<<np<<"\n";
     startT = epoch+period*(double)np;
   }else {
-    osf.warn() << "####################################################################################################\n\n";
-    osf.warn() << "                                      WARNING\n";
-    osf.warn() << "\tEpoch for Profile Survey (" << epoch << ") starting at MJD=" << start << "\n";
-    osf.warn() << "\tis larger than the start time. This should not have happened.\n";
-    osf.warn() << "\tHowever, orbit simulator will try to interpolate back in time\n\n";
-    osf.warn() << "####################################################################################################\n\n";
-    int np = (int)((epoch -start)/period)+1;
+    // The profile's epoch starts after the start time
+    // The GNC probably doesn't handle this, but it is not too unreasonable
+    // for analysis scenarios
+    osf.warn(1) << "####################################################################################################\n\n";
+    osf.warn(1) << "                                      WARNING\n";
+    osf.warn(1) << "\tEpoch for Profile Survey (" << epoch << ") starting at MJD=" << start << "\n";
+    osf.warn(1) << "\tis later than the start time. This is not a realistic scenario.\n";
+    osf.warn(1) << "\tHowever, orbit simulator will try to interpolate back in time\n\n";
+    osf.warn(1) << "####################################################################################################\n\n";
+    //  Adjust the epoch time back so the entire interval of interest will have profile data
+    int np = (int)((epoch - start)/period)+1;
     startT = epoch - period*(double)np;
   }
 
-  // Rouding up startT to the closest resolution.
+  // Rounding up startT to the closest resolution.
 
   startT = (double)((int)(startT/res+0.5))*res;
+
+  // Determine the number of data points needed
+  // and allocate the memory required to hold it
 
   double Timespan = (end-startT);
   int inum = (int)((Timespan+res/2.0)/res);
@@ -2362,17 +2390,21 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
   double nend = end+res;
   osf.info(3) << "\nCalling  doProfiled with startT=" << startT << ", while start=" << start << ", begin=" << begin << "\n";
 
+  //  Compute the spacecraft attitude caused by this profile
   doProfiled(startT, nend, res, tms, ofst, ephem, TAtt);
 
 
-
-
+  // MJM assume the slew end time (mjds) is the start time
+  //     idx is the index into TAtt of the actual start time
+  //     ned is the index into TAtt of the actual end time
   double mjds = start;
 
   int idx = (int) (((start-startT)+res/2.0)/res);
   int ned = (int) (((end-startT)+res/2.0)/res);
-
   osf.info(3) << "Calling getEndPoint  with startT=" << startT << ", while start=" << start << ", begin=" << begin << "\n";
+
+  // mjds  - estimated time at the end of slew in mjd format
+
   int jj =  getEndPoint (start, &mjds, ira, idec, TAtt, idx, startT, res);
   osf.info(3) << "obtained jj=" << jj << ", mjds=" << mjds << "\n";
 
@@ -2384,13 +2416,15 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
 
   //  printf("start=%f, slew=%f, end=%f\n", start, mjds, end);
 
+  // MJM getEndPoint may alter mjds to that it is after the end time
+  // MJM but it is unlikely
 
   if(mjds > end){
 
     osf.err() << "\n####################################################################################################\n\n";
     osf.err() << "                                           ERROR\n";
     osf.err() << "\tEnd of slew time (" << mjds << ") is greater than the end of this snapshot (" << end << ")\n";
-    osf.err() << "\tThis might cause a seg fault. Please check. Exiting for now...........\n\n";
+    osf.err() << "\tThis might cause a seg fault. Please check. Continuing on .......\n\n";
     osf.err() << "####################################################################################################\n\n";
 
 /*
@@ -2406,16 +2440,41 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
 
   }
 
+  // MJM mjds is set to the time at the end of the slew, by getEndPoint. 
+// MJM Code is making sure mjds is still after the start time
+// MJM not sure how this would not always be true unless
+//     GLAST_slew_estimate returned a negative value
+//      It would be better to have the end time test here too
+// MJM does mjds mean end_slew_time? YES, it does (a plea for meaningful variable names)
+
+// MJM Now, DoSlew puts the initial slew maneuver into OAtt
+
+// MJM (We don't instantly arrive at the profile start point from the initial position)
+// MJM Sun avoidance during the slew is not modelled (?)
+// MJM The quirkly acceleration limits are included in the overall slew duration
+//      but not in sample by sample positions, but it will be close enough
+
   if(start < mjds) {
     osf.info(3) << "calling DoSlew with start="<<start<<", mjds="<<mjds<<"\n";
+
     DoSlew(start, mjds, ira, idec, ra, dec, res, ephem, OAtt, begin);
+
   }
+
+  // MJM  Next, copy the remainder of the original attitude (TAtt) into OAtt
+  //      To do this, find the index into TAtt of the slew end
+  //      Would TAtt and OAtt may not be parallel, since TAtt is computed beginning
+  //      startT and OAtt starts at the actual start time
+
+  // MJM  k is the index into OAtt of the end of the slew 
+  // MJM  this loop adjusts idx to point to the time at the end of the slew in TAtt
+  // MJM  Again better variable names OAtt_idx and TAtt_idx
 
   int k = (int) (((mjds-begin)+res/2.0)/res);
 
   int j=0;
   for(j=0; j<inum; j++){
-    if(fabs(TAtt->mjd[j]-mjds) < res/3.0){
+    if(fabs(TAtt->mjd[j] - mjds) < res/3.0){
     //    if((TAtt->mjd[j]-mjds) > res/2.0){
     //    if((TAtt->mjd[j]-mjds) >= 0.0 && (TAtt->mjd[j]-mjds) < res/2.0){
       osf.info(4) <<"at j-1="<<j-1<<", mjd="<<TAtt->mjd[j-1]<<", while mjds="<<mjds<<"\n";
@@ -2426,28 +2485,51 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
   }
   //    idx--;
 
+  // MJM idx into TAtt of a time that is close to the end of the slew time
+  // MJM TODO ***** what if idx is 0? or k is 0 ******
+  //     Not likely but what if?
+    /* CD In case of there are duplicate recoreds in TAtt, we need to 
+       start from the last record with the same mjd. 
+       In case of there is no duplicate records in TAtt, the following codes will
+       not change idx. */
+    for(j=idx+1; j<inum; j++) {
+        if(TAtt->mjd[j] > TAtt->mjd[j-1]) {
+            idx = j-1;
+            break;
+        }
+    }
 
-  double tdif = fabs(OAtt->mjd[k-1]-TAtt->mjd[idx-1]);
+  /*double tdif = fabs(OAtt->mjd[k-1] - TAtt->mjd[idx-1]);*/
+    /* Make sure k-1>=0 when calculating tdif */
+    double tdif;
+    double restol = res * 1.01; // Resolution with a 1% tolerance
+    if(k > 0 && idx > 0) {
+        tdif = fabs(OAtt->mjd[k-1] - TAtt->mjd[idx-1]);
+    }
+    else {
+        tdif = 0.0;
+    }
+ 
+  //      A gap is a problem only if the points differ by more than the resolution
+  //  if(tdif > 0.0){
 
-
-
-  int ii = idx;
-
-  if(tdif > 0.0){
+    if( tdif > restol) {
     osf.err() << "####################################################################################################\n\n";
     osf.err() << "                                      ERROR\n";
     osf.err() << "In MakeProfiled, while calculating attitude for observation starting at "<<start<<"\n";
     osf.err() << "when merging the calculated attitude for this segment with the overall attitude\n";
     osf.err() << "it was found that at the merging point:\n";
     osf.err() << "the overall attitude would start at "<<OAtt->mjd[k-1]<<"\n";
-    osf.err() << "while the newly part would start at "<<TAtt->mjd[idx-1]<<".\n\n";
+    osf.err() << "while the newly calculated part would start at "<<TAtt->mjd[idx-1]<<".\n\n";
     osf.err() << "This has the potential to create problems because of gaps.\n";
     osf.err() << "####################################################################################################\n\n";
   }
 
+  // k is the first index into OAtt, after the slew
+  // idx is the first index into TAtt, after the slew
+  // ned is the index in TAtt of the end time
 
-
-  for(ii=idx; ii<=ned; ii++){
+  for(int ii=idx; ii<=ned; ii++){
 
     OAtt->mjd[k]    = TAtt->mjd[ii];
     OAtt->SatRA[k]  = TAtt->SatRA[ii];
@@ -2458,6 +2540,8 @@ void MakeProfiled(double start, double end, double res, double ira, double idec,
     OAtt->Ydec[k]   = TAtt->Ydec[ii];
     OAtt->Zra[k]    = TAtt->Zra[ii];
     OAtt->Zdec[k]   = TAtt->Zdec[ii];
+    /* Save the rocking angle (in degrees) for output */
+    OAtt->rockAngle[k] = TAtt->rockAngle[ii];
     //printf("k=%d, mjd=%f, ned=%d\n", k,  OAtt->mjd[k], ned);
     k++;
   }
@@ -2554,7 +2638,7 @@ void doProfiled(double start, double end, double res, double *tms,
       osf.info(4) << "jc="<<jc<<", jc1="<<jc1<<", ic="<<ic<<", ic1="<<ic1<<", epoch1=" << epoch1 << ", epoch2="<< epoch2 << ", diff="<<(epoch2-epoch1)*secInDay<< ", angsep= "<< angsep <<", slewr="<<slewr<<"\n";
 
       if(fabs(slewr) > SLEW_RATE){
-	osf.warn() << "\nWARNING: going from offset " << ofst[ic] << " to " << ofst[ic+1] << ",\nwill make the slew rate (" << slewr << ") greater than the nominal maximum value (" << SLEW_RATE << ")\n\n";
+	osf.warn(3) << "WARNING: In doProfiled, going from offset " << ofst[ic] << " to " << ofst[ic+1] << ",\nwill make the slew rate (" << slewr << ") greater than the nominal maximum value (" << SLEW_RATE << ")\n";
       }
 
       int ino = (int)((epoch2-epoch1)/res +0.5);
@@ -2732,7 +2816,7 @@ void occult( EphemData *EphemPtr, double StartTime, double EndTime,
 
 
 
-  //    printf("In occult, ist=%d\n\n", ist);
+      //printf("dbg In occult, ist=%d\n\n", ist);
  
   j = 0;                 
   for (i=ist;i<inum;++i) {
@@ -2812,6 +2896,8 @@ void doLimbTrace(EphemData *EphemPtr, double StartTime, double EndTime, double R
 
   osf.setMethod("doLimbTrace");
 
+  // Populate the staocc and endocc arrays when the attitude index at each target occult entry and exit event
+
   for(i=0; i<inum; i++){
 
     if(i == 0){
@@ -2836,10 +2922,10 @@ void doLimbTrace(EphemData *EphemPtr, double StartTime, double EndTime, double R
 
 
   if(ne == 0){
-    osf.warn() << "No target found in occultation\n\n";
+    osf.warn(1) << "No target found in occultation\n\n";
   }else {
     for(i=0; i<ns; i++){
-      std::cout<<"Target occulted from "<<EphemPtr->MJD[staocc[i]]<<" to "<<EphemPtr->MJD[endocc[i]]<<"\n";
+      osf.warn(1) <<"Target occulted at ephem index, "<< staocc[i] <<", from "<<EphemPtr->MJD[staocc[i]]<<" to "<<EphemPtr->MJD[endocc[i]]<<"\n";
     }
   }
 

@@ -4,6 +4,7 @@
     \author Giuseppe Romeo (original), FSSC
             John Vernaleo (current), FSSC
 */
+#include <cstdio>
 #include "st_app/AppParGroup.h"
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
@@ -12,12 +13,12 @@
 #include "facilities/Util.h"
 
 #include "orbitSim/OrbSim.h"
+#include "orbitSim/functions.h"
 
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
-#include <cstdio>
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -51,6 +52,7 @@ void orbitSimApp::run() {
   using namespace tip;
   InitI initf;
   int stat;
+  double quat[4]; /* quaternion vector */
 
   osf.setMethod("run");
 
@@ -91,18 +93,18 @@ void orbitSimApp::run() {
 
   if((initf.ELT_OFF_STOP != -99999.0 || initf.ELT_OFF_START != -99999.0)){
     if(initf.ELT_OFF_STOP <= initf.ELT_OFF_START){
-      osf.warn()<<"Earth LIMB Tracing OFF stop time is smaller than start time\n";
-      osf.warn()<<"These parameter are not acceptable, reverting to default:\nEarth LImb Tracing will be on at all times\n\n";
+      osf.warn(1)<<"Earth LIMB Tracing OFF stop time is smaller than start time\n";
+      osf.warn(1)<<"These parameter are not acceptable, reverting to default:\nEarth LImb Tracing will be on at all times\n\n";
       initf.ELT_OFF_START = -99999.0;
       initf.ELT_OFF_STOP  = -99999.0;
 
     } else if(initf.ELT_OFF_STOP < 0.0 && initf.ELT_OFF_START > 0.0){
-      osf.warn()<<"Earth LIMB Tracing OFF stop time is NOT defined\n";
-      osf.warn()<<"These parameter are not acceptable, reverting to default:\nEarth LImb Tracing will be on at all times\n\n";
+      osf.warn(1)<<"Earth LIMB Tracing OFF stop time is NOT defined\n";
+      osf.warn(1)<<"These parameter are not acceptable, reverting to default:\nEarth LImb Tracing will be on at all times\n\n";
 
     } else if(initf.ELT_OFF_STOP > 0.0 && initf.ELT_OFF_START < 0.0){
-      osf.warn()<<"Earth LIMB Tracing OFF start time is NOT defined\n";
-      osf.warn()<<"These parameter are not acceptable, reverting to default:\nEarth LImb Tracing will be on at all times\n\n";
+      osf.warn(1)<<"Earth LIMB Tracing OFF start time is NOT defined\n";
+      osf.warn(1)<<"These parameter are not acceptable, reverting to default:\nEarth LImb Tracing will be on at all times\n\n";
 
     }
   } 
@@ -150,7 +152,7 @@ void orbitSimApp::run() {
       initf.TLname = Tml;
  
     } else {
-      throw std::runtime_error("\nERROR: UNKNOWN Timeline type {either TAKO, or ASFLOWN or SINGLE}\n\n");
+      throw std::runtime_error("\nERROR: Unknown Timeline type {expecting either TAKO, or ASFLOWN or SINGLE}\n\n");
 
     }
     pars.Prompt("EphemName");
@@ -165,7 +167,7 @@ void orbitSimApp::run() {
     if(!((match_str((const char*) EpF.c_str(), "XYZLL_EPH")==1) ||
 	 (match_str((const char*) EpF.c_str(), "YYYY_EPH")==1) ||
 	 (match_str((const char*) EpF.c_str(), "TLEDERIVE")==1))){
-      throw std::runtime_error("\nERROR: UNKNOWN Ephemeredis Function {either xyzll_eph, or yyyy_eph or tlederive}\n\n");
+      throw std::runtime_error("\nERROR: Unknown Ephemeris Function {expecting either xyzll_eph, or yyyy_eph or tlederive}\n\n");
       
     } else {
       initf.EPHfunc = EpF;
@@ -194,29 +196,27 @@ void orbitSimApp::run() {
 
   } else {
     
-    throw std::runtime_error("\nERROR: UNKNOWN Input type {either file or console}\n\n");
+    throw std::runtime_error("\nERROR: Unknown Input type {expecting either 'file' or 'console'}\n\n");
   }
 
 
   pars.Save();
-  // Add a little buffer to the end time so we calculate enough ephem
-  // and attitude point to get positions up to the end of the desired time.
-  double stop_buffer = 0.1;
-  initf.stop_MJD=initf.stop_MJD+stop_buffer;
+
   osf.info(1)<<"Earth Avoidance Angle: "<<initf.EAA<<" degrees"<<std::endl;
 
   // stat = 0;
 
   if (stat == 0){
     std::ostringstream oBuf;
+    // TODO MJM not particularly helpful error messages
     oBuf << "\n############################################################\n\nSomething is wrong in the init file, please check:\nin parenthesis allowed values where applicable\n\n";
 
     oBuf << "start MJD              " << initf.start_MJD << std::endl;
     oBuf << "stop MJD               " << initf.stop_MJD << std::endl;
     oBuf << "Timeline file or cmd   " << initf.TLname << std::endl; 
     oBuf << "Timeline type          " << initf.TLtype << ",  (MUST be TAKO, ASFLOWN, SINGLE)" << std::endl;
-    oBuf << "Ephemeredis file       " << initf.EPHname << std::endl;
-    oBuf << "Ephemeredis func       " << initf.EPHfunc << ", (yyyy_eph, xyzll_eph, tlederive)" << std::endl;
+    oBuf << "Ephemeris file       " << initf.EPHname << std::endl;
+    oBuf << "Ephemeris func       " << initf.EPHfunc << ", (yyyy_eph, xyzll_eph, tlederive)" << std::endl;
     oBuf << "Units                  " << initf.Units   << std::endl; 
     oBuf << "Resolution             " << initf.Resolution << std::endl;
     oBuf << "Initial RA             " << initf.Ira << std::endl;
@@ -233,6 +233,10 @@ void orbitSimApp::run() {
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Fixing the start time according to the resolution
+//  1440 is the number of minutes in a day
+//  fday 1 is the fraction of the day in minutes
+//  fday 2 is the fraction of the day rounded to the units of the current resolution
+//  fraction part of start time is replaced
   double stmjd = initf.start_MJD;
   double fday = (stmjd - (double)((int)stmjd))*1440.0;
   fday = (double)((int)(fday/initf.Resolution)-1)*initf.Resolution;
@@ -267,10 +271,10 @@ void orbitSimApp::run() {
 
   FILE *ephF = NULL;
 
-  osf.info(2) << "Opening Ephem file " << initf.EPHname << " for reading\n";
+  osf.info(2) << "Opening Ephemeris file " << initf.EPHname << " for reading\n";
   if ( (ephF=fopen(initf.EPHname.c_str(),"r")) == NULL) {
     std::string fname( initf.EPHname);
-    throw std::runtime_error("Cound not open Ephemeredis file:\n" + fname);
+    throw std::runtime_error("Cound not open Ephemeris file:\n" + fname);
   }
 
   initf.Resolution = initf.Resolution/minInDay;
@@ -307,22 +311,20 @@ void orbitSimApp::run() {
   if(match_str( initf.TLtype.c_str(), "TAKO") == 1){
     Oat = makeAttTako(&initf, ephemeris);
   } else if (match_str( initf.TLtype.c_str(), "ASFLOWN") == 1){
-    Oat = makeAttAsFl(&initf, ephemeris);
+	  throw std::runtime_error("\nERROR: ASFLOWN mode is still in developement.  Functionality has been disabled.");
+	//Oat = makeAttAsFl(&initf, ephemeris);
   } else if (match_str( initf.TLtype.c_str(), "SINGLE") == 1){
     Oat = doCmd(&initf, ephemeris);
   }
   
-  // Restore stop_MJD to its correct, but smaller value
-  initf.stop_MJD=initf.stop_MJD-stop_buffer;
-
   if(Oat == NULL){
     throw std::runtime_error("\nPossibly something went wrong while calculating the spacecraft attitude.\nThe Attitude structure is still \"NULL\"\n\n");
   }
 
   // Get template file using facilities
-  std::string fitsgenroot = facilities::commonUtilities::getDataPath("fitsGen");
+  std::string orbitsimroot = facilities::commonUtilities::getDataPath("orbitSim");
   std::string ifname("ft2.tpl");
-  std::string sfname = facilities::commonUtilities::joinPath(fitsgenroot, ifname);
+  std::string sfname = facilities::commonUtilities::joinPath(orbitsimroot, ifname);
   
   osf.info(2) <<"OutPut File template is "<<sfname.c_str()<<"\n";
 
@@ -374,9 +376,7 @@ void orbitSimApp::run() {
 
 
   Table * table = IFileSvc::instance().editTable(initf.OutFile, "SC_DATA");
-  // Only make the table big enough for the points we want, not the 
-  // extra buffer we have.
-  Oat->ent=(Oat->ent)-int(stop_buffer/initf.Resolution)+2;
+
   table->setNumRecords(Oat->ent);
   int k = 0;
   Header & header = table->getHeader();
@@ -393,6 +393,10 @@ void orbitSimApp::run() {
   // previous start and stop values
   long int pStart= 0;
   long int pStop = 0;
+  double polCoor[2];
+  AtVect P1, P2;
+  double NPra, NPdec;
+
   // This is the loop that writes each line in the fits data table
   for (Table::Iterator itor = table->begin(); itor != table->end(); ++itor) {
 
@@ -402,12 +406,46 @@ void orbitSimApp::run() {
     posit[1] = Oat->Y[k]*1000.0;
     posit[2] = Oat->Z[k]*1000.0;
 
-/*
-    posit[0] = Oat->X[k]*1.0;
-    posit[1] = Oat->Y[k]*1.0;
-    posit[2] = Oat->Z[k]*1.0;
+    // Compute the North Orbit Pole RA and declination 
 
-*/
+    // Careful interpolating at the array boundaries (don't assume extra elements)
+
+    if(k < 2){
+
+      P1[0] = Oat->X[k];
+      P1[1] = Oat->Y[k];
+      P1[2] = Oat->Z[k];
+
+      P2[0] = Oat->X[k+1]-Oat->X[k];
+      P2[1] = Oat->Y[k+1]-Oat->Y[k];
+      P2[2] = Oat->Z[k+1]-Oat->Z[k];
+
+    } else if (k+2 > Oat->ent) {
+      P1[0] = Oat->X[k];
+      P1[1] = Oat->Y[k];
+      P1[2] = Oat->Z[k];
+
+      P2[0] = Oat->X[k]-Oat->X[k-2];
+      P2[1] = Oat->Y[k]-Oat->Y[k-2];
+      P2[2] = Oat->Z[k]-Oat->Z[k-2];
+
+    } else {
+
+      P1[0] = Oat->X[k];
+      P1[1] = Oat->Y[k];
+      P1[2] = Oat->Z[k];
+
+      P2[0] = Oat->X[k+2]-Oat->X[k-2];
+      P2[1] = Oat->Y[k+2]-Oat->Y[k-2];
+      P2[2] = Oat->Z[k+2]-Oat->Z[k-2];
+
+    }
+
+
+    getNPole(P1, P2, polCoor);
+    NPra  = polCoor[0];
+    NPdec = polCoor[1];
+    
 
     (*itor)["SC_POSITION"].set(posit );
     (*itor)["LAT_GEO"].set(Oat->Lat[k]);
@@ -425,8 +463,12 @@ void orbitSimApp::run() {
     (*itor)["RA_SCX"].set(Oat->Xra[k]);
     (*itor)["DEC_SCX"].set(Oat->Xdec[k]);
 
-    (*itor)["RA_NPOLE"].set("NaN");
-    (*itor)["DEC_NPOLE"].set("NaN");
+    (*itor)["RA_NPOLE"].set(NPra);
+    (*itor)["DEC_NPOLE"].set(NPdec);
+
+    /* Load the rocking angle */
+    /* Have to add a minus sign in order to match the rocking angle in real spacecraft FT2 file. */
+    (*itor)["ROCK_ANGLE"].set(-Oat->rockAngle[k]);
 
     // 5 is zenithpoint/survey so we'll stick with that.
     (*itor)["LAT_MODE"].set(5);
@@ -443,10 +485,17 @@ void orbitSimApp::run() {
       (*itor)["LIVETIME"].set(initf.Resolution*86400.0*0.93);
     }
     
-    (*itor)["QSJ_1"].set("NaN");
-    (*itor)["QSJ_2"].set("NaN");
-    (*itor)["QSJ_3"].set("NaN");
-    (*itor)["QSJ_4"].set("NaN");
+    /* Calculate the quaternions using the spacecraft attitude */
+    GetQuat(Oat->Xra[k], Oat->Xdec[k], Oat->Yra[k], Oat->Ydec[k],
+            Oat->Zra[k], Oat->Zdec[k], quat);
+    //(*itor)["QSJ_1"].set("NaN");
+    //(*itor)["QSJ_2"].set("NaN");
+    //(*itor)["QSJ_3"].set("NaN");
+    //(*itor)["QSJ_4"].set("NaN");
+    (*itor)["QSJ_1"].set(quat[1]);
+    (*itor)["QSJ_2"].set(quat[2]);
+    (*itor)["QSJ_3"].set(quat[3]);
+    (*itor)["QSJ_4"].set(quat[0]);
 
     do_mjd2cal(Oat->mjd[k], &yy, &MM, &dd, &hh, &mm, &ss);
     sprintf(endTm, "%4d:%02d:%02dT%02d:%02d:%02d", yy, MM, dd, hh, mm, ss);
@@ -456,18 +505,18 @@ void orbitSimApp::run() {
     long int Start = Stop - (long int)(initf.Resolution*86400.0);
  
     if((Stop-Start) != (long int)(initf.Resolution*86400.0)){
-      osf.err() << "WARNING ===> At k="<<k<<", Interval is "<< (Stop-Start)<<", while resolution is "<< (long int)(initf.Resolution*86400.0)<<"\n";
+      osf.warn(1) << "WARNING ===> At k="<<k<<", Interval is "<< (Stop-Start)<<", while resolution is "<< (long int)(initf.Resolution*86400.0)<<"\n";
     }
 
     if(pStart != 0){
       if((Start - pStart) != (long int)(initf.Resolution*86400.0)){
-	osf.err() << "WARNING ===> At k="<<k<<", Interval (from Start time "<<Start<<") is "<< (Start-pStart)<<", while resolution is "<< (long int)(initf.Resolution*86400.0)<<"\n";
+	osf.warn(1) << "WARNING ===> At k="<<k<<", Interval (from Start time "<<Start<<") is "<< (Start-pStart)<<", while resolution is "<< (long int)(initf.Resolution*86400.0)<<"\n";
       }
     }
 
     if(pStop != 0){
       if((Stop - pStop) != (long int)(initf.Resolution*86400.0)){
-	osf.err() << "WARNING ===> At k="<<k<<", Interval (from Stop time " <<Stop<<") is "<< (Stop-pStop)<<", while resolution is "<< (long int)(initf.Resolution*86400.0)<<"\n";
+	osf.warn(1) << "WARNING ===> At k="<<k<<", Interval (from Stop time " <<Stop<<") is "<< (Stop-pStop)<<", while resolution is "<< (long int)(initf.Resolution*86400.0)<<"\n";
       }
     }
     

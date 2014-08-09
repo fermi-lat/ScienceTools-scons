@@ -812,7 +812,13 @@ void GetPos(double mjd, AtVect vSat, AtVect vNVel, double SurvOfs, double *RVal)
    */
 void GetPointedPos(double mjd, AtVect vSat, AtVect vNVelS, double ra, double dec, double *RaDe);
 
+double GetPointedRock(double* RaDec);
 
+/* 
+ * Calculate the satellite body quaternions 
+ */
+void GetQuat(const double& xra, const double& xdec, const double& yra, const double& ydec, 
+             const double& zra, const double& zdec, double* quat);
 
 #ifdef __cplusplus
 }

@@ -128,6 +128,9 @@ struct Attitude {
 
   /// Boolean to specify if spacecraft is in occultation (1) or not (0)
   std::vector <int> in_occ;                       
+
+  // Rocking angle
+  std::vector<double> rockAngle;
                                
 
   /// Number of entries in each array

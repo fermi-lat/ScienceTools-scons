@@ -12,6 +12,7 @@
 
 #include "orbitSim/read_ephem.h"
 #include "orbitSim/functions.h"
+#include "orbitSim/orbitSimStruct.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -216,6 +217,25 @@ extern "C" {
    */
   char *processline(char *ln, char find);
 
+
+  /**
+   * @brief Function that returns the coordinates
+   * of the orbital pole. These coordinates (RA and DEC)
+   * are calculated by first calculating the vectorial 
+   * product of the passed vectors which represent respectively
+   * the position vector and the local velocity vector.
+   *
+   *
+   * @param P1 - position vector
+   * @param P2 - velocity vector
+   * @param polCoor - 2-dimensional array that contains the returned coord.
+   * 
+   * @author Giuseppe Romeo
+   * @date Created:  Nov 15, 2010
+   * @date Last Modified:  Nov 15, 2010
+   *
+   */
+  void getNPole(AtVect P1, AtVect P2, double *polCoor);
 
 #ifdef __cplusplus
 }

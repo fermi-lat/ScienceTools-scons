@@ -6,11 +6,11 @@
  * 
  * $Header$
  */
+#include <cstdio>
 #include "orbitSim/functions.h"
 #include "orbitSim/atFunctions.h"
 #include "orbitSim/OrbSim.h"
 
-#include <cstdio>
 #include <cstdlib>
 #include <stdexcept>
 #include <string>
@@ -475,6 +475,11 @@ int checkManeuver(const char *str){
   strcpy(ln, str);
   strcat(ln, "\0");
 
+  //Check to see if this line is one of the header lines containing the previous ASFL information
+  if (match_str(ln, "//") == 1) {
+	  free(ln);
+	  return 0;
+  }
 
   if(checkDate(ln) != 1){
     return 0;
@@ -488,6 +493,7 @@ int checkManeuver(const char *str){
     ++str2;
   }
 
+  // Need to check str2 here, since that is the mode that the satellite is going IN to.
   if(match_str(str2, "^Maneuver") != 1){
     free(ln);
     return 0;
@@ -511,6 +517,12 @@ int checkManZenith(const char *str){
   strcpy(ln, str);
   strcat(ln, "\0");
 
+  //Check to see if this line is one of the header lines containing the previous ASFL information
+  if (match_str(ln, "//") == 1) {
+	  free(ln);
+  	  return 0;
+    }
+
   if(checkDate(ln) != 1){
     free(ln);
     return 0;
@@ -526,30 +538,30 @@ int checkManZenith(const char *str){
     return 0;
   }
   
-  char *str2 = processline(ln, '|');
+  char *str2 = processline(str1, '|');
 
   while(str2[0] == ' '){
     ++str2;
   }
 
-  if(match_str(str2, "^Zenith") != 1){
+  if(match_str(str2, "^ZenithPoint") != 1){
     free(ln);
     return 0;
   }
 
-  int i = 0;
-  for(i=0; i<6; i++){
-    ++str2;
-  }
+//  int i = 0;
+//  for(i=0; i<6; i++){
+//    ++str2;
+//  }
 
-  while(str2[0] == ' '){
-    ++str2;
-  }
+//  while(str2[0] == ' '){
+//    ++str2;
+//  }
 
-  if(match_str(str2, "^Point") != 1){
-    free(ln);
-    return 0;
-  }
+//  if(match_str(str2, "^Point") != 1){
+//    free(ln);
+//    return 0;
+//  }
 
 
   free(ln);
@@ -560,7 +572,7 @@ int checkManZenith(const char *str){
 int checkDate(char *ln){
 
 
-  int datelen = 27;
+  int datelen = 23;
 
   int lenstr = strlen(ln);
 
@@ -572,13 +584,13 @@ int checkDate(char *ln){
   int i = 0;
   char s;
 
-  // 2 0 0 7 - 1 9 3 - 0  0  :  0  0  :  0  0  :  0  0  .  0  0  0  0  0  0
-  // 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
+  // 2 0 0 7 - 1 9 3 - 0  0  :  0  0  :  0  0  .  0  0  0  0  0  0
+  // 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
   for(i=0; i<datelen; i++){
     s = ln[i];
 
     if(i<4 || (i>4 && i<8) || (i>8 && i<11) || 
-       (i>11 && i<14) || (i>14 && i<17) || (i>17 && i<20) || i>20) {
+       (i>11 && i<14) || (i>14 && i<17) || i>17) {
        if (isdigit(ln[i]) == 0){
 	 return 0;
        }
@@ -587,12 +599,12 @@ int checkDate(char *ln){
       if(s != '-'){
 	return 0;
       }
-    } else if(i==11 || i==14 || i==17){
+    } else if(i==11 || i==14){
       if(s != ':'){
 	return 0;
       }
 
-    } else if(i==20){
+    } else if(i==17){
       if(s != '.'){
 	return 0;
       }
@@ -970,6 +982,11 @@ void GetPos(double mjd, AtVect vSat, AtVect vNVel, double SurvOfs, double *RVal)
   RVal[9]  = vNSun[1];
   RVal[10] = vNSun[2];
   
+  /* Test GetPointedRock function */
+  //std::cout<<"dbg :"<<vNVel[0]<<" "<<vNVel[1]<<" "<<vNVel[2]<<"\n";
+  //std::cout<<"dbg: rock_angle="<<SurvOfs*RAD2DEG<<"\n";
+  // std::cout<<"dbg: rock_calc ="<<GetPointedRock(vNVel, RVal)*RAD2DEG<<"\n";
+  //std::cout<<"===============================\n";
 
   return;
 
@@ -1247,16 +1264,59 @@ void angularSep(double pra, double pdec, double ra, double dec, double *theta){
 
 
 void getslewtime(double pra, double pdec, double ra, double dec, double res, double *slewt){
-
+/**********************
   double reso = res*minInDay;
   double slewR = SLEW_RATE/reso;
   double theta;
-
   angularSep(pra*DEG2RAD, pdec*DEG2RAD, ra*DEG2RAD, dec*DEG2RAD, &theta);
   *slewt = theta*RAD2DEG/slewR;
   
   *slewt = *slewt/minInDay;
   return;
+***********************/
+    /* The above calculation of slewt does not use the SLEW_RATE properly. */
+    /* SLEW_RATE is in deg/minute. */
+    double theta;
+    angularSep(pra*DEG2RAD, pdec*DEG2RAD, ra*DEG2RAD, dec*DEG2RAD, &theta);
+    *slewt = theta*RAD2DEG/SLEW_RATE;
+    /* Convert minute to day */
+    *slewt /= minInDay;
+}
+
+/*
+ * Calculate the rock angle for pointed observation 
+ * The rock angle is the angle between zenith direction and satellite
+ * pointing perpendicular to the orbit plane.
+ * @Params:
+ *      satPos:   Satellite position vector
+ *      satNVel:  Satellite velocity normal vector
+ *      RaDec[0], RaDec[1]: Zenith direction
+ *      RaDec[2], RaDec[3]: Satellite body z-axis direction
+ *      RaDec[4], RaDec[5]: Satellite body y-axis direction
+ *      RaDec[6], RaDec[7]: Satellite body x-axis direction
+ *      Return the angle in radians 
+ */ 
+double GetPointedRock(double RaDec[4])
+{
+    /* The rock angle is the angle separation between the satellite
+     * body z-axis and the zenith direction. */
+    double rock_angle;
+    double sra, sdec, zra, zdec;
+
+    sra  = RaDec[0]*DEG2RAD;
+    sdec = RaDec[1]*DEG2RAD;
+    zra  = RaDec[2]*DEG2RAD;
+    zdec = RaDec[3]*DEG2RAD;
+    angularSep(sra, sdec, zra, zdec, &rock_angle);
+    /* So far the calculated rock angle has no sign */
+    /* If zdec is in the south of sdec, then the rock angle is positive; 
+     * if zdec is in the north of sdec, then the rock angle is negative;
+     */
+    if(zdec > sdec) {
+        rock_angle = -rock_angle;
+    }
+
+    return (rock_angle);
 }
 
 void GetPointedPos(double mjd, AtVect vSat, AtVect vNVel, 
@@ -2103,4 +2163,95 @@ void precessionRM(double mjd, AtRotMat Rm)
   Rm[0][2] =  cos(zeta)*sin(theta);
   Rm[1][2] = -sin(zeta)*sin(theta);
   Rm[2][2] =  cos(theta);
+}
+
+/*
+ * GetQuat: calculate the satellite body frame quaternions
+ * @params:
+ *     xra, xdec:   body x-axis direction, in degrees
+ *     yra, ydec:   body y-axis direction, in degrees
+ *     zra, zdec:   body z-axis direction, in degrees
+ *  output:
+ *     quat:  the quaternion for output
+ * @author: C. Deng
+ */
+void GetQuat(const double& xra, const double& xdec, const double& yra, const double& ydec,
+             const double& zra, const double& zdec, double quat[4])
+{
+    /* Need to get the vector representation of the three body axises. */
+    AtVect mat[3];
+    AtPolarVect vpol;
+        
+    /* The vector should be normalized. */
+    vpol.r   = 1.0;
+
+    /* Calculate the component of x-axis rotation */
+    vpol.lon = xra*DEG2RAD;
+    vpol.lat = xdec*DEG2RAD;
+    atPolToVect(&vpol, mat[0]);
+
+    /* Calculate the component of y-axis rotation */
+    vpol.lon = yra*DEG2RAD;
+    vpol.lat = ydec*DEG2RAD;
+    atPolToVect(&vpol, mat[1]);
+
+    /* Calculate the component of z-axis rotation */
+    vpol.lon = zra*DEG2RAD;
+    vpol.lat = zdec*DEG2RAD;
+    atPolToVect(&vpol, mat[2]);
+
+    /* Convert matrix to quaternion */
+    /* Calculate the matrix trace */
+    double tr1 = 1.0 + mat[0][0] + mat[1][1] + mat[2][2];
+    double fact;
+    double a1, a2, a3;
+    if(tr1 > 0.0) 
+        quat[0] = 0.5*sqrt(tr1);
+    else
+        quat[0] = 0.0;
+   
+    if(quat[0] > 1.0e-3) {
+        fact = 0.25/quat[0];
+        quat[1] = (mat[1][2] - mat[2][1]) * fact;
+        quat[2] = (mat[2][0] - mat[0][2]) * fact;
+        quat[3] = (mat[0][1] - mat[1][0]) * fact;
+    }
+    else {
+        a1 = 0.5*sqrt(fabs( 1.0 + mat[0][0] - mat[1][1] - mat[2][2]));
+        a2 = 0.5*sqrt(fabs( 1.0 - mat[0][0] + mat[1][1] - mat[2][2]));
+        a3 = 0.5*sqrt(fabs( 1.0 - mat[0][0] - mat[1][1] + mat[2][2]));
+        if(a3 >= 0.5) {
+            quat[3] = a3;
+            fact = 0.25/quat[3];
+            quat[1] = (mat[2][0] + mat[0][2]) * fact;
+            quat[2] = (mat[2][1] + mat[1][2]) * fact;
+            quat[0] = (mat[0][1] - mat[1][0]) * fact;
+        }
+        else if(a2 >= 0.5) {
+            quat[2] = a2;
+            fact = 0.25/quat[2];
+            quat[1] = (mat[1][0] + mat[0][1]) * fact;
+            quat[3] = (mat[1][2] + mat[2][1]) * fact;
+            quat[0] = (mat[2][0] - mat[0][2]) * fact;
+        }
+        else if(a1 >= 0.5) {
+            quat[1] = a1;
+            fact = 0.25/quat[1];
+            quat[2] = (mat[0][1] + mat[1][0]) * fact;
+            quat[3] = (mat[0][2] + mat[2][0]) * fact;
+            quat[0] = (mat[1][2] - mat[2][1]) * fact;
+        }
+        else {
+            std::cout<<" Abnormal termination in GetQuat.\n";
+            std::cout<<" Quaternion could not be computed due to singularities.\n";
+            abort();
+        }
+    } 
+
+    /* Normalize the quaternion */
+    fact = sqrt(quat[0]*quat[0] + quat[1]*quat[1] + quat[2]*quat[2] + quat[3]*quat[3]);
+    quat[0] /= fact;
+    quat[1] /= fact;
+    quat[2] /= fact;
+    quat[3] /= fact;
 }
