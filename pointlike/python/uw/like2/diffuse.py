@@ -492,7 +492,7 @@ def diffuse_factory(value, event_type_names=('front', 'back')):
             files = DiffuseList([val['filename'] for val in value], event_type_names)
         except KeyError:
             raise DiffuseException('expected "filename" key in dict')
-        type = value[0].pop('type', None)
+        type = value[0].get('type', None)
         kws = value
     else:
         files = DiffuseList(value,event_type_names)
