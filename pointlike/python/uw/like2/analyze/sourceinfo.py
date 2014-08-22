@@ -105,10 +105,10 @@ class SourceInfo(analysis_base.AnalysisBase): #diagnostics.Diagnostics):
         localized = ~np.array(pd.isnull(self.df.delta_ts))
         extended = np.array(self.df.isextended, bool)
         self.df['unloc'] = ~(localized | extended)
-        self.df['poorloc'] = (self.df.a>0.2) + (self.df.locqual>8) + (self.df.delta_ts>2)
+        self.df['poorloc'] = (self.df.a>0.2) | (self.df.locqual>8) | (self.df.delta_ts>2)
         self.df['flags'] = 0  #used to set bits below
         flags = self.df.flags
-        pl = (self.df.poorloc + self.df.unloc) * (self.df.ts>10)
+        pl = (self.df.poorloc | self.df.unloc) & (self.df.ts>10)
         flags[pl] += 8 ### bit 8
         #print '%d sources flagged (8) as poorly or not localized' % sum(pl)
 
