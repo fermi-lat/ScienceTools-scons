@@ -41,8 +41,11 @@ class Residuals(roi_info.ROIinfo):
         self.singlat = np.sin(np.radians(np.array(self.df.glat, float)))
         # expect to be in a skymodel folder
         self.config = configuration.Configuration('.', postpone=True, quiet=True)
-        t = [self.config.diffuse['isotrop']['correction'].replace('*',etn)
+        try:
+            t = [self.config.diffuse['isotrop']['correction'].replace('*',etn)
                 for etn in self.config.event_type_names]
+        except:
+            t = None
         self.isofiles = t
         self.galfile = self.config.diffuse['ring']['correction']
 
