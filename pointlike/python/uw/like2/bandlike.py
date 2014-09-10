@@ -355,7 +355,7 @@ class BandLikeList(list):
             if sourcename is not None:
                 b[sourcename].initialize()
             else:
-                b.initialize(free)
+                b.initialize(free if free is not None else self.sources.free)
             b.update()
         
     # the following methods sum over the current set of bands
