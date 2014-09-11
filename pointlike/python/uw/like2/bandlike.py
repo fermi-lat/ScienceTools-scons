@@ -79,7 +79,8 @@ class BandLike(object):
         """ should only call if free array changes.
             Saves the combined prediction from the models with fixed parameters
         """
-        self.free = free #if free is not None else np.ones(len(self.bandsources), bool)
+        assert free is not None, 'bad call?'
+        self.free = free
         self.free_sources = self.bandsources[self.free]
         self.counts = self.fixed_counts = sum([b.counts for b in self.bandsources[ ~ self.free]])
         if not self.band.has_pixels: 

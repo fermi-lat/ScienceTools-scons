@@ -166,7 +166,7 @@ class ResidualTS(object):
         self.source.skydir = skydir
         self.roi.calls =0
         self.model[0]=1e-13 # initial value 
-        self.roi.initialize(self.sourcename)
+        self.roi.initialize(sourcename=self.sourcename)
         try:
             self.func.maximize(estimate_errors=False)
             ts = self.roi.TS()
