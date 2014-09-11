@@ -428,7 +428,7 @@ class TSmapView(tools.WithMixin):
         
     def set_dir(self, skydir):
         self.source.skydir = skydir
-        self.blike.initialize(sourcenane=self.source.name)
+        self.blike.initialize(None, self.source.name ) #sourcenane=self.source.name)
     
     def get_dir(self):
         return self.source.skydir
@@ -479,7 +479,8 @@ class EnergyFluxView(tools.WithMixin):
             par = self.bound
         else:
             par = max(self.bound, self.tointernal(eflux*self.ratio))
-        return -self.func([par])        
+        return -self.func([par])
+        
 class NormalizationView(tools.WithMixin):
     """Manage a view defining a function of the normalization factor for a source
     

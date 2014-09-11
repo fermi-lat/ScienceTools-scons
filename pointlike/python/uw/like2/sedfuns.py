@@ -179,7 +179,7 @@ def norm_table(roi, source_name=None, event_type=None, tol=0.25, ignore_exceptio
     roi.select()
     energies = roi.energies
     poiss_list = dict()
-    with roi.normalization_view(source_name) as nv:
+    with roi.normalization_view(source.name) as nv:
         for i,energy  in enumerate(energies):
             roi.select(i, event_type)
             try:
