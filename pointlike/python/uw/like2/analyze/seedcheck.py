@@ -54,7 +54,7 @@ class SeedCheck(sourceinfo.SourceInfo):
                 print 'fail errors for %s:%s' % (name, msg)
                 badfit = True
             has_adict = hasattr(source,'adict') and source.adict is not None
-            has_ellipse = hasattr(source, 'ellipse')
+            has_ellipse = hasattr(source, 'ellipse') and source.ellipse is not None
             sdict[name] = dict(
                 ra =source.skydir.ra(), dec=source.skydir.dec(),
                 ts=source.ts,
@@ -100,7 +100,7 @@ class SeedCheck(sourceinfo.SourceInfo):
         for x in acat:
             t[sa.index(x)]+=1
         self.assoc_sum = zip(sa, t)
-        self.good = (self.df.ts>6)*(self.df.r95<0.6)*(self.df.locqual<8)
+        self.good = (self.df.ts>6)&(self.df.r95<0.6)&(self.df.locqual<8)
         self.df_good= self.df[self.good]
         self.cut_summary= '<p>Read in %d sources from file %s: <br>selection cut: (self.df.ts>6)*(self.df.r95<0.6)*(self.df.locqual<8) : %d remain'\
             % (len(sources), self.require, sum(self.good))
@@ -147,8 +147,9 @@ class SeedCheck(sourceinfo.SourceInfo):
         
     def histo(self, ax, v, bins):
         ax.hist(v, bins)
-        ax.hist(v[self.df_good.ts>10], bins, label='TS>10')
-        ax.hist(v[self.df_good.ts>25], bins, label='TS>25')
+        ts = np.array(self.df_good.ts)
+        ax.hist(v[ts>10], bins, label='TS>10')
+        ax.hist(v[ts>25], bins, label='TS>25')
         ax.legend(prop=dict(size=10))
         ax.grid()
     
