@@ -24,7 +24,7 @@ class Process(main.MultiROI):
         ('norms_first',   False, 'initial fit to norms only'),
         ('countsplot_tsmin', 100, 'minimum for souces in counts plot'),
         ('source_name',   None,   'for localization?'),
-        ('fit_kw',        {},     'extra parameters for fit'),
+        ('fit_kw',        dict(ignore_exception=True),     'extra parameters for fit'),
         ('associate_flag',False,  'run association'),
         ('tsmap_dir',     None,   'folder for TS maps'),
         ('sedfig_dir',    None,   'folder for sed figs'),
@@ -409,13 +409,15 @@ class Process(main.MultiROI):
         #print 'sources:', [s.name for s in sources]
         print '%-15s%6s%8s %8s' % ('name','TS','qual', 'delta_ts')
         for source in sources:
-            print '%-15s %6.0f' % (source.name, source.ts) , 
+            has_ts= hasattr(source, 'ts')
+            print '%-15s %6.0f' % (source.name, source.ts if has_ts else -1.0) , 
             if not hasattr(source, 'ellipse') or source.ellipse is None:
                 print ' no localization info'
                 continue
-            if not hasattr(source, 'ts'):   
+            if not has_ts:   
                 print '    no TS'
                 continue
+
             if source.ts<tsmin:
                 print '    TS<%.0f' % (tsmin)
                 continue
