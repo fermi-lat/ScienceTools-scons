@@ -413,6 +413,9 @@ class Process(main.MultiROI):
             if not hasattr(source, 'ellipse') or source.ellipse is None:
                 print ' no localization info'
                 continue
+            if not hasattr(source, 'ts'):   
+                print '    no TS'
+                continue
             if source.ts<tsmin:
                 print '    TS<%.0f' % (tsmin)
                 continue
