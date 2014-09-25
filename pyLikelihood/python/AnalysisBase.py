@@ -539,10 +539,18 @@ class AnalysisBase(object):
         try:
             if _plotter_package == 'root':
                 from RootPlot import RootPlot
-                self.plotter = RootPlot
+                self.plotter = RootPlot    
             elif _plotter_package == 'hippo':
-                from HippoPlot import HippoPlot
-                self.plotter = HippoPlot
+                try:
+                    from HippoPlot import HippoPlot
+                    self.plotter = HippoPlot
+                except ImportError:
+                    print "Failed importing Hippoplot.  Defaulting to MatPlotLib."
+                    from MPLPlot import MPLPlot
+                    self.plotter = MPLPlot        
+            elif _plotter_package == 'mpl':
+                    from MPLPlot import MPLPlot
+                    self.plotter = MPLPlot
         except ImportError:
             raise RuntimeError, ("Sorry plotting is not available using %s.\n"
                                  % _plotter_package +
