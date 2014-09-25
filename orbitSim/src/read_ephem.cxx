@@ -1737,7 +1737,7 @@ void MakePointed(double start, double end, double res, double ra,
 
   inum = (int) ((end-start+res/2.)/res);
   inum++;
-
+  inum += 3;
 
   if(ra<0.0){
     ra = ra+360.0;

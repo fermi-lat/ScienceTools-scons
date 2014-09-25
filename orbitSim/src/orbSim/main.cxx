@@ -311,8 +311,8 @@ void orbitSimApp::run() {
   if(match_str( initf.TLtype.c_str(), "TAKO") == 1){
     Oat = makeAttTako(&initf, ephemeris);
   } else if (match_str( initf.TLtype.c_str(), "ASFLOWN") == 1){
-	  throw std::runtime_error("\nERROR: ASFLOWN mode is still in developement.  Functionality has been disabled.");
-	//Oat = makeAttAsFl(&initf, ephemeris);
+	  //throw std::runtime_error("\nERROR: ASFLOWN mode is still in developement.  Functionality has been disabled.");
+	Oat = makeAttAsFl(&initf, ephemeris);
   } else if (match_str( initf.TLtype.c_str(), "SINGLE") == 1){
     Oat = doCmd(&initf, ephemeris);
   }

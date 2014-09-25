@@ -19,8 +19,9 @@ extern "C" {
 #endif
 
 
-  /// bufsz is the maximum length for a line contained in a file to be read
-  const int bufsz = 600;
+  /// bufsz is the maximum length for a line contained in a file to be read.
+  /// Value needed to be increased to 650 from 600 to prevent buffer overruns.
+  const int bufsz = 650;
 
 
 
@@ -199,6 +200,23 @@ extern "C" {
    */
   void parseProfile(char *ln, SurProf *profile);
 
+/**
+   * @brief Function that parses the initial parameters
+   * from an AS-FLOWN Timeline header
+   * 
+   * This function is called by makeAttAsFl to parse header information
+   * which provides the initial starting state of the satellite
+   *
+   *
+   * @param ln - line.
+   * @param profile - profile structure.
+   * 
+   * @author Joe Asercion
+   * @date Created:  September 7, 2014
+   *
+   */
+
+  void parseInitParams(char *ln, SurProf *profile);
 
 
   /**

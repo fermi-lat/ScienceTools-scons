@@ -434,6 +434,17 @@ void precessionRM(double mjd, AtRotMat Rm);
 
   int checkManZenith(const char *str);
 
+  /**
+   * @brief This function checks to see if the parsed line indicates the satellite is 
+   * going from a maneuver into an inertial point, and sets variables accordingly.
+   * 
+   * @param string - input string
+   * 
+   * @author Joe Asercion
+   * @date Created: September 7, 2014
+   */
+
+  int checkManInertial(const char *str);
 
 
   /**
