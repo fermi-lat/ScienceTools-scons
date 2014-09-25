@@ -237,11 +237,11 @@ namespace st_graph {
 
       virtual double upperBound(const Itor_t & itor) const { return *itor + upperSpread(itor); }
 
-      virtual double lowerSpread(const Itor_t & itor) const { return .5 * (*itor - prevElement(itor)); }
+      virtual double lowerSpread(const Itor_t & itor) const { return .5 * (*itor - this->prevElement(itor)); }
 
-      virtual double upperSpread(const Itor_t & itor) const { return .5 * (nextElement(itor) - *itor); }
+      virtual double upperSpread(const Itor_t & itor) const { return .5 * (this->nextElement(itor) - *itor); }
 
-      virtual double width(const Itor_t & itor) const { return .5 * (nextElement(itor) - prevElement(itor)); }
+      virtual double width(const Itor_t & itor) const { return .5 * (this->nextElement(itor) - this->prevElement(itor)); }
 
       /** \brief Return a new copy of the current ISequence subclass.
       */
@@ -264,17 +264,17 @@ namespace st_graph {
       */
       LowerBoundSequence(const Itor_t & begin, const Itor_t & end): ScalarSequence<Itor_t>(begin, end) {}
 
-      virtual double value(const Itor_t & itor) const { return .5 * (*itor + nextElement(itor)); }
+      virtual double value(const Itor_t & itor) const { return .5 * (*itor + this->nextElement(itor)); }
 
       virtual double lowerBound(const Itor_t & itor) const { return *itor; }
 
-      virtual double upperBound(const Itor_t & itor) const { return nextElement(itor); }
+      virtual double upperBound(const Itor_t & itor) const { return this->nextElement(itor); }
 
       virtual double lowerSpread(const Itor_t & itor) const { return .5 * width(itor); }
 
       virtual double upperSpread(const Itor_t & itor) const { return .5 * width(itor); }
 
-      virtual double width(const Itor_t & itor) const { return nextElement(itor) - *itor; }
+      virtual double width(const Itor_t & itor) const { return this->nextElement(itor) - *itor; }
 
       /** \brief Return a new copy of the current ISequence subclass.
       */

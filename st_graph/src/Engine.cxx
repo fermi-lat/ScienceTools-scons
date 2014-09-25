@@ -6,6 +6,8 @@
 
 #ifndef BUILD_WITHOUT_ROOT
 #include "RootEngine.h"
+#else
+#include "MPLEngine.h"
 #endif
 
 #include "st_graph/Engine.h"
@@ -165,7 +167,8 @@ namespace st_graph {
 #ifndef BUILD_WITHOUT_ROOT
     static RootEngine s_engine;
 #else
-    static NoOpEngine s_engine;
+//    static NoOpEngine s_engine;
+    static MPLEngine s_engine;
 #endif
     return s_engine;
   }

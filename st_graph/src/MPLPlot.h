@@ -1,0 +1,140 @@
+/** \file MPLPlot.h
+    \brief Interface of MPLPlot class.
+    \author Tom Stephens, HEASARC/GSSC
+*/
+#ifndef st_graph_MPLPlot_h
+#define st_graph_MPLPlot_h
+
+#include <string>
+#include <vector>
+
+#include "st_graph/Axis.h"
+#include "st_graph/IPlot.h"
+#include "st_graph/Sequence.h"
+
+namespace st_graph {
+
+  class IFrame;
+  class ISequence;
+  class MPLPlotFrame;
+
+  /** \class MPLPlot
+      \brief A MPL implementation of the IFrame interface. This specific class displays a plot in its frame.
+
+      Note:  This class is simply a copy of the RootPlot class as it doesn't actually have any drawing/plotting
+      functionality in it.  That functionality is contained in the MPLPlotFrame (and RootPlotFrame) class.  In
+      reality this class is just a data container that holds the information to be plotted.  The copy was made
+      for naming consistency and before I realized that there actually was no Python functionality in this class.
+      However, since it references MPLPlotFrame it cannot just be swapped out for the RootPlot class.
+
+  */
+  class MPLPlot : public IPlot {
+    public:
+      /** \brief Construct a MPLPlot object.
+          \param parent The parent frame.
+          \param style The style of the plot. Currently, either hist* or scat*, case insensitive, will produce
+                 a histogram or scatter plot, respectively.
+          \param x The first dimension.
+          \param y The second dimension.
+          \param delete_parent Flag indicating plot owns (and should delete) parent.
+      */
+      MPLPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y, bool delete_parent = false);
+
+      /** \brief Construct a MPLPlot object.
+          \param parent The parent frame.
+          \param style The style of the plot.
+          \param x The first dimension.
+          \param y The second dimension.
+          \param z The third dimension.
+          \param delete_parent Flag indicating plot owns (and should delete) parent.
+      */
+      MPLPlot(IFrame * parent, const std::string & style, const ISequence & x, const ISequence & y,
+        const std::vector<std::vector<double> > & z, bool delete_parent = false);
+
+      virtual ~MPLPlot();
+
+      /// \brief Get the sequences this plot represents.
+      virtual const std::vector<const ISequence *> getSequences() const;
+
+      /// \brief Get the data represented by this plot. If plot does not have this type of data an exception will be thrown.
+      virtual const std::vector<std::vector<double> > & getZData() const;
+
+      /// \brief Get the number of dimensions of the plot, currently either 2 or 3.
+      virtual unsigned int getDimensionality() const { return m_dimensionality; }
+
+      /// \brief Get this plot's axes objects, with modification rights.
+      virtual std::vector<Axis> & getAxes();
+
+      /// \brief Get this plot's axes objects, without modification rights.
+      virtual const std::vector<Axis> & getAxes() const;
+
+      /** \brief Add a marker with optional text to this plot.
+          \param x X coordinate of label.
+          \param y Y coordinate of label.
+          \param text Text to display in the label.
+      */
+      virtual void addMarker(double x, double y, const std::string & text, int color = Color::eBlack);
+
+      /** \brief Get container of labels.
+          \param labels The output container of labels.
+      */
+      virtual void getMarkers(std::vector<Marker> & labels) const;
+
+      virtual std::vector<Marker> & getMarkers();
+
+      /** \brief Get the current color of line used to connect points in plot.
+      */
+      virtual int getLineColor() const;
+
+      /** \brief Set the color of line used to connect points in plot.
+          \param color Integer code indicating desired color of line.
+      */
+      virtual void setLineColor(int color);
+
+      /** \brief Get the current style of line used to connect points in plot.
+      */
+      virtual std::string getLineStyle() const;
+
+      /** \brief Set the style of line used to connect points in plot.
+          \param style String indicating type of line; may be none, solid, dotted, dashed.
+      */
+      virtual void setLineStyle(const std::string & style);
+
+      /** \brief Get the current type of curve used to connect points in plot.
+      */
+      virtual std::string getCurveType() const;
+
+      /** \brief Set the type of curve used to connect data points.
+          \param type String indicating type of connection: curve or line.
+      */
+      virtual void setCurveType(const std::string & type);
+
+      /// \brief Return a string describing the plot style, e.g. hist, scat, lego, surf, etc.
+      const std::string & getStyle() const;
+
+      /** \brief Set the plot style.
+          \param style The new style. This string will be converted to all lower case, and rationalized.
+      */
+      void setStyle(const std::string & style);
+
+      /** \brief Set the frame which is parent to this plot.
+          \param parent The new parent.
+      */
+      void setParent(MPLPlotFrame * parent);
+
+    private:
+      std::vector<const ISequence *> m_seq_cont;
+      std::vector<Marker> m_label;
+      std::string m_style;
+      std::string m_line_style;
+      std::string m_curve_type;
+      int m_line_color;
+      unsigned int m_dimensionality;
+      MPLPlotFrame * m_parent;
+      const std::vector<std::vector<double> > * m_z_data;
+      bool m_delete_parent;
+  };
+
+}
+
+#endif

@@ -2,6 +2,9 @@
     \brief Test code for plotting/graphics
     \author James Peachey, HEASARC/GSSC
 */
+#ifdef BUILD_WITHOUT_ROOT
+#include <Python.h>
+#endif
 #include <iostream>
 #include <list>
 #include <cmath>
@@ -82,7 +85,9 @@ void StGraphTestApp::run() {
     return;
   }
 
+#ifndef BUILD_WITHOUT_ROOT
   testGuis();
+#endif
   testSequence();
   testPlots();
 
@@ -191,7 +196,7 @@ void StGraphTestApp::run() {
   if (m_failed) throw std::runtime_error("Unit test failed");
 }
 
-void StGraphTestApp::processCommandLine(int argc, char **) {
+void StGraphTestApp::processCommandLine(int argc, char **argv) {
   if (argc > 1) m_do_test = true;
 }
 
@@ -642,6 +647,12 @@ void StGraphTestApp::reportUnexpected(const std::string & text) const {
 }
 
 int main(int argc, char ** argv) {
+
+#ifdef BUILD_WITHOUT_ROOT
+	Py_Initialize();
+	PySys_SetArgv(argc, argv);
+#endif
+
   int status = 1;
   try {
     StGraphTestApp app(argc, argv);
