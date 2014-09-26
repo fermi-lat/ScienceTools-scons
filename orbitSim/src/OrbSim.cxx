@@ -445,20 +445,37 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
 
     double lastend = 0.0;
 
-    // Checking ATS Time Range, held in lines 1 & 2 (0 indexed)
-    // Exiting Program and Throwing Runtime Error if outside acceptable range
-    fgets(ln, bufsz, ITL); //Leading title Line. No Info.
-    fgets(ln, bufsz, ITL); // Timeline Start Time
-    tl_start = getMJD(ln); // Set Start Time
-    fgets(ln, bufsz, ITL); // Timeline End Time
-    tl_end = getMJD(ln);   // Set End Time
-    if (ini->stop_MJD < tl_start) throw std::runtime_error("\nERROR: Invalid Time Range. stop_MJD occurs before ATS Timeline begins!");
-    if (ini->start_MJD > tl_end) throw std::runtime_error("\nERROR: Invalid Time Range. start_MJD occurs after ATS Timeline ends!");
-    if (ini->start_MJD < tl_start) throw std::runtime_error("\nERROR: Invalid Time Range. start_MJD occurs before ATS Timeline begins!");
-    if (ini->stop_MJD > tl_end) { //throw std::runtime_error("\nERROR: Invalid Time Range. stop_MJD occurs after ATS Timeline ends!");
-      losf.warn(1) << "WARNING: stop_mjd=" << ini->stop_MJD << " exceeds ATS Timeline End=" << tl_end << ". Orbitsim will only run up to mjd=" << tl_end << "\n";
-      ini->stop_MJD = tl_end;
-    }
+   int yyy, doy, hh, mm, ss;
+   char lineBuf[bufsz];
+
+   while(fgets(ln,bufsz, ITL)) {
+     strcpy(lineBuf,ln);
+	   if (match_str((const char*) ln, " Begin ") == 1) {
+		   break;
+	   }
+   }
+
+   char *LB = strtok(lineBuf, " ");
+   LB = strtok(NULL, " ");
+   sscanf(LB, "%d/%d:%d:%d:%d", &yyy, &doy, &hh, &mm, &ss);
+   tl_start = do_utcj2mjd (yyy, doy, hh, mm, ss);
+
+   while(fgets(ln, bufsz, ITL)) {
+     strcpy(lineBuf,ln);
+   }
+
+   LB = strtok(lineBuf, " ");
+   LB = strtok(NULL, " ");
+   sscanf(LB, "%d/%d:%d:%d:%d", &yyy, &doy, &hh, &mm, &ss);
+   tl_end = do_utcj2mjd (yyy, doy, hh, mm, ss);
+
+   if (ini->stop_MJD < tl_start) throw std::runtime_error("\nERROR: Invalid Time Range. stop_MJD occurs before ATS Timeline begins!");
+   if (ini->start_MJD > tl_end) throw std::runtime_error("\nERROR: Invalid Time Range. start_MJD occurs after ATS Timeline ends!");
+   if (ini->start_MJD < tl_start) throw std::runtime_error("\nERROR: Invalid Time Range. start_MJD occurs before ATS Timeline begins!");
+   if (ini->stop_MJD > tl_end) { //throw std::runtime_error("\nERROR: Invalid Time Range. stop_MJD occurs after ATS Timeline ends!");
+     losf.warn(1) << "WARNING: stop_mjd=" << ini->stop_MJD << " exceeds ATS Timeline End=" << tl_end << ". Orbitsim will only run up to mjd=" << tl_end << "\n";
+     ini->stop_MJD = tl_end;
+   }
 
     // Removing initial part which is not used
     while(fgets(ln, bufsz, ITL)) {
