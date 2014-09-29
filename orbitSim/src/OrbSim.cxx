@@ -477,6 +477,9 @@ Attitude * makeAttTako(InitI *ini, EphemData *ephem) {
      ini->stop_MJD = tl_end;
    }
 
+   memset(ln,'0',bufsz);
+   ITL=fopen(ini->TLname.c_str(),"r");
+
     // Removing initial part which is not used
     while(fgets(ln, bufsz, ITL)) {
       if (strncmp(ln, "// ------------------------", 27) == 0){
