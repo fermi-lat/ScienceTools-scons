@@ -6,6 +6,7 @@
 --------------------------------------------------------------------------------
 EOH 
 
+ orbitSim-02-00-12 29-Sep-2014 asercion Bug fix for TAKO timeline date checking function.
  orbitSim-02-00-11 29-Sep-2014 asercion Added better TAKO timeline date checking.
  orbitSim-02-00-10 25-Sep-2014 asercion Updated gtorbsim code from FSSC.  Mostly major bugfixes.
  orbitSim-02-00-09 09-Aug-2014 asercion Updates and bugfixes for OrbitSim from the FSSC.
