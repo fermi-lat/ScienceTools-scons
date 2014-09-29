@@ -18,7 +18,7 @@ st_graphRootcint = libEnv.Rootcint('st_graph/st_graph_rootcint',
                                    includes = ['.', 'src'],
                                    localIncludes=includeFiles,
                                    packageName='st_graph')
-st_graphLib = libEnv.StaticLibrary('st_graph', listFiles(['src/*.cxx']) + ['st_graph/st_graph_rootcint.cxx'])
+st_graphLib = libEnv.StaticLibrary('st_graph', listFiles(['src/*.cxx']) + ['st_graph/st_graph_rootcint.cxx'] + ['src/EmbedPython.cpp'])
 
 progEnv.Tool('st_graphLib')
 if baseEnv['PLATFORM'] == "posix":
@@ -30,4 +30,5 @@ progEnv.Tool('registerTargets', package = 'st_graph',
              staticLibraryCxts = [[st_graphLib,libEnv]],
              includes = listFiles(['st_graph/*.h']),
              testAppCxts = [[test_st_graphBin, progEnv]],
-             pfiles = listFiles(['pfiles/*.par']))
+             pfiles = listFiles(['pfiles/*.par']),
+             python=listFiles(['src/*.py']))

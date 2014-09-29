@@ -4,6 +4,7 @@ def generate(env, **kw):
 		env.Tool('addLibrary', library = ['st_graph'])
 	env.Tool('st_streamLib')
 	env.Tool('hoopsLib')
+        env.Tool('embed_pythonLib')
 	env.Tool('addLibrary', library = env['rootLibs'])
 	env.Tool('addLibrary', library = env['rootGuiLibs'])
 
