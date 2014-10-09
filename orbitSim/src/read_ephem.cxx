@@ -746,15 +746,19 @@ void MakeAtt(double start, double mjde, double mjds, double pra,
 
   int oas = (int)(((mjde-TS)+res/2.0)/res);
   int flgS = 0;   // What is flgS for?
-  Attitude *TOAtt = allocateAttitude(oas);
+  //Attitude *TOAtt = allocateAttitude(oas);
 
 
   double tim = start;
 
   osf.setMethod("makeAtt");
 
+  if(start < mjds) {
+    DoSlew(start, mjds, pra, pdec, ra, dec, res, ephem, OAtt, TS);
+  }
 
-
+  if(mode != 2){
+    Attitude *TOAtt = allocateAttitude(oas);
   if (mode == 1 && start < mjds){
     oas += 2;
     TOAtt = reallocateAttitude(oas, TOAtt);
@@ -774,9 +778,9 @@ void MakeAtt(double start, double mjde, double mjds, double pra,
   }
 
 
-  if(start < mjds) {
-    DoSlew(start, mjds, pra, pdec, ra, dec, res, ephem, OAtt, TS);
-  }
+  //if(start < mjds) {
+  //  DoSlew(start, mjds, pra, pdec, ra, dec, res, ephem, OAtt, TS);
+  // }
 
   //  printf ("2) i=45 ==> mjd=%f, i=46 ==> mjd=%f\n", OAtt->mjd[45], OAtt->mjd[46]);
   if(mode == 1) {
@@ -811,13 +815,17 @@ void MakeAtt(double start, double mjde, double mjds, double pra,
       lpos[0] = TOAtt->Zra[k-1];
       lpos[1] = TOAtt->Zdec[k-1];
     }
-  } else {
+  }
+  TOAtt = deallocateAttitude(TOAtt);
+  }
+
+  if (mode = 2) {
     MakePointed(mjds, mjde, res, ra, dec, ephem, OAtt, TS);
     lpos[0] = ra;
     lpos[1] = dec;
   }
-  TOAtt = deallocateAttitude(TOAtt);
-
+  //  TOAtt = deallocateAttitude(TOAtt);
+ 
   osf.info(3) << "\nLeaving MakeAtt with lpos[0]="<<lpos[0]<<", lpos[1]="<<lpos[1]<<"\n\n\n";
 
 //   if(mjds > 54433.2) {
