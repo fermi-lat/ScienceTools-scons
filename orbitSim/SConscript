@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Id$
 # Authors: Eric Winter <Eric.L.Winter@nasa.gov>
-# Version: orbitSim-02-00-12
+# Version: orbitSim-03-00-00
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
