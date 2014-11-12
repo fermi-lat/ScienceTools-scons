@@ -168,7 +168,8 @@ void HealpixMap::binInput(tip::Table::ConstIterator begin, tip::Table::ConstIter
     // Write the EBOUNDS extension.
     if(m_hpx_ebin){ writeEbounds(out_file, m_ebounds);}
     else {
-      writeEbounds(out_file, &LinearBinner(m_emin,m_emax,m_emax-m_emin));}
+      LinearBinner LinBin(m_emin,m_emax,m_emax-m_emin);
+      writeEbounds(out_file, &LinBin);}
     // Write the GTI extension.
     writeGti(out_file);
   

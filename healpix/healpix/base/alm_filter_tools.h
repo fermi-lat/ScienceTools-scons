@@ -42,6 +42,11 @@ template<typename T> void saf_constantnoise(Alm<T> &sky,Alm<T> &psf,double cnl);
 */
 template<typename T> void saf_noise(Alm<T> &sky,Alm<T> &psf,Alm<T> &noise);
 
+/**@brief return alm complex conjugate
+@param alm  An alm complex object
+*/
+template<typename T> Alm<xcomplex<T> > conjugate(Alm<xcomplex<T> > &alm);
+
 
 //------------------DILATED SPHERICAL FFTS-------------------------//
 //                Added for filtering support                      //

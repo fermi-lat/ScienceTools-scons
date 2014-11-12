@@ -8,6 +8,134 @@
 #include "healpix/base/openmp_support.h"
 using namespace std;
 
+//------------------FFT misc functions-------------------//
+//       unable to be resolved in global scope           //
+namespace {
+
+void init_lam_fact_1d (int m, arr<double> &lam_fact)
+  {
+  for (int l=m; l<lam_fact.size(); ++l)
+    lam_fact[l] = (l<2) ? 0. : 2*sqrt((2*l+1.)/(2*l-1.) * (l*l-m*m));
+  }
+
+void init_lam_fact_deriv_1d (int m, arr<double> &lam_fact)
+  {
+  lam_fact[m]=0;
+  for (int l=m+1; l<lam_fact.size(); ++l)
+    lam_fact[l] = sqrt((2*l+1.)/(2*l-1.) * (l*l-m*m));
+  }
+
+void init_normal_l (arr<double> &normal_l)
+  {
+  for (int l=0; l<normal_l.size(); ++l)
+    normal_l[l] = (l<2) ? 0. : sqrt(1./((l+2.)*(l+1.)*l*(l-1.)));
+  }
+
+void get_chunk_info (int nrings, int &nchunks, int &chunksize)
+  {
+  nchunks = nrings/max(100,nrings/10) + 1;
+  chunksize = (nrings+nchunks-1)/nchunks;
+  }
+
+void fill_work (const xcomplex<double> *datain, int nph, int mmax,
+  bool shifted, const arr<xcomplex<double> > &shiftarr,
+  arr<xcomplex<double> > &work)
+  {
+  for (int m=1; m<nph; ++m) work[m]=0;
+  work[0]=datain[0];
+
+  int cnt1=0, cnt2=nph;
+  for (int m=1; m<=mmax; ++m)
+    {
+    if (++cnt1==nph) cnt1=0;
+    if (--cnt2==-1) cnt2=nph-1;
+    xcomplex<double> tmp = shifted ? (datain[m]*shiftarr[m]) : datain[m];
+    work[cnt1] += tmp;
+    work[cnt2] += conj(tmp);
+    }
+  }
+
+void read_work (const arr<xcomplex<double> >& work, int nph, int mmax,
+  bool shifted, const arr<xcomplex<double> > &shiftarr,
+  xcomplex<double> *dataout)
+  {
+  int cnt2=0;
+  for (int m=0; m<=mmax; ++m)
+    {
+    dataout[m] = work[cnt2];
+    if (++cnt2==nph) cnt2=0;
+    }
+  if (shifted)
+    for (int m=0; m<=mmax; ++m) dataout[m] *= shiftarr[m];
+  }
+
+void recalc_map2alm (int nph, int mmax, rfft &plan,
+  arr<xcomplex<double> > &shiftarr)
+  {
+  if (plan.size() == nph) return;
+  plan.Set (nph);
+  double f1 = pi/nph;
+  for (int m=0; m<=mmax; ++m)
+    {
+    if (m<nph)
+      shiftarr[m].Set (cos(m*f1),-sin(m*f1));
+    else
+      shiftarr[m]=-shiftarr[m-nph];
+    }
+  }
+
+template<typename T> void fft_map2alm (int nph, int mmax, bool shifted,
+  double weight, rfft &plan, T *mapN, T *mapS,
+  xcomplex<double> *phas_n, xcomplex<double> *phas_s,
+  const arr<xcomplex<double> > &shiftarr, arr<xcomplex<double> > &work)
+  {
+  for (int m=0; m<nph; ++m) work[m] = mapN[m]*weight;
+  plan.forward_c(work);
+  read_work (work, nph, mmax, shifted, shiftarr, phas_n);
+  if (mapN!=mapS)
+    {
+    for (int m=0; m<nph; ++m) work[m] = mapS[m]*weight;
+    plan.forward_c(work);
+    read_work (work, nph, mmax, shifted, shiftarr, phas_s);
+    }
+  else
+    for (int m=0; m<=mmax; ++m) phas_s[m]=0;
+  }
+
+void recalc_alm2map (int nph, int mmax, rfft &plan,
+  arr<xcomplex<double> > &shiftarr)
+  {
+  if (plan.size() == nph) return;
+  plan.Set (nph);
+  double f1 = pi/nph;
+  for (int m=0; m<=mmax; ++m)
+    {
+    if (m<nph)
+      shiftarr[m].Set (cos(m*f1),sin(m*f1));
+    else
+      shiftarr[m]=-shiftarr[m-nph];
+    }
+  }
+
+template<typename T> void fft_alm2map (int nph, int mmax, bool shifted,
+  rfft &plan, T *mapN, T *mapS, xcomplex<double> *b_north,
+  xcomplex<double> *b_south, const arr<xcomplex<double> > &shiftarr,
+  arr<xcomplex<double> > &work)
+  {
+  fill_work (b_north, nph, mmax, shifted, shiftarr, work);
+  plan.backward_c(work);
+  for (int m=0; m<nph; ++m) mapN[m] = work[m].re;
+  if (mapN==mapS) return;
+  fill_work (b_south, nph, mmax, shifted, shiftarr, work);
+  plan.backward_c(work);
+  for (int m=0; m<nph; ++m) mapS[m] = work[m].re;
+  }
+
+} // namespace
+//
+//-------------------------------------------------------------------------//
+
+
 template<typename T> void mf_constantnoise(Alm<T> &sky,Alm<T> &psf) {
 	PowSpec pmap(1,sky.Lmax());
 	extract_powspec(psf,pmap);
@@ -255,130 +383,3 @@ template<typename T> Healpix_Map<T> lhood(int level) {
 template Healpix_Map<float> lhood(int level);
 template Healpix_Map<double> lhood(int level);
 
-
-//------------------FFT misc functions-------------------//
-//       unable to be resolved in global scope           //
-namespace {
-
-void init_lam_fact_1d (int m, arr<double> &lam_fact)
-  {
-  for (int l=m; l<lam_fact.size(); ++l)
-    lam_fact[l] = (l<2) ? 0. : 2*sqrt((2*l+1.)/(2*l-1.) * (l*l-m*m));
-  }
-
-void init_lam_fact_deriv_1d (int m, arr<double> &lam_fact)
-  {
-  lam_fact[m]=0;
-  for (int l=m+1; l<lam_fact.size(); ++l)
-    lam_fact[l] = sqrt((2*l+1.)/(2*l-1.) * (l*l-m*m));
-  }
-
-void init_normal_l (arr<double> &normal_l)
-  {
-  for (int l=0; l<normal_l.size(); ++l)
-    normal_l[l] = (l<2) ? 0. : sqrt(1./((l+2.)*(l+1.)*l*(l-1.)));
-  }
-
-void get_chunk_info (int nrings, int &nchunks, int &chunksize)
-  {
-  nchunks = nrings/max(100,nrings/10) + 1;
-  chunksize = (nrings+nchunks-1)/nchunks;
-  }
-
-void fill_work (const xcomplex<double> *datain, int nph, int mmax,
-  bool shifted, const arr<xcomplex<double> > &shiftarr,
-  arr<xcomplex<double> > &work)
-  {
-  for (int m=1; m<nph; ++m) work[m]=0;
-  work[0]=datain[0];
-
-  int cnt1=0, cnt2=nph;
-  for (int m=1; m<=mmax; ++m)
-    {
-    if (++cnt1==nph) cnt1=0;
-    if (--cnt2==-1) cnt2=nph-1;
-    xcomplex<double> tmp = shifted ? (datain[m]*shiftarr[m]) : datain[m];
-    work[cnt1] += tmp;
-    work[cnt2] += conj(tmp);
-    }
-  }
-
-void read_work (const arr<xcomplex<double> >& work, int nph, int mmax,
-  bool shifted, const arr<xcomplex<double> > &shiftarr,
-  xcomplex<double> *dataout)
-  {
-  int cnt2=0;
-  for (int m=0; m<=mmax; ++m)
-    {
-    dataout[m] = work[cnt2];
-    if (++cnt2==nph) cnt2=0;
-    }
-  if (shifted)
-    for (int m=0; m<=mmax; ++m) dataout[m] *= shiftarr[m];
-  }
-
-void recalc_map2alm (int nph, int mmax, rfft &plan,
-  arr<xcomplex<double> > &shiftarr)
-  {
-  if (plan.size() == nph) return;
-  plan.Set (nph);
-  double f1 = pi/nph;
-  for (int m=0; m<=mmax; ++m)
-    {
-    if (m<nph)
-      shiftarr[m].Set (cos(m*f1),-sin(m*f1));
-    else
-      shiftarr[m]=-shiftarr[m-nph];
-    }
-  }
-
-template<typename T> void fft_map2alm (int nph, int mmax, bool shifted,
-  double weight, rfft &plan, T *mapN, T *mapS,
-  xcomplex<double> *phas_n, xcomplex<double> *phas_s,
-  const arr<xcomplex<double> > &shiftarr, arr<xcomplex<double> > &work)
-  {
-  for (int m=0; m<nph; ++m) work[m] = mapN[m]*weight;
-  plan.forward_c(work);
-  read_work (work, nph, mmax, shifted, shiftarr, phas_n);
-  if (mapN!=mapS)
-    {
-    for (int m=0; m<nph; ++m) work[m] = mapS[m]*weight;
-    plan.forward_c(work);
-    read_work (work, nph, mmax, shifted, shiftarr, phas_s);
-    }
-  else
-    for (int m=0; m<=mmax; ++m) phas_s[m]=0;
-  }
-
-void recalc_alm2map (int nph, int mmax, rfft &plan,
-  arr<xcomplex<double> > &shiftarr)
-  {
-  if (plan.size() == nph) return;
-  plan.Set (nph);
-  double f1 = pi/nph;
-  for (int m=0; m<=mmax; ++m)
-    {
-    if (m<nph)
-      shiftarr[m].Set (cos(m*f1),sin(m*f1));
-    else
-      shiftarr[m]=-shiftarr[m-nph];
-    }
-  }
-
-template<typename T> void fft_alm2map (int nph, int mmax, bool shifted,
-  rfft &plan, T *mapN, T *mapS, xcomplex<double> *b_north,
-  xcomplex<double> *b_south, const arr<xcomplex<double> > &shiftarr,
-  arr<xcomplex<double> > &work)
-  {
-  fill_work (b_north, nph, mmax, shifted, shiftarr, work);
-  plan.backward_c(work);
-  for (int m=0; m<nph; ++m) mapN[m] = work[m].re;
-  if (mapN==mapS) return;
-  fill_work (b_south, nph, mmax, shifted, shiftarr, work);
-  plan.backward_c(work);
-  for (int m=0; m<nph; ++m) mapS[m] = work[m].re;
-  }
-
-} // namespace
-//
-//-------------------------------------------------------------------------//

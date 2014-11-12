@@ -11,6 +11,7 @@
 
 #include <cmath>
 #include <stdexcept>
+#include <string>
 
 namespace {
    inline const double sign(const double & x, const double & y) {
