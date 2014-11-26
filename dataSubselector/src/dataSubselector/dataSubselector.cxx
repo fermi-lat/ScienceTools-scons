@@ -127,6 +127,7 @@ void DataFilter::promptForParameters() {
    }
    m_pars.Prompt("emin");
    m_pars.Prompt("emax");
+   m_pars.Prompt("zmin");
    m_pars.Prompt("zmax");
    m_pars.Save();
 }

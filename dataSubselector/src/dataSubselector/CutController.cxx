@@ -84,9 +84,10 @@ CutController::CutController(st_app::AppParGroup & pars,
          }
       }
    }
+   double zmin = pars["zmin"];
    double zmax = pars["zmax"];
-   if (zmax < 180.) {
-      addRangeCut("ZENITH_ANGLE", "deg", 0, pars["zmax"]);
+   if (zmin > 0 || zmax < 180.) {
+      addRangeCut("ZENITH_ANGLE", "deg", zmin, zmax);
    }
    double phasemin = pars["phasemin"];
    double phasemax = pars["phasemax"];

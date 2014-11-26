@@ -10,6 +10,7 @@ tmin,r,a,INDEF,0,,start time (MET in s)
 tmax,r,a,INDEF,0,,end time (MET in s)
 emin,r,a,30,0,,lower energy limit (MeV)
 emax,r,a,300000,0,,upper energy limit (MeV)
+zmin,r,a,0,0,180,minimum zenith angle value (degrees)
 zmax,r,a,180,0,180,maximum zenith angle value (degrees)
 evclsmin,i,h,0,0,1000,"Minimum event class ID"
 evclsmax,i,h,10,0,1000,"Maximum event class ID"
