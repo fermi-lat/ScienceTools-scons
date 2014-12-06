@@ -231,11 +231,9 @@ void Simulator::makeEvents(EventContainer &events,
          m_elapsedTime += m_interval;
          m_fluxMgr->pass(m_interval);
          
-         std::string name = m_newEvent->fullTitle();
-         if (name.find("TimeTick") != std::string::npos) {
-            if (!m_usePointingHistory) {
-               scData.addScData(m_newEvent, spacecraft);
-            }
+         if (!m_usePointingHistory && 
+             m_newEvent->particleName() == "TimeTick") {
+            scData.addScData(m_newEvent, spacecraft);
          } else {
             if (events.addEvent(m_newEvent, respPtrs, spacecraft)) {
                m_numEvents++;
