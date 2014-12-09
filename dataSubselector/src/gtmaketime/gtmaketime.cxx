@@ -190,12 +190,6 @@ void MakeTime::createGti() {
 
    filter += roiZenAngleCut();
 
-   std::ostringstream event_time_range;
-   event_time_range << std::setprecision(20);
-   event_time_range << " && (START >= " << m_tmin
-                    << ") && (STOP <= " << m_tmax << ")";
-   filter += event_time_range.str();
-
    st_stream::StreamFormatter formatter("MakeTime", "createGti", 3);
    formatter.info() << "Applying GTI filter:\n" << filter << std::endl;
 
