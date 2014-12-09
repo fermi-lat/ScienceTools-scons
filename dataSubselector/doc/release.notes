@@ -5,6 +5,7 @@
     @verbatim
     * EOH *
 
+ dataSubselector-08-07-04 09-Dec-2014 jchiang fix STGEN-142
  dataSubselector-08-07-03 26-Nov-2014 jchiang add zmin parameter to gtselect
  dataSubselector-08-07-02 27-Jun-2014 jchiang enable astroserver P300 data to be processed by gtselect
  dataSubselector-08-07-01 17-Apr-2014 jchiang handle evtype=INDEF in gtselect
