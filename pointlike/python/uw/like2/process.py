@@ -399,7 +399,7 @@ class Process(main.MultiROI):
                                                   free=[True,True,False,False]))
         return good_seeds[inside]   
 
-    def update_positions(self, tsmin=10, qualmax=5):
+    def update_positions(self, tsmin=10, qualmax=8):
         """ use the localization information associated with each source to update position
             require ts>tsmin, qual<qualmax
             
