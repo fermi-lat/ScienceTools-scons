@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-03-15-06 19-Dec-2014 jchiang disable throwing of exception from EarthCoordinate
  astro-03-15-05 03-Dec-2014 jchiang Add MET to exception message from EarthCoordinate when altitude exceeds 600 km
  astro-03-15-04 09-Oct-2013 jchiang add NADIR case that correctly implements transformations using EARTH_AZIMUTH_ANGLE
  astro-03-15-03 29-Aug-2013 jchiang possible fix for transforming directions given by zenith and Earth azimuth angles
