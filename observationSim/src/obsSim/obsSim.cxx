@@ -245,6 +245,9 @@ void ObsSim::createResponseFuncs() {
       const std::vector<std::string> & resps = it->second;
       for (size_t i = 0; i < resps.size(); i++) {
          irfInterface::Irfs * irf(myFactory->create(resps[i]));
+         m_formatter->info(3) << "Adding IRF: " << resps[i];
+         m_formatter->info(4) << ", with event_type bit " << irf->irfID();
+         m_formatter->info(3) << std::endl;
          m_respPtrs.push_back(irf);
       }
    } else {
