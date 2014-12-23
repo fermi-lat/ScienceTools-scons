@@ -108,6 +108,19 @@ namespace {
 
 namespace observationSim {
 
+EventContainer::EventContainer(const std::string & filename, 
+                               const std::string & tablename,
+                               dataSubselector::Cuts * cuts,
+                               unsigned int maxNumEvents,
+                               double startTime, double stopTime,
+                               bool applyEdisp,
+                               const st_app::AppParGroup * pars) 
+   : ContainerBase(filename, tablename, maxNumEvents, pars), m_prob(1), 
+     m_cuts(cuts), m_startTime(startTime), m_stopTime(stopTime),
+     m_applyEdisp(applyEdisp) {
+   init();
+}
+
 EventContainer::~EventContainer() {
    if (m_events.size() > 0) {
       writeEvents(m_stopTime);
@@ -119,15 +132,12 @@ void EventContainer::init() {
    if (!m_cuts) {
       return;
    }
-   dataSubselector::BitMaskCut * bitMaskCut = m_cuts->bitMaskCut();
-   if (bitMaskCut) {
-      m_eventClass = 1 << bitMaskCut->bitPosition();
+   dataSubselector::BitMaskCut * evtClassCut(m_cuts->bitMaskCut("EVENT_CLASS"));
+   if (evtClassCut) {
+      m_eventClass = evtClassCut->mask();
    } else {
-      /// Some toy numbers, just so these are not zero.
-      m_eventClass = 2;
-      m_eventType = 212;
-      // m_eventClass = 0;
-      // m_eventType = 0;
+      m_eventClass = 0;
+      m_eventType = 0;
    }
 }
 

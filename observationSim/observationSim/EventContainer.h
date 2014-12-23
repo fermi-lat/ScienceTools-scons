@@ -54,12 +54,7 @@ public:
                   unsigned int maxNumEvents=20000,
                   double startTime=0, double stopTime=0,
                   bool applyEdisp=true,
-                  const st_app::AppParGroup * pars=0) : 
-      ContainerBase(filename, tablename, maxNumEvents, pars), m_prob(1), 
-      m_cuts(cuts), m_startTime(startTime), m_stopTime(stopTime),
-      m_applyEdisp(applyEdisp) {
-      init();
-   }
+                  const st_app::AppParGroup * pars=0);
 
    ~EventContainer();
 
