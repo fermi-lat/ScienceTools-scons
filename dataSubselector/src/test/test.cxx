@@ -625,7 +625,7 @@ void DssTests::test_VersionCut() {
 void DssTests::test_irfName() {
    dataSubselector::Cuts cuts1;
    cuts1.setIrfs("P7SOURCE_V6::BACK");
-   CPPUNIT_ASSERT(cuts1.bitMaskCut()->bitPosition() == 2);
+   CPPUNIT_ASSERT(cuts1.bitMaskCut()->mask() == 4);
    try {
       cuts1.setIrfs("P7TRANSIENT_V6");
    } catch (std::runtime_error & eObj) {
@@ -638,13 +638,13 @@ void DssTests::test_irfName() {
 
    dataSubselector::Cuts cuts2;
    cuts2.setIrfs("P7TRANSIENT_V6");
-   CPPUNIT_ASSERT(cuts2.bitMaskCut()->bitPosition() == 0);
+   CPPUNIT_ASSERT(cuts2.bitMaskCut()->mask() == 1);
    CPPUNIT_ASSERT(cuts2.conversionTypeCut() == 0);
    CPPUNIT_ASSERT(cuts2.pass_ver() == "P7V6");
 
    dataSubselector::Cuts cuts3;
    cuts3.setIrfs("P7REP_SOURCE_V10");
-   CPPUNIT_ASSERT(cuts3.bitMaskCut()->bitPosition() == 2);
+   CPPUNIT_ASSERT(cuts3.bitMaskCut()->mask() == 4);
    CPPUNIT_ASSERT(cuts3.conversionTypeCut() == 0);
    CPPUNIT_ASSERT(cuts3.pass_ver() == "P7REP");
 
@@ -654,7 +654,6 @@ void DssTests::test_irfName() {
 
    dataSubselector::Cuts cuts5;
    cuts5.setIrfs("P7REP_SOURCE_V10");
-//   CPPUNIT_ASSERT(cuts5.CALDB_implied_irfs() == "P7REP_SOURCE_V15");
    CPPUNIT_ASSERT(cuts5.CALDB_implied_irfs() != "P7REP_SOURCE_V10");
 }
 

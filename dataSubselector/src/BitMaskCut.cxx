@@ -1,8 +1,8 @@
 /**
  * @file BitMaskCut.cxx
- * @brief Cuts based on a single bit mask applied to an unsigned long
- * column.  This is used for filtering on the EVENT_CLASS column for
- * Pass 7 IRFs and later.
+ * @brief Cuts based on a bit mask.  This is used for filtering on
+ * EVENT_CLASS for Pass 7 IRFs, and also on EVENT_TYPE for Pass 8 and
+ * later.
  *
  * @author J. Chiang
  *
@@ -19,21 +19,19 @@
 namespace dataSubselector {
 
 BitMaskCut::BitMaskCut(const std::string & colname,
-                       unsigned long bitPosition,
+                       unsigned int mask,
                        const std::string & pass_ver) 
-   : CutBase("bit_mask"), m_colname(colname), m_bitPosition(bitPosition),
-     m_mask(1 << bitPosition), m_pass_ver(pass_ver),
-     m_post_P7(post_P7(pass_ver)) {
-   if (m_post_P7) {
-      // Pass version is P8 or later, so we assume bit-array columns
-      // in the FT1 file and will take bitPosition as the bit-mask
-      // itself.
-      m_mask = bitPosition;
+   : CutBase("bit_mask"), m_colname(colname), m_mask(mask),
+     m_pass_ver(pass_ver), m_post_P7(post_P7(pass_ver)) {
+   if (!m_post_P7) {
+      // For backwards-compatibility with pre-Pass 8 events, the mask
+      // argument is the bit popsition.
+      m_mask = 1 << mask;
    }
 }
 
 bool BitMaskCut::accept(tip::ConstTableRecord & row) const {
-   unsigned long value;
+   unsigned int value;
    row[m_colname].get(value);
    return accept(value);
 }
@@ -42,12 +40,12 @@ bool BitMaskCut::accept(const std::map<std::string, double> & params) const {
    const std::map<std::string, double>::const_iterator value
       = params.find(m_colname);
    if (value != params.end()) {
-      return accept(static_cast<unsigned long>(value->second));
+      return accept(static_cast<unsigned int>(value->second));
    }
    return true;
 }
 
-bool BitMaskCut::accept(unsigned long value) const {
+bool BitMaskCut::accept(unsigned int value) const {
    bool result((value & m_mask) != 0);
    return result;
 }
@@ -65,7 +63,7 @@ bool BitMaskCut::supercedes(const CutBase & cut) const {
    BitMaskCut & bitMaskCut = 
       dynamic_cast<BitMaskCut &>(const_cast<CutBase &>(cut));
    // This test assumes the cuts are hierarchical (nested).
-   if (m_bitPosition > bitMaskCut.bitPosition()) {
+   if (m_mask > bitMaskCut.mask()) {
       return true;
    }
    return false;
@@ -101,9 +99,8 @@ void BitMaskCut::getKeyValues(std::string & type,
                               std::string & ref) const {
    (void)(ref);
    std::ostringstream typ;
-   // typ << "(" << m_colname << "/POW(2," << m_bitPosition << "))%2";
    typ << "BIT_MASK(" << m_colname 
-       << "," << m_bitPosition;
+       << "," << m_mask;
    if (m_pass_ver != "") {
       typ << "," << m_pass_ver;
    }

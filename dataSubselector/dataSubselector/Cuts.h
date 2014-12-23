@@ -260,10 +260,13 @@ public:
                          const std::string & extname,
                          const std::string & irfs);
 
-   BitMaskCut * bitMaskCut() const;
-
    RangeCut * conversionTypeCut() const;
+
 #endif
+
+   BitMaskCut * bitMaskCut(const std::string & colname="EVENT_CLASS") const;
+
+   std::vector<BitMaskCut *> bitMaskCuts() const;
 
    const std::string & pass_ver() const {
       return m_pass_ver;
