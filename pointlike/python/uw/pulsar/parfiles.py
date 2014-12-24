@@ -707,8 +707,6 @@ class ParFile(dict):
         self.zero_glitches(glepoch=glepoch,transients_only=True)
 
     def get_glitch_parameters(self,index,strip_index=True):
-        """ If glepoch is provided, only zero glitches near (within 1d) of
-            that epoch.  Otherwise, remove all glitches."""
         indices = self.get_glitch_index(glepoch=None)
         if index not in indices:
             raise IndexError('Do not have glitch %d!'%index)
