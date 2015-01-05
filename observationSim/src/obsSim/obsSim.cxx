@@ -35,6 +35,7 @@
 #include "astro/SkyDir.h"
 
 #include "irfInterface/IrfsFactory.h"
+#include "irfUtil/Util.h"
 #include "irfLoader/Loader.h"
 
 #include "st_facilities/Environment.h"
@@ -238,7 +239,7 @@ void ObsSim::createResponseFuncs() {
    }
    std::string evtype = m_pars["evtype"];
    if (evtype != "" && evtype !="none") {
-      responseFuncs += ("_" + evtype);
+      responseFuncs += (" (" + evtype + ")");
    }
    m_formatter->info(3) << "Using irfs: " << responseFuncs << std::endl;
 
@@ -329,6 +330,29 @@ void ObsSim::generateData() {
    // Remove the VersionCut containing the IRF_VERSION since that should
    // not appear in an FT1 file.
    cuts->removeVersionCut("IRF_VERSION");
+
+   // If evtype is set and an EVENT_TYPE bit-mask cut is not present,
+   // add such a cut corresponding to evtype.
+   dataSubselector::BitMaskCut * evtype_cut(0);
+   try {
+      std::string evtype = m_pars["evtype"];
+      if (!(evtype_cut = cuts->bitMaskCut("EVENT_TYPE"))) {
+         // Get the inverse mapping
+         std::map<std::string, std::pair<unsigned int, std::string> > 
+            event_type_mapping;
+         std::vector<std::string> partitions;
+         std::map<std::string, unsigned int> bitmask_by_partition;
+         irfUtil::Util::get_event_type_mapping(irfs,
+                                               event_type_mapping,
+                                               partitions,
+                                               bitmask_by_partition);
+         cuts->addBitMaskCut("EVENT_TYPE", bitmask_by_partition[evtype],
+                             cuts->pass_ver());
+      }
+      delete evtype_cut;
+   } catch (hoops::Hexception &) {
+      // evtype not set so do nothing
+   }
 
    if (m_pars["use_ac"]) {
       cuts->addSkyConeCut(m_pars["ra"], m_pars["dec"], m_pars["radius"]);
