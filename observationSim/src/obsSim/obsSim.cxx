@@ -336,6 +336,10 @@ void ObsSim::generateData() {
    dataSubselector::BitMaskCut * evtype_cut(0);
    try {
       std::string evtype = m_pars["evtype"];
+      if (evtype == "none") {
+         throw hoops::Hexception(12, "Don't add this cut for Front/Back", 
+                                 "", 0);
+      }
       if (!(evtype_cut = cuts->bitMaskCut("EVENT_TYPE"))) {
          // Get the inverse mapping
          std::map<std::string, std::pair<unsigned int, std::string> > 
