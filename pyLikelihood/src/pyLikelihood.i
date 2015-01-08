@@ -15,6 +15,8 @@
 #include "irfLoader/Loader.h"
 #include "irfInterface/IEfficiencyFactor.h"
 #include "irfInterface/IrfsFactory.h"
+#include "dataSubselector/BitMaskCut.h"
+#include "dataSubselector/CutBase.h"
 #include "dataSubselector/Cuts.h"
 #include "healpix/CosineBinner.h"
 #include "map_tools/Exposure.h"
@@ -134,6 +136,7 @@ using optimizers::Exception;
 %template(DoubleVectorPair) std::vector< std::pair<double, double> >;
 %template(FloatVectorVector) std::vector< std::vector<float> >;
 %template(SizetVector) std::vector<size_t>;
+%template(UintVector) std::vector<unsigned int>;
 %template(StringVector) std::vector<std::string>;
 %include st_app/AppParGroup.h
 %include st_app/StApp.h
@@ -144,6 +147,9 @@ using optimizers::Exception;
 %template(SkyDirVector) std::vector<astro::SkyDir>;
 %template(SkyDirPair) std::pair<astro::SkyDir, astro::SkyDir>;
 %feature("autodoc", "1");
+%include dataSubselector/CutBase.h
+%include dataSubselector/BitMaskCut.h
+%template(BitMaskCutVector) std::vector<dataSubselector::BitMaskCut *>;
 %include dataSubselector/Cuts.h
 %include healpix/CosineBinner.h
 %include map_tools/Exposure.h
@@ -266,10 +272,10 @@ using optimizers::Exception;
    }
 }
 %extend Likelihood::AppHelpers {
-   static std::vector<size_t> 
+   static std::vector<unsigned int> 
       getSelectedEvtTypes(const std::string & evfile,
                           const std::string & analysisType) {
-      std::vector<size_t> evtTypes;
+      std::vector<unsigned int> evtTypes;
       Likelihood::AppHelpers::getSelectedEvtTypes(evfile, analysisType, 
                                                   evtTypes);
       return evtTypes;
