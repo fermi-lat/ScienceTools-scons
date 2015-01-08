@@ -119,14 +119,14 @@ using optimizers::Function;
 using optimizers::Exception;
 %}
 %include stl.i
-// %exception {
-//    try {
-//       $action
-//    } catch (std::exception & eObj) {
-//       PyErr_SetString(PyExc_RuntimeError, const_cast<char *>(eObj.what()));
-//       return NULL;
-//    }
-// }
+%exception {
+   try {
+      $action
+   } catch (std::exception & eObj) {
+      PyErr_SetString(PyExc_RuntimeError, const_cast<char *>(eObj.what()));
+      return NULL;
+   }
+}
 %template(DoublePair) std::pair<double, double>;
 %template(IntPair) std::pair<int, int>;
 %template(EventVector) std::vector<Likelihood::Event>;
@@ -271,16 +271,16 @@ using optimizers::Exception;
       return CLHEP::RandFlat::shoot();
    }
 }
-// %extend Likelihood::AppHelpers {
-//    static std::vector<unsigned int> 
-//       getSelectedEvtTypes(const std::string & evfile,
-//                           const std::string & analysisType) {
-//       std::vector<unsigned int> evtTypes;
-//       Likelihood::AppHelpers::getSelectedEvtTypes(evfile, analysisType, 
-//                                                   evtTypes);
-//       return evtTypes;
-//    }
-// }
+%extend Likelihood::AppHelpers {
+   static std::vector<unsigned int> 
+      getSelectedEvtTypes(const std::string & evfile,
+                          const std::string & analysisType) {
+      std::vector<unsigned int> evtTypes;
+      Likelihood::AppHelpers::getSelectedEvtTypes(evfile, analysisType, 
+                                                  evtTypes);
+      return evtTypes;
+   }
+}
 %extend Likelihood::EquinoxRotation {
    astro::SkyDir fromMapCoords(const astro::SkyDir & inDir) {
       astro::SkyDir outDir(0, 0);
