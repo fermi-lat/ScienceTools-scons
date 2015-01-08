@@ -646,7 +646,7 @@ std::string Cuts::CALDB_implied_irfs() const {
       for (EventTypeMapping_t::const_iterator it(evtype_mapping.begin());
            it != evtype_mapping.end(); ++it) {
          if (bit == it->second.first && it->second.second != "none") {
-            irfs_name += ('_' + it->second.second);
+            irfs_name += (" (" + it->second.second + ")");
             break;
          }
       }
