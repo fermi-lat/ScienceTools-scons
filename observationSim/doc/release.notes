@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ observationSim-10-00-01 08-Jan-2015 jchiang incantation to get tip from inexplicably triggering a cfitsio error
  observationSim-10-00-00 08-Jan-2015 jchiang Pass 8-related development
  observationSim-09-03-03 06-Dec-2014 jchiang fix timetick problem OBS-23@JIRA
  observationSim-09-03-02 25-Apr-2014 jchiang changes to support event_type in FT1
