@@ -325,7 +325,8 @@ void EventContainer::writeEvents(double obsStopTime) {
       ft1["zenith_angle"].set(evt->zenAngle());
       ft1["earth_azimuth_angle"].set(earthAzimuthAngle(ra, dec, time));
       if (ft1Template == "ft1_p7.tpl") {
-         ft1["event_class"].set(evt->eventClass());
+         int event_class(evt->eventClass());
+         ft1["event_class"].set(event_class);
       } else {
          tip::BitStruct event_class(evt->eventClass());
          ft1["event_class"].set(event_class);
