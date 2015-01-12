@@ -54,14 +54,18 @@ bool BitMaskCut::supercedes(const CutBase & cut) const {
    if (cut.type() != "bit_mask") {
       return false;
    }
-   if (m_post_P7) {
-      // A nested hierarchy of bit masks cannot be assumed, so this
-      // should always be false.
-      return false;
-   }
-   // For P7 and P7REP:
    BitMaskCut & bitMaskCut = 
       dynamic_cast<BitMaskCut &>(const_cast<CutBase &>(cut));
+   if (bitMaskCut.colname() != m_colname) {
+      return false;
+   }
+   if (m_post_P7) {
+      // Supercedes if the and-ed bits match the candidate mask.
+      if ((m_mask & bitMaskCut.mask()) == m_mask) {
+         return true;
+      }
+   }
+   // For P7 and P7REP:
    // This test assumes the cuts are hierarchical (nested).
    if (m_mask > bitMaskCut.mask()) {
       return true;
