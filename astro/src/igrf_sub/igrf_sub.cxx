@@ -1004,7 +1004,7 @@ L7:
 rf1915.dat igrf1920.dat igrf1925.dat igrf1930.dat igrf1935.dat igrf1940.dat \
 dgrf1945.dat dgrf1950.dat dgrf1955.dat dgrf1960.dat dgrf1965.dat dgrf1970.da\
 t dgrf1975.dat dgrf1980.dat dgrf1985.dat dgrf1990.dat dgrf1995.dat dgrf2000.\
-dat dgrf2005.dat igrf2010.dat igrf2010s.dat";
+dat dgrf2005.dat dgrf2010.dat igrf2015.dat igrf2015s.dat";
     std::vector<std::string> filmod;
     facilities::Util::stringTokenize(files, " ", filmod, true);
     std::string datapath = facilities::commonUtilities::getDataPath("astro");
@@ -1012,12 +1012,12 @@ dat dgrf2005.dat igrf2010.dat igrf2010s.dat";
        filmod[i] = facilities::commonUtilities::joinPath(datapath, filmod[i]);
     }
 
-    /* static */ real dtemod[24] = { (float)1900.,(float)1905.,(float)1910.,(float)
+    /* static */ real dtemod[25] = { (float)1900.,(float)1905.,(float)1910.,(float)
 	    1915.,(float)1920.,(float)1925.,(float)1930.,(float)1935.,(float)
 	    1940.,(float)1945.,(float)1950.,(float)1955.,(float)1960.,(float)
 	    1965.,(float)1970.,(float)1975.,(float)1980.,(float)1985.,(float)
 	    1990.,(float)1995.,(float)2e3,(float)2005.,(float)2010.,(float)
-	    2015. };
+            2015., (float)2020. };
 
     /* System generated locals */
     integer i__1, i__2;
