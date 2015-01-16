@@ -850,4 +850,24 @@ RangeCut * Cuts::conversionTypeCut() const {
    return 0;
 }
 
+void Cuts::setBitMaskCut(BitMaskCut * candidateCut) {
+   if (!candidateCut) {
+      // Do nothing with a null pointer.
+      return;
+   }
+   // Delete any existing BitMaskCuts operating on the same column.
+   std::vector<CutBase *> my_cuts;
+   for (size_t i(0); i < m_cuts.size(); i++) {
+      BitMaskCut * currentCut(dynamic_cast<BitMaskCut *>(m_cuts[i]));
+      if (currentCut && (currentCut->colname() == candidateCut->colname())) {
+         delete m_cuts[i];
+      } else {
+         my_cuts.push_back(m_cuts[i]);
+      }
+   }
+   // Add the candidate cut.
+   my_cuts.push_back(candidateCut);
+   m_cuts = my_cuts;
+}
+
 } // namespace dataSubselector

@@ -276,6 +276,9 @@ public:
       return m_post_P7;
    }
 
+   /// Replace or add an existing BitMaskCut applied to the same column.
+   void setBitMaskCut(BitMaskCut * bitMaskCut);
+
    static void extract_irf_versions(const std::string & irf_name,
                                     std::string & pass_ver,
                                     std::string & irf_ver);
