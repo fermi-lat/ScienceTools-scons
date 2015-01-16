@@ -136,7 +136,6 @@ using optimizers::Exception;
 %template(DoubleVectorPair) std::vector< std::pair<double, double> >;
 %template(FloatVectorVector) std::vector< std::vector<float> >;
 %template(SizetVector) std::vector<size_t>;
-//%template(UintVector) std::vector<unsigned int>;
 %template(StringVector) std::vector<std::string>;
 %include st_app/AppParGroup.h
 %include st_app/StApp.h
