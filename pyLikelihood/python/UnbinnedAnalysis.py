@@ -50,8 +50,8 @@ class UnbinnedObs(object):
                                   'IRFs: ' + str(irfs)))
         self._respFuncs = pyLike.ResponseFunctions()
         evfiles = self._fileList(eventFile)
-        evt_types = pyLike.AppHelpers_getSelectedEvtTypes(evfiles[0], "EVENTS")
-        self._respFuncs.load(self.irfs, "", evt_types)
+        self._respFuncs.load_with_event_types(self.irfs, "",
+                                              evfiles[0], "EVENTS")
         self._expMap = pyLike.ExposureMap()
         if expMap is not None and expMap != "":
             self._expMap.readExposureFile(expMap)

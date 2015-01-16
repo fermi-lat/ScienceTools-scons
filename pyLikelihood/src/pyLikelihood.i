@@ -271,14 +271,14 @@ using optimizers::Exception;
       return CLHEP::RandFlat::shoot();
    }
 }
-%extend Likelihood::AppHelpers {
-   static std::vector<unsigned int> 
-      getSelectedEvtTypes(const std::string & evfile,
-                          const std::string & analysisType) {
+%extend Likelihood::ResponseFunctions {
+   void load_with_event_types(const std::string & respFuncs, 
+                              const std::string & respBase,
+                              const std::string & filename,
+                              const std::string & extname) {
       std::vector<unsigned int> evtTypes;
-      Likelihood::AppHelpers::getSelectedEvtTypes(evfile, analysisType, 
-                                                  evtTypes);
-      return evtTypes;
+      Likelihood::AppHelpers::getSelectedEvtTypes(filename, extname, evtTypes);
+      self->load(respFuncs, respBase, evtTypes);
    }
 }
 %extend Likelihood::EquinoxRotation {

@@ -46,8 +46,7 @@ class BinnedObs(object):
         self._createObservation(srcMaps, expCube, self.irfs)
     def _createObservation(self, srcMaps, expCube, irfs):
         self._respFuncs = pyLike.ResponseFunctions()
-        evt_types = pyLike.AppHelpers_getSelectedEvtTypes(self.srcMaps, "")
-        self._respFuncs.load(irfs, "", evt_types)
+        self._respFuncs.load_with_event_types(irfs, "", self.srcMaps, "")
         self._expMap = pyLike.ExposureMap()
         self._scData = pyLike.ScData()
         self._roiCuts = pyLike.RoiCuts()
