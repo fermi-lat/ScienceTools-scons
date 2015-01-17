@@ -269,6 +269,12 @@ FluxSource::FluxSource(const XERCES_CPP_NAMESPACE_QUALIFIER DOMElement* xelem )
         std::string particle_name = xmlBase::Dom::getAttribute(spec, "particle_name");
         std::string spectrum_energyscale = xmlBase::Dom::getAttribute(spec, "escale");
 
+        std::string apply_edisp(xmlBase::Dom::getAttribute(spec, "apply_edisp"));
+        if (apply_edisp != "true" && apply_edisp != "false" && apply_edisp != "") {
+           throw std::runtime_error("Invalid value for apply_edisp attribute in xml definition of " + name());
+        }
+        m_applyEdisp = (apply_edisp != "false");
+
         if(spectrum_energyscale == "GeV"){ m_energyscale=GeV;
         }else if(spectrum_energyscale == "MeV"){ m_energyscale=MeV;
         }else{

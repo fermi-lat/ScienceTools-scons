@@ -26,7 +26,8 @@
   -->
 <!ATTLIST spectrum  flux CDATA ""
                     particle_name CDATA "gamma"
-				escale CDATA #REQUIRED >
+                    apply_edisp CDATA "true"
+                    escale CDATA #REQUIRED >
 
 <!--- special generic spectrum: name is the name of a Spectrum, params an optional comma-delimited list -->
 <!ELEMENT SpectrumClass EMPTY>

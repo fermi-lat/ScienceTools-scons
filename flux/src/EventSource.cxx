@@ -24,7 +24,7 @@ std::vector<double> EventSource::s_cone;
 
 
 EventSource::EventSource (double aFlux, unsigned acode)
-:  m_enabled(true), m_flux(aFlux),  m_code(acode)
+   :  m_enabled(true), m_flux(aFlux),  m_code(acode), m_applyEdisp(true)
 {
     std::stringstream  s;
     

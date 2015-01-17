@@ -70,6 +70,10 @@ public:
     virtual std::string name () const;
 
     void setName (const std::string& value);
+
+   virtual bool applyEdisp() const {
+      return m_applyEdisp;
+   }
     
     ///    code - for monte-carlo study
     int  code () const;
@@ -131,6 +135,7 @@ protected:
     // to implement (mis) alignment of particle trajectories in instrument coordinates
     static bool s_applyAlign;
     static CLHEP::HepRotation s_alignMatrix;
+   bool m_applyEdisp;
 };
 
 
