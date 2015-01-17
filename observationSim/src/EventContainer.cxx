@@ -149,6 +149,7 @@ bool EventContainer::addEvent(EventSource * event,
    double time = event->time();
    double energy = event->energy();
    Hep3Vector launchDir = event->launchDir();
+   bool source_apply_edisp(event->applyEdisp());
 
    double arg = launchDir.z();
    double flux_theta = ::my_acos(arg);
@@ -197,7 +198,7 @@ bool EventContainer::addEvent(EventSource * event,
       astro::SkyDir appDir 
          = respPtr->psf()->appDir(energy, sourceDir, zAxis, xAxis, time);
       double appEnergy(energy);
-      if (m_applyEdisp) {
+      if (m_applyEdisp && source_apply_edisp) {
          appEnergy =
             respPtr->edisp()->appEnergy(energy, sourceDir, zAxis, xAxis, time);
       }
