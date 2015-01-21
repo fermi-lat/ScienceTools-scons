@@ -90,6 +90,8 @@ private:
    typedef std::map<std::string, BranchData_t > BranchMap_t;
    BranchMap_t m_branches;
 
+   std::map<std::string, std::string> m_branchNames;
+
    double m_tstart;
    double m_tstop;
 
@@ -97,8 +99,11 @@ private:
    void setEntry(Long64_t index);
    
    BranchData_t get_branch_pointer(const std::string & fieldname) const;
-   double recast_as_double(const BranchData_t & branch_data) const;
+   double recast_as_double(const BranchData_t & branch_data,
+                           int offset=0) const;
    void delete_branch_pointer(const BranchData_t & branch_data) const;
+
+   const std::string & branchName(const std::string & truncated_fieldname);
 
 };
 
