@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ fitsGen-07-01-01 21-Jan-2015 jchiang increase allocation to support very long TCuts
  fitsGen-07-01-00 21-Jan-2015 jchiang enable array values in the merit tuple to be accessed by index
  fitsGen-07-00-01 24-Apr-2014 jchiang with final fix to tip, can remove incorrect TNULL keywords for 32X columns
  fitsGen-07-00-00 14-Apr-2014 jchiang Pass 8 bit masking support
