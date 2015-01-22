@@ -17,6 +17,7 @@
 #include "TError.h"
 #include "TEventList.h"
 #include "TFile.h"
+#include "TFormula.h"
 #include "TLeaf.h"
 #include "TObjArray.h"
 #include "TSystem.h"
@@ -35,6 +36,8 @@ MeritFile2::MeritFile2(const std::string & meritfile,
    long root_err_level = gErrorIgnoreLevel;
    m_file = TFile::Open(meritfile.c_str());
    gErrorIgnoreLevel = root_err_level;
+
+   TFormula::SetMaxima(2000, 2000, 2000);
 
    if (m_file == 0) {
       throw std::runtime_error("Failed to load " + meritfile);
