@@ -24,3 +24,4 @@
      L1 branch
  evtUtils-00-02-02 06-Mar-2013 echarles Added xml/EvtClassDefs_P7REP.xml
  evtUtils-00-02-03 19-Jul-2013 echarles Fix up textAppCtxs in SConscript
+ evtUtils-00-03-00 03-Feb-2015 bregeon add P8R2 event class definition - LPATE-183
