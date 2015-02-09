@@ -7,6 +7,8 @@ import numpy as np
 
 def pickle_dump(roi,  pickle_dir, dampen, ts_min=5, **kwargs):
     """ dump the source information from an ROI constructed from the sources here
+    ts_min : float
+        threshold for saving. But if name starts with 'PSR' save anyway
     """
     assert os.path.exists(pickle_dir), 'output folder not found: %s' %pickle_dir
     name = roi.name.strip()
@@ -54,8 +56,8 @@ def pickle_dump(roi,  pickle_dir, dampen, ts_min=5, **kwargs):
             s.sedrec = None
         sedrec = s.sedrec
         loc = s.__dict__.get('loc', None)
-        ts = s.ts if hasattr(s, 'ts') else.roi.TS(s.name)
-        if ts < ts_min:
+        ts = s.ts if hasattr(s, 'ts') else roi.TS(s.name)
+        if ts < ts_min and s.name[:3]!='PSR': 
             print 'Not saving source %s: ts=%.1f < %.1f' % (s.name, ts, ts_min)
             continue
         sources[s.name]=dict(

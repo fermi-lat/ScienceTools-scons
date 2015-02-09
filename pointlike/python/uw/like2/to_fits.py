@@ -222,10 +222,10 @@ class MakeCat(object):
         # determine which modelname to use, how to interpret index2
         notpsr = z.modelname=='LogParabola'
         psr = z.modelname=='PLSuperExpCutoff'
-        logpar = notpsr * (z.index2>0)
-        powerlaw = notpsr * (z.index2==0)
-        has_exp_index = psr*(z.index2<1)
-        exp_cutoff = psr*(z.index2==1)
+        logpar = notpsr & (z.index2>0)
+        powerlaw = notpsr & (z.index2==0)
+        has_exp_index = psr & (z.index2<1)
+        exp_cutoff = psr & (z.index2==1)
         extended = pd.isnull(z.locqual)
         print 'found %d logparabola, %d exp cutoff, %d super cutoff, %d extended'\
                % (sum(logpar), sum(exp_cutoff), sum(has_exp_index), sum(extended))

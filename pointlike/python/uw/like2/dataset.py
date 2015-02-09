@@ -193,7 +193,7 @@ class DataSet(dataman.DataSpec):
  
     def _load_binfile(self):
         if not self.quiet: print 'loading binfile %s ...' % self.binfile ,
-        self.dmap = skymaps.BinnedPhotonData(self.binfile)
+        self.dmap = skymaps.BinnedPhotonData(self.binfile)  
         if not self.quiet: print 'found %d photons in %d bands, energies %.0f-%.0f MeV'\
                 % (self.dmap.photonCount(),len(self.dmap), self.dmap[1].emin(), self.dmap[len(self.dmap)-1].emax())
 

@@ -41,7 +41,7 @@ class Export(sourceinfo.SourceInfo):
         self.error_box_factor = 1.05
         self.error_box_add = 5e-3
         self.error_box_cut = 0.25
-        self.cuts = '(sources.ts>10)*(sources.a<%.2f)+pd.isnull(sources.locqual)' %self.error_box_cut
+        self.cuts = '(sources.ts>10) & (sources.a<%.2f) | pd.isnull(sources.locqual)' %self.error_box_cut
     
     def analysis(self, fits_only=False):
         """Analysis log

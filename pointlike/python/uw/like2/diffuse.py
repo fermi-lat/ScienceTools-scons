@@ -448,7 +448,6 @@ class IsotropicList(DiffuseList):
             iso = Isotropic(filename)
             iso.kw = dict(correction =correction)
             self.append(iso)
-        print self
 
 def file_check(files):
     full_files = map( lambda f: os.path.expandvars(os.path.join('$FERMI','diffuse',f)), files)
