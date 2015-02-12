@@ -6,10 +6,10 @@ Class for transforming between Equatorial and Galactic coordinates.
 
 $Header$
 """
-
 from numpy import *
 import astropy.coordinates as coords
 import astropy.units as units
+from saclay_celgal import sindist2, SphCoords, Angdist, dist as saclay_dist
 
 class celgal(object):
     def __init__(self, J2000=True):
@@ -47,31 +47,8 @@ def dist(a, b):
     b_coord = coords.SkyCoord(b[0], b[1], unit=(units.degree, units.degree))
     return a_coord.separation(b_coord).degree
 
-def SphCoords(u):
-    import math
-    """Spherical coordinates in radians for a normalised 3Dvector u"""
-    if abs(u[2]) < 1:
-        theta_rad = math.asin(u[2])
-        if abs(u[0]) > 0.00001:
-            phi_rad = math.atan(u[1]/u[0]) + math.pi*(1 - u[0]/abs(u[0]))/2.
-        else:
-            phi_rad = (math.pi/2. - u[1]/cos(theta_rad))*u[1]/abs(u[1])  
-    else:
-        theta_rad = math.pi/2.*int(u[2])
-        phi_rad = 0
-    return phi_rad, theta_rad
-
-def Angdist(x):
-    """Angular distance in radians corresponding to a cosinus""" 
-    if abs(x) < 1:
-        angdist = arccos(x)
-    elif abs(x) < 1.00001:
-        angdist = math.pi/2.*(1 - int(x))
-    else:
-        raise ValueError, "x must be smaller than 1"
-    return angdist 
-
 if __name__ == "__main__":
+    import numpy.random as random
     #
     # check epoch J2000 conversions
     #
@@ -103,3 +80,16 @@ if __name__ == "__main__":
         assert dist(sources[key][0], converter.cel(sources[key][1])) < tol
         #print converter.gal(sources[key][0]), sources[key][1]
         assert dist(converter.gal(sources[key][0]), sources[key][1]) < tol
+
+    #
+    # exercise Saclay angular distance implementation
+    #
+    npts = 20
+    l_vals = random.uniform(size=npts)*360.
+    b_vals = random.uniform(size=npts)*180. - 90.
+    for i in range(npts/2):
+        pt1 = (l_vals[i], b_vals[i])
+        pt2 = (l_vals[i+npts/2], b_vals[i+npts/2])
+        print dist(pt1, pt2), saclay_dist(pt1, pt2)
+        
+        
