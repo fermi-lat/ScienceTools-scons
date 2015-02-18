@@ -64,11 +64,12 @@ bool BitMaskCut::supercedes(const CutBase & cut) const {
       if ((m_mask & bitMaskCut.mask()) == m_mask) {
          return true;
       }
-   }
-   // For P7 and P7REP:
-   // This test assumes the cuts are hierarchical (nested).
-   if (m_mask > bitMaskCut.mask()) {
-      return true;
+   } else {
+      // For P7 and P7REP:
+      // This test assumes the cuts are hierarchical (nested).
+      if (m_mask > bitMaskCut.mask()) {
+         return true;
+      }
    }
    return false;
 }
