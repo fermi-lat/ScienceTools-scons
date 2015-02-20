@@ -9,12 +9,20 @@
  * $Header$
  */
 
+#include <cmath>
+
 #include <iomanip>
 #include <sstream>
 
 #include "tip/Table.h"
 
 #include "dataSubselector/BitMaskCut.h"
+
+namespace {
+unsigned int bitPosition(unsigned int mask) {
+   return static_cast<unsigned int>(std::log(mask)/std::log(2.));
+}
+}
 
 namespace dataSubselector {
 
@@ -23,11 +31,6 @@ BitMaskCut::BitMaskCut(const std::string & colname,
                        const std::string & pass_ver) 
    : CutBase("bit_mask"), m_colname(colname), m_mask(mask),
      m_pass_ver(pass_ver), m_post_P7(post_P7(pass_ver)) {
-   if (!m_post_P7) {
-      // For backwards-compatibility with pre-Pass 8 events, the mask
-      // argument is the bit popsition.
-      m_mask = 1 << mask;
-   }
 }
 
 bool BitMaskCut::accept(tip::ConstTableRecord & row) const {
@@ -59,14 +62,17 @@ bool BitMaskCut::supercedes(const CutBase & cut) const {
    if (bitMaskCut.colname() != m_colname) {
       return false;
    }
-   if (m_post_P7) {
+   if (m_colname == "EVENT_TYPE") {
       // Supercedes if the and-ed bits match the candidate mask.
+      // Event class selections don't behave this way so need to
+      // handle both as special cases.
       if ((m_mask & bitMaskCut.mask()) == m_mask) {
          return true;
       }
-   } else {
+   }
+   if (m_colname == "EVENT_CLASS" && !m_post_P7) {
       // For P7 and P7REP:
-      // This test assumes the cuts are hierarchical (nested).
+      // This test assumes the event class cuts are hierarchical.
       if (m_mask > bitMaskCut.mask()) {
          return true;
       }
@@ -82,7 +88,9 @@ std::string BitMaskCut::filterString() const {
       filter << "((" << m_colname << "&" 
              << octal_rep.str() << ") != o0)";
    } else {
-      filter << "((" << m_colname << "/" << m_mask << ")%2 == 1)";
+      filter << "((" << m_colname << "/" 
+             << ::bitPosition(m_mask) 
+             << ")%2 == 1)";
    }
    return filter.str();
 }
@@ -104,8 +112,12 @@ void BitMaskCut::getKeyValues(std::string & type,
                               std::string & ref) const {
    (void)(ref);
    std::ostringstream typ;
-   typ << "BIT_MASK(" << m_colname 
-       << "," << m_mask;
+   typ << "BIT_MASK(" << m_colname;
+   if (m_post_P7) {
+      typ << "," << m_mask;
+   } else {
+      typ << "," << ::bitPosition(m_mask);
+   }
    if (m_pass_ver != "") {
       typ << "," << m_pass_ver;
    }

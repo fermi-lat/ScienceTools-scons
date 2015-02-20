@@ -226,13 +226,21 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
       } else if (type.substr(0, 8) == "BIT_MASK") {
          std::vector<std::string> tokens;
          facilities::Util::stringTokenize(type, "(),", tokens);
-         unsigned int bit_position = std::atoi(tokens[2].c_str());
+         unsigned int mask = std::atoi(tokens[2].c_str());
          if (tokens.size() == 4) {
-            // Assume third position in BITMASK arg list is pass_ver.
-            m_cuts.push_back(new BitMaskCut(tokens[1], bit_position, 
-                                            tokens[3]));
+            // The third position in the BIT_MASK arg list is pass_ver.
+            if (!BitMaskCut::post_P7(tokens[3])) {
+               // For pre-Pass 8 data, the value of mask is the bit
+               // position so needs to be the exponent of 2 to
+               // generate the mask.
+               mask = std::pow(2, mask);
+            }
+            m_cuts.push_back(new BitMaskCut(tokens[1], mask, tokens[3]));
          } else {
-            m_cuts.push_back(new BitMaskCut(tokens[1], bit_position));
+            // This is also (only) pre-Pass 8 and probably cannot
+            // occur anymore.
+            mask = std::pow(2, mask);
+            m_cuts.push_back(new BitMaskCut(tokens[1], mask));
          }
       } else if (type.length() >= 7 &&
                  type.substr(type.length()-7, 7) == "VERSION") {
@@ -634,6 +642,11 @@ std::string Cuts::CALDB_implied_irfs() const {
          irf_ver_num = candidate_irf_ver_num;
       }
    }
+   append_event_type_partition(irfs_name);
+   return irfs_name;
+}
+
+void Cuts::append_event_type_partition(std::string & irfs_name) const {
    /// Infer event_type partition.
    const BitMaskCut * event_type_cut(bitMaskCut("EVENT_TYPE"));
    if (event_type_cut) {
@@ -651,7 +664,6 @@ std::string Cuts::CALDB_implied_irfs() const {
          }
       }
    }
-   return irfs_name;
 }
 
 void Cuts::
@@ -802,9 +814,6 @@ void Cuts::setIrfs(const std::string & irfName) {
          it = irfs.find(event_class);
       if (it != irfs.end()) {
          unsigned int mask(it->second);
-         if (!m_post_P7) {
-            mask = static_cast<unsigned int>(std::log(mask)/std::log(2));
-         }
          addBitMaskCut("EVENT_CLASS", mask, m_pass_ver);
       }
    } catch (std::runtime_error & eObj) {

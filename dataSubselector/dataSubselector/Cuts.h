@@ -240,6 +240,15 @@ public:
    /// $CALDB/bcf/irf_index.fits.
    std::string CALDB_implied_irfs() const;
 
+   /// @brief Append the event type partition to the irfs_name.  The
+   /// event type partition is determined from the EVENT_TYPE
+   /// BitMaskCut value. For FB, the result is just the generic irfs
+   /// name, for PSF and EDISP, " (PSF)" and " (EDISP)" are appended.
+   /// The addition of the event type partition info is needed to
+   /// index the desired irfs from irfLoader.
+   /// @param irfs_name The generic irfs name, e.g., P8R2_SOURCE_V6.
+   void append_event_type_partition(std::string & irfs_name) const;
+
 #ifndef SWIG
    /// This will set the BitMaskCut and m_pass_ver value based 
    /// on the IRF name (assuming it is Pass 7 or later).
