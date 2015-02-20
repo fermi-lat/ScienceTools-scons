@@ -233,13 +233,13 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
                // For pre-Pass 8 data, the value of mask is the bit
                // position so needs to be the exponent of 2 to
                // generate the mask.
-               mask = std::pow(2., mask);
+               mask = std::pow(2., static_cast<int>(mask));
             }
             m_cuts.push_back(new BitMaskCut(tokens[1], mask, tokens[3]));
          } else {
             // This is also (only) pre-Pass 8 and probably cannot
             // occur anymore.
-            mask = std::pow(2., mask);
+            mask = std::pow(2., static_cast<int>(mask));
             m_cuts.push_back(new BitMaskCut(tokens[1], mask));
          }
       } else if (type.length() >= 7 &&
