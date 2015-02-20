@@ -5,6 +5,7 @@
     @verbatim
     * EOH *
 
+ dataSubselector-09-00-03 19-Feb-2015 jchiang improve P7 handling of event_class bit mask; provide member function to append appropriate irf name suffix for non F/B event class selection
  dataSubselector-09-00-02 18-Feb-2015 jchiang fix logic error in evtype handling in gtselect for chained evtype selections
  dataSubselector-09-00-01 15-Jan-2015 jchiang support for irfs=<not CALDB>
  dataSubselector-09-00-00 08-Jan-2015 jchiang Pass 8-related development
