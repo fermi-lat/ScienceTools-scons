@@ -544,7 +544,7 @@ void DssTests::test_mergeRangeCuts() {
 }
 
 void DssTests::test_BitMaskCut() {
-   dataSubselector::BitMaskCut cut("EVENT_CLASS", 2);
+   dataSubselector::BitMaskCut cut("EVENT_CLASS", 4);
    std::map<std::string, double> pars;
    pars["EVENT_CLASS"] = 4;
    CPPUNIT_ASSERT(cut.accept(pars));
@@ -556,7 +556,6 @@ void DssTests::test_BitMaskCut() {
    CPPUNIT_ASSERT(cut.accept(pars));
    pars["EVENT_CLASS"] = 8;
    CPPUNIT_ASSERT(!cut.accept(pars));
-
    CPPUNIT_ASSERT(cut.filterString() == "((EVENT_CLASS/4)%2 == 1)");
 
    /// Check post-Pass 7 behavior.

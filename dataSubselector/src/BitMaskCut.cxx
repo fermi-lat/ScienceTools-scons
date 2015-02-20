@@ -89,7 +89,7 @@ std::string BitMaskCut::filterString() const {
              << octal_rep.str() << ") != o0)";
    } else {
       filter << "((" << m_colname << "/" 
-             << ::bitPosition(m_mask) 
+             << m_mask
              << ")%2 == 1)";
    }
    return filter.str();
