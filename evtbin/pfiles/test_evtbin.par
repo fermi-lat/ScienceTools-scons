@@ -32,7 +32,7 @@ xref,          r, a, 0., , , "First coordinate of image center in degrees (RA or
 yref,          r, a, 0., , , "Second coordinate of image center in degrees (DEC or galactic b)"
 rafield,       s, h, "RA", , ,"First coordinate field to bin"
 decfield,      s, h, "DEC", , ,"Second coordinate field to bin"
-axisrot,       r, a, 0,, , , "Rotation angle of image axis, in degrees"
+axisrot,       r, a, 0., , , "Rotation angle of image axis, in degrees"
 proj,          s, h, "AIT", AIT|ARC|CAR|GLS|MER|NCP|SIN|STG|TAN, , "Projection method"
 #-------------------------------------------------------------------------------
 
@@ -45,6 +45,6 @@ tstop,         r, a, , , , "Stop value for last time bin in MET"
 tnumbins,      i, a, , , , "Number of logarithmically uniform time bins"
 dtime,         r, a, , , , "Width of linearly uniform time bins in MET"
 tbinfile,      f, a, "NONE", , , "Name of the file containing the time bin definition"
-snratio,       r, a, , 1.e-8, , "Signal-to-noise ratio per time bin"
+snratio,       r, a, , , , "Signal-to-noise ratio per time bin"
 lcemin,        r, a, , 0., , "Lower bound of energy range in MeV"
 lcemax,        r, a, , 0., , "Upper bound of energy range in MeV"
