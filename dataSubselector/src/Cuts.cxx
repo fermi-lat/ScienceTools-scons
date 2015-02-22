@@ -231,15 +231,14 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
             // The third position in the BIT_MASK arg list is pass_ver.
             if (!BitMaskCut::post_P7(tokens[3])) {
                // For pre-Pass 8 data, the value of mask is the bit
-               // position so needs to be the exponent of 2 to
-               // generate the mask.
-               mask = std::pow(2., static_cast<int>(mask));
+               // position so do the bit shift to generate the mask.
+               mask = 1 << mask;
             }
             m_cuts.push_back(new BitMaskCut(tokens[1], mask, tokens[3]));
          } else {
             // This is also (only) pre-Pass 8 and probably cannot
             // occur anymore.
-            mask = std::pow(2., static_cast<int>(mask));
+            mask = 1 << mask;
             m_cuts.push_back(new BitMaskCut(tokens[1], mask));
          }
       } else if (type.length() >= 7 &&
@@ -619,7 +618,7 @@ const std::string & Cuts::irfName() const {
 std::string Cuts::CALDB_implied_irfs() const {
    std::map<std::string, unsigned int> irfs;
    read_bitmask_mapping(irfs);
-   if (irfs.find(m_irfName) == irfs.end()) {
+   if (m_irfName != "NONE" && irfs.find(m_irfName) == irfs.end()) {
       throw std::runtime_error("Invalid IRF name: " + m_irfName);
    }
    const BitMaskCut * my_bitmask_cut(bitMaskCut("EVENT_CLASS"));

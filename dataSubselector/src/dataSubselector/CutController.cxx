@@ -68,6 +68,11 @@ CutController::CutController(st_app::AppParGroup & pars,
    } else {
       try {
          int evclass = pars["evclass"];
+         if (!BitMaskCut::post_P7(m_passVer)) {
+            // Pass 7 and earlier expects evclass to be the bit
+            // position, so do the bit shift.
+            evclass = 1 << evclass;
+         }
          m_cuts.addBitMaskCut("EVENT_CLASS", evclass, m_passVer);
       } catch (const hoops::Hexception &) {
          // Assume INDEF is given as the parameter value for evclass,
