@@ -618,8 +618,17 @@ const std::string & Cuts::irfName() const {
 std::string Cuts::CALDB_implied_irfs() const {
    std::map<std::string, unsigned int> irfs;
    read_bitmask_mapping(irfs);
-   if (m_irfName != "NONE" && irfs.find(m_irfName) == irfs.end()) {
-      throw std::runtime_error("Invalid IRF name: " + m_irfName);
+   // Test against names in the EVENT_CLASS column of the
+   // BITMASK_MAPPING extension of irf_index.fits.  
+   //
+   // Strip partition name before testing.
+   std::string test_irfName(m_irfName);
+   std::string::size_type pos;
+   if ((pos = test_irfName.find(" (")) != std::string::npos) {
+      test_irfName = test_irfName.substr(0, pos);
+   }
+   if (test_irfName != "NONE" && irfs.find(test_irfName) == irfs.end()) {
+      throw std::runtime_error("Invalid IRF name: " + test_irfName);
    }
    const BitMaskCut * my_bitmask_cut(bitMaskCut("EVENT_CLASS"));
    if (my_bitmask_cut == 0) {
