@@ -5,6 +5,7 @@
     @verbatim
     EOH
 
+ optimizers-03-00-03 03-Mar-2015 jchiang provide access to m_scalingFunction
  optimizers-03-00-02 03-Mar-2015 jchiang implement copy constructor and copy assignment operator for Function
  optimizers-03-00-01 03-Mar-2015 jchiang add guarding ifndef to Function.h for swig build in pyLikelihood
  optimizers-03-00-00 03-Mar-2015 jchiang refactor Function hierarchy
