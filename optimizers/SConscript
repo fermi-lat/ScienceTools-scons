@@ -2,7 +2,7 @@
 #
 # $Header$
 # Authors: James Chiang <jchiang@slac.stanford.edu>
-# Version: optimizers-02-23-02
+# Version: optimizers-03-00-00
 import sys
 Import('baseEnv')
 Import('listFiles')
