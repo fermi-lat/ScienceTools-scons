@@ -86,6 +86,10 @@ void Function::setScalingFunction(const Function & scalingFunction) {
    m_scalingFunction = scalingFunction.clone();
 }
 
+const Function * Function::scalingFunction() const {
+   return m_scalingFunction;
+}
+
 void Function::setParam(const Parameter &param) {
    parameter(param.getName()) = param;
 }

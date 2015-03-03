@@ -72,6 +72,8 @@ public:
                        const std::string & paramName) const;
 
    void setScalingFunction(const Function & scalingFunction);
+
+   const Function * scalingFunction() const;
    
    /// Provide a string identifier.
    void setName(const std::string & functionName) {
