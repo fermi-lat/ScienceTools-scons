@@ -64,9 +64,9 @@ void Mcmc::generateSamples(std::vector< std::vector<double> > &samples,
                                        transProbRatio);
 // Hastings ratio
          m_stat->setFreeParamValues(newParamValues);
-         double statValueNew = m_stat->value(dummy);
+         double statValueNew = m_stat->operator()(dummy);
          m_stat->setFreeParamValues(paramValues);
-         double statValue = m_stat->value(dummy);
+         double statValue = m_stat->operator()(dummy);
          double alpha = transProbRatio*exp(statValueNew - statValue);
 // Metropolis rejection criterion
          double drand = RandFlat::shoot();
@@ -79,7 +79,7 @@ void Mcmc::generateSamples(std::vector< std::vector<double> > &samples,
             newParamValues[i] = paramValues[i];
          }
 // Append the objective function value
-         newParamValues.push_back(-m_stat->value(dummy));
+         newParamValues.push_back(-m_stat->operator()(dummy));
 // We always append the current point after the update step
          samples.push_back(newParamValues);
          sample_size++;
@@ -186,7 +186,7 @@ void Mcmc::estimateTransWidths() {
       double delta = eps*params[i];
       new_params[i] += delta;
       m_stat->setFreeParamValues(new_params);
-      m_stat->value(dummy);
+      m_stat->operator()(dummy);
       std::vector<double> new_derivs;
       m_stat->getFreeDerivs(dummy, new_derivs);
       double hessian = fabs((new_derivs[i] - derivs[i])/delta);

@@ -17,28 +17,25 @@ class Arg;
  *
  * @brief A simple test function that inherits from Function
  *
- * @author J. Chiang
- *    
- * $Header$
  */
     
 class MyFun : public Function {
+
 public:
 
    MyFun();
+
    ~MyFun(){}
-
-   double value(Arg &) const;
-
-   double derivByParam(Arg &x, const std::string &paramName) const;
-
-protected:
 
    virtual MyFun * clone() const {
       return new MyFun(*this);
    }
 
-private:
+protected:
+
+   virtual double value(Arg &) const;
+
+   virtual double derivByParamImp(Arg & x, const std::string & paramName) const;
 
 };
 

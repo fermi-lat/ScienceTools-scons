@@ -17,14 +17,11 @@
 
 namespace optimizers {
 
-void RosenBounded::init() {
-   int nParams = 2;
-   setMaxNumParams(nParams);
-
+RosenBounded::RosenBounded(double prefactor) 
+   : Statistic("RosenBounded", 2), m_prefactor(prefactor), m_xmin(-1e30),
+     m_xmax(1e30), m_ymin(-1e30), m_ymax(1e30) {
    addParam(std::string("x"), 1, true);
    addParam(std::string("y"), 1, true);
-
-   m_genericName = "RosenBounded";
 }
 
 double RosenBounded::value(Arg &) const {
@@ -36,8 +33,8 @@ double RosenBounded::value(Arg &) const {
    return -(m_prefactor*pow((y - x*x), 2) + pow((1 - x), 2));
 }
 
-double RosenBounded::derivByParam(Arg &, 
-                           const std::string &paramName) const {
+double RosenBounded::derivByParamImp(Arg &, 
+                                     const std::string & paramName) const {
    std::vector<double> params;
    getParamValues(params);
 

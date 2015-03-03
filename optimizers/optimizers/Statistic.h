@@ -31,7 +31,11 @@ namespace optimizers {
 class Statistic : public Function {
     
 public:
-    
+
+   Statistic(const std::string & genericName, unsigned int maxNumParams) 
+      : Function(genericName, maxNumParams, "", "dArg", None) {
+   }
+
    virtual ~Statistic() {}
 
    virtual double value() const = 0;
@@ -40,7 +44,7 @@ public:
 
 protected:
 
-   Statistic() {}
+   Statistic() : Function("Statistic", 0, "", "", None) {}
 
    Statistic(const Statistic &rhs) : Function (rhs) {}
 

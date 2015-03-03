@@ -17,27 +17,21 @@
 
 namespace optimizers {
 
-void Rosen::init() {
-   int nParams = 2;
-   setMaxNumParams(nParams);
-
+Rosen::Rosen(double prefactor) 
+   : Statistic("Rosen", 2), m_prefactor(prefactor) {
    addParam(std::string("x"), 1, true);
    addParam(std::string("y"), 1, true);
-//   std::cout << "Rosen::init: " << m_parameter.size() << std::endl;
-
-   m_genericName = "Rosen";
 }
 
 double Rosen::value(Arg &) const {
    double x = m_parameter[0].getTrueValue();
    double y = m_parameter[1].getTrueValue();
-//   std::cout << "Rosen::value: " << m_parameter.size() << std::endl;
 
    return -(m_prefactor*pow((y - x*x), 2) + pow((1 - x), 2));
 }
 
-double Rosen::derivByParam(Arg &, 
-                           const std::string &paramName) const {
+double Rosen::derivByParamImp(Arg &, 
+                              const std::string & paramName) const {
    std::vector<double> params;
    getParamValues(params);
 

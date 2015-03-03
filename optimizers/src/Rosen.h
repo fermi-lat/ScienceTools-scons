@@ -15,43 +15,37 @@ namespace optimizers {
  *
  * @brief A 2D Rosenbrock test function
  *
- * @author J. Chiang
- *    
- * $Header$
  */
     
 class Rosen : public Statistic {
 
 public:
 
-   Rosen() : m_prefactor(100) {init();}
-   Rosen(double prefactor) : m_prefactor(prefactor) {init();}
+   Rosen(double prefactor=100);
       
-   virtual double value(Arg&) const;
-
    virtual double value() const {
       Arg dummy;
       return value(dummy);
    }
 
-   virtual double derivByParam(Arg &, const std::string &paramName) const;
-
-   virtual void getFreeDerivs(std::vector<double> &derivs) const {
+   virtual void getFreeDerivs(std::vector<double> & derivs) const {
       Arg dummy;
       Function::getFreeDerivs(dummy, derivs);
    }
 
-protected:
-
-   virtual Rosen * clone() const {
+   virtual Function * clone() const {
       return new Rosen(*this);
    }
+
+protected:
+
+   virtual double value(Arg &) const;
+
+   virtual double derivByParamImp(Arg &, const std::string & paramName) const;
 
 private:
 
    double m_prefactor;
-
-   void init();
 
 };
 

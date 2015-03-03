@@ -18,28 +18,14 @@
 
 namespace optimizers {
 
-// initialization function used by constructors
-void Gaussian::init(double Prefactor, double Mean, double Sigma) {
-// Implement Gaussian class with three named parameters, 
-// "Prefactor", "Mean", "Sigma"
-
-   int nParams = 3;
-   setMaxNumParams(nParams);
-
+Gaussian::Gaussian(double Prefactor, double Mean, double Sigma)
+   : Function("Gaussian", 3, "Prefactor", "dArg", Addend) {
    addParam(std::string("Prefactor"), Prefactor, true);
    addParam(std::string("Mean"), Mean, true);
    addParam(std::string("Sigma"), Sigma, true);
-
-// Set FuncType and ArgType for use with CompositeFunction hierarchy.
-   m_funcType = Addend;
-   m_argType = "dArg";
-
-   m_genericName = "Gaussian";
-
-   m_normParName = "Prefactor";
 }
 
-double Gaussian::integral(Arg &xargmin, Arg &xargmax) const {
+double Gaussian::integral(Arg & xargmin, Arg & xargmax) const {
    double xmin = dynamic_cast<dArg &>(xargmin).getValue();
    double xmax = dynamic_cast<dArg &>(xargmax).getValue();
 
@@ -69,10 +55,9 @@ double Gaussian::erfcc(double x) const {
    return x >= 0.0 ? ans : 2.0-ans;
 }
 
-double Gaussian::value(Arg &xarg) const {
+double Gaussian::value(Arg & xarg) const {
    double x = dynamic_cast<dArg &>(xarg).getValue();
 
-//! assume a standard ordering for the parameters
    enum ParamTypes {Prefactor, Mean, Sigma};
 
    std::vector<Parameter> my_params;
@@ -84,8 +69,8 @@ double Gaussian::value(Arg &xarg) const {
                  /my_params[Sigma].getTrueValue(), 2 )/2.);
 }
 
-double Gaussian::derivByParam(Arg &xarg, 
-                              const std::string &paramName) const {
+double Gaussian::derivByParamImp(Arg & xarg, 
+                                 const std::string & paramName) const {
    double x = dynamic_cast<dArg &>(xarg).getValue();
 
    enum ParamTypes {Prefactor, Mean, Sigma};

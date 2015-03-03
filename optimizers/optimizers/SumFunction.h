@@ -28,9 +28,6 @@ public:
 
    SumFunction(Function &a, Function &b);
 
-   double value(Arg &x) const
-      {return m_a->value(x) + m_b->value(x);}
-
    double integral(Arg &xmin, Arg &xmax) const
       {return m_a->integral(xmin, xmax) + m_b->integral(xmin, xmax);}
 
@@ -40,6 +37,8 @@ public:
 
 protected:
 
+   double value(Arg &x) const
+      {return m_a->operator()(x) + m_b->operator()(x);}
 
    void fetchDerivs(Arg &x, std::vector<double> &derivs, bool getFree) const;
 

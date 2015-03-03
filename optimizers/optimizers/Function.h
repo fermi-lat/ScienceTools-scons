@@ -9,8 +9,6 @@
 #ifndef optimizers_Function_h
 #define optimizers_Function_h
 
-#include <iostream>
-#include <sstream>
 #include <vector>
 #include <stdexcept>
 #include <string>
@@ -47,10 +45,28 @@ class Function {
 
 public:
 
-   Function() : m_normParName("") {}
+   /// These type fields are used by the Composite Function hierarchy
+   /// to determine how Function objects may be combined.
+   enum FuncType {None, Addend, Factor};
 
-   virtual ~Function() {}
+   Function(const std::string & genericName,
+            unsigned int maxNumParams,
+            const std::string & normParName,
+            const std::string & m_argType="dArg",
+            FuncType funcType=Addend);
 
+   virtual ~Function();
+
+   /// Function call operator.  Uses template method so non-virtual.
+   double operator()(Arg & xarg) const;
+   
+   /// Function derivative wrt a Parameter.  Uses template method so
+   /// non-virtual.
+   double derivByParam(Arg & xarg, 
+                       const std::string & paramName) const;
+
+   void setScalingFunction(const Function & scalingFunction);
+   
    /// Provide a string identifier.
    void setName(const std::string & functionName) {
       m_functionName = functionName;
@@ -61,50 +77,52 @@ public:
    }
 
    /// Set the Parameter value
-   virtual void setParam(const std::string &paramName, double paramValue);
+   virtual void setParam(const std::string & paramName, double paramValue);
 
    /// Set a Parameter using a Parameter object.
-   virtual void setParam(const Parameter &param);
+   virtual void setParam(const Parameter & param);
 
    /// Return the Parameter value by name.
-   virtual double getParamValue(const std::string &paramName) const;
+   virtual double getParamValue(const std::string & paramName) const;
 
    /// Return the Parameter object by name.
-   virtual const Parameter & getParam(const std::string &paramName) const;
+   virtual const Parameter & getParam(const std::string & paramName) const;
 
-   /// Unsafe version.
+   /// @return non-const reference to named Parameter.
    virtual Parameter & parameter(const std::string & name);
 
    /// @return The parameter controlling the overall normalization.
    virtual Parameter & normPar();
+   
+   virtual const Parameter & normPar() const;
    
    /// Return the total number of Parameters.
    unsigned int getNumParams() const {
       return m_parameter.size();
    }
 
-   /// Set the values of all Parameters at once, assuming the order is known.
-   void setParamValues(const std::vector<double> &paramVec);
+   /// Set the values of all Parameters.
+   void setParamValues(const std::vector<double> & paramVec);
 
    /// Do a bit of name mangling to allow for inheritance of setParamValues
    virtual std::vector<double>::const_iterator setParamValues_(
       std::vector<double>::const_iterator);
 
    /// Set all the Parameters using a vector of Parameter objects.
-   virtual void setParams(const std::vector<Parameter> &params);
+   virtual void setParams(const std::vector<Parameter> & params);
 
    /// Get a vector of the Parameter names.
-   void getParamNames(std::vector<std::string> &names) const {
+   void getParamNames(std::vector<std::string> & names) const {
       fetchParamNames(names, false);
    }
 
    /// Get a vector of the Parameter values.
-   void getParamValues(std::vector<double> &values) const {
+   void getParamValues(std::vector<double> & values) const {
       fetchParamValues(values, false);
    }
 
    /// Get a vector of the Parameter objects.
-   void getParams(std::vector<Parameter> &params) const {
+   void getParams(std::vector<Parameter> & params) const {
       params = m_parameter;
    }
 
@@ -112,7 +130,7 @@ public:
    virtual unsigned int getNumFreeParams() const;
 
    /// Set only the free Parameters using a vector of values.
-   virtual void setFreeParamValues(const std::vector<double> &paramVec);
+   virtual void setFreeParamValues(const std::vector<double> & paramVec);
 
    /// Iterator used for composite Functions and Sources. (Note name
    /// mangling here too.)
@@ -120,55 +138,39 @@ public:
       std::vector<double>::const_iterator);
 
    /// Get the vector of free Parameter names.
-   void getFreeParamNames(std::vector<std::string> &names) const {
+   void getFreeParamNames(std::vector<std::string> & names) const {
       fetchParamNames(names, true);
    }
 
    /// Get the vector of free Parameter values.
-   void getFreeParamValues(std::vector<double> &values) const {
+   void getFreeParamValues(std::vector<double> & values) const {
       fetchParamValues(values, true);
    }
 
    /// Get the vector of free Parameter objects.
    virtual void getFreeParams(std::vector<Parameter> &) const;
 
-   /// Return the Function value.
-   virtual double value(Arg &) const = 0;
-
-   /// Function call operator.
-   double operator()(Arg &x) const {
-      return value(x);
-   }
-   
-   /// Function derivative wrt a Parameter, identified by name.
-   virtual double derivByParam(Arg &x, 
-                               const std::string &paramName) const = 0;
-   
    /// Get a vector of all of the derivatives.
-   virtual void getDerivs(Arg &x, std::vector<double> &derivs) const {
+   virtual void getDerivs(Arg & x, std::vector<double> & derivs) const {
       fetchDerivs(x, derivs, false);
    }
    
    /// Get a vector of the derivatives wrt the free Parameters.
-   virtual void getFreeDerivs(Arg &x, std::vector<double> &derivs) const {
+   virtual void getFreeDerivs(Arg & x, std::vector<double> & derivs) const {
       fetchDerivs(x, derivs, true);
    }
 
    /// Return the integral of function wrt data variable.
    virtual double integral(Arg &, Arg &) const {
-     std::string name = m_functionName;
-     if(m_functionName==""){name=m_genericName;}
      throw std::runtime_error("integral method not implemented for "
-			      + m_functionName);
+			      + m_genericName);
      return 0;
    }
 
    /// Derivative of function wrt data variable.
    virtual double derivative(Arg &) const {
-     std::string name = m_functionName;
-     if(m_functionName==""){name=m_genericName;}
      throw std::runtime_error("derivative method not implemented for "
-			      + name);
+			      + m_genericName);
      return 0;
    }
 
@@ -176,10 +178,6 @@ public:
    virtual Function * clone() const = 0;
 
 #ifndef SWIG
-   /// These type fields are used by the Composite Function hierarchy
-   /// to determine how Function objects may be combined.
-   enum FuncType {None, Addend, Factor};
-
    FuncType funcType() {
       return m_funcType;
    }
@@ -190,8 +188,7 @@ public:
       return m_argType;
    }
 
-   /// Return the generic name of the Function. This should be the
-   /// same as the class name.
+   /// Return the generic name of the Function.
    const std::string & genericName() const {
       return m_genericName;
    }
@@ -216,45 +213,50 @@ public:
       parameter(name).setFree(false);
    }
 
-   const std::vector<double> & xvalues(size_t nx=100) const {
-      return m_xvalues;
-   }
+   // const std::vector<double> & xvalues(size_t nx=100) const {
+   //    return m_xvalues;
+   // }
 
 protected:
 
-   std::string m_genericName;
-
-   FuncType m_funcType;
-
-   std::string m_argType;
-
-   unsigned int m_maxNumParams;
-
-   std::string m_functionName;
-
    std::vector<Parameter> m_parameter;
 
-   std::string m_normParName;
+   void setMaxNumParams(size_t maxNumParams);
 
-   mutable std::vector<double> m_xvalues;
+//   mutable std::vector<double> m_xvalues;
 
-   void setMaxNumParams(int nParams) {
-      m_maxNumParams = nParams;
-   }
+   /// Return the Function value.
+   virtual double value(Arg &) const = 0;
 
-   /// for subclass constructor use
-   void addParam(const std::string &paramName, 
+   virtual double derivByParamImp(Arg & x,
+                                  const std::string & paramName) const = 0;
+
+   /// For subclass usage
+   void addParam(const std::string & paramName, 
                  double paramValue, bool isFree=true);
 
-   void addParam(const Parameter &param);
+   void addParam(const Parameter & param);
 
    virtual void fetchParamValues(std::vector<double> & values, 
                                  bool getFree) const;
 
-   void fetchParamNames(std::vector<std::string> &names, bool getFree) const;
+   void fetchParamNames(std::vector<std::string> & names, bool getFree) const;
 
-   virtual void fetchDerivs(Arg &x ,std::vector<double> &derivs, 
+   virtual void fetchDerivs(Arg & x ,std::vector<double> & derivs, 
                             bool getFree) const;
+
+private:
+
+   std::string m_genericName;
+   unsigned int m_maxNumParams;
+   std::string m_normParName;
+   std::string m_argType;
+   FuncType m_funcType;
+
+   Function * m_scalingFunction;
+
+   std::string m_functionName;
+
 };
 
 } // namespace optimizers

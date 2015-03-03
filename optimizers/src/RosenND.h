@@ -14,26 +14,18 @@ namespace optimizers {
  *
  * @brief A ND Rosenbrock test function
  *
- * @author J. Chiang
- *    
- * $Header$
  */
     
 class RosenND : public Statistic {
 
 public:
 
-   RosenND(int ndim=3, double prefactor=100) : 
-      m_dim(ndim), m_prefactor(prefactor) {init();}
-      
-   virtual double value(Arg&) const;
+   RosenND(int ndim=3, double prefactor=100);
 
    virtual double value() const {
       Arg dummy;
       return value(dummy);
    }
-
-   virtual double derivByParam(Arg &, const std::string &paramName) const;
 
    virtual void getFreeDerivs(std::vector<double> &derivs) const {
       Arg dummy;
@@ -41,6 +33,10 @@ public:
    }
 
 protected:
+
+   virtual double value(Arg&) const;
+
+   virtual double derivByParamImp(Arg &, const std::string &paramName) const;
 
    virtual RosenND * clone() const {
       return new RosenND(*this);
@@ -52,7 +48,6 @@ private:
 
    double m_prefactor;
 
-   void init();
 
 };
 

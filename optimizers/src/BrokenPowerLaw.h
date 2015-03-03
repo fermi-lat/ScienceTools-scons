@@ -19,40 +19,24 @@ namespace optimizers {
  *
  * @brief A broken power-law function
  *
- * @author J. Chiang
- *    
- * $Header$
  */
     
 class BrokenPowerLaw : public Function {
 
 public:
 
-   BrokenPowerLaw() {
-      init(1, -1.5, -2.5, 1000.);
-   }
-
-   BrokenPowerLaw(double Prefactor, double Index1, double Index2, 
-                  double BreakValue) {
-      init(Prefactor, Index1, Index2, BreakValue);
-   }
-
-   double value(Arg &) const;
-
-   double derivByParam(Arg & x, const std::string & paramName) const;
+   BrokenPowerLaw(double Prefactor=1., double Index1=-1.5,
+                  double Index2=-2.5, double BreakValue=1000.);
 
    virtual Function * clone() const {
       return new BrokenPowerLaw(*this);
    }
 
-private:
+protected:
 
-   void init(double Prefactor, double Index1, 
-             double Index2, double BreakValue);
+   double value(Arg & xarg) const;
 
-// Disable this method.
-   double integral(Arg &, Arg &) const 
-      {return 0;}
+   double derivByParamImp(Arg & xarg, const std::string & paramName) const;
 
 };
 

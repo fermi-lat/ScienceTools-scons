@@ -14,18 +14,11 @@
 
 namespace optimizers {
 
-ProductFunction::ProductFunction(Function &a, Function &b) :
-   CompositeFunction(a, b) {
+ProductFunction::ProductFunction(Function & a, Function & b)
+   : CompositeFunction(a, b) {
    assert( (a.funcType() == Addend && b.funcType() == Factor) || 
            (a.funcType() == Factor && b.funcType() == Addend) || 
            (a.funcType() == Factor && b.funcType() == Factor) );
-   if (a.funcType() == Addend || b.funcType() == Addend) {
-      m_funcType = Addend;
-   } else {
-      m_funcType = Factor;
-   }
-   m_a = a.clone();
-   m_b = b.clone();
    syncParams();
 }
 
@@ -39,16 +32,18 @@ void ProductFunction::fetchDerivs(Arg &x, std::vector<double> &derivs,
    } else {
       m_a->getDerivs(x, my_derivs);
    }
-   for (unsigned int i = 0; i < my_derivs.size(); i++)
-      derivs.push_back(my_derivs[i]*m_b->value(x));
+   for (unsigned int i = 0; i < my_derivs.size(); i++) {
+      derivs.push_back(my_derivs[i]*m_b->operator()(x));
+   }
 
    if (getFree) {
       m_b->getFreeDerivs(x, my_derivs);
    } else {
       m_b->getDerivs(x, my_derivs);
    }
-   for (unsigned int i = 0; i < my_derivs.size(); i++)
-      derivs.push_back(my_derivs[i]*m_a->value(x));
+   for (unsigned int i = 0; i < my_derivs.size(); i++) {
+      derivs.push_back(my_derivs[i]*m_a->operator()(x));
+   }
 }
 
 } // namespace optimizers

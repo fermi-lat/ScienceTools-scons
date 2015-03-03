@@ -19,32 +19,19 @@
 
 namespace optimizers {
 
-// initialization function used by constructors
-void BrokenPowerLaw::init(double Prefactor, double Index1, double Index2,
-                          double BreakValue) {
-// Implement BrokenPowerLaw class with three named parameters, 
-// "Prefactor", "Index1", "Index2", "BreakValue"
-
-   int nParams = 4;
-   setMaxNumParams(nParams);
-
+BrokenPowerLaw::
+BrokenPowerLaw(double Prefactor, double Index1,
+               double Index2, double BreakValue) 
+   : Function("BrokenPowerLaw", 4, "Prefactor", "dArg", Addend) {
    addParam(std::string("Prefactor"), Prefactor, true);
    addParam(std::string("Index1"), Index1, true);
    addParam(std::string("Index2"), Index2, true);
    addParam(std::string("BreakValue"), BreakValue, true);
-
-// set FuncType and ArgType for use with CompositeFunction hierarchy
-   m_funcType = Addend;
-   m_argType = "dArg";
-
-   m_genericName = "BrokenPowerLaw";
-   m_normParName = "Prefactor";
 }
 
-double BrokenPowerLaw::value(Arg &xarg) const {
+double BrokenPowerLaw::value(Arg & xarg) const {
    double x = dynamic_cast<dArg &>(xarg).getValue();
 
-// assume a standard ordering for the parameters
    enum ParamTypes {Prefactor, Index1, Index2, BreakValue};
 
    std::vector<Parameter> my_params;
@@ -62,8 +49,8 @@ double BrokenPowerLaw::value(Arg &xarg) const {
    return 0;
 }
 
-double BrokenPowerLaw::derivByParam(Arg &xarg, 
-                                    const std::string &paramName) const {
+double BrokenPowerLaw::derivByParamImp(Arg & xarg, 
+                                       const std::string & paramName) const {
 
    double x = dynamic_cast<dArg &>(xarg).getValue();
 

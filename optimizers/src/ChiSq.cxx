@@ -52,7 +52,8 @@ double ChiSq::value() const {
    // ChiSq == sum((y_actual - y_model) ^ 2 / y_model)
    for (DataCont_t::size_type domain_index = 0; domain_index != x.size(); ++domain_index) {
       optimizers::dArg arg(x[domain_index]);
-      double func_value = m_func->value(arg);
+//      double func_value = m_func->value(arg);
+      double func_value = m_func->operator()(arg);
       double deviation = y[domain_index] - func_value;
       chi_sq += deviation * deviation / func_value;
    }
@@ -77,7 +78,7 @@ void ChiSq::getFreeDerivs(std::vector<double> & derivs) const {
       m_func->getFreeDerivs(arg, func_deriv);
 
       // Precompute the part of the sum which does not depend on which derivative is being taken.
-      double ratio = y[domain_index] / m_func->value(arg);
+      double ratio = y[domain_index] / m_func->operator()(arg);
       double deviation_part = 1. - (ratio * ratio);
 
       // Add terms to output array of derivatives.
@@ -100,7 +101,7 @@ optimizers::Function * ChiSq::clone() const { return new ChiSq(*this); }
 
 double ChiSq::value(optimizers::Arg &) const { return value(); }
 
-double ChiSq::derivByParam(optimizers::Arg &, const std::string & parameter_name) const {
+double ChiSq::derivByParamImp(optimizers::Arg &, const std::string & parameter_name) const {
    const DataCont_t & x(*m_domain);
    const DataCont_t & y(*m_range);
 
@@ -111,7 +112,7 @@ double ChiSq::derivByParam(optimizers::Arg &, const std::string & parameter_name
    for (DataCont_t::size_type domain_index = 0; domain_index != x.size(); ++domain_index) {
       optimizers::dArg arg(x[domain_index]);
       // Compute ratio of actual data to model.
-      double ratio = y[domain_index] / m_func->value(arg);
+      double ratio = y[domain_index] / m_func->operator()(arg);
 
       // Get the function's derivatives wrt the parameter.
       double func_deriv = m_func->derivByParam(arg, parameter_name);

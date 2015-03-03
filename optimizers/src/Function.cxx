@@ -6,7 +6,6 @@
  * $Header$
  */
 
-#include <iostream>
 #include <sstream>
 
 #include "xmlBase/Dom.h"
@@ -16,6 +15,44 @@
 #include "optimizers/ParameterNotFound.h"
 
 namespace optimizers {
+
+Function::Function(const std::string & genericName, 
+                   unsigned int maxNumParams,
+                   const std::string & normParName,
+                   const std::string & argType,
+                   FuncType funcType)
+   : m_genericName(genericName),
+     m_maxNumParams(maxNumParams),
+     m_normParName(normParName),
+     m_argType(argType),
+     m_funcType(funcType),
+     m_scalingFunction(0) {
+}
+
+Function::~Function() {
+   delete m_scalingFunction;
+}
+
+double Function::operator()(Arg & xarg) const {
+   double my_value(value(xarg));
+   if (m_scalingFunction) {
+      my_value *= m_scalingFunction->operator()(xarg);
+   }
+   return my_value;
+}
+
+double Function::derivByParam(Arg & xarg,
+                              const std::string & paramName) const {
+   double my_deriv(derivByParamImp(xarg, paramName));
+   if (m_scalingFunction) {
+      my_deriv *= m_scalingFunction->operator()(xarg);
+   }
+   return my_deriv;
+}
+
+void Function::setScalingFunction(const Function & scalingFunction) {
+   m_scalingFunction = scalingFunction.clone();
+}
 
 void Function::setParam(const Parameter &param) {
    parameter(param.getName()) = param;
@@ -229,6 +266,13 @@ Parameter & Function::normPar() {
    return parameter(m_normParName);
 }
 
+const Parameter & Function::normPar() const {
+   if (m_normParName == "") {
+      throw ParameterNotFound("Normalization", getName(), "normPar()");
+   }
+   return getParam(m_normParName);
+}
+
 bool Function::rescale(double factor) {
    if (m_normParName == "") {
       return false;
@@ -240,6 +284,10 @@ bool Function::rescale(double factor) {
    double new_value(prefactor.getValue()*factor);
    prefactor.setValue(new_value);
    return true;
+}
+
+void Function::setMaxNumParams(size_t maxNumParams) {
+   m_maxNumParams = maxNumParams;
 }
 
 } // namespace optimizers

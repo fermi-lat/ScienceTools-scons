@@ -18,35 +18,25 @@ namespace optimizers {
  *
  * @brief A power-law function
  *
- * @author J. Chiang
- *    
- * $Header$
  */
     
 class PowerLaw : public Function {
+
 public:
 
-   PowerLaw() {
-      init(1, -2, 1);
-   }
-
-   PowerLaw(double Prefactor, double Index, double Scale) {
-      init(Prefactor, Index, Scale);
-   }
-
-   double value(Arg &) const;
-
-   double derivByParam(Arg & x, const std::string & paramName) const;
+   PowerLaw(double Prefactor=1, double Index=-2, double Scale=1);
 
    double integral(Arg & xmin, Arg & xmax) const;
 
-   virtual Function *clone() const {
+   virtual Function * clone() const {
       return new PowerLaw(*this);
    }
 
-private:
+protected:
 
-   void init(double Prefactor, double Index, double Scale);
+   double value(Arg &) const;
+
+   double derivByParamImp(Arg & x, const std::string & paramName) const;
 
 };
 

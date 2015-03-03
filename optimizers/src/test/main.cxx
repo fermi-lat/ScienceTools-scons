@@ -73,6 +73,7 @@ void test_Mcmc();
 void test_ChiSq();
 void test_Amoeba();
 void test_rescaling();
+void test_scalingFunction();
 
 std::string test_path;
 
@@ -91,6 +92,7 @@ int main() {
    test_ChiSq();
    test_Amoeba();
    test_rescaling();
+   test_scalingFunction();
    return 0;
 }
 
@@ -676,7 +678,7 @@ void test_Function_class() {
    
 // setting and getting parameter names and values
    double vals[] = {1., 2., 4.};
-   char *names[] = {"Ruthie", "Mary", "Jane"};
+   const char *names[] = {"Ruthie", "Mary", "Jane"};
    for (int i = 0; i < 3; i++) {
       f.setParam(names[i], vals[i]);
    }
@@ -941,8 +943,8 @@ void test_ChiSq() {
       dArg arg(domain[ii]);
       // Set range so that each term in chisq sum contributes .25 * model value
       // and each deriv contributes .75 * function deriv.
-      range[ii] = .5 * gauss.value(arg);
-      correct_value += .25 * gauss.value(arg);
+      range[ii] = .5 * gauss(arg);
+      correct_value += .25 * gauss(arg);
       correct_deriv[0] += .75 * gauss.derivByParam(arg, "Prefactor");
       correct_deriv[1] += .75 * gauss.derivByParam(arg, "Mean");
       correct_deriv[2] += .75 * gauss.derivByParam(arg, "Sigma");
@@ -1027,5 +1029,21 @@ void test_rescaling() {
       double value(my_functions.at(i)->operator()(xx));
       my_functions.at(i)->rescale(factor);
       assert(std::fabs(value/my_functions.at(i)->operator()(xx) - 0.5) < 1e-7);
+   }
+}
+
+void test_scalingFunction() {
+   BrokenPowerLaw bpl(1, -1.5, -2.5, 1000.);
+   Function * bpl_clone(bpl.clone());
+   double factor(2);
+   ConstantValue constant_value(factor);
+   bpl.setScalingFunction(constant_value);
+
+   size_t nee(20);
+   double estep(3./(nee - 1.));
+   double logEmin(2.);
+   for (size_t k(0); k < nee; k++) {
+      dArg energy(std::pow(10., logEmin + k*estep));
+      assert(bpl(energy) == factor*bpl_clone->operator()(energy));
    }
 }

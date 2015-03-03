@@ -24,26 +24,15 @@ namespace optimizers {
  * A type-checking mechanism has been implemented to ensure that only
  * Functions that operate on the same Arg subclasses are combined.
  *
- * @author J. Chiang
- *    
- * $Header$
- *  */
+ */
     
 class CompositeFunction : public Function {
+
 public:
 
-   CompositeFunction(Function &a, Function &b) {
-      if (a.argType() != b.argType()) {
-         std::ostringstream message;
-         message << "CompositeFunction:\n"
-                 << "Type mismatch: "
-                 << a.argType() << " vs "
-                 << b.argType();
-         throw std::runtime_error(message.str());
-      }
-      m_argType = a.argType();
-   }
-   CompositeFunction(const CompositeFunction&);
+   CompositeFunction(Function & a, Function & b);
+
+   CompositeFunction(const CompositeFunction &);
 
    virtual ~CompositeFunction() {
       delete m_a;
@@ -51,7 +40,7 @@ public:
    }
 
    /// setParam method to include function name checking
-   virtual void setParam(const Parameter &param, const std::string &funcName);
+   virtual void setParam(const Parameter & param, const std::string & funcName);
 
    /// group parameter access (note name mangling for inheritance 
    /// from Function)
@@ -70,8 +59,8 @@ public:
    }
 
    /// Parameter access including Function name specification
-   virtual const Parameter & getParam(const std::string &paramName, 
-                                      const std::string &funcName) const;
+   virtual const Parameter & getParam(const std::string & paramName, 
+                                      const std::string & funcName) const;
 
    virtual bool rescale(double factor) {
       return m_a->rescale(factor) && m_b->rescale(factor);
@@ -81,6 +70,7 @@ protected:
 
    // pointers to the Functions forming the composite
    Function * m_a;
+
    Function * m_b;
 
    /// method to sync the m_parameter vector with those of the two Functions
@@ -89,7 +79,7 @@ protected:
 private:
 
    /// disable this since Parameters may no longer have unique names
-   double derivByParam(Arg &, const std::string &) const {return 0;}
+   double derivByParamImp(Arg &, const std::string &) const {return 0;}
 
 };
 

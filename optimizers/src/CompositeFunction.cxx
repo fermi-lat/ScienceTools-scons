@@ -14,16 +14,22 @@
 
 namespace optimizers {
 
+CompositeFunction::CompositeFunction(Function & a, Function & b) 
+   : Function("CompositeFunction", a.getNumParams()+b.getNumParams(), 
+              "", a.argType(), a.funcType()),
+     m_a(a.clone()), m_b(b.clone()){
+   if (a.argType() != b.argType()) {
+      std::ostringstream message;
+      message << "CompositeFunction:\n"
+              << "Type mismatch: "
+              << a.argType() << " vs "
+              << b.argType();
+      throw std::runtime_error(message.str());
+   }
+}
+
 CompositeFunction::CompositeFunction(const CompositeFunction &rhs) 
-   : Function(rhs) {
-// Make a deep copy since Functions are stored as pointers.
-
-   Function *afuncptr = rhs.m_a->clone();
-   m_a = afuncptr;
-
-   Function *bfuncptr = rhs.m_b->clone();
-   m_b = bfuncptr;
-
+   : Function(rhs), m_a(rhs.m_a->clone()), m_b(rhs.m_b->clone()) {
    syncParams();
 }
 
@@ -40,8 +46,8 @@ void CompositeFunction::setParam(const Parameter &param,
 }
 
 const Parameter & 
-CompositeFunction::getParam(const std::string &paramName,
-                            const std::string &funcName) const {
+CompositeFunction::getParam(const std::string & paramName,
+                            const std::string & funcName) const {
    assert(funcName == m_a->getName() || funcName == m_b->getName());
 
    if (m_a->getName() == funcName) {
@@ -53,16 +59,17 @@ CompositeFunction::getParam(const std::string &paramName,
 
 void CompositeFunction::syncParams() {
    m_parameter.clear();
-
    std::vector<Parameter> params;
 
    m_a->getParams(params);
-   for (unsigned int i = 0; i < params.size(); i++) 
+   for (size_t i(0); i < params.size(); i++) {
       m_parameter.push_back(params[i]);
+   }
 
    m_b->getParams(params);
-   for (unsigned int i = 0; i < params.size(); i++) 
+   for (size_t i(0); i < params.size(); i++) {
       m_parameter.push_back(params[i]);
+   }
 }
 
 } // namespace optimizers

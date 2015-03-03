@@ -19,24 +19,11 @@
 
 namespace optimizers {
 
-// Initialization function used by constructors.
-void AbsEdge::init(double Tau0, double E0, double Index) {
-// Implement AbsEdge class with three named parameters, 
-// "Tau0", "E0", "Index".
-
-   int nParams = 3;
-   setMaxNumParams(nParams);
-
+AbsEdge::AbsEdge(double Tau0, double E0, double Index) 
+   : Function("AbsEdge", 3, "", "dArg", Factor) {
    addParam(std::string("Tau0"), Tau0, true);
    addParam(std::string("E0"), E0, true);
    addParam(std::string("Index"), Index, true);
-
-// Set FuncType and ArgType for use with CompositeFunction hierarchy
-   m_funcType = Factor;
-   m_argType = "dArg";
-
-// The generic type of this Function object.
-   m_genericName = "AbsEdge";
 }
 
 double AbsEdge::value(Arg &xarg) const {
@@ -55,8 +42,8 @@ double AbsEdge::value(Arg &xarg) const {
    return exp(-tau);
 }
 
-double AbsEdge::derivByParam(Arg &xarg, 
-                             const std::string &paramName) const {
+double AbsEdge::derivByParamImp(Arg & xarg, 
+                                const std::string & paramName) const {
    double x = dynamic_cast<dArg &>(xarg).getValue();
 
    enum ParamTypes {Tau0, E0, Index};

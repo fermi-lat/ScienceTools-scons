@@ -18,18 +18,13 @@
 
 namespace optimizers {
 
-void RosenND::init() {
-   int nParams = m_dim;
-   setMaxNumParams(nParams);
-
-   for (int i = 0; i < nParams; i++) {
+RosenND::RosenND(int ndim, double prefactor) 
+   : Statistic("RosenND", ndim), m_dim(ndim), m_prefactor(prefactor) {
+   for (int i = 0; i < m_dim; i++) {
       std::ostringstream paramName;
       paramName << "x" << i;
       addParam(paramName.str(), 1, true);
    }
-
-   m_genericName = "RosenND";
-   m_functionName = m_genericName;
 }
 
 double RosenND::value(Arg &) const {
@@ -42,8 +37,8 @@ double RosenND::value(Arg &) const {
    return -my_value;
 }
 
-double RosenND::derivByParam(Arg &, 
-                             const std::string &paramName) const {
+double RosenND::derivByParamImp(Arg &, 
+                                const std::string & paramName) const {
    std::vector<Parameter> params;
    getParams(params);
 
