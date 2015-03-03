@@ -45,9 +45,11 @@ class Function {
 
 public:
 
+#ifndef SWIG
    /// These type fields are used by the Composite Function hierarchy
    /// to determine how Function objects may be combined.
    enum FuncType {None, Addend, Factor};
+#endif // SWIG
 
    Function(const std::string & genericName,
             unsigned int maxNumParams,
