@@ -54,10 +54,14 @@ public:
    Function(const std::string & genericName,
             unsigned int maxNumParams,
             const std::string & normParName,
-            const std::string & m_argType="dArg",
+            const std::string & argType="dArg",
             FuncType funcType=Addend);
 
    virtual ~Function();
+
+   Function(const Function & other);
+
+   Function & operator=(const Function & rhs);
 
    /// Function call operator.  Uses template method so non-virtual.
    double operator()(Arg & xarg) const;

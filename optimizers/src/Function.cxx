@@ -33,6 +33,38 @@ Function::~Function() {
    delete m_scalingFunction;
 }
 
+Function::Function(const Function & other) 
+   : m_parameter(other.m_parameter),
+     m_genericName(other.m_genericName),
+     m_maxNumParams(other.m_maxNumParams),
+     m_normParName(other.m_normParName),
+     m_argType(other.m_argType),
+     m_funcType(other.m_funcType),
+     m_scalingFunction(0),
+     m_functionName(other.m_functionName) {
+   if (other.m_scalingFunction) {
+      m_scalingFunction = other.m_scalingFunction->clone();
+   }
+}
+
+Function & Function::operator=(const Function & rhs) {
+   if (this != &rhs) {
+      m_parameter = rhs.m_parameter;
+      m_genericName = rhs.m_genericName;
+      m_maxNumParams = rhs.m_maxNumParams;
+      m_normParName = rhs.m_normParName;
+      m_argType = rhs.m_argType;
+      m_funcType = rhs.m_funcType;
+      delete m_scalingFunction;
+      m_scalingFunction = 0;
+      if (rhs.m_scalingFunction) {
+         m_scalingFunction = rhs.m_scalingFunction->clone();
+      }
+      m_functionName = rhs.m_functionName;
+   }
+   return *this;
+}
+
 double Function::operator()(Arg & xarg) const {
    double my_value(value(xarg));
    if (m_scalingFunction) {

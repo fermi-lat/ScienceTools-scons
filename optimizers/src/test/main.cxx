@@ -120,14 +120,7 @@ void test_FunctionFactory() {
    }
 
 // Read in the customized prototypes.
-   try {
-      funcFactory.readXml(xmlFile);
-   } catch (optimizers::Exception &eObs) {
-      std::cerr << eObs.what() << std::endl;
-   } catch (...) {
-      std::cerr << "other exception caught while reading "
-                << xmlFile << std::endl;
-   }
+   funcFactory.readXml(xmlFile);
 
    funcFactory.getFunctionNames(funcNames);
    nameIt = funcNames.begin();
@@ -169,14 +162,7 @@ void test_FunctionFactory() {
 
 // Write the Functions in funcFactory to an XML file.
    xmlFile = "outputModels.xml";
-   try {
-      funcFactory.writeXml(xmlFile);
-   } catch (optimizers::Exception &eObj) {
-      std::cout << eObj.what() << std::endl;
-   } catch (...) {
-      std::cerr << "other exception caught while writing "
-                << xmlFile << std::endl;
-   }
+   funcFactory.writeXml(xmlFile);
 
    std::cout << "*** test_FunctionFactory: all tests completed ***\n" 
              << std::endl;
@@ -1046,4 +1032,11 @@ void test_scalingFunction() {
       dArg energy(std::pow(10., logEmin + k*estep));
       assert(bpl(energy) == factor*bpl_clone->operator()(energy));
    }
+
+   // Test copying of an object with a scaling function.
+   Function * original = new PowerLaw(1, -2.1);
+   original->setScalingFunction(constant_value);
+   Function * copy = original->clone();
+   delete original;
+   delete copy;
 }
