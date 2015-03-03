@@ -274,7 +274,7 @@ void GtExposure::performSpectralWeighting() {
    std::vector<double> dndes;
    for (size_t k(0); k < energies.size(); k++) {
       optimizers::dArg arg(energies.at(k));
-      dndes.push_back(m_function->value(arg));
+      dndes.push_back(m_function->operator()(arg));
    }
    double dnde_int(0);
    for (size_t k(0); k < energies.size()-1; k++) {
