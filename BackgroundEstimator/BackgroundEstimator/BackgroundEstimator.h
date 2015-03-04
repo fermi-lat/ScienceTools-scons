@@ -7,9 +7,13 @@
 #include "TProfile.h"
 
 //this enum helps with monitoring the different data formats
-enum {DATA_FORMAT_P6_OLD,DATA_FORMAT_P6_NEW,DATA_FORMAT_P7};
+enum {DATA_FORMAT_P6_OLD,DATA_FORMAT_P6_NEW,DATA_FORMAT_P7,DATA_FORMAT_P8};
 
 /// LAT Background estimation for transient events
+
+namespace BKGE_NS{
+    void Calc_TimeCorrectionFactors(vector<string> GRB_folders, vector  <double> METs, string Dataclass, double MinE, double MaxE, int NBins);
+};
 
 namespace BKGE_NS{
     ///Calculate the background map
@@ -25,6 +29,9 @@ class BackgroundEstimator{
   public:
     BackgroundEstimator(string aClass, double EMin=-1, double EMax=-1, int EBins=-1, bool initialize=true, bool ShowLogo=true);
     ~BackgroundEstimator();
+
+    ///Create the data files used for the background estimation. Normal users don't need to run that
+    void CreateDataFiles(string FitsAllSkyFilesList, string FT2_FILE, double StartTime=0, double EndTime=0, float ZenithThetaCut=100); 
 
     ///Calculate a background skymap. This is the first part of the bkg estimation
     int Make_Background_Map(string FT1_FILE, string FT2File, string GRB_DIR, double Burst_t0, double Burst_Dur,int verbosity=1, bool Calc_Residual=true, bool Save_Earth_Coo_Map=false); 
@@ -81,6 +88,13 @@ class BackgroundEstimator{
     char name[2000];
     string DataDir;
     TFile * fResidualOverExposure,*fRateFit,*fThetaPhiFits,*fCorrectionFactors;
+
+  private:
+   ///Data Files
+    void CalcResiduals(string FitsAllSkyFile);
+    void Make_McIlwainL_Fits(string FitsAllSkyFile);
+    void Make_ThetaPhi_Fits(string FitsAllSkyFile);
+
     
 };
 

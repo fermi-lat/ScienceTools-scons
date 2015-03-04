@@ -1,8 +1,8 @@
 //Author: Vlasios Vasileiou <vlasisva@gmail.com>
 // $Header$
-#include "BackgroundEstimator/BackgroundEstimator_ext.h"
+#include "BackgroundEstimator/BackgroundEstimator.h"
 
-void BackgroundEstimator_ext::CalcResiduals(string FitsAllSkyFile){
+void BackgroundEstimator::CalcResiduals(string FitsAllSkyFile){
 
  const float hSimulatedSky_Earth_Map_Min_B=20;
  sprintf(name,"%.2f",Residuals_version);
@@ -55,6 +55,7 @@ void BackgroundEstimator_ext::CalcResiduals(string FitsAllSkyFile){
        fits_get_num_cols(fptr, &ncols, &status);
        int format;
        if      (DataClass.find("P7")!=string::npos) format=DATA_FORMAT_P7;
+       else if (DataClass.find("P8")!=string::npos) format=DATA_FORMAT_P8;
        else if (DataClass.find("P6")!=string::npos){
            if      (ncols==22) format=DATA_FORMAT_P6_NEW;
            else if (ncols==18) format=DATA_FORMAT_P6_OLD;
