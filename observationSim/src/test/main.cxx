@@ -38,7 +38,6 @@ int main(int iargc, char * argv[]) {
    feenableexcept (FE_INVALID|FE_DIVBYZERO|FE_OVERFLOW);
 #endif
 
-   try {
 // Create list of xml input files for source definitions.
    std::vector<std::string> fileList;
    std::string xml_list(facilities::commonUtilities::joinPath(st_facilities::Environment::xmlPath("observationSim"), "obsSim_source_library.xml"));
@@ -100,7 +99,7 @@ int main(int iargc, char * argv[]) {
    observationSim::Simulator my_simulator(sourceNames, fileList, 1.21);
 
 // Allow for multiple IRFs.
-   irfLoader::Loader::go();
+   irfLoader::Loader::go("DC1A");
    irfInterface::IrfsFactory * myFactory 
       = irfInterface::IrfsFactory::instance();
    std::vector<irfInterface::Irfs *> respPtrs;
@@ -129,10 +128,6 @@ int main(int iargc, char * argv[]) {
       my_simulator.generateEvents(count, events, scData, respPtrs, spacecraft);
    }
    std::cout << "Done." << std::endl;
-   } catch (std::exception & eObj) {
-      std::cout << eObj.what() << std::endl;
-      return 1;
-   }
 }
 
 void help() {
