@@ -85,17 +85,6 @@ void FtFileBase::setNumRows(long nrows) {
 void FtFileBase::appendField(const std::string & colname,
                              const std::string & format) {
    m_table->appendField(colname, format);
-// Repair field by removing TNULL keyword that is added by tip. The
-// null value is usually ok for integers, but is inappropriate for
-// floats and is not needed by either, so we remove it in every case.
-   int fieldIndex = m_table->getFieldIndex(colname) + 1;
-   std::ostringstream nullkeyword;
-   nullkeyword << "TNULL" << fieldIndex;
-   try {
-      m_table->getHeader().erase(nullkeyword.str());
-   } catch (...) {
-      // do nothing if tip fails us again
-   }
 }
 
 const std::vector<std::string> & FtFileBase::getFieldNames() const {
