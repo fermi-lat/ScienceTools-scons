@@ -5,6 +5,7 @@
    @verbatim
    * EOH *
 
+ likeGui-07-11-01 05-Mar-2015 jchiang ensure saclay_celgal.py is installed in the PYTHONPATH
  likeGui-07-11-00 12-Feb-2015 jchiang add Saclay implementations of angular distance
  likeGui-07-10-00 04-Feb-2015 jchiang use astropy.coordinates in celgal.py
  likeGui-07-09-03 01-Jul-2010 jchiang add ObsSim to modules added to python subdir in SCons builds; fix path to xmlFiles.txt
