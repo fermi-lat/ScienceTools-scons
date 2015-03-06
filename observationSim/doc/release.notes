@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ observationSim-10-01-01 06-Mar-2015 jchiang load only the DC1A irfs to speed up test program; remove outer try/catch block in test program and let the exceptions be fully exposed
  observationSim-10-01-00 16-Jan-2015 jchiang enable apply_edisp in gtobssim
  observationSim-10-00-01 08-Jan-2015 jchiang incantation to get tip from inexplicably triggering a cfitsio error
  observationSim-10-00-00 08-Jan-2015 jchiang Pass 8-related development
