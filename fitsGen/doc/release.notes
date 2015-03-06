@@ -6,6 +6,7 @@
     @verbatim
     EOH
 
+ fitsGen-07-01-03 06-Mar-2015 jchiang fix template file entries for CHECKSUM and DATASUM to support cfitsio v3370
  fitsGen-07-01-02 23-Jan-2015 jchiang interpret number of events as return code for TTree::Draw; STARCH-21@JIRA
  fitsGen-07-01-01 21-Jan-2015 jchiang increase allocation to support very long TCuts
  fitsGen-07-01-00 21-Jan-2015 jchiang enable array values in the merit tuple to be accessed by index
