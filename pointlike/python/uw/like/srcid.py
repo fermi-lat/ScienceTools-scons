@@ -335,7 +335,7 @@ class Catalog(object):
         cards = pf.CardList(self.hdu.header.cards)
         #First check for UCD in header
         for card in cards:
-            if card.key[:5]=='TBUCD' and card.value in ['ID_MAIN','meta.id;meta.main']:
+            if card.keyword[:5]=='TBUCD' and card.value in ['ID_MAIN','meta.id;meta.main']:
                 name_key = cards['TTYPE'+card.key[5:8]].value
                 break
             #Sometimes UCDs are declared in comments
@@ -351,7 +351,7 @@ class Catalog(object):
                             break
                     except IndexError:
                         pass
-            if card.key[:5]=='TTYPE' and card.value.upper() in ['NAME','ID','PSR_NAME','SOURCE_NAME']:
+            if card.keyword[:5]=='TTYPE' and card.value.upper() in ['NAME','ID','PSR_NAME','SOURCE_NAME']:
                 name_key = card.value
                 break
         try:
