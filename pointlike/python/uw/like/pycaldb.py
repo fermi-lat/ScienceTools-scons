@@ -117,7 +117,8 @@ class CALDBManager(object):
                 return
             print 'Custom irf_dir: did not find both %s ' %self.psf_files
 
-        raise Exception("Unable to find the irf %s." % irf)
+        raise Exception("Unable to find the irf %s\n\tcustom_irf_dir: %s\n\tlooking for %s" \
+              % (irf, self.custom_irf_dir, self.psf_files) )
     
     def construct_aeff(self):
         irf = self.irf
