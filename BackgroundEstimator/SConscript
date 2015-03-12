@@ -28,5 +28,6 @@ BackgroundEstimatorLib  = libEnv.RootDynamicLibrary('BKGE', libsources)
 progEnv.Tool('registerTargets', package = 'BackgroundEstimator',
              rootcintSharedCxts = [[BackgroundEstimatorLib,libEnv]],
              python = listFiles(['python/*']),
-             includes = cintSources)
+             includes = cintSources,
+	     data = listFiles(['data/*']))
 

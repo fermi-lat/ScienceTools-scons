@@ -14,17 +14,18 @@ BackgroundEstimator::~BackgroundEstimator()
 BackgroundEstimator::BackgroundEstimator(string aClass, double EMin, double EMax, int EBins, bool initialize, bool ShowLogo):
 Energy_Min_datafiles(0),Energy_Max_datafiles(0),Energy_Bins_datafiles(0),
 Energy_Min_user(EMin),Energy_Max_user(EMax),Energy_Bins_user(EBins),UsingDefaultBinning(true),
-DataClass(aClass),FT1ZenithTheta_Cut(100),EstimatorVersion(4.1),Residuals_version(2.0),RateFit_version(2.0),ThetaPhiFits_version(2.0),EastWest_version(2.0),TimeCorrectionFactors_version(3.0),
+DataClass(aClass),FT1ZenithTheta_Cut(100),EstimatorVersion(5.0),Residuals_version(2.0),RateFit_version(2.0),ThetaPhiFits_version(2.0),EastWest_version(2.0),TimeCorrectionFactors_version(3.0),
 StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposure(0),fRateFit(0),fThetaPhiFits(0),fCorrectionFactors(0)
 {
  
   if (ShowLogo) {
    printf("*----------------------------------------------*\n");
    printf("|           Background Estimator               |\n");
-   printf("|              v%.1f December/2013            |\n",EstimatorVersion);
+   printf("|              v%.1f March/2015                 |\n",EstimatorVersion);
    printf("|                                              |\n");
-   printf("| contact:     Vlasios Vasileiou               |\n");
-   printf("|              vlasisva@gmail.com              |\n");
+   printf("| Creator:     Vlasios Vasileiou               |\n");
+   printf("| Maintainer:  Giacomo Vianello                |\n");
+   printf("|              giacomov@slac.stanford.edu      |\n");
    printf("| http://arxiv.org/abs/1307.4284               |\n");
    printf("*----------------------------------------------*\n");
  }
@@ -34,6 +35,7 @@ StartTime(0),EndTime(0),StopTime(0),TimeBins(0),BinSize(0.5),fResidualOverExposu
   vector <string> VALID_CLASSES;
   VALID_CLASSES.push_back("P7REP_TRANSIENT_V15");
   VALID_CLASSES.push_back("P8_TRANSIENT_R100_V5");
+  VALID_CLASSES.push_back("P8R2_TRANSIENT100E_V6");
   
   bool goodClass=false;
   for (unsigned int i=0;i<VALID_CLASSES.size();i++) {

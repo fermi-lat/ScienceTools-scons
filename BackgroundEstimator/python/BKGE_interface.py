@@ -2,6 +2,26 @@
 
 import ROOT,os,sys
 
+def getDataPath():
+  path                 = __file__
+  installationPath     = os.path.join(os.path.sep.join(path.split(os.path.sep)[0:-2]))
+  
+  #In the SCONS version of Science Tools, data are saved in data/BackgroundEstimator/
+  dataPath	     = os.path.join(installationPath,'data','BackgroundEstimator')
+  if(not os.path.exists(dataPath)):
+    #In the public version of Fermi ST, data are in refdata/fermi/BackgroundEstimator
+    installationPath = os.path.join(os.path.sep.join(path.split(os.path.sep)[0:-4]))
+    dataPath	     = os.path.join(installationPath,'refdata','fermi','BackgroundEstimator')
+  pass
+  
+  #Final check
+  if(not os.path.exists(dataPath)):
+    raise RuntimeError("Fatal error: could not locate the data subdirectory.")
+  pass
+  
+  return dataPath
+
+
 try: 
 	print("Loading BKGE...");
 	ROOT.gSystem.Load("libBKGE.so")
@@ -14,13 +34,28 @@ from ROOT import TOOLS, BKGE_NS
 ROOT.gStyle.SetOptStat(0)
 TOOLS.Set("GRB_NAME","") #this is to create the datadir directory of the bkg estimator (kluge)
 if(os.environ.get("BKGE_DATADIR")==None):
-  TOOLS.Set("BKGE_DATADIR",os.path.join(os.path.dirname(__file__),"BKGE_Datafiles")+os.path.sep)
+  TOOLS.Set("BKGE_DATADIR",getDataPath()+os.path.sep)
 else:
   TOOLS.Set("BKGE_DATADIR",(os.environ.get("BKGE_DATADIR")+os.path.sep).replace("%s%s" % (os.path.sep,os.path.sep),os.path.sep))
 pass
-ResponseFunction="P7REP_TRANSIENT_V15"     #only P7TRANSIENT reprocessed class is currently publicly supported -- this is the same P7REP_TRANSIENT
+
+allowedIRFS = ["P7REP_TRANSIENT_V15",
+               "P8R2_TRANSIENT100E_V6"]
+
+ResponseFunction="P7REP_TRANSIENT_V15"     #default is p7rep_transient_v15
 TOOLS.Set("BKG_ESTIMATE_ERROR",0.15)  #see associated publication for where this number can from
 
+def setResponseFunction(newResponseFunction):
+    
+    if(newResponseFunction in allowedIRFS):
+      global ResponseFunction
+    
+      ResponseFunction = newResponseFunction
+    
+    else:
+      
+      raise RuntimeError("IRF %s is not allowed/recognized" %(newResponseFunction))
+    
 def CalculateBackground(start, stop , grb_trigger_time, RA, DEC, FT1, FT2, OUTPUT_DIR="output/", emin=-1, emax=-1, ebins=-1, chatter=1, overwrite=False, EvaluateMaps=True, CalcResiduals=True,
     ROI_Calculate=1, ROI_Containment=0.95, ROI_Localization_Error=0, ROI_Radius=12, ROI_Max_Radius=12, GRB_NAME="",ROI_RadiusFile="" ):
     '''
