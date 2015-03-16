@@ -326,4 +326,8 @@ void Function::setMaxNumParams(size_t maxNumParams) {
    m_maxNumParams = maxNumParams;
 }
 
+void Function::setNormParName(const std::string & normParName) {
+   m_normParName = normParName;
+}
+
 } // namespace optimizers

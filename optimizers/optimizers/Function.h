@@ -253,6 +253,8 @@ protected:
    virtual void fetchDerivs(Arg & x ,std::vector<double> & derivs, 
                             bool getFree) const;
 
+   void setNormParName(const std::string & normParName);
+
 private:
 
    std::string m_genericName;
