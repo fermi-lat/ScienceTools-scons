@@ -255,6 +255,8 @@ protected:
 
    void setNormParName(const std::string & normParName);
 
+   void setGenericName(const std::string & genericName);
+
 private:
 
    std::string m_genericName;

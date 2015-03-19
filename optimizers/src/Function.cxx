@@ -330,4 +330,8 @@ void Function::setNormParName(const std::string & normParName) {
    m_normParName = normParName;
 }
 
+void Function::setGenericName(const std::string & genericName) {
+   m_genericName = genericName;
+}
+
 } // namespace optimizers

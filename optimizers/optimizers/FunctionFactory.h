@@ -42,6 +42,8 @@ public:
    void addFunc(const std::string & name, Function * func,
                 bool fromClone=true);
 
+   void addFunc(Function * func, bool fromClone=true);
+
    void getFunctionNames(std::vector<std::string> & funcNames);
 
    void readXml(const std::string & xmlFile);

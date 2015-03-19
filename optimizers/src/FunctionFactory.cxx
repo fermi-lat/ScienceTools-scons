@@ -11,6 +11,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
@@ -51,15 +52,21 @@ void FunctionFactory::addFunc(const std::string &name,
                               optimizers::Function* func, 
                               bool fromClone) {
    if (m_prototypes.count(name)) {
-      std::cerr << "FunctionFactory::addFunc: A Function named "
-                << name << " already exists.  Replacing it." 
-                << std::endl;
+      std::ostringstream message;
+      message << "FunctionFactory::addFunc: A Function named "
+              << name << " already exists.";
+      throw std::runtime_error(message.str());
    }
    if (fromClone) {
       m_prototypes[name] = func->clone();
    } else {
       m_prototypes[name] = func;
    }
+}
+
+void FunctionFactory::addFunc(optimizers::Function * func,
+                              bool fromClone) {
+   addFunc(func->genericName(), func, fromClone);
 }
 
 Function *FunctionFactory::create(const std::string &name) {
