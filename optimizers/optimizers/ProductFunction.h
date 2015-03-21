@@ -30,11 +30,12 @@ public:
 
 protected:
 
-   double value(Arg &x) const {
+   double value(const Arg & x) const {
       return m_a->operator()(x)*m_b->operator()(x);
    }
 
-   void fetchDerivs(Arg &x, std::vector<double> &derivs, bool getFree) const;
+   void fetchDerivs(const Arg & x, 
+                    std::vector<double> & derivs, bool getFree) const;
 
 };
 

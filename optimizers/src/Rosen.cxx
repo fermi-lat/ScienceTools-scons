@@ -19,18 +19,18 @@ namespace optimizers {
 
 Rosen::Rosen(double prefactor) 
    : Statistic("Rosen", 2), m_prefactor(prefactor) {
-   addParam(std::string("x"), 1, true);
-   addParam(std::string("y"), 1, true);
+   addParam("x", 1, true);
+   addParam("y", 1, true);
 }
 
-double Rosen::value(Arg &) const {
+double Rosen::value(const Arg &) const {
    double x = m_parameter[0].getTrueValue();
    double y = m_parameter[1].getTrueValue();
 
    return -(m_prefactor*pow((y - x*x), 2) + pow((1 - x), 2));
 }
 
-double Rosen::derivByParamImp(Arg &, 
+double Rosen::derivByParamImp(const Arg &, 
                               const std::string & paramName) const {
    std::vector<double> params;
    getParamValues(params);

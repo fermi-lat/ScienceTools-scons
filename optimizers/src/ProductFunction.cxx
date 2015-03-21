@@ -22,9 +22,11 @@ ProductFunction::ProductFunction(Function & a, Function & b)
    syncParams();
 }
 
-void ProductFunction::fetchDerivs(Arg &x, std::vector<double> &derivs, 
+void ProductFunction::fetchDerivs(const Arg & x, std::vector<double> &derivs, 
                                   bool getFree) const {
-   if (!derivs.empty()) derivs.clear();
+   if (!derivs.empty()) {
+      derivs.clear();
+   }
 
    std::vector<double> my_derivs;
    if (getFree) {

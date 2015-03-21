@@ -20,13 +20,13 @@ namespace optimizers {
 
 PowerLaw::PowerLaw(double Prefactor, double Index, double Scale) 
    : Function("PowerLaw", 3, "Prefactor", "dArg", Addend)  {
-   addParam(std::string("Prefactor"), Prefactor, true);
-   addParam(std::string("Index"), Index, true);
-   addParam(std::string("Scale"), Scale, false);
+   addParam("Prefactor", Prefactor, true);
+   addParam("Index", Index, true);
+   addParam("Scale", Scale, false);
 }
 
-double PowerLaw::value(Arg &xarg) const {
-   double x = dynamic_cast<dArg &>(xarg).getValue();
+double PowerLaw::value(const Arg & xarg) const {
+   double x = dynamic_cast<const dArg &>(xarg).getValue();
 
    enum ParamTypes {Prefactor, Index, Scale};
 
@@ -38,9 +38,9 @@ double PowerLaw::value(Arg &xarg) const {
            my_params[Index].getTrueValue());
 }
 
-double PowerLaw::derivByParamImp(Arg & xarg,
+double PowerLaw::derivByParamImp(const Arg & xarg,
                                  const std::string & paramName) const {
-   double x = dynamic_cast<dArg &>(xarg).getValue();
+   double x = dynamic_cast<const dArg &>(xarg).getValue();
 
    enum ParamTypes {Prefactor, Index, Scale};
 
@@ -82,9 +82,9 @@ double PowerLaw::derivByParamImp(Arg & xarg,
    return 0;
 }
 
-double PowerLaw::integral(Arg &xargmin, Arg &xargmax) const {
-   double xmin = dynamic_cast<dArg &>(xargmin).getValue();
-   double xmax = dynamic_cast<dArg &>(xargmax).getValue();
+double PowerLaw::integral(const Arg & xargmin, const Arg & xargmax) const {
+   double xmin = dynamic_cast<const dArg &>(xargmin).getValue();
+   double xmax = dynamic_cast<const dArg &>(xargmax).getValue();
 
    enum ParamTypes {Prefactor, Index, Scale};
    std::vector<Parameter> my_params;

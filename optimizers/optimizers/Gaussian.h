@@ -27,7 +27,7 @@ public:
 
    Gaussian(double Prefactor=1, double Mean=150, double Sigma=15);
 
-   virtual double integral(Arg & xmin, Arg & xmax) const;
+   virtual double integral(const Arg & xmin, const Arg & xmax) const;
 
    virtual Function * clone() const {
       return new Gaussian(*this);
@@ -37,9 +37,9 @@ public:
 
 protected:
 
-   double value(Arg &) const;
+   double value(const Arg &) const;
 
-   double derivByParamImp(Arg &, const std::string & paramName) const;
+   double derivByParamImp(const Arg &, const std::string & paramName) const;
 
 private:
 

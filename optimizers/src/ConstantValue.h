@@ -38,11 +38,11 @@ public:
 
 protected:
 
-   double value(Arg &) const {
+   double value(const Arg &) const {
       return m_parameter[0].getTrueValue();
    }
 
-   double derivByParamImp(Arg &, const std::string &) const {
+   double derivByParamImp(const Arg &, const std::string &) const {
       return m_parameter[0].getScale();
    }
 

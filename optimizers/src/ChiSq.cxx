@@ -99,9 +99,9 @@ std::vector<double>::const_iterator ChiSq::setFreeParamValues_(std::vector<doubl
 
 optimizers::Function * ChiSq::clone() const { return new ChiSq(*this); }
 
-double ChiSq::value(optimizers::Arg &) const { return value(); }
+double ChiSq::value(const optimizers::Arg &) const { return value(); }
 
-double ChiSq::derivByParamImp(optimizers::Arg &, const std::string & parameter_name) const {
+double ChiSq::derivByParamImp(const optimizers::Arg &, const std::string & parameter_name) const {
    const DataCont_t & x(*m_domain);
    const DataCont_t & y(*m_range);
 
@@ -124,7 +124,7 @@ double ChiSq::derivByParamImp(optimizers::Arg &, const std::string & parameter_n
    return chi_sq;
 }
 
-void ChiSq::getFreeDerivs(optimizers::Arg &, std::vector<double> & derivs) const {
+void ChiSq::getFreeDerivs(const optimizers::Arg &, std::vector<double> & derivs) const {
    getFreeDerivs(derivs);
 }
 

@@ -27,7 +27,7 @@ RosenND::RosenND(int ndim, double prefactor)
    }
 }
 
-double RosenND::value(Arg &) const {
+double RosenND::value(const Arg &) const {
    double my_value = 0;
    for (int i = 1; i < m_dim; i++) {
       double x = m_parameter[i-1].getTrueValue();
@@ -37,7 +37,7 @@ double RosenND::value(Arg &) const {
    return -my_value;
 }
 
-double RosenND::derivByParamImp(Arg &, 
+double RosenND::derivByParamImp(const Arg &, 
                                 const std::string & paramName) const {
    std::vector<Parameter> params;
    getParams(params);

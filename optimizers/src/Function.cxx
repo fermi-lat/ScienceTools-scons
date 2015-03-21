@@ -65,7 +65,7 @@ Function & Function::operator=(const Function & rhs) {
    return *this;
 }
 
-double Function::operator()(Arg & xarg) const {
+double Function::operator()(const Arg & xarg) const {
    double my_value(value(xarg));
    if (m_scalingFunction) {
       my_value *= m_scalingFunction->operator()(xarg);
@@ -73,7 +73,7 @@ double Function::operator()(Arg & xarg) const {
    return my_value;
 }
 
-double Function::derivByParam(Arg & xarg,
+double Function::derivByParam(const Arg & xarg,
                               const std::string & paramName) const {
    double my_deriv(derivByParamImp(xarg, paramName));
    if (m_scalingFunction) {
@@ -257,9 +257,11 @@ void Function::fetchParamNames(std::vector<std::string> &names,
    }
 }
 
-void Function::fetchDerivs(Arg &x, std::vector<double> &derivs, 
+void Function::fetchDerivs(const Arg & x, std::vector<double> & derivs, 
                            bool getFree) const {
-   if (!derivs.empty()) derivs.clear();
+   if (!derivs.empty()) {
+      derivs.clear();
+   }
 
    for (unsigned int i = 0; i < m_parameter.size(); i++) {
       if (!getFree || m_parameter[i].isFree()) {

@@ -79,7 +79,7 @@ protected:
 private:
 
    /// disable this since Parameters may no longer have unique names
-   double derivByParamImp(Arg &, const std::string &) const {return 0;}
+   double derivByParamImp(const Arg &, const std::string &) const {return 0;}
 
 };
 

@@ -34,9 +34,10 @@ public:
 
 protected:
 
-   double value(Arg & xarg) const;
+   double value(const Arg & xarg) const;
 
-   double derivByParamImp(Arg & xarg, const std::string & paramName) const;
+   double derivByParamImp(const Arg & xarg,
+                          const std::string & paramName) const;
 
 };
 

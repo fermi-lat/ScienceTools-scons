@@ -17,9 +17,6 @@ namespace optimizers {
  * information so that Function's value() and Parameter passing
  * methods can be overloaded transparently.
  *
- * @authors J. Chiang
- *    
- * $Header$
  */
 
 class Arg {

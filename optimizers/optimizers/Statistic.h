@@ -23,9 +23,6 @@ namespace optimizers {
  * convenient interface to use as objective functions, which take no
  * arguments.
  *
- * @author J. Chiang
- *    
- * $Header$
  */
 
 class Statistic : public Function {

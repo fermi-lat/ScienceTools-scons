@@ -26,7 +26,7 @@ public:
 
    PowerLaw(double Prefactor=1, double Index=-2, double Scale=1);
 
-   double integral(Arg & xmin, Arg & xmax) const;
+   double integral(const Arg & xmin, const Arg & xmax) const;
 
    virtual Function * clone() const {
       return new PowerLaw(*this);
@@ -34,9 +34,9 @@ public:
 
 protected:
 
-   double value(Arg &) const;
+   double value(const Arg &) const;
 
-   double derivByParamImp(Arg & x, const std::string & paramName) const;
+   double derivByParamImp(const Arg & x, const std::string & paramName) const;
 
 };
 

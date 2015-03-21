@@ -54,12 +54,12 @@ public:
 
 protected:
 
-   virtual double value(optimizers::Arg & x) const;
+   virtual double value(const optimizers::Arg & x) const;
 
-   virtual double derivByParamImp(optimizers::Arg & x, 
+   virtual double derivByParamImp(const optimizers::Arg & x, 
                                   const std::string & parameter_name) const;
 
-   virtual void getFreeDerivs(optimizers::Arg &, std::vector<double> & derivs) const;
+   virtual void getFreeDerivs(const optimizers::Arg &, std::vector<double> & derivs) const;
 
 private:
    const DataCont_t * m_domain;

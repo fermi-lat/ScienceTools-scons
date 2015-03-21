@@ -34,11 +34,12 @@ public:
 
 protected:
 
-   virtual double value(Arg&) const;
+   virtual double value(const Arg &) const;
 
-   virtual double derivByParamImp(Arg &, const std::string &paramName) const;
+   virtual double derivByParamImp(const Arg &,
+                                  const std::string &paramName) const;
 
-   virtual RosenND * clone() const {
+   virtual Function * clone() const {
       return new RosenND(*this);
    }
 

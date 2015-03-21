@@ -29,8 +29,8 @@ BrokenPowerLaw(double Prefactor, double Index1,
    addParam(std::string("BreakValue"), BreakValue, true);
 }
 
-double BrokenPowerLaw::value(Arg & xarg) const {
-   double x = dynamic_cast<dArg &>(xarg).getValue();
+double BrokenPowerLaw::value(const Arg & xarg) const {
+   double x = dynamic_cast<const dArg &>(xarg).getValue();
 
    enum ParamTypes {Prefactor, Index1, Index2, BreakValue};
 
@@ -49,10 +49,10 @@ double BrokenPowerLaw::value(Arg & xarg) const {
    return 0;
 }
 
-double BrokenPowerLaw::derivByParamImp(Arg & xarg, 
+double BrokenPowerLaw::derivByParamImp(const Arg & xarg, 
                                        const std::string & paramName) const {
 
-   double x = dynamic_cast<dArg &>(xarg).getValue();
+   double x = dynamic_cast<const dArg &>(xarg).getValue();
 
    enum ParamTypes {Prefactor, Index1, Index2, BreakValue};
 

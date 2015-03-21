@@ -48,8 +48,8 @@ FunctionFactory::~FunctionFactory() {
    }
 }
 
-void FunctionFactory::addFunc(const std::string &name, 
-                              optimizers::Function* func, 
+void FunctionFactory::addFunc(const std::string & name,
+                              optimizers::Function * func,
                               bool fromClone) {
    if (m_prototypes.count(name)) {
       std::ostringstream message;

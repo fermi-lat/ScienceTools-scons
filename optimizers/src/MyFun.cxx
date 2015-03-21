@@ -20,13 +20,13 @@ namespace optimizers {
 
 MyFun::MyFun() 
    : Function("MyFun", 3, "", "dArg", Addend) {
-   addParam(std::string("Ruthie"), 0.);
-   addParam(std::string("Mary"), 0.);
-   addParam(std::string("Jane"), 0.);
+   addParam("Ruthie", 0.);
+   addParam("Mary", 0.);
+   addParam("Jane", 0.);
 }
 
-double MyFun::value(Arg & xarg) const {
-   double x = dynamic_cast<dArg &>(xarg).getValue();
+double MyFun::value(const Arg & xarg) const {
+   double x = dynamic_cast<const dArg &>(xarg).getValue();
 
    double my_val(0);
    std::vector<Parameter> params;
@@ -39,8 +39,9 @@ double MyFun::value(Arg & xarg) const {
    return my_val;
 }
 
-double MyFun::derivByParamImp(Arg & xarg, const std::string & paramName) const {
-   double x = dynamic_cast<dArg &>(xarg).getValue();
+double MyFun::derivByParamImp(const Arg & xarg,
+                              const std::string & paramName) const {
+   double x = dynamic_cast<const dArg &>(xarg).getValue();
 
    std::vector<Parameter> params;
    getParams(params);

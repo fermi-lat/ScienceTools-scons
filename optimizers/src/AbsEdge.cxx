@@ -26,8 +26,8 @@ AbsEdge::AbsEdge(double Tau0, double E0, double Index)
    addParam(std::string("Index"), Index, true);
 }
 
-double AbsEdge::value(Arg &xarg) const {
-   double x = dynamic_cast<dArg &>(xarg).getValue();
+double AbsEdge::value(const Arg & xarg) const {
+   double x = dynamic_cast<const dArg &>(xarg).getValue();
 
    enum ParamTypes {Tau0, E0, Index};
 
@@ -42,9 +42,9 @@ double AbsEdge::value(Arg &xarg) const {
    return exp(-tau);
 }
 
-double AbsEdge::derivByParamImp(Arg & xarg, 
+double AbsEdge::derivByParamImp(const Arg & xarg, 
                                 const std::string & paramName) const {
-   double x = dynamic_cast<dArg &>(xarg).getValue();
+   double x = dynamic_cast<const dArg &>(xarg).getValue();
 
    enum ParamTypes {Tau0, E0, Index};
 

@@ -20,14 +20,14 @@ namespace optimizers {
 
 Gaussian::Gaussian(double Prefactor, double Mean, double Sigma)
    : Function("Gaussian", 3, "Prefactor", "dArg", Addend) {
-   addParam(std::string("Prefactor"), Prefactor, true);
-   addParam(std::string("Mean"), Mean, true);
-   addParam(std::string("Sigma"), Sigma, true);
+   addParam("Prefactor", Prefactor, true);
+   addParam("Mean", Mean, true);
+   addParam("Sigma", Sigma, true);
 }
 
-double Gaussian::integral(Arg & xargmin, Arg & xargmax) const {
-   double xmin = dynamic_cast<dArg &>(xargmin).getValue();
-   double xmax = dynamic_cast<dArg &>(xargmax).getValue();
+double Gaussian::integral(const Arg & xargmin, const Arg & xargmax) const {
+   double xmin = dynamic_cast<const dArg &>(xargmin).getValue();
+   double xmax = dynamic_cast<const dArg &>(xargmax).getValue();
 
    std::vector<Parameter> my_params;
    getParams(my_params);
@@ -55,8 +55,8 @@ double Gaussian::erfcc(double x) const {
    return x >= 0.0 ? ans : 2.0-ans;
 }
 
-double Gaussian::value(Arg & xarg) const {
-   double x = dynamic_cast<dArg &>(xarg).getValue();
+double Gaussian::value(const Arg & xarg) const {
+   double x = dynamic_cast<const dArg &>(xarg).getValue();
 
    enum ParamTypes {Prefactor, Mean, Sigma};
 
@@ -69,9 +69,9 @@ double Gaussian::value(Arg & xarg) const {
                  /my_params[Sigma].getTrueValue(), 2 )/2.);
 }
 
-double Gaussian::derivByParamImp(Arg & xarg, 
+double Gaussian::derivByParamImp(const Arg & xarg, 
                                  const std::string & paramName) const {
-   double x = dynamic_cast<dArg &>(xarg).getValue();
+   double x = dynamic_cast<const dArg &>(xarg).getValue();
 
    enum ParamTypes {Prefactor, Mean, Sigma};
 
@@ -80,7 +80,9 @@ double Gaussian::derivByParamImp(Arg & xarg,
 
    int iparam = -1;
    for (unsigned int i = 0; i < my_params.size(); i++) {
-      if (paramName == my_params[i].getName()) iparam = i;
+      if (paramName == my_params[i].getName()) {
+         iparam = i;
+      }
    }
 
    if (iparam == -1) {

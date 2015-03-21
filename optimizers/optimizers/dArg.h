@@ -18,19 +18,18 @@ namespace optimizers {
  *
  * @brief Concrete Arg subclass for encapsulating data of type double.
  *
- * @authors J. Chiang
- *    
- * $Header$
  */
 
-class dArg : public Arg{
+class dArg : public Arg {
     
 public:
    
    dArg(double x) : m_val(x) {}
    virtual ~dArg() {}
 
-   double getValue() {return m_val;}
+   double getValue() const {
+      return m_val;
+   }
 
 private:
 

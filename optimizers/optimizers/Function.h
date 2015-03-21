@@ -64,11 +64,11 @@ public:
    Function & operator=(const Function & rhs);
 
    /// Function call operator.  Uses template method so non-virtual.
-   double operator()(Arg & xarg) const;
+   double operator()(const Arg & xarg) const;
    
    /// Function derivative wrt a Parameter.  Uses template method so
    /// non-virtual.
-   double derivByParam(Arg & xarg, 
+   double derivByParam(const Arg & xarg,
                        const std::string & paramName) const;
 
    void setScalingFunction(const Function & scalingFunction);
@@ -159,24 +159,25 @@ public:
    virtual void getFreeParams(std::vector<Parameter> &) const;
 
    /// Get a vector of all of the derivatives.
-   virtual void getDerivs(Arg & x, std::vector<double> & derivs) const {
+   virtual void getDerivs(const Arg & x, std::vector<double> & derivs) const {
       fetchDerivs(x, derivs, false);
    }
    
    /// Get a vector of the derivatives wrt the free Parameters.
-   virtual void getFreeDerivs(Arg & x, std::vector<double> & derivs) const {
+   virtual void getFreeDerivs(const Arg & x, 
+                              std::vector<double> & derivs) const {
       fetchDerivs(x, derivs, true);
    }
 
    /// Return the integral of function wrt data variable.
-   virtual double integral(Arg &, Arg &) const {
+   virtual double integral(const Arg &, const Arg &) const {
      throw std::runtime_error("integral method not implemented for "
 			      + m_genericName);
      return 0;
    }
 
    /// Derivative of function wrt data variable.
-   virtual double derivative(Arg &) const {
+   virtual double derivative(const Arg &) const {
      throw std::runtime_error("derivative method not implemented for "
 			      + m_genericName);
      return 0;
@@ -234,9 +235,9 @@ protected:
 //   mutable std::vector<double> m_xvalues;
 
    /// Return the Function value.
-   virtual double value(Arg &) const = 0;
+   virtual double value(const Arg &) const = 0;
 
-   virtual double derivByParamImp(Arg & x,
+   virtual double derivByParamImp(const Arg & x,
                                   const std::string & paramName) const = 0;
 
    /// For subclass usage
@@ -250,7 +251,7 @@ protected:
 
    void fetchParamNames(std::vector<std::string> & names, bool getFree) const;
 
-   virtual void fetchDerivs(Arg & x ,std::vector<double> & derivs, 
+   virtual void fetchDerivs(const Arg & x ,std::vector<double> & derivs, 
                             bool getFree) const;
 
    void setNormParName(const std::string & normParName);

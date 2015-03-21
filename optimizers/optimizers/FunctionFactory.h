@@ -24,9 +24,6 @@ namespace optimizers {
  * objects, the parameters of which are specified by an xml input
  * file.
  *
- * @author J. Chiang
- *
- * $Header$
  */
 
 class FunctionFactory {
