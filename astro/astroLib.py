@@ -7,6 +7,9 @@ def generate(env, **kw):
 	env.Tool('tipLib')
 	env.Tool('addLibrary', library=env['clhepLibs'])
 	env.Tool('addLibrary', library=env['cfitsioLibs'])
+	# EAC, add wcslib and healpix as externals
+	env.Tool('addLibrary', library=env['wcslibs'])
+	env.Tool('addLibrary', library=env['healpixlibs'])
 
 def exists(env):
 	return 1

@@ -166,7 +166,7 @@ SkyProj::SkyProj(const std::string &fitsFile, int relax, int ctrl)
    // Manually set naxis to 2. (three places?)
    m_wcs->naxis = m_wcs->lin.m_naxis = m_wcs->m_naxis = 2;
 
-   int status = wcsset2(m_wcs);
+   int status = wcsset(m_wcs);
    if (status !=0) {
        throw SkyProjException(status );
    }
@@ -383,7 +383,7 @@ void SkyProj::init(const std::string &projName,
     m_wcs->altlin |= 4;
     m_wcs->crota[1] = crota2;
     
-    int status = wcsset2(m_wcs);
+    int status = wcsset(m_wcs);
     if (status !=0) {
         throw SkyProjException(status );
     }
