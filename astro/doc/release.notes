@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-03-16-00 27-Mar-2015 echarles Switch to using wcslib and healpix as externals
  astro-03-15-08 17-Jan-2015 jchiang add leap-second for 2015-07-01 00:00:00
  astro-03-15-07 12-Jan-2015 jchiang update to use IGRF-12 coefficients; see [STGEN-141@JIRA]
  astro-03-15-06 19-Dec-2014 jchiang disable throwing of exception from EarthCoordinate
