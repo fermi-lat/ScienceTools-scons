@@ -7,8 +7,11 @@ $Header$
 */
 #include <string>
 #include <vector>
-#include "healpix/base/healpix_map.h"
-#include "healpix/base/powspec.h"
+
+// EAC, update include path
+#include "healpix_map.h"
+#include "powspec.h"
+
 #include "astro/SkyFunction.h"
 #include "healpix/HealPixel.h"
 

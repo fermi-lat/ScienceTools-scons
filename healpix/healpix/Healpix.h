@@ -15,7 +15,8 @@ $Header$
 #include <vector>
 ///< needed fixed size array class
 
-class Healpix_Base;
+// EAC, comment out this forward declare, as it conflicts with the HEALPix external
+//class Healpix_Base;
 
 namespace healpix{
 /**

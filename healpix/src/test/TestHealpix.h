@@ -12,6 +12,8 @@ $Header$
 #include <iomanip>
 #include <stdexcept>
 #include <fstream>
+// EAC, adding this to compile
+#include <map>
 
 
 

@@ -7,9 +7,10 @@ $Header$
 */
 
 #include "healpix/AlmOp.h"
-#include "healpix/base/xcomplex.h"
-#include "healpix/base/alm.h"
-#include "healpix/base/cxxutils.h"
+
+// EAC, update include path
+#include "xcomplex.h"
+#include "alm.h"
 
 using namespace healpix;
 

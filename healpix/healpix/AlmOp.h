@@ -6,7 +6,8 @@
 $Header$
 */
 
-#include "healpix/base/alm.h"
+// EAC, update include path
+#include "alm.h"
 
 namespace healpix {
 

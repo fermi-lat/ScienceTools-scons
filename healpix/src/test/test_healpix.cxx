@@ -7,7 +7,8 @@ $Header$
 */
 
 #include "healpix/Map.h"
-#include "healpix/base/message_error.h"
+// EAC, the error handling has changed
+#include "error_handling.h"
 #include "healpix/HealPixel.h"
 #include "TestHealpix.h"
 #include "TestHealpixArray.h"
@@ -142,7 +143,8 @@ int main() {
         }
 
     }
-    catch (const Message_error & error) {
+    // EAC, the error handling has changed
+    catch (const PlanckError& error ) {
         std::cout << error.what() << std::endl;
         rc =1;
     }

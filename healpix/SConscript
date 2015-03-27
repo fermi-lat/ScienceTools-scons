@@ -12,16 +12,19 @@ progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
 libEnv.Tool('addLinkDeps', package='healpix', toBuild='shared')
-progEnv.Tool('healpixLib')
 
+# EAC: switch to using healpix as an external, so remove healpix/base stuff
 healpixLib = libEnv.SharedLibrary('healpix', 
-                                  listFiles(['src/*.cxx', 'src/base/*.cc',
-                                             'src/base/*.c']))
+                                  listFiles(['src/*.cxx']))
+
+# EAC: add dependence on healpix externals
+progEnv.Tool('healpixLib')
 test_healpix = progEnv.Program('test_healpix', listFiles(['src/test/*.cxx']))
 
+# EAC: switch to using healpix as an external, so remove healpix/base stuff
 progEnv.Tool('registerTargets', 
       package = 'healpix', 
-      includes = listFiles(['healpix/*.h','healpix/base/*.h']),
+      includes = listFiles(['healpix/*.h']),
       libraryCxts = [[healpixLib, libEnv]],
       testAppCxts = [[test_healpix, progEnv]]
       )
