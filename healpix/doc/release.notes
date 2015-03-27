@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ healpix-02-04-00 27-Mar-2015 echarles update healpix to use external instead a copy in healpix/base
  healpix-02-03-06 20-Jun-2012 jchiang fix indexing error for very small values of costheta in CosineBinner::fill(double, double, double)
  healpix-02-03-05 20-Dec-2010  cohen fix gcc 4.4 builds
  healpix-02-03-04 29-Jul-2010 burnett patch for vc90 debug
