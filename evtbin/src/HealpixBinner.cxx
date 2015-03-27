@@ -13,10 +13,14 @@
 #include "astro/SkyProj.h"
 #include "astro/SkyFunction.h"
 
-#include "healpix/base/healpix_map.h"
+// EAC, update include path for healpix
+#include "healpix_map.h"
 
 #include "healpix/Healpix.h"
 #include "healpix/HealPixel.h"
+
+// EAC, when I cleaned up the includes in astro, I got rid of the dependence on CLHEP
+#define pi 3.141592653589793
 
 // anonymous namespace for helper functions
 // pi here is pulled out from CLHEP via includes
