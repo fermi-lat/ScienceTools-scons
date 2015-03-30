@@ -6,8 +6,6 @@
  * $Header$
  */
 
-#include <cassert>
-
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -204,7 +202,6 @@ namespace st_facilities {
 
       double value = (1. - tt)*(1. - uu)*y1 + tt*(1. - uu)*y2 
          + tt*uu*y3 + (1. - tt)*uu*y4; 
-//       assert(value >= 0);
 //       if (value < 0.) {
 //          std::ostringstream message;
 //          message << "st_facilities::Util::bilinear:\n"
@@ -255,7 +252,6 @@ namespace st_facilities {
 
       double value = (1. - tt)*(1. - uu)*y1 + tt*(1. - uu)*y2 
          + tt*uu*y3 + (1. - tt)*uu*y4; 
-//       assert(value >= 0);
 //       if (value < 0.) {
 //          std::ostringstream message;
 //          message << "st_facilities::Util::bilinear:\n"
@@ -324,6 +320,9 @@ namespace st_facilities {
 
    void Util::pixel2SkyDir(const astro::SkyProj & proj, double i, double j,
                            astro::SkyDir & dir) {
+      if (proj.testpix2sph(i, j) != 0) {
+         throw std::out_of_range("st_faciliities::Util::pixel2SkyDir");
+      }
       std::pair<double, double> coords;
       coords = proj.pix2sph(i, j);
       if (proj.isGalactic()) {
@@ -332,7 +331,7 @@ namespace st_facilities {
       } else {
          dir = astro::SkyDir(coords.first, coords.second,
                              astro::SkyDir::EQUATORIAL);
-      }         
+      }
    }
 
    astro::JulianDate Util::currentTime() {
