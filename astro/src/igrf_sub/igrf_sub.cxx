@@ -1000,19 +1000,25 @@ L7:
 // dgrf1945.dat dgrf1950.dat dgrf1955.dat dgrf1960.dat dgrf1965.dat dgrf1970.da\
 // t dgrf1975.dat dgrf1980.dat dgrf1985.dat dgrf1990.dat dgrf1995.dat dgrf2000.\
 // dat dgrf2005.dat igrf2010.dat igrf2010s.dat";
-    /* static */ char * files = "igrf1900.dat igrf1905.dat igrf1910.dat ig\
+    /* static */ char files[] = "igrf1900.dat igrf1905.dat igrf1910.dat ig\
 rf1915.dat igrf1920.dat igrf1925.dat igrf1930.dat igrf1935.dat igrf1940.dat \
 dgrf1945.dat dgrf1950.dat dgrf1955.dat dgrf1960.dat dgrf1965.dat dgrf1970.da\
 t dgrf1975.dat dgrf1980.dat dgrf1985.dat dgrf1990.dat dgrf1995.dat dgrf2000.\
 dat dgrf2005.dat dgrf2010.dat igrf2015.dat igrf2015s.dat";
+    const int numRecords = 25;
     std::vector<std::string> filmod;
     facilities::Util::stringTokenize(files, " ", filmod, true);
+    if ( numRecords != filmod.size() ) {
+        std::ostringstream message;
+        message << "error: number of records " << numRecords << " and size of filmod " << filmod.size() << " differ";
+        throw std::runtime_error(message.str());
+    }
     std::string datapath = facilities::commonUtilities::getDataPath("astro");
     for (size_t i(0); i < filmod.size(); i++) {
        filmod[i] = facilities::commonUtilities::joinPath(datapath, filmod[i]);
     }
 
-    /* static */ real dtemod[25] = { (float)1900.,(float)1905.,(float)1910.,(float)
+    /* static */ real dtemod[numRecords] = { (float)1900.,(float)1905.,(float)1910.,(float)
 	    1915.,(float)1920.,(float)1925.,(float)1930.,(float)1935.,(float)
 	    1940.,(float)1945.,(float)1950.,(float)1955.,(float)1960.,(float)
 	    1965.,(float)1970.,(float)1975.,(float)1980.,(float)1985.,(float)
@@ -1062,8 +1068,8 @@ dat dgrf2005.dat dgrf2010.dat igrf2015.dat igrf2015s.dat";
 /* ### numye is number of IGRF coefficient files minus 1 */
 /* ### istye is start year of IGRF coefficient files */
 
-    numye = 23;
-    istye = 1900;
+    numye = numRecords - 1;
+    istye = dtemod[0];
 
 /*  IS=0 FOR SCHMIDT NORMALIZATION   IS=1 GAUSS NORMALIZATION */
 /*  IU  IS INPUT UNIT NUMBER FOR IGRF COEFFICIENT SETS */
