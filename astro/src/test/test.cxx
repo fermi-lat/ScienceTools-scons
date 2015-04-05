@@ -113,6 +113,7 @@ std::string writeTestFile(const std::string & ctype, double * crpix,
 }
 
 #define ASSERT_EQUALS(X, Y) assert(fabs( (X - Y)/Y ) < 1e-5)
+#define ASSERT_ALMOST_EQUALS(X, Y) assert(fabs( (X - Y)/Y ) < 1e-3)
 
 /** @brief test a group of directions
 */
@@ -487,6 +488,32 @@ bool test_IGRF() {
          throw;
       }
    }
+
+// Test values beyond 2015 from IGRF 12th Generation version.  
+// http://www.geomag.bgs.ac.uk/data_service/models_compass/igrf_form.shtml
+   double longitude(0);
+   double latitude(0);
+   double altitude(500);
+   double years[] = {2015.5, 2016.5, 2017.5, 2018.5};
+   double B_North[] = {0.21625, 0.21622, 0.21619, 0.21616};
+   double B_East[] = {-0.02194, -0.02144, -0.02093, -0.02043};
+   double B_Vert[] = {-0.10712, -0.10769, -0.10826, -0.10882};
+   for (unsigned int i=0; i < 4; i++) {
+      IGRField::Model().compute(latitude, longitude, altitude, years[i]);
+      // std::cout << i << "  " 
+      //           << B_North[i] << "  "
+      //           << IGRField::Model().bNorth() << std::endl;
+      // std::cout << i << "  " 
+      //           << B_East[i] << "  "
+      //           << IGRField::Model().bEast() << std::endl;
+      // std::cout << i << "  " 
+      //           << B_Vert[i] << "  "
+      //           << IGRField::Model().bDown() << std::endl;
+      ASSERT_ALMOST_EQUALS(B_North[i], IGRField::Model().bNorth());
+      ASSERT_ALMOST_EQUALS(B_East[i], IGRField::Model().bEast());
+      ASSERT_ALMOST_EQUALS(B_Vert[i], IGRField::Model().bDown());
+   }
+      
    return true;
 }
 
