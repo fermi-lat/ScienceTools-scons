@@ -35,7 +35,7 @@
 #include "astro/SkyDir.h"
 
 #include "irfInterface/IrfsFactory.h"
-#include "irfUtil/Util.h"
+#include "irfUtil/EventTypeMapper.h"
 #include "irfLoader/Loader.h"
 
 #include "st_facilities/Environment.h"
@@ -43,6 +43,7 @@
 
 #include "flux/Spectrum.h"
 
+#include "dataSubselector/BitMaskCut.h"
 #include "dataSubselector/Cuts.h"
 
 #include "celestialSources/SpectrumFactoryLoader.h"
@@ -342,14 +343,10 @@ void ObsSim::generateData() {
       }
       if (!(evtype_cut = cuts->bitMaskCut("EVENT_TYPE"))) {
          // Get the inverse mapping
-         std::map<std::string, std::pair<unsigned int, std::string> > 
-            event_type_mapping;
-         std::vector<std::string> partitions;
-         std::map<std::string, unsigned int> bitmask_by_partition;
-         irfUtil::Util::get_event_type_mapping(irfs,
-                                               event_type_mapping,
-                                               partitions,
-                                               bitmask_by_partition);
+         irfUtil::EventTypeMapper & evMapper
+            = irfUtil::EventTypeMapper::instance();
+         std::map<std::string, unsigned int> bitmask_by_partition 
+            = evMapper.full_bitmasks_by_partition(irfs);
          cuts->addBitMaskCut("EVENT_TYPE", bitmask_by_partition[evtype],
                              cuts->pass_ver());
       }
