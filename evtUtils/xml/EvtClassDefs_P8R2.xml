@@ -1,37 +1,37 @@
 <?xml version="1.0" ?>
 <EventClass version="P8R2">
   <EventMap altName="EVENT_CLASS" mapName="FT1EventClass">
-    <EventCategory bit="0" name="TRANSIENT_ALLTKR_R100">
+    <EventCategory bit="0" name="TRANSIENT100A">
       <ShortCut>
         AllTkrFilter&amp;&amp;P8R1_TRANSIENT_R100_AllProbFilter
       </ShortCut>
     </EventCategory>
-    <EventCategory bit="1" name="TRANSIENT_TKRONLY_R100">
+    <EventCategory bit="1" name="TRANSIENT100E">
       <ShortCut>
         P8R1_TRANSIENT_R100_AllProbFilter&amp;&amp;TkrOnlyFilter&amp;&amp;TkrOnlyQualityFilter
       </ShortCut>
     </EventCategory>
-    <EventCategory bit="2" name="TRANSIENT_R100">
+    <EventCategory bit="2" name="TRANSIENT100">
       <ShortCut>
         P8R1_TRANSIENT_R100_AllProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
       </ShortCut>
     </EventCategory>
-    <EventCategory bit="3" name="TRANSIENT_TKRONLY_R020">
+    <EventCategory bit="3" name="TRANSIENT020E">
       <ShortCut>
         P8R1_TRANSIENT_R020_AllProbFilter&amp;&amp;P8R1_TRANSIENT_AllBkProbFilter&amp;&amp;TkrOnlyFilter&amp;&amp;TkrOnlyQualityFilter
       </ShortCut>
     </EventCategory>
-    <EventCategory bit="4" name="TRANSIENT_R020">
+    <EventCategory bit="4" name="TRANSIENT020">
       <ShortCut>
         P8R1_TRANSIENT_R020_AllProbFilter&amp;&amp;P8R1_TRANSIENT_AllBkProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
       </ShortCut>
     </EventCategory>
-    <EventCategory bit="5" name="TRANSIENT_TKRONLY_R010">
+    <EventCategory bit="5" name="TRANSIENT010E">
       <ShortCut>
         P8R1_TRANSIENT_R010_AllProbFilter&amp;&amp;P8R1_TRANSIENT_AllBkProbFilter&amp;&amp;TkrOnlyFilter&amp;&amp;TkrOnlyQualityFilter
       </ShortCut>
     </EventCategory>
-    <EventCategory bit="6" name="TRANSIENT_R010">
+    <EventCategory bit="6" name="TRANSIENT010">
       <ShortCut>
         P8R1_TRANSIENT_R010_AllProbFilter&amp;&amp;P8R1_TRANSIENT_AllBkProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
       </ShortCut>
@@ -51,17 +51,17 @@
         P8R1_ULTRACLEAN_AllProbFilter&amp;&amp;P8R1_SOURCE_AllBkProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
       </ShortCut>
     </EventCategory>
-    <EventCategory bit="10" name="ULTRACLEAN_TKRVETO">
+    <EventCategory bit="10" name="ULTRACLEANVETO">
       <ShortCut>
         P8R1_ULTRACLEAN_AllProbFilter&amp;&amp;P8R1_SOURCE_AllBkProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter&amp;&amp;SSDVetoFilter
       </ShortCut>
     </EventCategory>
-    <EventCategory bit="15" name="TRANSIENT_SFR_R100">
+    <EventCategory bit="15" name="TRANSIENT100S">
       <ShortCut>
         P8R1_TRANSIENT_SFR_CalTkrProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
       </ShortCut>
     </EventCategory>
-    <EventCategory bit="16" name="TRANSIENT_SFR_R015">
+    <EventCategory bit="16" name="TRANSIENT015S">
       <ShortCut>
         P8R1_TRANSIENT_SFR_R015_CalTkrProbFilter&amp;&amp;P8R1_TRANSIENT_CalTkrBkProbFilter&amp;&amp;CalTkrFilter&amp;&amp;CalTkrQualityFilter
       </ShortCut>
@@ -126,10 +126,10 @@
   </EventMap>
   <AliasDict>
     <Alias name="AllTkrFilter">
-      FswGamFilter&amp;&amp;TracksFilter
+      FswGamFilter&amp;&amp;TriggerFilter&amp;&amp;TracksFilter
     </Alias>
     <Alias name="CalTkrFilter">
-      FswGamFilter&amp;&amp;TracksFilter&amp;&amp;EvtCalCsIRLn&gt;4 &amp;&amp; CalTrackAngleFilter
+      FswGamFilter&amp;&amp;TriggerFilter&amp;&amp;TracksFilter&amp;&amp;EvtCalCsIRLn&gt;4 &amp;&amp; CalTrackAngleFilter
     </Alias>
     <Alias name="CalTkrQualityFilter">
       WP8CTPSFTail &gt; 0.05 &amp;&amp; WP8CTBestEnergyProb &gt; 0.1
@@ -201,7 +201,7 @@
       Tkr1SSDVeto&gt;0.5
     </Alias>
     <Alias name="TkrOnlyFilter">
-      FswGamFilter&amp;&amp;TracksFilter&amp;&amp;TkrOnlyRLnFilter &amp;&amp; CalTrackAngleFilter
+      FswGamFilter&amp;&amp;TriggerFilter&amp;&amp;TracksFilter&amp;&amp;TkrOnlyRLnFilter &amp;&amp; CalTrackAngleFilter
     </Alias>
     <Alias name="TkrOnlyQualityFilter">
       WP8CTPSFTail &gt; 0.05 &amp;&amp; WP8CTBestEnergyProb &gt; 0.1
@@ -211,6 +211,9 @@
     </Alias>
     <Alias name="TracksFilter">
       TkrNumTracks &gt; 0
+    </Alias>
+    <Alias name="TriggerFilter">
+      (GltGemSummary&amp;0x60)==0
     </Alias>
     <Alias name="WP8CTAllProbLog">
       -log10(1.0-WP8CTAllProb)
