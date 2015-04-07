@@ -28,6 +28,7 @@
 #include "tip/Image.h"
 #include "tip/Table.h"
 
+#include "irfUtil/EventTypeMapper.h"
 #include "irfUtil/Util.h"
 
 #include "dataSubselector/BitMaskCut.h"
@@ -663,8 +664,9 @@ void Cuts::append_event_type_partition(std::string & irfs_name) const {
    if (event_type_cut) {
       typedef std::map<std::string, std::pair<unsigned int, std::string> > 
          EventTypeMapping_t;
-      EventTypeMapping_t evtype_mapping;
-      irfUtil::Util::get_event_type_mapping(irfs_name, evtype_mapping);
+      const EventTypeMapping_t & evtype_mapping
+         = irfUtil::EventTypeMapper::instance().mapping(irfs_name);
+      
       unsigned int bit(static_cast<int>(std::log(event_type_cut->mask())/
                                         std::log(2)));
       for (EventTypeMapping_t::const_iterator it(evtype_mapping.begin());
