@@ -637,6 +637,7 @@ std::string Cuts::CALDB_implied_irfs() const {
                                "cannot infer most recent IRFs from CALDB.");
    }
    unsigned int mask(my_bitmask_cut->mask());
+   delete my_bitmask_cut;
    std::map<std::string, unsigned int>::const_iterator it(irfs.begin());
    std::string irfs_name("");
    unsigned int irf_ver_num(0);
