@@ -9,11 +9,16 @@
  * $Header$
  */
 
+#include <cstdlib>
 #include <cmath>
 
 #include <iomanip>
 #include <sstream>
+#include <stdexcept>
 
+#include "st_stream/StreamFormatter.h"
+#include "facilities/Util.h"
+#include "st_facilities/Util.h"
 #include "tip/Table.h"
 
 #include "dataSubselector/BitMaskCut.h"
@@ -25,6 +30,10 @@ unsigned int bitPosition(unsigned int mask) {
 }
 
 namespace dataSubselector {
+
+BitMaskCut::BitMaskPrecedence * BitMaskCut::s_evclassPrecedence(0);
+
+BitMaskCut::BitMaskPrecedence * BitMaskCut::s_evtypePrecedence(0);
 
 BitMaskCut::BitMaskCut(const std::string & colname,
                        unsigned int mask,
@@ -63,18 +72,39 @@ bool BitMaskCut::supercedes(const CutBase & cut) const {
       return false;
    }
    if (m_colname == "EVENT_TYPE") {
-      // Supercedes if the and-ed bits match the candidate mask.
-      // Event class selections don't behave this way so need to
-      // handle both as special cases.
-      if ((m_mask & bitMaskCut.mask()) == m_mask) {
-         return true;
+      bool valid_mask 
+         = s_evtypePrecedence->validMask(*this, bitMaskCut.mask());
+      if (!valid_mask) {
+         throw std::runtime_error("The requested evtype selection, " +
+                                  this->dstype() + " is inconsistent "
+                                  + "with the existing evtype selection, "
+                                  + bitMaskCut.dstype());
       }
+      return true;
    }
-   if (m_colname == "EVENT_CLASS" && !m_post_P7) {
-      // For P7 and P7REP:
-      // This test assumes the event class cuts are hierarchical.
-      if (m_mask > bitMaskCut.mask()) {
+   if (m_colname == "EVENT_CLASS") {
+      if (m_post_P7) {
+         bool valid_mask 
+            = s_evclassPrecedence->validMask(*this, bitMaskCut.mask());
+         if (!valid_mask) {
+            throw std::runtime_error("The requested evclass selection, " +
+                                     this->dstype() + " is inconsistent "
+                                     + "with the existing evclass selection, "
+                                     + bitMaskCut.dstype());
+         }
+         if (this->mask() != bitMaskCut.mask()) {
+            st_stream::StreamFormatter formatter("dataSubselector::BitMaskCut",
+                                                 "supercedes", 3);
+            formatter.warn(3) << "\nWARNING:\n"
+                              << "Over writing existing event class selection,"
+                              << "\n  " << bitMaskCut.dstype() << "\nwith\n  "
+                              << this->dstype() << "\n" << std::endl;
+         }
          return true;
+      } else {
+         // For P7 and P7REP:
+         // This test assumes the event class cuts are hierarchical.
+         return (m_mask > bitMaskCut.mask());
       }
    }
    return false;
@@ -111,6 +141,12 @@ void BitMaskCut::getKeyValues(std::string & type,
                               std::string & value,
                               std::string & ref) const {
    (void)(ref);
+   type = dstype();
+   unit = "DIMENSIONLESS";
+   value = "1:1";
+}
+
+std::string BitMaskCut::dstype() const {
    std::ostringstream typ;
    typ << "BIT_MASK(" << m_colname;
    if (m_post_P7) {
@@ -122,9 +158,7 @@ void BitMaskCut::getKeyValues(std::string & type,
       typ << "," << m_pass_ver;
    }
    typ << ")";
-   type = typ.str();
-   unit = "DIMENSIONLESS";
-   value = "1:1";
+   return typ.str();
 }
 
 bool BitMaskCut::post_P7(const std::string & pass_ver) {
@@ -141,6 +175,46 @@ bool BitMaskCut::post_P7(const std::string & pass_ver) {
       }
    }
    return true;
+}
+
+BitMaskCut::BitMaskPrecedence::
+BitMaskPrecedence(const std::string & maskFile) 
+   : m_maskFile(maskFile) {
+   std::vector<std::string> lines;
+   st_facilities::Util::readLines(maskFile, lines, "#", true);
+   for (size_t i(0); i < lines.size(); i++) {
+      std::vector<std::string> tokens;
+      facilities::Util::stringTokenize(lines[i], ",", tokens);
+      m_validityMasks[std::atoi(tokens.at(0).c_str())]
+         = std::atoi(tokens.at(1).c_str());
+   }
+}
+
+bool BitMaskCut::BitMaskPrecedence::
+validMask(const BitMaskCut & self, unsigned int currentMask) const {
+   std::map<unsigned int, unsigned int>::const_iterator it
+      = m_validityMasks.find(currentMask);
+   if (it == m_validityMasks.end()) {
+      std::ostringstream message;
+      message << "Current bit mask, " << currentMask 
+              << ", not found in validity mask file.";
+      throw std::runtime_error(message.str());
+   }
+   unsigned int masked_value = it->second & self.mask();
+   return masked_value == self.mask();
+}
+
+const std::string & BitMaskCut::BitMaskPrecedence::maskFile() const {
+   return m_maskFile;
+}
+
+void BitMaskCut::setValidityMasks(const std::string & evclassFile,
+                                  const std::string & evtypeFile) {
+   delete s_evclassPrecedence;
+   s_evclassPrecedence = new BitMaskCut::BitMaskPrecedence(evclassFile);
+
+   delete s_evtypePrecedence;
+   s_evtypePrecedence = new BitMaskCut::BitMaskPrecedence(evtypeFile);
 }
 
 } // namespace dataSubselector 

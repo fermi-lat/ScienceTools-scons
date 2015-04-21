@@ -175,6 +175,23 @@ Cuts::Cuts(const std::string & eventFile, const std::string & extname,
            bool check_columns, bool skipTimeRangeCuts,
            bool skipEventClassCuts) 
    : m_irfName("NONE") {
+   /// Read in validity masks for Pass 8 event type and event class
+   /// selections.
+   if (BitMaskCut::evclassValidityMasks() == 0 ||
+       BitMaskCut::evtypeValidityMasks() == 0) {
+      std::string evclassPath;
+      ::joinPaths("data glast lat bcf valid_evclass_selections.txt",
+                  evclassPath);
+      std::string evtypePath;
+      ::joinPaths("data glast lat bcf valid_evtype_selections.txt",
+                  evtypePath);
+      evclassPath = facilities::commonUtilities::joinPath(
+         st_facilities::Environment::getEnv("CALDB"), evclassPath);
+      evtypePath = facilities::commonUtilities::joinPath(
+         st_facilities::Environment::getEnv("CALDB"), evtypePath);
+      BitMaskCut::setValidityMasks(evclassPath, evtypePath);
+   }
+
    const tip::Extension * ext(0);
    try {
       ext = tip::IFileSvc::instance().readTable(eventFile, extname);

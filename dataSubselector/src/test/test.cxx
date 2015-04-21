@@ -13,8 +13,7 @@
 #include <cmath>
 #include <cstdio>
 
-#include <iomanip>
-#include <iostream>
+#include <fstream>
 #include <stdexcept>
 
 #include <cppunit/ui/text/TextTestRunner.h>
@@ -600,6 +599,97 @@ void DssTests::test_BitMaskCut() {
    pars["EVENT_TYPE"] = 256;
    CPPUNIT_ASSERT(!p8_cut.accept(pars));
 
+   /// Check if a candidate cut supercedes the current cut using the
+   /// validity mask mechanism.
+   std::string evclassFile("evclass_validity_masks.txt");
+   std::ofstream outfile1(evclassFile.c_str());
+   outfile1 << "128,1920\n"
+            << "256,1792\n"
+            << "512,1536\n";
+   outfile1.close();
+
+   std::string evtypeFile("evtype_validity_masks.txt");
+   std::ofstream outfile2(evtypeFile.c_str());
+   outfile2 << "3,1023\n"
+            << "60,1023\n"
+            << "960,1023\n"
+            << "56,56\n"
+            << "1,1\n"
+            << "832,832\n";
+   outfile2.close();
+
+   dataSubselector::BitMaskCut::setValidityMasks(evclassFile, evtypeFile);
+   std::remove(evclassFile.c_str());
+   std::remove(evtypeFile.c_str());
+
+   dataSubselector::BitMaskCut source("EVENT_CLASS", 128, "P8");
+   dataSubselector::BitMaskCut clean("EVENT_CLASS", 256, "P8");
+   dataSubselector::BitMaskCut ultraclean("EVENT_CLASS", 512, "P8");
+
+   CPPUNIT_ASSERT(ultraclean.supercedes(source));
+   CPPUNIT_ASSERT(ultraclean.supercedes(clean));
+   CPPUNIT_ASSERT(clean.supercedes(source));
+
+   try {
+      source.supercedes(clean);
+   } catch (std::runtime_error &) {
+   }
+   try {
+      source.supercedes(ultraclean);
+   } catch (std::runtime_error &) {
+   } 
+
+   dataSubselector::BitMaskCut fb("EVENT_TYPE", 3, "P8");
+   dataSubselector::BitMaskCut front("EVENT_TYPE", 1, "P8");
+   dataSubselector::BitMaskCut psf("EVENT_TYPE", 60, "P8");
+   dataSubselector::BitMaskCut edisp("EVENT_TYPE", 960, "P8");
+   dataSubselector::BitMaskCut psf123("EVENT_TYPE", 56, "P8");
+   dataSubselector::BitMaskCut edisp023("EVENT_TYPE", 832, "P8");
+   
+   CPPUNIT_ASSERT(psf.supercedes(fb));
+   CPPUNIT_ASSERT(fb.supercedes(psf));
+   CPPUNIT_ASSERT(edisp.supercedes(psf));
+
+   CPPUNIT_ASSERT(psf123.supercedes(fb));
+   CPPUNIT_ASSERT(psf123.supercedes(psf));
+   CPPUNIT_ASSERT(psf123.supercedes(edisp));
+
+   CPPUNIT_ASSERT(edisp023.supercedes(fb));
+   CPPUNIT_ASSERT(edisp023.supercedes(psf));
+   CPPUNIT_ASSERT(edisp023.supercedes(edisp));
+
+   try {
+      psf123.supercedes(edisp023);
+   } catch (std::runtime_error &) {
+   }
+   try {
+      edisp023.supercedes(psf123);
+   } catch (std::runtime_error &) {
+   }
+   try {
+      psf.supercedes(psf123);
+   } catch (std::runtime_error &) {
+   }
+   try {
+      edisp.supercedes(edisp023);
+   } catch (std::runtime_error &) {
+   }
+   try {
+      fb.supercedes(psf123);
+   } catch (std::runtime_error &) {
+   }
+   try {
+      fb.supercedes(edisp023);
+   } catch (std::runtime_error &) {
+   }
+
+   dataSubselector::BitMaskCut invalid("EVENT_TYPE", 1024, "P8");
+   try {
+      psf.supercedes(invalid);
+      CPPUNIT_ASSERT(false);  // runtime_error exception should be thrown.
+   } catch (std::runtime_error &) {
+      CPPUNIT_ASSERT(true);
+   }
 }
 
 void DssTests::test_VersionCut() {
@@ -670,7 +760,7 @@ int main(int iargc, char * argv[]) {
    if (iargc > 1 && std::string(argv[1]) == "-d") {
       DssTests testObj;
       testObj.setUp();
-      testObj.test_irfName();
+      testObj.test_BitMaskCut();
       testObj.tearDown();
    } else {
       CppUnit::TextTestRunner runner;

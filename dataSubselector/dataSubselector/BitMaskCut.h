@@ -53,7 +53,20 @@ public:
       return m_pass_ver;
    }
 
+   std::string dstype() const;
+
    static bool post_P7(const std::string & pass_ver);
+
+   static void setValidityMasks(const std::string & evclassFile,
+                                const std::string & evtypeFile);
+
+   static const void * evclassValidityMasks() {
+      return s_evclassPrecedence;
+   }
+
+   static const void * evtypeValidityMasks() {
+      return s_evtypePrecedence;
+   }
 
 protected:
 
@@ -73,6 +86,31 @@ private:
    bool m_post_P7;
 
    bool accept(unsigned int value) const;
+
+   class BitMaskPrecedence {
+
+   public:
+
+      BitMaskPrecedence(const std::string & maskFile);
+      
+      /// Test if this cut has a valid mask given the current mask.
+      bool validMask(const BitMaskCut & self,
+                     unsigned int currentMask) const;
+
+      const std::string & maskFile() const;
+
+   private:
+
+      std::string m_maskFile;
+
+      std::map<unsigned int, unsigned int> m_validityMasks;
+      
+
+   };
+
+   static BitMaskPrecedence * s_evclassPrecedence;
+
+   static BitMaskPrecedence * s_evtypePrecedence;
 
 };
 
