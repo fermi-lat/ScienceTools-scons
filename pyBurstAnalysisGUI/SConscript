@@ -2,7 +2,7 @@
 #
 # $Id$
 # Authors: Giacomo Vianello <giacomov@slac.stanford.edu>
-# Version: pyBurstAnalysisGUI-01-04-03
+# Version: pyBurstAnalysisGUI-02-01-01
 
 Import('baseEnv')
 Import('listFiles')
