@@ -203,8 +203,11 @@ class HealpixCube(DiffuseBase):
             self.setEnergy(energy)
         skyindex = self.indexfun(skydir)
         a = self.energy_interpolation
-        return np.exp( np.log(self.eplane1[skyindex]) * (1-a) 
+        ret = np.exp( np.log(self.eplane1[skyindex]) * (1-a) 
                      + np.log(self.eplane2[skyindex]) * a      )
+        assert np.isfinite(ret), 'Not finite for %s at %s MeV, %f' % (skydir, self.energy, a)
+        return ret
+
 
 
     def setEnergy(self, energy): 

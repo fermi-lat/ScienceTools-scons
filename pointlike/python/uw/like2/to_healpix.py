@@ -70,6 +70,7 @@ def pickle_dump(roi,  pickle_dir, dampen, ts_min=5, **kwargs):
             pivot_energy = pivot_energy,
             # if ellipse or adict not done, but already in pickle, keep them
             ellipse= s.__dict__.get('ellipse', None), 
+            moment= s.__dict__.get('ellipsex', None), #results, if any, of moment localization analysis
             associations = s.__dict__.get('associations',None),
             )
     output.update(kwargs) # add additional entries from kwargs

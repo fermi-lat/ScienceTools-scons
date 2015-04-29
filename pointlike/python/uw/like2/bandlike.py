@@ -132,7 +132,7 @@ class BandLike(object):
     def gradient(self):
         """ gradient of the likelihood with resepect to the free parameters
         """
-        #if not self.band.has_pixels: return np.array([])
+        if len(self.free_sources)==0: return np.array([])
         return self.unweight * np.concatenate(
                 [m.grad(self.weights, self.exposure_factor) for m in self.free_sources]
             )
