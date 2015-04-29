@@ -67,7 +67,7 @@ def main(args):
         if len(ff)==0:
             print 'no files found to zip in folder %s' %fname
             return
-        if len(ff)!=1728 and ext=='pickle':
+        if len(ff)!=1728 and fname=='pickle':
             raise Exception('Found %d pickle files, expected 1728'%len(ff))
         print 'found %d *.%s in folder %s ...' % ( len(ff),ext, fname,) ,
         with zipfile.ZipFile(os.path.join(absskymodel, fname+'.zip'), 'w') as z:
@@ -142,7 +142,11 @@ def main(args):
         make_zip('pickle')
 
     elif stage=='tables':
-        names = 'ts kde counts'.split() 
+        names = 'ts kde'.split() 
+        healpix_map.assemble_tables(names)
+
+    elif stage=='xtables':
+        names = ['ts50'] 
         healpix_map.assemble_tables(names)
 
     elif stage=='pulsar_detection':
