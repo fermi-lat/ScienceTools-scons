@@ -43,7 +43,7 @@ void TOOLS::Run_gtexpcube(string GRB_DIR,  double TMin, double TMax, string FT2_
   char buffer[1000];
   buffer[0]='\0'; //empty char array
      
-  sprintf(buffer,"gtexpcube2 infile=%s/%s cmap=none outfile=%s irfs=%s nxpix=360 nypix=180 binsz=1 coordsys=GAL xref=0 yref=0 axisrot=0 proj=CAR emin=%f emax=%f enumbins=%d bincalc=CENTER chatter=4 ignorephi=yes thmax=180 thmin=0",
+  sprintf(buffer,"gtexpcube2 infile=%s/%s cmap=none outfile=%s irfs=%s nxpix=360 nypix=180 binsz=1 coordsys=GAL xref=0 yref=0 axisrot=0 proj=CAR emin=%f emax=%f enumbins=%d bincalc=CENTER chatter=4 ignorephi=yes thmax=180 thmin=0 evtype=3",
     	GRB_DIR.c_str(),gtltcube_Filename.c_str(),Outfile,DATACLASS.c_str(),Energy_Min,Energy_Max,Energy_Bins);
 
   if (verbosity>3) {
