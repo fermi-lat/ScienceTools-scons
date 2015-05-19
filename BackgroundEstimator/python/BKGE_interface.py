@@ -14,6 +14,13 @@ def getDataPath():
     dataPath	     = os.path.join(installationPath,'refdata','fermi','BackgroundEstimator')
   pass
   
+  #They could also have been moved to the Glast External path (this is the case for example
+  #at SLAC)
+  if(not os.path.exists(dataPath)):
+    
+    if(os.environ.get("GLAST_EXT")!=None):
+      dataPath       = os.path.join(os.environ.get("GLAST_EXT"),'BackgroundEstimator')
+      
   #Final check
   if(not os.path.exists(dataPath)):
     raise RuntimeError("Fatal error: could not locate the data subdirectory.")
