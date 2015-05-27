@@ -6,7 +6,6 @@ Class for transforming between Equatorial and Galactic coordinates.
 
 $Header$
 """
-from numpy import *
 import astropy.coordinates as coords
 import astropy.units as units
 from saclay_celgal import sindist2, SphCoords, Angdist, dist as saclay_dist
