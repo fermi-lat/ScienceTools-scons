@@ -121,14 +121,14 @@ using optimizers::Function;
 using optimizers::Exception;
 %}
 %include stl.i
-%exception {
-   try {
-      $action
-   } catch (std::exception & eObj) {
-      PyErr_SetString(PyExc_RuntimeError, const_cast<char *>(eObj.what()));
-      return NULL;
-   }
-}
+// %exception {
+//    try {
+//       $action
+//    } catch (std::exception & eObj) {
+//       PyErr_SetString(PyExc_RuntimeError, const_cast<char *>(eObj.what()));
+//       return NULL;
+//    }
+// }
 %template(DoublePair) std::pair<double, double>;
 %template(IntPair) std::pair<int, int>;
 %template(EventVector) std::vector<Likelihood::Event>;

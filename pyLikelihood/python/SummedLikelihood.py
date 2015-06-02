@@ -138,7 +138,7 @@ class SummedLikelihood(AnalysisBase):
         else:
             self.saveCurrentFit()
     def NpredValue(self, src):
-        return sum([x.logLike.NpredValue(src) for x in self.components])
+        return self.composite.NpredValue(src)
     def total_nobs(self):
         return sum([sum(x.nobs) for x in self.components])
     def __repr__(self):
