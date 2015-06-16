@@ -10,7 +10,7 @@ def getDataPath():
   dataPath	     = os.path.join(installationPath,'data','BackgroundEstimator')
   if(not os.path.exists(dataPath)):
     #In the public version of Fermi ST, data are in refdata/fermi/BackgroundEstimator
-    installationPath = os.path.join(os.path.sep.join(path.split(os.path.sep)[0:-4]))
+    installationPath = os.path.join(os.path.sep.join(path.split(os.path.sep)[0:-3]))
     dataPath	     = os.path.join(installationPath,'refdata','fermi','BackgroundEstimator')
   pass
   
