@@ -30,11 +30,13 @@ public:
         , const astro::SkyDir&scz, const astro::SkyDir& scx
         , double zenith_angle, double theta
         , int ctbclasslevel=pointlike::Data::class_level()  // note default 
+        , int event_type=-1 //default invalid: expect to be filled from EVENT_TYPE field
         )
         : astro::Photon(dir, energy, time, event_class, source)
         , m_zenith_angle(zenith_angle)
         , m_theta(theta)
         , m_ctbclasslevel(ctbclasslevel)
+        , m_event_type(event_type)
     {
         CLHEP::Hep3Vector scy (scz().cross(scx()));
         m_rot = CLHEP::HepRotation(scx(), scy, scz());
@@ -59,11 +61,13 @@ public:
     double zenith_angle()const{return m_zenith_angle;}
     double theta()const{return m_theta;}
     int class_level()const{return m_ctbclasslevel;}
+    int event_type()const{ return m_event_type;}
 private:
     CLHEP::HepRotation m_rot;
     double m_zenith_angle;
     double m_theta;
     int m_ctbclasslevel;
+    int m_event_type;
 
 };
 
@@ -158,6 +162,5 @@ private:
     bool m_pass7;
     bool m_evclass_bitarray;
 };
-
 #endif
 
