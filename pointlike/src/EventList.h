@@ -71,6 +71,7 @@ private:
 
 };
 
+
 class AddPhoton: public std::unary_function<astro::Photon, void> {
 public:
     AddPhoton (skymaps::BinnedPhotonData& map, int select, 
