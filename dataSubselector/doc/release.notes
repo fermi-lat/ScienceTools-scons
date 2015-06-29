@@ -5,6 +5,7 @@
     @verbatim
     * EOH *
 
+ dataSubselector-09-01-01 29-Jun-2015 jchiang STGEN-157: interpret evtype=[12] as convtype=[01] for Pass 7 files
  dataSubselector-09-01-00 21-Apr-2015 jchiang changes for STGEN-156
  dataSubselector-09-00-09 06-Apr-2015 jchiang use irfUtil::EventTypeMapper class
  dataSubselector-09-00-08 23-Feb-2015 jchiang bug-fix for code that checks irf name against EVENT_CLASS column in irf_index.fits
