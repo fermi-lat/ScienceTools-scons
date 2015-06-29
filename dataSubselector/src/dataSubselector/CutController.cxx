@@ -78,15 +78,27 @@ CutController::CutController(st_app::AppParGroup & pars,
          // Assume INDEF is given as the parameter value for evclass,
          // so use default of applying no EVENT_CLASS cut.
       }
-      if (BitMaskCut::post_P7(m_passVer)) {
-         try {
-            /// Handle any EVENT_TYPE cut supplied by the user.
-            int evtype = pars["evtype"];
+      try {
+         /// Handle any EVENT_TYPE cut supplied by the user.
+         int evtype = pars["evtype"];
+         if (BitMaskCut::post_P7(m_passVer)) {
             m_cuts.addBitMaskCut("EVENT_TYPE", evtype, m_passVer);
-         } catch (const hoops::Hexception &) {
-            // Assume INDEF is given as the parameter value for evtype,
-            // so use default of applying no EVENT_TYPE cut.
+         } else {
+            /// Re-interpret evtype=[12] as convtype=[01].
+            convtype = -1;
+            if (evtype == 1) {
+               convtype = 0;
+            } else if (evtype == 2) {
+               convtype = 1;
+            }
+            if (convtype >= 0) {
+               addRangeCut("CONVERSION_TYPE", "dimensionless", convtype,
+                           convtype, 0, true);
+            }
          }
+      } catch (const hoops::Hexception &) {
+         // Assume INDEF is given as the parameter value for evtype,
+         // so use default of applying no EVENT_TYPE cut.
       }
    }
    double zmin = pars["zmin"];
