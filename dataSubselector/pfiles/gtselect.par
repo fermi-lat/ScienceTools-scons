@@ -12,8 +12,6 @@ emin,r,a,30,0,,lower energy limit (MeV)
 emax,r,a,300000,0,,upper energy limit (MeV)
 zmin,r,h,0,0,180,minimum zenith angle value (degrees)
 zmax,r,a,180,0,180,maximum zenith angle value (degrees)
-evclsmin,i,h,0,0,1000,"Minimum event class ID"
-evclsmax,i,h,10,0,1000,"Maximum event class ID"
 evclass,i,h,INDEF,0,31,"Event class selection"
 evtype,i,h,INDEF,,,"Event type selections"
 convtype,i,h,-1,-1,1,"Conversion type (-1=both, 0=Front, 1=Back)"

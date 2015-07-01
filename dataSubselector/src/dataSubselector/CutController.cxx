@@ -60,11 +60,8 @@ CutController::CutController(st_app::AppParGroup & pars,
                   0, true);
    }
    if (m_passVer == "NONE") {
-      int evclsmin = pars["evclsmin"];
-      int evclsmax = pars["evclsmax"];
-      if (evclsmin !=0 || evclsmax != 10) {
-         addRangeCut("EVENT_CLASS", "dimensionless", evclsmin, evclsmax);
-      }
+      // Do nothing.  This is only to support DC1A data in the ST unit tests.
+      
    } else {
       try {
          int evclass = pars["evclass"];
@@ -124,6 +121,11 @@ checkPassVersion(const std::vector<std::string> & evfiles) {
       try {
          header["PASS_VER"].get(passVer);
       } catch (tip::TipException &) {
+         std::ostringstream message;
+         message << "Input FT1 file, " << evfiles[i] 
+                 << " does not have a valid PASS_VER keyword value"
+                 << " in its EVENTS header.";
+            throw std::runtime_error(message.str());
       }
       if (m_passVer == "") {
          m_passVer = passVer;
