@@ -93,6 +93,11 @@
 #include "Likelihood/CountsMap.h"
 #include "Likelihood/Observation.h"
 #include "Likelihood/WcsMap2.h"
+  // EAC
+#include "Likelihood/FitUtils.h"
+#include "Likelihood/ScanUtils.h"
+#include "Likelihood/FitScanner.h"
+
 #include "pyLikelihood/Aeff.h"
 #include "pyLikelihood/enableFPE.h"
 #include <vector>
@@ -228,6 +233,10 @@ using optimizers::Exception;
 %include Likelihood/Composite2.h
 %include Likelihood/CompositeLikelihood.h
 %include Likelihood/SummedLikelihood.h
+ // EAC
+%include Likelihood/FitUtils.h
+%include Likelihood/ScanUtils.h
+%include Likelihood/FitScanner.h
 %include pyLikelihood/Aeff.h
 %include pyLikelihood/enableFPE.h
 %extend Likelihood::LogLike {
