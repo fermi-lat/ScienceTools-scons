@@ -252,9 +252,7 @@ class SED(object):
 
         optverbosity = max(verbosity-1, 0) # see IntegralUpperLimit.py
 
-        for i,(lower,upper) in enumerate(zip(self.lower_energy,self.upper_energy)):
-
-            e = np.sqrt(lower*upper)
+        for i,(e,lower,upper) in enumerate(zip(self.energy,self.lower_energy,self.upper_energy)):
 
             if verbosity: print 'Calculating spectrum from %.0dMeV to %.0dMeV' % (lower,upper)
 
