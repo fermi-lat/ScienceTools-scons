@@ -326,6 +326,7 @@ void ExposureCubeSun::readKeywords(const std::string &outfile, const std::string
 void ExposureCubeSun::writeKeywords(const std::string &outfile, const std::string &extname, const Likelihood::RoiCuts &cuts) const {
 		 tip::Table * outtable(tip::IFileSvc::instance().editTable(outfile, extname));
 		 tip::Header & header(outtable->getHeader());
+		 cuts.writeDssTimeKeywords(header);
 		 header["TSTART"].set(m_tstart);
 		 header["TSTOP"].set(m_tstop);
 		 header["SSBODY"].set(bodyToString(m_body));
@@ -333,7 +334,6 @@ void ExposureCubeSun::writeKeywords(const std::string &outfile, const std::strin
 		 header["TIMEDIST"].set(m_timeDist);
 		 header["TIME"].set(m_time);
 		 header["AVGDIST"].set(avgDist());
-		 cuts.writeDssKeywords(header);
 		 delete outtable;
 }
 

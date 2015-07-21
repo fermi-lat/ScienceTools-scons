@@ -3,7 +3,8 @@
 # General parameters.
 infile,f,a,"",,,"Solar system tools livetime cube file"
 outfile,f,a,"",,,"Output file name"
-irfs,s,a,"P7SOURCE_V6",,,"Response functions to use"
+irfs,s,a,"CALDB",,,"Response functions to use"
+evtype,i,h,INDEF,,,"Event type selections"
 
 # Parameters for user-defined map.
 binsz,r,h,0,,,"Image scale (in degrees/pixel)"
