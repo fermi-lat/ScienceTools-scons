@@ -5,6 +5,7 @@
     @verbatim
     * EOH *
 
+ SolarSystemTools-01-03-00 21-Jul-2015 gudlaugu Updates for Pass 8 event types
  SolarSystemTools-01-02-00 06-May-2015 gudlaugu Fixes for P8 event types.
  SolarSystemTools-01-01-02 14-Aug-2013 gudlaugu Bug fix in gtsuntemp
  SolarSystemTools-01-01-01 30-Aug-2012 gudlaugu Adding the parameter file for gtltsumsun
