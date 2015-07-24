@@ -84,7 +84,8 @@ namespace facilities {
               int second = 0, int nano = 0);
 
     /// Return string representation of time, not including nanoseconds;
-    std::string getString() const;
+    /// If requested, attempt to account for leapseconds 
+    std::string getString(bool withLeap=false) const;
 
     /// Return julian date
     double      getJulian() const;
@@ -152,6 +153,8 @@ namespace facilities {
 
     /// Assemble string rep. from count of seconds
     static void toString(time_t bin, std::string& strTime);
+
+    int getAdjustment() const;
 
   protected:
     /// internal binary rep of time; count seconds from Jan 1, 1970

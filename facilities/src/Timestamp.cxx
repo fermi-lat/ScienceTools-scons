@@ -50,7 +50,8 @@ namespace facilities {
   } 
 
   // Time specified as string
-  Timestamp::Timestamp(const std::string& str, int tzOffset) : m_nano(0) {
+  Timestamp::Timestamp(const std::string& str, int tzOffset)
+    : m_nano(0) {
     m_time = toBinary(str);
     m_time += tzOffset;
   }
@@ -61,7 +62,6 @@ namespace facilities {
                        int minute, int second,
                        int nano) :  m_nano(nano) {
     struct tm fields;
-
     // check input   
     // for now don't bother checking whether, e.g., someone
     // specified April 31
@@ -89,10 +89,20 @@ namespace facilities {
     m_time = mktime(&fields) - Timestamp::s_tz.m_tzseconds;
   }
 
-  std::string Timestamp::getString() const {
+  std::string Timestamp::getString(bool withLeap) const {
     std::string str;
 
     toString(m_time, str);
+    if (!withLeap) return str;
+
+    // Otherwise try to account for leap seconds in an especially ugly way:
+    // decrease second count so that string representation comes out right
+
+    int decr = getAdjustment();
+    Timestamp* temp = new Timestamp(str);
+    *temp = Timestamp(temp->getClibTime() - decr, temp->getNano());
+    str = temp->getString(false);
+    delete temp;
     return str;
   }
 
@@ -218,6 +228,16 @@ namespace facilities {
 
     m_tzseconds = mktime(&fields) - 12*60*60;
     m_isDst = fields.tm_isdst;
+  }
+
+  /* Returns number of leap seconds since MET till our value */
+  int Timestamp::getAdjustment() const {
+    int adjust = 0;
+    if (*this > Timestamp("2009-01-01", 0)) adjust++;
+    if (*this > Timestamp("2012-07-01", 0)) adjust++;
+    if (*this > Timestamp("2015-07-01", 0)) adjust++;
+
+    return adjust;
   }
 }
 
