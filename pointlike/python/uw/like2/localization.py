@@ -130,9 +130,9 @@ def full_localization(roi, source_name=None, ignore_exception=False,
             if  hasattr(loc,'ellipse'): 
                 a, qual, delta_ts = loc.ellipse['a'], loc.ellipse['qual'], loc.delta_ts
                 tsize = min(a*15., 2.0)
-                bad = a>0.25 or qual>5 or abs(delta_ts)>2
+                bad = a>0.25 or qual>5 or abs(delta_ts)>3
                 if bad:
-                    print 'Flagged as possibly bad: a=%.2f>0.25 or qual=%.1f>5 or abs(delta_ts=%.1f)>2:'% (a, qual, delta_ts)
+                    print 'Flagged as possibly bad: a=%.2f>0.25 or qual=%.1f>5 or abs(delta_ts=%.1f)>3:'% (a, qual, delta_ts)
             else: 
                 print 'no localization'
                 bad = True

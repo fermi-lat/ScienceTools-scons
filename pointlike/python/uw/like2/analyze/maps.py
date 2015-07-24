@@ -71,9 +71,6 @@ class Maps(analysis_base.AnalysisBase):
                 mrow += """\n<td><a href="%(path)s_ait.png"> 
                         <img alt="%(path)s_ait.png"  
                         src="%(path)s_ait_thumbnail.png" /></a> </td>""" % dict(path=table)
-                #hp+="""\n <p><b>%(table)s</b> <br><a href="%(path)s_ait.png"> 
-                #        <img alt="%(path)s_ait.png"  
-                #        src="%(path)s_ait_thumbnail.png" /></a> <br/>""" % dict(table=table, path=table)
             
         hp += + hrow + mrow +'</tr>\n</table>'
         hp += """<p>These were projected from the nside=%(nside)s HEALPix FITS file <a href="../../%(filename)s?download=true">"%(filename)s"</a>:

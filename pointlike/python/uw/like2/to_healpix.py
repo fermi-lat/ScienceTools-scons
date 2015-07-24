@@ -67,6 +67,7 @@ def pickle_dump(roi,  pickle_dir, dampen, ts_min=5, **kwargs):
             ts = ts,
             sedrec = sedrec,
             band_ts=0 if sedrec is None else sedrec.ts.sum(),
+            ts_beta= s.__dict__.get('ts_beta', np.nan),
             pivot_energy = pivot_energy,
             # if ellipse or adict not done, but already in pickle, keep them
             ellipse= s.__dict__.get('ellipse', None), 

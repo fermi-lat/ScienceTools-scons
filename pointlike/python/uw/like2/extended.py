@@ -216,7 +216,8 @@ class ExtendedCatalog( ExtendedSourceCatalog):
             model = model, 
             dmodel= source.spatial_model
             )
-        if extsource.model.name=='LogParabola': extsource.free[-1]=False # E_break not free
+        if extsource.model.name=='LogParabola': 
+            assert sum( extsource.model.free)<4, 'E_break is free?'
         return extsource  
     def __getitem__(self, name): return self.lookup(name)
 

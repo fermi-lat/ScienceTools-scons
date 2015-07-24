@@ -92,12 +92,13 @@ class ROImodelFromHealpix(roimodel.ROImodel):
                     src.__dict__[attr] = t
                 map(tuple_check, ('ts', 'band_ts', 'sedrec', 'pivot_energy'))
                 
-            if neighbors: src.free[:]=False # not sure this is necessary
+            #if neighbors: src.free[:]=False # not sure this is necessary
+            if neighbors: src.model.free[:]=False
             src.index = index
-            src.model.free[:len(src.free)] = src.free # Don't think I still need this second copy of free
-            if src.model.name=='LogParabola':
-                src.model.free[-1] = False
-                src.free[-1] = False    
+            #src.model.free[:len(src.free)] = src.free # Don't think I still need this second copy of free
+            #if src.model.name=='LogParabola':
+            #    src.model.free[-1] = False
+            #    src.free[-1] = False    
 
             return src
         

@@ -103,6 +103,11 @@ class SED(tools.WithMixin):
                 print 'Fail poiss fit for %.0f MeV: %s ' % (energy,msg)
                 rec.append(np.nan, np.nan, 0, 0, np.nan, 0, np.nan, np.nan, np.nan, np.nan, np.nan )
                 continue
+            if np.isnan(pf.wprime):
+                print 'Fail poiss fit for %.0f MeV: %s ' % (energy,'bad poiss')
+                rec.append(np.nan, np.nan, 0, 0, np.nan, 0, np.nan, np.nan, np.nan, np.nan, np.nan )
+                continue
+            
             w = pf.poiss
             err = pf.maxdev
             lf,uf = w.errors

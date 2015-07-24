@@ -11,6 +11,7 @@ __all__=[
 # 'components',
  'background', 
  'counts',
+ 'pulsars',
  #'collection',
  'config',
  'cputime',

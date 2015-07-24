@@ -62,7 +62,7 @@ def html_table( df, columns={}, name='temp', heading='', href=True,
     for hcol in href_cols:
         t=repit( df[hcol].values, t)
         
-    if len(df)<maxlines:
+    if len(df)<maxlines or name=='temp':
         return t
     # long table: make document and return link to it
     tt = _html.menu_header % dict(name=name)
