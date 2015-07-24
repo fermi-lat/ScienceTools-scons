@@ -45,13 +45,13 @@ int main(int, char**) {
 
     std::cout << "Supplied PDT string: " << PDTString << std::endl;
     std::cout << "Retrieved: " << PDTTime.getString() << std::endl;
-    std::string leap2("2013-02-02 01:00");
-    Timestamp leap2TS(leap2);
-    std::cout << "Starting with string ='" + leap2 << std::endl;
+    std::string leap3("2013-02-02 01:00");
+    Timestamp leap3TS(leap3);
+    std::cout << "Starting with string ='" + leap3 << std::endl;
     std::cout << "Make timestamp object; output again as string: ";
-    std::cout << leap2TS.getString() << std::endl;
+    std::cout << leap3TS.getString() << std::endl;
     std::cout << "and now invoke getString with leap seconds arg:" << std::endl;
-    std::cout << leap2TS.getString(true) << std::endl;
+    std::cout << leap3TS.getString(true) << std::endl;
 
     std::string tooEarly("1770-12-17 12:00");
     Timestamp  tooEarlyTime(tooEarly);
