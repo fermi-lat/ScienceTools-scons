@@ -5,6 +5,7 @@
   Coordinator: Toby Burnett
             **EOH**
 
+ facilities-02-23-02 24-Jul-2015    jrb Provide way to convert timestamp to string taking account of leap seconds since MET
  facilities-02-23-01 13-Jun-2014    jrb Update authors
  facilities-02-23-00 28-Apr-2014 heather Test tag
  facilities-02-22-05 19-Sep-2013    jrb Handle setupEnvironment call automatically in some cases
