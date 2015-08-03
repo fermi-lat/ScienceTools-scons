@@ -80,12 +80,12 @@ namespace tip {
     if (0 != status) throw TipException(status, "FitsTipFile::copyFile could not create file " + new_file_name);
 
     fits_copy_file(m_fp, new_fp, 1, 1, 1, &status);
-    int ignored_status = status;
-    for (int ii = 1; 0 == fits_movabs_hdu(new_fp, ii, 0, &ignored_status); ++ii) {
-      fits_write_chksum(new_fp, &ignored_status);
+    //int ignored_status = status;
+    for (int ii = 1; 0 == fits_movabs_hdu(new_fp, ii, 0, &status); ++ii) {
+      fits_write_chksum(new_fp, &status);
     }
-    ignored_status = status;
-    fits_close_file(new_fp, &ignored_status);
+    //ignored_status = status;
+    fits_close_file(new_fp, &status);
     if (0 != status) throw TipException(status, "FitsTipFile::copyFile could not copy file " + new_file_name);
   }
 
@@ -107,9 +107,9 @@ namespace tip {
 
   void FitsTipFile::closeFile(bool update_checksum, int status) {
     if (update_checksum && 0 == status) {
-      int ignored_status = 0;
-      for (int ii = 1; 0 == fits_movabs_hdu(m_fp, ii, 0, &ignored_status); ++ii) {
-        fits_write_chksum(m_fp, &ignored_status);
+      //int ignored_status = 0;
+      for (int ii = 1; 0 == fits_movabs_hdu(m_fp, ii, 0, &status); ++ii) {
+        fits_write_chksum(m_fp, &status);
       }
     }
     fits_close_file(m_fp, &status);

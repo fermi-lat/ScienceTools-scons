@@ -226,9 +226,9 @@ namespace tip {
 
   void FitsFileManager::closeFile(fitsfile *fp, bool update_checksum, int status) {
     if (update_checksum && 0 == status) {
-      int ignored_status = 0;
-      for (int ii = 1; 0 == fits_movabs_hdu(fp, ii, 0, &ignored_status); ++ii) {
-        fits_write_chksum(fp, &ignored_status);
+      //int ignored_status = 0;
+      for (int ii = 1; 0 == fits_movabs_hdu(fp, ii, 0, &status); ++ii) {
+        fits_write_chksum(fp, &status);
       }
     }
     fits_close_file(fp, &status);
