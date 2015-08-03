@@ -195,7 +195,7 @@ namespace tip {
     static int data_type_code = FitsPrimProps<T>::dataTypeCode();
     int status = 0;
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &value, 0, &status);
-    if ((0 != status) && (VALUE_UNDEFINED != status)) throw TipException(status, formatWhat(std::string("Cannot read keyword \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot read keyword \"") + name + '"'));
   }
 
   // Getting keywords as bool is a special case because Cfitsio treats them as ints.
@@ -205,7 +205,7 @@ namespace tip {
     int status = 0;
     int tmp = 0;
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), &tmp, 0, &status);
-    if ((0 != status) && (VALUE_UNDEFINED != status)) throw TipException(status, formatWhat(std::string("Cannot read keyword \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot read keyword \"") + name + '"'));
     value = (0 != tmp);
   }
 
@@ -216,7 +216,7 @@ namespace tip {
     int status = 0;
     char tmp[FLEN_KEYWORD];
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
-    if ((0 != status) && (VALUE_UNDEFINED != status)) throw TipException(status, formatWhat(std::string("Cannot read keyword \"") + name + '"'));
+    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot read keyword \"") + name + '"'));
     value = tmp;
   }
 
