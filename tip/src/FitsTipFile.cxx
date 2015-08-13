@@ -81,8 +81,8 @@ namespace tip {
 
     fits_copy_file(m_fp, new_fp, 1, 1, 1, &status);
     //int ignored_status = status;
-    for (int ii = 1; 0 == fits_movabs_hdu(new_fp, ii, 0, &status); ++ii) {
-      fits_write_chksum(new_fp, &status);
+    for (int ii = 1; 0 == fits_movabs_hdu(new_fp, ii, 0, &status) && ii <= new_fp->Fptr->maxhdu; ++ii) {
+      if (0 != fits_write_chksum(new_fp, &status)) throw TipException(status, "FitsTipFile::copyFile could not update checksum for " + new_file_name);
     }
     //ignored_status = status;
     fits_close_file(new_fp, &status);
@@ -108,8 +108,8 @@ namespace tip {
   void FitsTipFile::closeFile(bool update_checksum, int status) {
     if (update_checksum && 0 == status) {
       //int ignored_status = 0;
-      for (int ii = 1; 0 == fits_movabs_hdu(m_fp, ii, 0, &status); ++ii) {
-        fits_write_chksum(m_fp, &status);
+      for (int ii = 1; 0 == fits_movabs_hdu(m_fp, ii, 0, &status) && ii <= m_fp->Fptr->maxhdu; ++ii) {
+        if (fits_write_chksum(m_fp, &status)) throw TipException(status, "FitsTipFile::closeFile could not update checksum.");
       }
     }
     fits_close_file(m_fp, &status);

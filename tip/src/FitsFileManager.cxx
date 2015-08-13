@@ -227,8 +227,8 @@ namespace tip {
   void FitsFileManager::closeFile(fitsfile *fp, bool update_checksum, int status) {
     if (update_checksum && 0 == status) {
       //int ignored_status = 0;
-      for (int ii = 1; 0 == fits_movabs_hdu(fp, ii, 0, &status); ++ii) {
-        fits_write_chksum(fp, &status);
+      for (int ii = 1; 0 == fits_movabs_hdu(fp, ii, 0, &status) && ii <= fp->Fptr->maxhdu; ++ii) {
+        if (0 != fits_write_chksum(fp, &status)) throw TipException(status, "FitsFileManager::closeFile could not update checksum.");
       }
     }
     fits_close_file(fp, &status);
