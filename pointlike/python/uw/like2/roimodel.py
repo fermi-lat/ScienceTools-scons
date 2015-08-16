@@ -21,7 +21,7 @@ class ROImodel(list):
     In particular, provide an interface to serialize the set of free parameters, or define a subset thereof.
     This is delegated to the classes ParameterSet and ParSubSet in the module parameterset
     
-    This is a virtual class, needs to be subclassed to provide an interace to a stored version of the sources
+    This is a virtual class, needs to be subclassed to provide an interface to a stored version of the sources
     See from_healpix.ROImodelFromHealpix and from_xml.ROImodelFromXML.
     
     Methods are provided to add or remove sources, and change the model associated with a source.

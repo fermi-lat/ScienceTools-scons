@@ -157,8 +157,9 @@ def table_menu(max_cols=20):
     for m in models:
         t = os.path.split(m)[0]
         mname = t.split('/')[-2]
-        dirs = filter(lambda f: os.path.isdir(f), glob.glob(t+'/*'))
-        dnames = map(lambda f: f.split('/')[-1], dirs)
+        #dirs = filter(lambda f: os.path.isdir(f), glob.glob(t+'/*'))
+        #dnames = map(lambda f: f.split('/')[-1], dirs)
+        dnames = [x.split('/')[-2] for x in glob.glob(t+'/*/index.html')]
         map( lambda n: anames.add(n), dnames)
         mdict[mname] = dnames
         for d in dnames:
