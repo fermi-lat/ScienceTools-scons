@@ -96,7 +96,7 @@ class Model(object):
         for k,v in self.default_extra_attrs.items():
             setattr(self,k,v)
 
-        self._p = np.empty(self.npar, dtype=float)
+        self._p = np.zeros(self.npar, dtype=float)
         self._external = self._p.copy()
         if p is None:
             p = self.default_p
