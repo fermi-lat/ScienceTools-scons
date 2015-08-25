@@ -14,6 +14,7 @@ import BayesianBlocks
 import BayesianBlocks_python
 import pylab_plotter as plot
 from distributions import Gaussian
+plot.pylab.ion()
 
 BayesianBlocks.BayesianBlocks_enableFPE()
 
@@ -25,8 +26,10 @@ interval1 = num.sort(ra.random(100)) + interval0[-1]
 interval2 = num.sort(ra.random(20)) + interval1[-1]
 
 seq = num.concatenate((interval0, interval1, interval2))
+tmin = 0
+tmax = seq[-1] + num.mean(seq[1:] - seq[:-1])
 
-bb = BayesianBlocks.BayesianBlocks(seq)
+bb = BayesianBlocks.BayesianBlocks(seq, tmin, tmax)
 bbp = BayesianBlocks_python.BayesianBlocks(seq)
 
 xr = (0, 3)
