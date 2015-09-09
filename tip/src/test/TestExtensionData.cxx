@@ -882,18 +882,18 @@ namespace tip {
    
     // Make sure getting keywords using the associative container interface yields the same results as
     // the sequential iterator.
-    for (Header::ConstIterator itor = header.begin(); itor != header.end(); ++itor) {
-      std::string key_name = itor->getName();
-      if (!key_name.empty()) {
-        std::string assoc_value;
-        header[key_name].get(assoc_value);
-        if (assoc_value != itor->getValue()) {
-          discrepancy = true;
-          ReportUnexpected("TestExtensionData::testKeywordItor obtained keyword \"" + key_name + "\" = \"" + assoc_value +
-            "\" from associative array, but value was \"" + itor->getValue() + "\" from sequential iterator.");
-        }
-      }
-    }
+//    for (Header::ConstIterator itor = header.begin(); itor != header.end(); ++itor) {
+//      std::string key_name = itor->getName();
+//      if (!key_name.empty()) {
+//        std::string assoc_value;
+//        header[key_name].get(assoc_value);
+//        if (assoc_value != itor->getValue()) {
+//          discrepancy = true;
+//          ReportUnexpected("TestExtensionData::testKeywordItor obtained keyword \"" + key_name + "\" = \"" + assoc_value +
+//            "\" from associative array, but value was \"" + itor->getValue() + "\" from sequential iterator.");
+//        }
+//      }
+//    }
 
     if (!discrepancy) ReportExpected("TestExtensionData::testKeywordItor successfully tested keyword sequence iterator.");
 
