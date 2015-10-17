@@ -214,7 +214,7 @@ public:
    void appendParamDomElements(DOMDocument * doc, DOMNode * node);
 
    /// Set the Parameters from a Function DOM_Element.
-   void setParams(const DOMElement * elt);
+   virtual void setParams(const DOMElement * elt);
 #endif // SWIG
 
    void setParamAlwaysFixed(const std::string & name) {
