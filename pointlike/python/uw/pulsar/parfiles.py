@@ -382,6 +382,11 @@ class ParFile(dict):
 
     def set_posepoch(self,epoch):
         """ Update POSEPOCH, evolving RAJ/DECJ if necessary."""
+        try:
+            posepoch = self['POSEPOCH']
+        except KeyError:
+            self.set('POSEPOCH',str(epoch))
+            return
         if self.is_ecliptic():
             elon,elone,elat,elate = self.get_astrometry_ecliptic(
                 epoch=epoch)
