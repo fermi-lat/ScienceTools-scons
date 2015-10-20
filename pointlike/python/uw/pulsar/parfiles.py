@@ -388,7 +388,7 @@ class ParFile(dict):
             self.set('ELONG',elon)
             self.set('ELAT',elat)
         else:
-            raj,raje,decj,decje = self.get_astrometry_ecliptric(
+            raj,raje,decj,decje = self.get_astrometry(
                 epoch=epoch)
             self.set('RAJ',dec2sex(raj,mode='ra'))
             self.set('DECJ',dec2sex(decj,mode='dec'))
