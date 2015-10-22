@@ -76,8 +76,31 @@ namespace optimizers {
     for (pptr p = params.begin(); p != params.end(); p++, ii++) {
        std::ostringstream mangledName;
        mangledName << ii << "_" << p->getName();
-       upar.Add(mangledName.str().c_str(), p->getValue(), 1.0, 
-	       p->getBounds().first, p->getBounds().second); 
+       double min = p->getBounds().first;
+       double max = p->getBounds().second;
+       if(min==0. and max==0.) 
+         {
+           //no bound : same API as Minuit : (min,max)=(0,0)
+           upar.Add(mangledName.str().c_str(), p->getValue(), 1.0);
+         }
+       //if C++11 is not ok, we need to compare to 
+       //#include <limits>
+       //double inf=std::numeric_limits<double>::infinity();
+       else if(std::isinf(max))
+         {
+           upar.Add(mangledName.str().c_str(), p->getValue(), 1.0);
+           upar.SetLowerLimit(ii,min);
+         }
+       else if(std::isinf(min))
+         {
+           upar.Add(mangledName.str().c_str(), p->getValue(), 1.0);
+           upar.SetUpperLimit(ii,max);
+         }
+       else 
+         {
+           upar.Add(mangledName.str().c_str(), p->getValue(), 1.0, 
+                    min, max); 
+         }
       //  Q:  Is 1.0 the best choice for that parameter?
     }
 

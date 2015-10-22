@@ -70,6 +70,8 @@ void Parameter::setValue(double value) {
       m_value = m_maxValue;
    } else if (value >= m_minValue && value <= m_maxValue) {
       m_value = value;
+   } else if (m_minValue==0. && m_maxValue==0.) {
+      m_value = value;
    } else {
       throw OutOfBounds(
          "Attempt to set the value outside of existing bounds.", 
@@ -93,6 +95,9 @@ void Parameter::setBounds(double minValue, double maxValue) {
    if (m_value >= minValue && m_value <= maxValue) {
       m_minValue = minValue;
       m_maxValue = maxValue;
+   } else if (m_minValue==0. && m_maxValue==0.){
+      m_minValue = minValue;
+      m_maxValue = maxValue;     
    } else {
       throw OutOfBounds(
          "Attempt to set bounds that exclude the existing value.", 
@@ -114,7 +119,11 @@ void Parameter::extractDomData(const DOMElement * elt) {
    m_value = std::atof(xmlBase::Dom::getAttribute(elt, "value").c_str());
    m_minValue = std::atof(xmlBase::Dom::getAttribute(elt, "min").c_str());
    m_maxValue = std::atof(xmlBase::Dom::getAttribute(elt, "max").c_str());
-   if (m_value < m_minValue || m_value > m_maxValue) {
+   if(m_minValue==0. && m_maxValue==0.){
+     //Minuit interface : parameter is given without limits, 
+     //which is fine, don't throw out-of-bounds exception; 
+     //Minuit2 will check for this case in the same manner.
+   } else if (m_value < m_minValue || m_value > m_maxValue) {
       std::ostringstream message;
       message << "Parameter::extractDomData:\n"
               << "In the XML description of parameter "<< m_name << ", "
