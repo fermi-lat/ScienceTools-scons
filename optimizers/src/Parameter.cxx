@@ -95,7 +95,7 @@ void Parameter::setBounds(double minValue, double maxValue) {
    if (m_value >= minValue && m_value <= maxValue) {
       m_minValue = minValue;
       m_maxValue = maxValue;
-   } else if (m_minValue==0. && m_maxValue==0.){
+   } else if (minValue==0. && maxValue==0.){
       m_minValue = minValue;
       m_maxValue = maxValue;     
    } else {
