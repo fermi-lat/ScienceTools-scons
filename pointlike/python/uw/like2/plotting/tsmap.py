@@ -96,7 +96,8 @@ def plot(localizer, name=None, center=None, size=0.5, pixelsize=None, outdir=Non
                 tsp.zea.axes.plot([x],[y], marker[k%12], color=markercolor, label=ps.name, markersize=markersize)
                 if hasattr(ps, 'ellipse') and ps.ellipse is not None:
                     # this draws a line, perhaps shaded
-                    tsp.zea.ellipse(ps.skydir, ps.ellipse[2:5])
+                    tsp.zea.ellipse(SkyDir(*ps.ellipse[:2]), ps.ellipse[2:5])
+                    #tsp.zea.ellipse(ps.skydir, ps.ellipse[2:5])
                 k+=1
     
     tsp.plot(tsp.tsmaxpos, symbol='+', color='k') # at the maximum
@@ -123,7 +124,9 @@ def plot(localizer, name=None, center=None, size=0.5, pixelsize=None, outdir=Non
     fs = plt.rcParams['font.size']
     plt.rcParams.update({'legend.fontsize':7, 'font.size':7})
     # put legend on left.
-    if not nolegend: tsp.zea.axes.legend(loc=2, numpoints=1, bbox_to_anchor=(-0.15,1.0))
+    if not nolegend: 
+        leg=tsp.zea.axes.legend(loc=2, numpoints=1, bbox_to_anchor=(-0.15,1.0))
+        leg.get_frame().set_alpha(1.0)
     plt.rcParams['font.size'] = fs
 
     if not notitle:

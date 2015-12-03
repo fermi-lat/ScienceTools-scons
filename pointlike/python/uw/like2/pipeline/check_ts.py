@@ -190,12 +190,17 @@ def pipe_make_seeds(skymodel, filename,  fieldname='ts', minsize=2):
     """
     if skymodel.startswith('month'):
         month=int(skymodel[5:]);
-        mask = monthly_ecliptic_mask( month)
-        print 'created a mask for month %d, with %d pixels set' % (month, sum(mask))
-        seedroot = fieldname.upper()+ skymodel[-3:] 
+        try:
+            mask = monthly_ecliptic_mask( month)
+            print 'created a mask for month %d, with %d pixels set' % (month, sum(mask))
+            seedroot = fieldname.upper()+ skymodel[-3:] 
+        except:
+            mask=None
+            print 'No mask found'
+            seedroot='TSxx'
     else: 
         mask=None
-        seedroot='SEED'
+        seedroot='TSxx'
     fnames = glob.glob('hptables_*_%d.fits' % nside )
     assert len(fnames)>0, 'did not find hptables_*_%d.fits file' %nside
     fname=None
@@ -210,7 +215,7 @@ def pipe_make_seeds(skymodel, filename,  fieldname='ts', minsize=2):
     rec = open('seeds_%s.txt' %fieldname, 'w')
     nseeds = make_seeds('test', fname, fieldname=fieldname, rec=rec,
         seedroot=seedroot, minsize=minsize,
-        mask=~mask)
+        mask=~mask if mask is not None else None)
     print '%d seeds' % nseeds
 
  

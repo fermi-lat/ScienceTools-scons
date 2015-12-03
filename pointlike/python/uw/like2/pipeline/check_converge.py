@@ -132,7 +132,7 @@ def main(args):
                     create_stream('update', job_list='$SKYMODEL_SUBDIR/update_roi_list.txt')
             else:
                 model_name = os.getcwd().split('/')[-1]
-                create_stream('finish' if not model_name.startswith('month') else 'finish_month')
+                create_stream('finish' if model_name.find('month')<0 else 'finish_month')
             
     elif stage=='sedinfo':
         make_zip('sedinfo')
