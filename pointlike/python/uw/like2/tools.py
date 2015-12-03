@@ -4,7 +4,7 @@ Tools for ROI analysis
 $Header$
 
 """
-import os, sys
+import os, sys, time
 import numpy as np
 
 def ufunc_decorator(f): # this adapts a bound function
@@ -73,3 +73,6 @@ class RecArray(object):
         return np.rec.fromarrays(self.fields, names=self.names, dtype=self.dtype)
     
       
+class DateStamp(object):
+    def _repr_html_(self):
+         return '<div align=center> <h3>'+time.asctime()+'</h3> </div>'

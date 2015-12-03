@@ -74,6 +74,7 @@ def pickle_dump(roi,  pickle_dir, dampen, ts_min=5, **kwargs):
             moment= s.__dict__.get('ellipsex', None), #results, if any, of moment localization analysis
             associations = s.__dict__.get('associations',None),
             fixed_spectrum=s.__dict__.get('fixed_spectrum', False), #flag that spectrum should not be refit
+            eflux = s.spectral_model.i_flux(e_weight=1, cgs=True, error=True),
             )
     output.update(kwargs) # add additional entries from kwargs
     with open(filename,'wb') as f:  #perhaps overwrite

@@ -8,6 +8,7 @@ Author: T.Burnett <tburnett@uw.edu> (based on pioneering work by M. Kerr)
 import sys, types
 import numpy as np
 from  uw.utilities import keyword_options
+from skymaps import SkyDir
 
    
 class BandLike(object):
@@ -74,6 +75,11 @@ class BandLike(object):
                     return bs
             raise Exception('Source "%s" not found in band sources' %i)
         return self.bandsources[i]
+        
+    @property
+    def pixel_dirs(self):
+        """ the list of SkyDirs for the pixels with data"""
+        return [SkyDir(w.dir()) for w in self.band.wsdl]
         
     def initialize(self, free):
         """ should only call if free array changes.

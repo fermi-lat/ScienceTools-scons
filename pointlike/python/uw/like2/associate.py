@@ -62,7 +62,7 @@ class SrcId(srcid.SourceAssociation):
         
     def __call__(self, name, pos, error):
         """ name: source name, ignored, for reference
-            pos: a SkyDir object
+            pos: a SkyDir object |; (ra,dec) cuple
             error: [float | tuple]
                 a or tuple: (a,b,ang) or, (ra,dec,a,b,ang,)...
                 a,b: 1-sigma elipse in deg; ang orientation degrees
@@ -103,6 +103,13 @@ class SrcId(srcid.SourceAssociation):
     def positional_likelihood(self, name, pos, error):
         a,b,ang = error
 
+class BzcatId(SrcId):
+
+    def __init__(self):
+        super(BzcatId, self).__init__(classes=['bzcat'])
+        #self.catalogs['bzcat'].prob_threshold=0.1
+        
+        
 def make_association(source, tsf, associate, quiet=False):
     if not quiet: print ' %s association(s) ' % source.name,
     try:    ell = source.ellipse
