@@ -35,6 +35,7 @@ __all__=[
  #'localization1k',
 # 'pgwseedcheck',
  'maps',
+ 'pgwave',
  #'ptstable',
  #'pulsarseedcheck',
  #'roi_info',
