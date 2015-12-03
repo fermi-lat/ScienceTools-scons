@@ -117,7 +117,7 @@ template<typename T> Alm<xcomplex<T> > conjugate(Alm<xcomplex<T> > &alm) {
 	for(int l=0;l<=alm.Lmax();l++) {
 		for(int m=0;m<=alm.Mmax();m++) {
 			xcomplex<T> *it = alm.mstart(m);
-			it[l].im = -alm.mstart(m)[l].im;
+			it[l].imag() = -alm.mstart(m)[l].imag();
 		}
 	}
 	return alm;
@@ -185,7 +185,7 @@ template<typename T> void map2almdil (const Healpix_Map<T> &map,
 #endif
     for (m=0; m<=mmax; ++m)
       {
-      for (int l=m; l<=lmax; ++l) alm_tmp[l].Set(0.,0.);
+	for (int l=m; l<=lmax; ++l) { alm_tmp[l].real() = 0.; alm_tmp[l].imag() = 0.; }
       for (int ith=0; ith<ulim-llim; ++ith)
         {
         int l;
@@ -200,16 +200,16 @@ template<typename T> void map2almdil (const Healpix_Map<T> &map,
                            p2 = phas_n[ith][m]-phas_s[ith][m];
 
           if ((l-m)&1) goto middle;
-start:    alm_tmp[l].re += p1.re*Ylm[l]/lambda; alm_tmp[l].im += p1.im*Ylm[l]/lambda;
+start:    alm_tmp[l].real() += p1.real()*Ylm[l]/lambda; alm_tmp[l].imag() += p1.imag()*Ylm[l]/lambda;
           if (++l>lmax) goto end;
-middle:   alm_tmp[l].re += p2.re*Ylm[l]/lambda; alm_tmp[l].im += p2.im*Ylm[l]/lambda;
+middle:   alm_tmp[l].real() += p2.real()*Ylm[l]/lambda; alm_tmp[l].imag() += p2.imag()*Ylm[l]/lambda;
           if (++l<=lmax) goto start;
 end:      ;
           }
         }
       xcomplex<T> *palm = alm.mstart(m);
       for (int l=m; l<=lmax; ++l)
-        { palm[l].re += alm_tmp[l].re; palm[l].im += alm_tmp[l].im; }
+        { palm[l].real() += alm_tmp[l].real(); palm[l].imag() += alm_tmp[l].imag(); }
       }
 } // end of parallel region
     }
@@ -335,8 +335,12 @@ void recalc_map2alm (int nph, int mmax, rfft &plan,
   double f1 = pi/nph;
   for (int m=0; m<=mmax; ++m)
     {
-    if (m<nph)
-      shiftarr[m].Set (cos(m*f1),-sin(m*f1));
+    if (m<nph) 
+      {
+      //shiftarr[m].Set (cos(m*f1),-sin(m*f1));
+      shiftarr[m].real() = cos(m*f1);
+      shiftarr[m].imag() = -sin(m*f1);
+      }
     else
       shiftarr[m]=-shiftarr[m-nph];
     }
@@ -369,7 +373,11 @@ void recalc_alm2map (int nph, int mmax, rfft &plan,
   for (int m=0; m<=mmax; ++m)
     {
     if (m<nph)
-      shiftarr[m].Set (cos(m*f1),sin(m*f1));
+      {
+	//shiftarr[m].Set (cos(m*f1),sin(m*f1));
+      shiftarr[m].real() = cos(m*f1);
+      shiftarr[m].imag() = sin(m*f1);      
+      }
     else
       shiftarr[m]=-shiftarr[m-nph];
     }
@@ -382,11 +390,11 @@ template<typename T> void fft_alm2map (int nph, int mmax, bool shifted,
   {
   fill_work (b_north, nph, mmax, shifted, shiftarr, work);
   plan.backward_c(work);
-  for (int m=0; m<nph; ++m) mapN[m] = work[m].re;
+  for (int m=0; m<nph; ++m) mapN[m] = work[m].real();
   if (mapN==mapS) return;
   fill_work (b_south, nph, mmax, shifted, shiftarr, work);
   plan.backward_c(work);
-  for (int m=0; m<nph; ++m) mapS[m] = work[m].re;
+  for (int m=0; m<nph; ++m) mapS[m] = work[m].real();
   }
 
 } // namespace

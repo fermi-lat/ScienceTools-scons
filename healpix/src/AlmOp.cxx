@@ -40,8 +40,8 @@ template<typename T> AlmOp<T> AlmOp<T>::operator*(AlmOp<T> x) {
     for(int l=0;l<=m_alm.Lmax();l++) {
         for(int m=0;m<=m_alm.Mmax();m++) {
             T *it = product.Alms()->mstart(m);
-            it[l].re=x.Alms()->mstart(m)[l].re*m_alm.mstart(m)[l].re;
-            it[l].im=x.Alms()->mstart(m)[l].im*m_alm.mstart(m)[l].im;
+            it[l].real()=x.Alms()->mstart(m)[l].real()*m_alm.mstart(m)[l].real();
+            it[l].imag()=x.Alms()->mstart(m)[l].imag()*m_alm.mstart(m)[l].imag();
         }
     }
     return product;
@@ -57,8 +57,8 @@ template<typename T> AlmOp<T> AlmOp<T>::operator+(AlmOp<T> x) {
     for(int l=0;l<=m_alm.Lmax();l++) {
         for(int m=0;m<=m_alm.Mmax();m++) {
             T *it = sum.Alms()->mstart(m);
-            it[l].re=x.Alms()->mstart(m)[l].re+m_alm.mstart(m)[l].re;
-            it[l].im=x.Alms()->mstart(m)[l].im+m_alm.mstart(m)[l].im;
+            it[l].real()=x.Alms()->mstart(m)[l].real()+m_alm.mstart(m)[l].real();
+            it[l].imag()=x.Alms()->mstart(m)[l].imag()+m_alm.mstart(m)[l].imag();
         }
     }
     return sum;
@@ -73,8 +73,8 @@ template<typename T> AlmOp<T> AlmOp<T>::conjugate() {
     for(int l=0;l<=m_alm.Lmax();l++) {
         for(int m=0;m<=m_alm.Mmax();m++) {
             T *it = cj.Alms()->mstart(m);
-            it[l].re=m_alm.mstart(m)[l].re;
-            it[l].im=-(m_alm.mstart(m)[l].im);
+            it[l].real()=m_alm.mstart(m)[l].real();
+            it[l].imag()=-(m_alm.mstart(m)[l].imag());
         }
     }
     return cj;
