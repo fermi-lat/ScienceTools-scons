@@ -55,7 +55,8 @@ private:
 };
 }
 SkyProj::SkyProj(const std::string &projName, 
-                 double* crpix, double* crval, double* cdelt, double crota2 ,bool galactic)                
+                 double* crpix, double* crval, double* cdelt, double crota2 ,bool galactic)
+  : ProjBase(projName,galactic,WCS)
 {
         tol=0.00000001;
 	double lonpole = 999;
@@ -66,12 +67,15 @@ SkyProj::SkyProj(const std::string &projName,
 SkyProj::SkyProj(const std::string &projName, 
         double* crpix, double* crval, double* cdelt, double lonpole, double latpole,
 		double crota2, bool galactic)
+  : ProjBase(projName,galactic,WCS)
 {
         tol=0.00000001;
         SkyProj::init(projName,crpix,crval,cdelt,lonpole,latpole,crota2,galactic);
 }
 
-SkyProj::SkyProj(const std::string & fitsFile, const std::string & extension) {
+SkyProj::SkyProj(const std::string & fitsFile, const std::string & extension)
+  : ProjBase(false,WCS)
+{
    const tip::Image * image = 
       tip::IFileSvc::instance().readImage(fitsFile, extension);
 
@@ -166,22 +170,33 @@ SkyProj::SkyProj(const std::string &fitsFile, int relax, int ctrl)
    // Manually set naxis to 2. (three places?)
    m_wcs->naxis = m_wcs->lin.m_naxis = m_wcs->m_naxis = 2;
 
+#ifdef WIN32
+   int status = wcsset2(m_wcs);
+#else
    int status = wcsset(m_wcs);
+#endif
    if (status !=0) {
        throw SkyProjException(status );
    }
    // and again, in case 
    m_wcs->naxis = m_wcs->lin.m_naxis = m_wcs->m_naxis = 2;
 
+   // EAC, initialize the data in the base class
+   std::string wcsType = std::string( m_wcs->ctype[0] );
+   bool galactic = wcsType.substr(0,4)=="GLON";
+   initBase(wcsType.substr(6,9),galactic,WCS); 
+
   // wcsprt(&m_wcs[0]); 
 }
 
 SkyProj::~SkyProj()
 {
-   if(m_wcspih_used)
-      wcsvfree(&m_nwcs,&m_wcs);
-   else
-      wcsfree(m_wcs);
+  // EAC, move the problem with memory management to this class
+  // EAC, rather than to classes that use this class
+  //if(m_wcspih_used)
+  //    wcsvfree(&m_nwcs,&m_wcs);
+  // else
+  //    wcsfree(m_wcs);
 }
 
 
@@ -201,12 +216,28 @@ std::pair<double,double> SkyProj::sph2pix(double s1, double s2) const
     // WCS projection routines require the input coordinates are in degrees
     // and in the range of [-90,90] for the lat and [-180,180] for the lon.
     // So correct for this effect.
-    if(s1 > 180) s1 -= 360.;
+    bool wrap_pos = false;
+    if(s1 > 180) { 
+      s1 -= 360.;
+      wrap_pos = false;
+    }
+    bool wrap_neg = false;
+    if(s1 < -180) {
+      s1 += 360.;
+      wrap_neg = false;
+    }
 
     double worldcrd[] ={s1,s2};
 
     int returncode = wcss2p(m_wcs, ncoords, nelem, worldcrd, phi, theta, imgcrd, pixcrd, stat);
     if ( returncode != 0 ) throw SkyProjException(returncode);
+
+    if ( wrap_pos ) {
+      pixcrd[0] += 360./m_wcs->cdelt[0];
+    }
+    if ( wrap_neg ) {
+      pixcrd[0] -= 360./m_wcs->cdelt[0];
+    }
 
     return std::make_pair(pixcrd[0],pixcrd[1]);
 }
@@ -233,22 +264,6 @@ std::pair<double,double> SkyProj::pix2sph(double x1, double x2) const
     return std::make_pair<double,double>(s1,worldcrd[1]);
 }
 
-
-/** @brief Convert from one projection to another
-@param x1 projected equivalent to ra or l, in degrees
-@param x2 projected equivalent dec or b, in degrees
-@param projection used to deproject these coordinates
-*/
-std::pair<double,double> SkyProj::pix2pix(double x1, double x2, const SkyProj& otherProjection)const
-{
-    std::pair<double,double> s = otherProjection.pix2sph(x1,x2);
-    return SkyProj::sph2pix(s.first,s.second);
-}
-
-bool SkyProj::isGalactic()const
-{
-    return ( std::string( m_wcs->ctype[0] ).substr(0,4)=="GLON");
-}
 
 /*@brief determine the x or y range for a given x or y coordinate
    @param xvar varies x if true, varies y if false
@@ -343,11 +358,11 @@ void SkyProj::init(const std::string &projName,
                  double* crpix, double* crval, double* cdelt, 
 				 double lonpole, double latpole, double crota2, bool galactic)
 {
+    initBase(projName,galactic,WCS);
+
     assert( sizeof_wcslib>=sizeof(wcsprm));
     m_wcs = reinterpret_cast<wcsprm*>(m_wcs_struct);
     m_wcs->flag = -1;
-
-    m_projName = projName; // save for user access
 
     m_wcspih_used = false;
 
@@ -373,6 +388,10 @@ void SkyProj::init(const std::string &projName,
         m_wcs->cdelt[i] = cdelt[i]; // scale factor
     }
 
+    if ( m_wcs->crval[0] > 180 ) {
+      m_wcs->crval[0] -= 360; 
+    }
+
 	if(latpole != 999)
 		m_wcs->latpole = latpole;
 	if(lonpole != 999)
@@ -383,7 +402,11 @@ void SkyProj::init(const std::string &projName,
     m_wcs->altlin |= 4;
     m_wcs->crota[1] = crota2;
     
+#ifdef WIN32
+    int status = wcsset2(m_wcs);
+#else
     int status = wcsset(m_wcs);
+#endif
     if (status !=0) {
         throw SkyProjException(status );
     }
@@ -407,11 +430,18 @@ void SkyProj::init(const std::string &projName,
 
 }
 
+// EAC, fix the copy c'tor
 SkyProj::SkyProj(const SkyProj & other)
-{
-    // copy constructor just resets pointer
-    assert( sizeof_wcslib>=sizeof(wcsprm));
+  : ProjBase(other),
+    tol(other.tol),
+    m_nwcs(other.m_nwcs),
+    m_wcspih_used(other.m_wcspih_used) {
+    // copy the contents of the array
+    std::copy(other.m_wcs_struct,other.m_wcs_struct+sizeof_wcslib,m_wcs_struct);
+    // copy the limit stuff
+    std::copy(other.limit,other.limit+6,limit);
     m_wcs = reinterpret_cast<wcsprm*>(m_wcs_struct);    
+
 }
 
 /** @brief determines if current point and variable are in range */

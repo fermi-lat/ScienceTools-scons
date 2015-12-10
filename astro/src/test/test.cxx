@@ -14,6 +14,7 @@
 #include "astro/PointingHistory.h"
 #include "astro/HTM.h"
 #include "astro/SkyProj.h"
+#include "astro/HealpixProj.h"
 #include "astro/Quaternion.h"
 
 #include "CLHEP/Vector/ThreeVector.h"
@@ -86,6 +87,22 @@ double test_one(double lon, double lat, const astro::SkyProj& t){
     return SkyDir(pixel.first,pixel.second,t).difference(dir);
 }
 
+
+//------------------------------------------------------------
+//          test code for SkyProj
+//------------------------------------------------------------
+/** @brief test a single point, transforming from world to pixel and back
+*/
+double test_one_healpix(double lon, double lat, const astro::HealpixProj& t){
+    using namespace astro;
+    SkyDir dir(lon, lat);
+    std::pair<double, double> pixel = dir.project(t );
+    //  std::cout <<  "(" << lon << ", " << lat << ") \t-> (" << pixel.first << ", " << pixel.second << ") \n";
+    //std::cout <<  "\t" << lon << "\t " << lat << "\t" << pixel.first << "\t" << pixel.second << "\n";
+    return SkyDir(pixel.first,pixel.second,t).difference(dir);
+}
+
+
 /**
  * @brief Write out a test FITS file for SkyProj
  */
@@ -112,8 +129,28 @@ std::string writeTestFile(const std::string & ctype, double * crpix,
    return filename;
 }
 
+std::string writeTestFileHealpix(int order, Healpix_Ordering_Scheme scheme, bool galactic = false) {
+   int nside = int(pow(2,order));
+   int npix = 12*nside*nside;
+   std::string filename("HealpixProj_test_file.fits");
+   tip::IFileSvc::instance().createFile(filename);
+   tip::Image * image = tip::IFileSvc::instance().editImage(filename, 
+                                                            "PRIMARY");
+   tip::Header & header = image->getHeader();
+   header["COORDSYS"].set(galactic ? "GAL" : "CEL");
+   header["ORDERING"].set(scheme == RING ? "RING" : "NEST");
+   header["ORDER"].set(order);
+   header["NSIDE"].set(nside);
+   header["PIXTYPE"].set("HEALPIX");
+   header["FIRSTPIX"].set(0);
+   header["LASTPIX"].set(npix-1);
+   delete image;
+   return filename;
+}
+
 #define ASSERT_EQUALS(X, Y) assert(fabs( (X - Y)/Y ) < 1e-5)
 #define ASSERT_ALMOST_EQUALS(X, Y) assert(fabs( (X - Y)/Y ) < 1e-3)
+#define ASSERT_INT_EQUALS(X, Y) assert( X == Y )
 
 /** @brief test a group of directions
 */
@@ -170,6 +207,62 @@ bool testSkyProj(){
             ASSERT_EQUALS(coord0.second, coord2.second);
         }
     }
+
+    // clean up
+    std::remove(filename.c_str());
+
+    return true;
+}
+//---------------------------------------------------------------------
+/** @brief test a group of directions
+*/
+bool testHealpixProj(){
+    using namespace astro;
+
+    HealpixProj proj(5,RING,false);
+    if( proj.isGalactic() ) throw std::runtime_error(" wrong return from HealpixProj::isGalactic");
+
+    // write out a FITS image file using these params and create a new
+    // SkyProj from the FITS header
+
+    std::string filename(writeTestFileHealpix(5,RING,false));
+    HealpixProj fileproj(filename);
+    
+    HealpixProj other(5,RING,true);
+    if( !other.isGalactic() ) throw std::runtime_error(" wrong return from HealpixProj::isGalactic");
+
+    // test SkyProj::Exception
+    try{
+       other.pix2sph(-1000, -1000);
+       // This should have thrown; if not, indicate failure.
+       throw std::runtime_error("HealpixProj::Exception failed");
+    } catch (std::exception &) {
+       // Caught as expected, so do nothing.
+    }
+
+    double delta = 20;
+    double maxDiff(0.);
+    for( double dec =-90+delta/2; dec<90 ; dec+= delta){
+        for( double ra = 0+delta/2; ra<360; ra+=delta){
+            double test = test_one_healpix(ra, dec, proj);
+	    maxDiff = maxDiff > test ? maxDiff : test;
+            if( test > 0.03 ){ 
+	        // Note that the test condition is just that the direction is inside the pixel
+	        // this is b/c the HealpixProj is actually a pixelization, not a true projection
+	        // i.e., we don't worry about fractions of a pixel
+	        std::cout << "error - HealpixProj transformation failed to invert" << std::endl;
+                return false;
+            }
+
+            // proj and fileproj should operate consistently
+            std::pair<double, double> coord0(proj.sph2pix(ra, dec));
+            std::pair<double, double> coord1(fileproj.sph2pix(ra, dec));
+            
+            ASSERT_INT_EQUALS(coord0.first, coord1.first);
+            ASSERT_INT_EQUALS(coord0.second, coord1.second);
+        }
+    }
+    std::cout << "Maximum delta for HealpixProj is " << maxDiff << std::endl;
 
     // clean up
     std::remove(filename.c_str());
@@ -299,6 +392,7 @@ bool testJD() {
    utc_values[457401605] = std::vector<std::string>();
    utc_values[457401605].push_back("2015-07-01T00:00:01.0000");
    utc_values[457401605].push_back("2015-07-01T00:00:00.9999");
+
 
    for (Utc_vector_t::const_iterator it(utc_values.begin());
         it != utc_values.end(); ++it) {
@@ -513,7 +607,8 @@ bool test_IGRF() {
       ASSERT_ALMOST_EQUALS(B_East[i], IGRField::Model().bEast());
       ASSERT_ALMOST_EQUALS(B_Vert[i], IGRField::Model().bDown());
    }
-      
+
+
    return true;
 }
 
@@ -694,6 +789,8 @@ int main(){
         if( !testHTM() ) rc= 1;
 
         if(! testSkyProj() ) rc= 1;
+
+        if(! testHealpixProj() ) rc= 1;
 
         if( ! testJD()) rc=1;
 

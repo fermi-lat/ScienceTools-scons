@@ -13,7 +13,8 @@
 #include <cmath>
 #include <utility> // for pair
 #include <string>
-#include "astro/SkyProj.h"
+// EAC, switch to using new base class for SkyProj
+#include "astro/ProjBase.h"
 
 /*
 > Date: Tue, 9 Aug 2005 11:18:24 -0400 (EDT)
@@ -67,7 +68,7 @@ namespace astro {
         @param projection  projection to use to obtain world coordinates
         @param check  if false and the pixels are invalid, throw an exception. if true, make the direction invalid
         */
-        SkyDir(double pixelx, double pixely, const SkyProj& projection, bool check=false);
+        SkyDir(double pixelx, double pixely, const ProjBase& projection, bool check=false);
 
 
         //! function operator returns the direction
@@ -96,7 +97,7 @@ namespace astro {
         Note that if the projection specificies galactic coordinates, the 
         projection will be applied to (l,b) rather than (ra,dec)
         */
-        std::pair<double,double> project(const SkyProj& projection) const;
+        std::pair<double,double> project(const ProjBase& projection) const;
 
         //! check for validity: m_dir.z is made gt 1 if invalid
         bool isValid()const{ return m_dir.z()<1.0; }

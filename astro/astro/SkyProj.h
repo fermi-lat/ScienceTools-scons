@@ -8,6 +8,8 @@ $Header$
 #ifndef astro_SkyProj_H
 #define astro_SkyProj_H
 
+// EAC, introduce a base class for projections
+#include "astro/ProjBase.h"
 
 // Include files
 #include <utility> // for pair
@@ -40,7 +42,7 @@ namespace astro {
 
     */
 
-    class SkyProj
+    class SkyProj : public ProjBase
     {
     public:
         ///Constructors
@@ -75,7 +77,7 @@ namespace astro {
         TSC: tangential spherical cube
         CSC: COBE quadrilateralized spherical cube
         QSC: quadrilateralized spherical cube
-        HPX: HEALPix
+        HPX: HEALPix projection (this is NOT the single indexed healpix)
         @endverbatim
         @param crpix corresponds to the FITS keyword CRPIXi (coordinate reference point)
         @param crval corresponds to the FITS keyword CRVALi (coordinate value at reference point)
@@ -130,18 +132,21 @@ namespace astro {
         SkyProj(const std::string &fitsFile, int relax, int ctrl=0);
 
         // Destructor
-        ~SkyProj();
+        virtual ~SkyProj();
         /// copy constructor
         SkyProj(const SkyProj& proj);
         /// assignment
         const SkyProj& operator=(const SkyProj& rhs);
+	
+	// Clone operator
+	virtual ProjBase* clone() const { return new SkyProj(*this); }
 
         /** @brief tranform form world  to pixels with the given coordinates
         @param s1 ra or l, in degrees
         @param s2 dec or b, in degrees
         @return pair(x,y) in pixel coordinates
         */
-        std::pair<double,double> sph2pix(double s1, double s2)const;
+        virtual std::pair<double,double> sph2pix(double s1, double s2)const;
 
         /** @brief Convert from one projection to another
         @param x1 projected equivalent to ra or l, in degrees
@@ -149,33 +154,32 @@ namespace astro {
         @param projection used to deproject these coordinates
         @return pair(x,y) in new pixel coordinates
         */
-        std::pair<double,double> pix2pix(double x1, double x2, const SkyProj& otherProjection)const;
+	std::pair<double,double> pix2pix(double x1, double x2, const ProjBase& otherProjection)const {
+	  std::pair<double,double> s = otherProjection.pix2sph(x1,x2);
+	  return sph2pix(s.first,s.second);	  
+	}
 
         /** @brief Does the inverse projection
         @param x1 projected equivalent to ra or l, in degrees
         @param x2 projected equivalent dec or b, in degrees
          @return pair(x,y) in spherical coordinates
        */
-        std::pair<double,double> pix2sph(double x1, double x2) const;
-
-        /** @brief is this galactic? */
-        bool isGalactic()const;
+        virtual std::pair<double,double> pix2sph(double x1, double x2) const;
         
         /** @brief returns the range 
         @param xvar varies x if true, varies y if false
         @param x1 x or y coordinate to find y or x range respectively
         */
-        std::pair<double,double> range(double x1, bool xvar);
+        virtual std::pair<double,double> range(double x1, bool xvar);
         
         /** @brief returns 0 if point (x1,x2) is in range */
-        int testpix2sph(double x1, double x2)const;
+        virtual int testpix2sph(double x1, double x2)const;
 
         /** @brief set appropriate keywords in the FITS header
 
         */
-        void setKeywords(tip::Header& header);
+        virtual void setKeywords(tip::Header& header);
 
-       std::string projType()const{return m_projName;}///< access to the projection
     private:
 
         /** @brief called by constructor to initialize the projection */
@@ -188,8 +192,6 @@ namespace astro {
         projection information. */
         wcsprm* m_wcs;
 
-        std::string m_projName;
-        
         /*@brief determines if bounding rectangle exists
            @param xvar varies x if true, varies y if false
            @param x1 x or y coordinate to find y or x range respectively */
