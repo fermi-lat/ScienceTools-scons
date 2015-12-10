@@ -26,12 +26,29 @@ namespace evtbin {
       
       /** \brief Create the healpix map object.
       */
-      HealpixMap(const std::string & event_file, const std::string & event_table, const std::string & sc_file,const std::string & sc_table, const std::string & hpx_ordering_scheme, int hpx_order, bool hpx_ebin, const Binner & energy_binner, const Binner & ebounds, bool use_lb, const Gti & gti);
+      HealpixMap(const std::string & event_file, const std::string & event_table, 
+		 const std::string & sc_file, const std::string & sc_table, 
+		 const std::string & hpx_ordering_scheme, int hpx_order, 
+		 const std::string & region_string, 		  
+		 bool hpx_ebin, const Binner & energy_binner, const Binner & ebounds, 
+		 bool use_lb, const Gti & gti);
 
-      /** \brief Read a healpix map/cube back 
-       */
+      /** \brief Create the healpix map object.
+      */
+      HealpixMap(const std::string & event_file, const std::string & event_table, 
+		 const std::string & sc_file, const std::string & sc_table, 
+		 const std::string & hpx_ordering_scheme, int hpx_nside, const nside_dummy dummy, 
+		 const std::string & region_string, 	  
+		 bool hpx_ebin, const Binner & energy_binner, const Binner & ebounds, 
+		 bool use_lb, const Gti & gti);
+
+      
+      
+      /** \brief Create the healpix map object.
+      */
       HealpixMap(const std::string & healpixmap_file);
 
+     
       virtual ~HealpixMap() throw();
 
       /** \brief Bin input from input file/files passed to the constructor.
@@ -63,24 +80,30 @@ namespace evtbin {
 	 return m_energies;
        }
 
-       inline const HealpixBinner* hpx_binner() const {return m_hpx_binner;}
+       inline const HealpixBinner& hpx_binner() const {
+	 return m_hpx_binner;
+       }
+       
+       inline int nside() const {
+	 return m_hpx_binner.healpix().Nside();
+       }
 
-       inline const bool isGalactic() const {return m_use_lb;}
+       inline Healpix_Ordering_Scheme scheme() const {
+	 return m_hpx_binner.healpix().Scheme();
+       }
 
-       inline const int long nside() const {return pow((long double)2,m_hpx_order);}
-       inline const std::string ordering() const {return m_hpx_ordering_scheme;}
+       inline bool isGalactic() const {
+	 return m_hpx_binner.lb();
+       }
 
-       inline const int order() const {return m_hpx_order;}
+     private:
 
-    private:
-      std::string m_hpx_ordering_scheme;
-      int m_hpx_order;
+      HealpixBinner m_hpx_binner;
       bool m_hpx_ebin;
-      bool m_use_lb;
       Binner * m_ebinner;
       Binner * m_ebounds;
       Cont_t m_data;
-      HealpixBinner* m_hpx_binner;
+      
       int m_emin;
       int m_emax;
       std::vector<double> m_energies;

@@ -6,6 +6,7 @@ def generate(env, **kw):
     env.Tool('st_appLib')
     env.Tool('st_facilitiesLib')
     env.Tool('st_streamLib')
+    env.Tool('healpixLib')
     env.Tool('tipLib')
     # EAC, add dependence on HEALPix external
     env.Tool('addLibrary', library=env['healpixlibs'])

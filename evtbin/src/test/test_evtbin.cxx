@@ -445,10 +445,11 @@ void EvtBinTest::testOrderedBinner() {
 
 void EvtBinTest::testHealpixBinner() {
   std::string msg = "HealpixBinner::HealpixBinner(...)";
+  static const std::string nullString;
 
   //test computation of number of bins, for a given order
   for(int order=0;order!=13;order++){
-    HealpixBinner binner("NESTED", order, true, "Binner");
+    HealpixBinner binner(order, NEST, true, nullString, "Binner");
     long nbins= binner.getNumBins();
     long int nside = pow((long double)2,order);
     long true_nbins=12*nside*nside;
@@ -457,11 +458,11 @@ void EvtBinTest::testHealpixBinner() {
       std::cerr << msg << order << ") returned " << nbins << ", instead of " <<true_nbins<< std::endl;
     }
   }
-  try { HealpixBinner binner("NESTED", -1, true, "Binner");}
+  try { HealpixBinner binner(-1, NEST, true, nullString, "Binner"); }
   catch(const std::exception & x) {
     m_os.info() << "Expected: failed to create a Healpix Binner with order -1 : " << x.what() << std::endl;
   }
-  try { HealpixBinner binner("NESTED", 13, true, "Binner");}
+  try { HealpixBinner binner(13, NEST, true, nullString, "Binner"); }
   catch(const std::exception & x) {
     m_os.info() << "Expected: failed to create a Healpix Binner with order 13 : " << x.what() << std::endl;
   }
@@ -469,17 +470,21 @@ void EvtBinTest::testHealpixBinner() {
 
 void EvtBinTest::testHealpixMap() {
   Gti gti(m_ft1_file);
+  static const std::string nullString;
+
   //no energy binning case:
   LogBinner energy_binner(m_e_min, m_e_max, 0., "ENERGY");
   HealpixMap healpix_map(m_ft1_file, "EVENTS", m_ft2_file, "SC_DATA",
-			 "RING", 3, false, energy_binner, energy_binner, true,gti);
+			 "RING", 3, nullString,
+			 false, energy_binner, energy_binner, true,gti);
   healpix_map.binInput();
   healpix_map.writeOutput("test_evtbin", "test.healmap");
 
   //energy binning case:
   LogBinner energy_binner2(m_e_min, m_e_max, 10, "ENERGY");
-  HealpixMap healpix_cube(m_ft1_file, "EVENTS", m_ft2_file, "SC_DATA",
-			 "RING", 3, true, energy_binner2, energy_binner2, true,gti);
+  HealpixMap healpix_cube(m_ft1_file, "EVENTS", m_ft2_file, "SC_DATA", 
+			  "RING", 3,  nullString,
+			  true, energy_binner2, energy_binner2, true,gti);
   healpix_cube.binInput();
   healpix_cube.writeOutput("test_evtbin", "test.healcube");
 

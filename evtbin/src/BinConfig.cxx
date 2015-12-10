@@ -118,8 +118,8 @@ namespace evtbin {
     par_group.Prompt("hpx_ordering_scheme");
     par_group.Prompt("hpx_order");
     par_group.Prompt("coordsys");
-    par_group.Prompt("hpx_ebin");
-   
+    par_group.Prompt("hpx_region");
+    par_group.Prompt("hpx_ebin");   
   }
 
   void BinConfig::timeParPrompt(st_app::AppParGroup & par_group) const {

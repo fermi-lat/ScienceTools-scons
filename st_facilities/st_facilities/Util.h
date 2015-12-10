@@ -22,7 +22,8 @@ namespace tip {
 
 namespace astro {
    class SkyDir;
-   class SkyProj;
+   // EAC, switch to using ProjBase base class (instead of SkyProj)
+   class ProjBase;
 }
 
 namespace st_facilities {
@@ -122,13 +123,13 @@ public:
                                  =astro::JulianDate(2001, 1, 1, 0));
 
 #ifndef SWIG
-   /// @brief Add SkyDir to pixel index interface to SkyProj
-   static void skyDir2pixel(const astro::SkyProj & proj,
+   /// @brief Add SkyDir to pixel index interface to ProjBase 
+   static void skyDir2pixel(const astro::ProjBase & proj,
                             const astro::SkyDir & dir,
                             double & i, double & j);
 
-   /// @brief Add pixel index to SkyDir interface to SkyProj
-   static void pixel2SkyDir(const astro::SkyProj & proj, double i, double j,
+   /// @brief Add pixel index to SkyDir interface to ProjBase
+   static void pixel2SkyDir(const astro::ProjBase & proj, double i, double j,
                             astro::SkyDir & dir);
    
    /// @return The current time ascertained using the <ctime> standard

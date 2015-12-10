@@ -10,95 +10,167 @@
 #include "evtbin/HealpixBinner.h"   
 
 #include "astro/SkyDir.h"
-#include "astro/SkyProj.h"
-#include "astro/SkyFunction.h"
+#include "astro/HealpixProj.h"
+#include "tip/IFileSvc.h"
+#include "tip/Header.h"
 
-// EAC, update include path for healpix
+
+// EAC, in case we want to use HEALPIX from inside the ScienceTools
+#ifdef HAVE_HEALPIX_INTERNAL
+#include "healpix/base/healpix_map.h"
+#else
 #include "healpix_map.h"
+#endif
+#include "healpix/HealpixRegion.h"
 
-#include "healpix/Healpix.h"
-#include "healpix/HealPixel.h"
-
-// EAC, when I cleaned up the includes in astro, I got rid of the dependence on CLHEP
-#define pi 3.141592653589793
-
-// anonymous namespace for helper functions
-// pi here is pulled out from CLHEP via includes
-namespace {
-    inline double radians(double x){return x*pi/180.;}
-    inline double degrees(double x){return x*180./pi;}
-}
 
 using namespace astro;
-using namespace healpix;
 
 namespace evtbin {
 
-  HealpixBinner::HealpixBinner(std::string ordering, int order, bool lb, const std::string & name):
-    Binner(name), m_ordering(ordering), m_order(order),
-    m_lb(lb) 
+  HealpixBinner::HealpixBinner(int order, Healpix_Ordering_Scheme scheme, bool lb, 
+			       const std::string & region,
+			       const std::string & name)
+    :Binner(name),
+     m_hpx(order,scheme),
+     m_lb(lb),
+     m_region( region.empty() ? 0 : new healpix::HealpixRegion(region) )
   {
     if(order<0||order>12) {
-      throw std::runtime_error("Order needs to be positive and <=12"); } else {
-    int long Nside=pow((long double)2,order);
-    m_num_bins = 12*Nside*Nside; 
+      throw std::runtime_error("Order needs to be positive and <=12"); 
     }
+    setPixelMapping();
   }
+
+  HealpixBinner::HealpixBinner(int nside, Healpix_Ordering_Scheme scheme, const nside_dummy dummy, bool lb, 
+			       const std::string & region,
+			       const std::string & name)
+    :Binner(name),
+     m_hpx(nside,scheme,dummy),
+     m_lb(lb),
+     m_region( region.empty() ? 0 : new healpix::HealpixRegion(region) )
+  {
+    if(nside<0||nside>4096) {
+      throw std::runtime_error("nside needs to be positive and <=4096"); 
+    }
+    setPixelMapping();
+  }
+
+  HealpixBinner::HealpixBinner(const std::string& healpix_file,
+			       const std::string& ext_name)
+    :Binner("HEALPIX"),
+     m_hpx(),
+     m_lb(false),
+     m_region(0)
+  {
+
+    // Build a HealpixProj from the keywords
+    astro::HealpixProj theProj(healpix_file,ext_name);
+    m_hpx.SetNside(theProj.healpix().Nside(),theProj.healpix().Scheme());
+    m_lb = theProj.isGalactic();
+
+    const tip::Extension * ext = 
+      tip::IFileSvc::instance().readExtension(healpix_file,ext_name);
+    const tip::Header & header = ext->getHeader();
+    
+    double refdir1(0.);
+    double refdir2(0.);
+    std::string regionString;
+    try {
+      header["HPXREGION"].get(regionString);
+    } catch (...) {
+      ;
+    }
+    m_region = regionString.empty() ? 0 : new healpix::HealpixRegion(regionString);
+    setPixelMapping();
+  }
+     
+
+  HealpixBinner::HealpixBinner(const HealpixBinner& other)
+    :Binner(other.getName()),
+     m_hpx(other.m_hpx),
+     m_lb(other.m_lb),
+     m_region(other.m_region ? new healpix::HealpixRegion(*other.m_region) : 0),
+     m_pixelIndices(other.m_pixelIndices),
+     m_pixGlobalToLocalMap(other.m_pixGlobalToLocalMap)
+  {
+  }
+  
    
-  long HealpixBinner::computeIndex(double coord1, double coord2) const
-     {
-     //"Convert" string type into Healpix_Ordering_Scheme type
-     Healpix_Ordering_Scheme  OrderingScheme;              
-     if( m_ordering == "NESTED"){OrderingScheme=NEST;}
-     else if (m_ordering == "RING"){OrderingScheme=RING;}
-     
-     //Create a Healpix_Base object
-     Healpix_Base Hbase(m_order, OrderingScheme); 
-     
- 
-     //Definition of dir:
-     astro::SkyDir dir=SkyDir(0.,0.,astro::SkyDir::GALACTIC); 
-     if(m_lb) dir=SkyDir(coord1,coord2,astro::SkyDir::GALACTIC);   
-     else     dir=SkyDir(coord1,coord2,astro::SkyDir::EQUATORIAL);
-     // Convert to pix nbr:
-     double theta(pi/2.), phi(pi/180.);   //Convert skycoord to theta,phi
-     if(m_lb){                             //if Galactic coordinate chosen
-       theta -= radians(dir.b());
-       phi   *= dir.l();
-     }
-     else{                                 //if Equatorial coordinate chosen
-       theta -= radians(dir.dec());
-       phi   *= dir.ra();
-     }
-     int long index=Hbase.ang2pix(pointing(theta,phi));  //Convert theta,phi to pix nbr
-     return index;
-     } //end of compute index
+  long HealpixBinner::computeIndex(double coord1, double coord2) const 
+  {
+    // HEALPix expects theta and phi in degrees
+    double phi = astro::degToRad(coord1);
+    double theta = astro::degToRad( astro::latToTheta_Deg(coord2) );
+    int index= m_hpx.ang2pix(pointing(theta,phi));  //Convert theta,phi to pix nbr
+    if ( allSky() ) {
+      return index;
+    }
+    // Not an all-sky map, convert to local pixel index
+    std::map<int,int>::const_iterator itrFind = m_pixGlobalToLocalMap.find(index);    
+    if ( itrFind == m_pixGlobalToLocalMap.end() ) {
+      return -1;
+    }
+    return itrFind->second;
+  } //end of compute index
   
   /////////////////////////////////////////////////////////////////////////1D-Binner
   long HealpixBinner::computeIndex(double value) const {
-    if (value < 0 || value >= 10) return -1;
-    return long((value ) / 1.);
+    if ( allSky() ) {
+      if (value < 0 || value > m_hpx.Npix() ) return -1;
+      return long(value);
+    }
+    // Not an all-sky map, convert to local pixel index
+    std::map<int,int>::const_iterator itrFind = m_pixGlobalToLocalMap.find(int(value));    
+    if ( itrFind == m_pixGlobalToLocalMap.end() ) {
+      return -1;
+    }
+    return long(itrFind->second);
   }
   ////////////////////////////////////////////////////////////////////////////
   
-
-  long HealpixBinner::getNumBins() const { return m_num_bins; }
+  long HealpixBinner::getNumBins() const { 
+    return allSky() ? m_hpx.Npix() : m_pixelIndices.size();
+  }
   
   Binner::Interval HealpixBinner::getInterval(long index) const {
-    // Check bounds, and handle endpoints explicitly to avoid any round-off:
-    if (index < 0 || index >= m_num_bins)
-      return Binner::Interval(0., 0.);
-    else if (index == 0)
-      return Binner::Interval(0., 0.);
-    else if (index == m_num_bins - 1)
-      return Binner::Interval(0., 0.);
-    
     return Binner::Interval(0., 0.);
   }
   
   Binner * HealpixBinner::clone() const { return new HealpixBinner(*this); } 
   
-  HealpixBinner::~HealpixBinner() throw(){};
+  HealpixBinner::~HealpixBinner() throw(){
+    delete m_region;
+  };
+
+  void HealpixBinner::setPixelMapping() {
+    m_pixelIndices.clear();
+    m_pixGlobalToLocalMap.clear();
+    if ( m_region == 0 ) {
+      return;
+    }
+
+    m_region->getPixels(m_hpx,m_pixelIndices);
+       
+    // finally, fill the reverse map
+    for ( int i(0); i < m_pixelIndices.size(); i++ ) {
+      m_pixGlobalToLocalMap[ m_pixelIndices[i] ] = i;
+    }
+    
+  }
   
+  void HealpixBinner::setKeywords(tip::Header & header) const {
+    // Build a HealpixProj and get it to set the keywords
+    astro::HealpixProj theProj(m_hpx.Nside(),m_hpx.Scheme(),SET_NSIDE,m_lb);
+    theProj.setKeywords(header);
+    if ( allSky() ) {
+      header["INDXSCHM"].set("IMPLICIT");
+    } else {
+      header["INDXSCHM"].set("EXPLICIT");
+      m_region->setKeywords(header);
+    }
+  }
+  
+
 } //end of evtbin namespace
 

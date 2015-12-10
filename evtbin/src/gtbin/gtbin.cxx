@@ -262,6 +262,7 @@ class CountMapApp : public EvtBinAppBase {
     }
 };
 
+
 /** \class HealpixMapApp
     \brief Manages the creation of a healpix based countmap or countcube
 */
@@ -307,9 +308,16 @@ class HealpixMapApp : public EvtBinAppBase {
       else if (coord_sys == "gal") use_lb = true;
       else throw std::logic_error(
         "HealpixMapApp::createDataProduct does not understand \"" + pars["coordsys"].Value() + "\" coordinates");
-       return new evtbin::HealpixMap(pars["evfile"], pars["evtable"], getScFileName(pars["scfile"]), pars["sctable"],pars["hpx_ordering_scheme"], pars["hpx_order"], pars["hpx_ebin"], *energy_binner, *ebounds, use_lb, *gti);
+       return new evtbin::HealpixMap(pars["evfile"], pars["evtable"], 
+				     getScFileName(pars["scfile"]), pars["sctable"],
+				     pars["hpx_ordering_scheme"], pars["hpx_order"], 
+				     pars["hpx_region"],
+				     pars["hpx_ebin"], *energy_binner, *ebounds, use_lb, *gti);
     }
 };
+
+
+
 
 /** \class LightCurveApp
     \brief Light curve specific binning application.
