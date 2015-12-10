@@ -459,7 +459,7 @@ void EvtBinTest::testHealpixBinner() {
     }
   }
   try { HealpixBinner binner(-1, NEST, true, nullString, "Binner"); }
-  catch(const std::exception & x) {
+  catch(const PlanckError& x) {
     m_os.info() << "Expected: failed to create a Healpix Binner with order -1 : " << x.what() << std::endl;
   }
   try { HealpixBinner binner(13, NEST, true, nullString, "Binner"); }
