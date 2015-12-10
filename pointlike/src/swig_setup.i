@@ -7,6 +7,8 @@
 #include <vector>
 #include <utility>
 
+// EAC, added ProjBase base class
+#include "astro/ProjBase.h"
 #include "astro/SkyProj.h"
 #include "astro/Photon.h"
 #include "astro/PointingHistory.h"
@@ -109,7 +111,8 @@ public:
    size_t __len__() {      return self->size();       }
 }
 
-
+// EAC, added ProjBase base class
+%include astro/ProjBase.h
 %include astro/SkyProj.h
 %include astro/Photon.h
 %include astro/PointingHistory.h

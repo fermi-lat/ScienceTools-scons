@@ -41,8 +41,10 @@ class BinnedObs(object):
             self.irfs = my_cuts.CALDB_implied_irfs()
         else:
             self.irfs = irfs
+
         pyLike.AppHelpers_checkExposureMap(srcMaps, binnedExpMap)
-        self.countsMap = pyLike.CountsMap(srcMaps)
+        # EAC switch to using AppHelpers...
+        self.countsMap = pyLike.AppHelpers_readCountsMap(srcMaps)
         self._createObservation(srcMaps, expCube, self.irfs)
     def _createObservation(self, srcMaps, expCube, irfs):
         self._respFuncs = pyLike.ResponseFunctions()
@@ -57,7 +59,8 @@ class BinnedObs(object):
         self._eventCont = pyLike.EventContainer(self._respFuncs,
                                                 self._roiCuts,
                                                 self._scData)
-        self._bexpmap = pyLike.BinnedExposure(self.binnedExpMap)
+        # EAC: Use AppHelpers to get the right type of BinnedExposure map
+        self._bexpmap = pyLike.AppHelpers_readBinnedExposure(self.binnedExpMap)
         if self.phased_expmap is not None:
             self._phased_expmap = pyLike.WcsMap2(self.phased_expmap)
             self.observation = pyLike.Observation(self._respFuncs,
