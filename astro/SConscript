@@ -4,7 +4,7 @@
 #
 # $Id$
 # Authors: T. Burnett <tburnett@u.washington.edu>
-# Version: astro-03-16-01
+# Version: astro-04-00-00
 Import('baseEnv')
 Import('listFiles')
 libEnv = baseEnv.Clone()

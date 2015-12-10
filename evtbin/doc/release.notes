@@ -119,3 +119,4 @@ file.
  evtbin-02-06-04 15-Jul-2013 asercion Tagging updated gtbin.cxx
  evtbin-02-06-05 04-Mar-2014 jchiang change SKYMAPS to SKYMAP in healpix output files
  evtbin-02-06-06 27-Mar-2015 echarles switch to using healpix as an external
+ evtbin-03-00-00 09-Dec-2015 echarles Replace SkyProj with ProjBase, update Healpix binning
