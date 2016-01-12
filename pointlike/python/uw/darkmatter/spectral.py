@@ -186,6 +186,12 @@ class DMFitFunction(Model):
     def __init__(self,  *args, **kwargs):
         import pyLikelihood
 
+        # Parse channel strings
+        if isinstance(kwargs.get('channel0',None),basestring):
+            kwargs['channel0'] = self.channel2int(kwargs['channel0'])
+        if isinstance(kwargs.get('channel1',None),basestring):
+            kwargs['channel1'] = self.channel2int(kwargs['channel1'])
+
         # the DMFitFunction must exist before __init__ is called because
         # the __init__ will call setp().
         self.dmf=pyLikelihood.DMFitFunction()
