@@ -5,6 +5,7 @@
 @verbatim
  * EOH *
 
+ tip-02-18-06 13-Jan-2016 jchiang temporary fixes from Joe and James for COMMENT and HISTORY keword handling using cfitsio 3.37
  tip-02-18-05 22-May-2014 asercion Added 32X type write/read vector handling and additional 32X write/read tests to address issue STARCH-20.
  tip-02-18-04 18-Apr-2014 asercion Fix for TNULL issue with 32X type columns
  tip-02-18-03 10-Apr-2014 asercion Fixed 'CFITSIO ERROR 314: null value not defined' error for case TBIT
