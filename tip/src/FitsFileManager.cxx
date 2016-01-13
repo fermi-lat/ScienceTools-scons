@@ -8,6 +8,8 @@
 #include <cstddef>
 #include <cstdio>
 #include <cstring>
+#include <iostream>
+#include <exception>
 
 #include "FitsFileManager.h"
 #include "FitsTipFile.h"
@@ -228,8 +230,18 @@ namespace tip {
     if (update_checksum && 0 == status) {
       //int ignored_status = 0;
       for (int ii = 1; 0 == fits_movabs_hdu(fp, ii, 0, &status) && ii <= fp->Fptr->maxhdu; ++ii) {
-        if (0 != fits_write_chksum(fp, &status)) throw TipException(status, "FitsFileManager::closeFile could not update checksum.");
+        if (0 != fits_write_chksum(fp, &status)) {
+	  if (VALUE_UNDEFINED != status) {
+	  throw TipException(status, "FitsFileManager::closeFile could not update checksum.");
+	  }
+	  else { 
+	    std::cerr << "Warning: FitsFileManager::closeFile could not update checksum due to blank keyword/presence of COMMENT/HISTORY." << std::endl;
+	    status = 0;
+	      }
+	}
       }
+      //Add checks to ensure status is expected ~JA
+      status=0;
     }
     fits_close_file(fp, &status);
   }

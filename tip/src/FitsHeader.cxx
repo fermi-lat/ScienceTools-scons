@@ -101,6 +101,11 @@ namespace tip {
   void FitsHeader::close(int status) {
     if (0 != m_fp) {
       if (!m_read_only) fits_write_chksum(m_fp, &status);
+      if (VALUE_UNDEFINED != status && 0 != status) {
+	throw TipException(status, "Close: Something's Wrong!");
+      }
+      //status check
+      status = 0;
       fits_close_file(m_fp, &status);
     }
     m_fp = 0;

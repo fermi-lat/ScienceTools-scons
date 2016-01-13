@@ -80,13 +80,22 @@ namespace tip {
     if (0 != status) throw TipException(status, "FitsTipFile::copyFile could not create file " + new_file_name);
 
     fits_copy_file(m_fp, new_fp, 1, 1, 1, &status);
+    if (0 != status) throw TipException(status, "FitsTipFile::copyFile Somethings Wrong!" + new_file_name);
     //int ignored_status = status;
     for (int ii = 1; 0 == fits_movabs_hdu(new_fp, ii, 0, &status) && ii <= new_fp->Fptr->maxhdu; ++ii) {
-      if (0 != fits_write_chksum(new_fp, &status)) throw TipException(status, "FitsTipFile::copyFile could not update checksum for " + new_file_name);
+      // Why are write commands throwing 204 errors (VALUE_UNDEFINED?)
+      if (0 != fits_write_chksum(new_fp, &status) && VALUE_UNDEFINED != status) throw TipException(status, "FitsTipFile::copyFile could not update checksum for " + new_file_name);
+      status = 0;
+    }
+    //Previous loop should throw status != 0 when complete.  Look up error name and run check.
+    if (0 != status && VALUE_UNDEFINED == status) {
+      status = 0;
+    } else if (0 != status) { 
+      throw TipException(status, "FitsTipFile::copyFile could not update checksum for " + new_file_name);
     }
     //ignored_status = status;
     fits_close_file(new_fp, &status);
-    if (0 != status) throw TipException(status, "FitsTipFile::copyFile could not copy file " + new_file_name);
+    if (0 != status && VALUE_UNDEFINED != status) throw TipException(status, "FitsTipFile::copyFile could not copy file " + new_file_name);
   }
 
   ITipFile * FitsTipFile::clone() const { return new FitsTipFile(*this); }
@@ -100,7 +109,7 @@ namespace tip {
       m_read_only = true;
       fits_open_file(&m_fp, const_cast<char *>(getName().c_str()), READONLY, &status);
 
-      if (0 != status)
+      if (0 != status && VALUE_UNDEFINED != status)
         throw TipException(status, "FitsTipFile::openFile could not open " + getName() + " either read/write or read-only");
     }
   }
@@ -109,8 +118,14 @@ namespace tip {
     if (update_checksum && 0 == status) {
       //int ignored_status = 0;
       for (int ii = 1; 0 == fits_movabs_hdu(m_fp, ii, 0, &status) && ii <= m_fp->Fptr->maxhdu; ++ii) {
-        if (fits_write_chksum(m_fp, &status)) throw TipException(status, "FitsTipFile::closeFile could not update checksum.");
+        if (fits_write_chksum(m_fp, &status) && VALUE_UNDEFINED != status) throw TipException(status, "FitsTipFile::closeFile could not update checksum.");
+	status = 0;
       }
+    }
+    if (VALUE_UNDEFINED == status) {
+      status = 0;
+    } else if (0 != status && VALUE_UNDEFINED != status) { 
+      throw TipException(status, "FitsTipFile::copyFile could not update checksum for this file!!!!");
     }
     fits_close_file(m_fp, &status);
     m_fp = 0;

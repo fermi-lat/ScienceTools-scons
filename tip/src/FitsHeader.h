@@ -210,14 +210,17 @@ namespace tip {
   }
 
   // Getting keywords as strings is a special case because Cfitsio treats them as char *.
+  // Status 204 
   template <>
   inline void FitsHeader::getKeywordGeneric<std::string>(const std::string & name, std::string & value) const {
     static int data_type_code = FitsPrimProps<std::string>::dataTypeCode();
     int status = 0;
     char tmp[FLEN_KEYWORD];
     fits_read_key(m_fp, data_type_code, const_cast<char *>(name.c_str()), tmp, 0, &status);
-    if (0 != status) throw TipException(status, formatWhat(std::string("Cannot read keyword \"") + name + '"'));
-    value = tmp;
+    if (0 != status) { 
+      if (VALUE_UNDEFINED != status && ("COMMENT" != name && "HISTORY" != name)) throw TipException(status, formatWhat(std::string("Cannot read keyword \"") + name + '"'));
+    }
+      value = tmp;
   }
 
   // Setting keywords.

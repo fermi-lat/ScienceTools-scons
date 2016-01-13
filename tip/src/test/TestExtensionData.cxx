@@ -876,24 +876,24 @@ namespace tip {
     if (148 != num_keys) {
       discrepancy = true;
       std::ostringstream os;
-      os << "TestExtensionData::testKeywordItor found " << num_keys << " keywords, not 148 as expected.";
+      os << "TestExtensionData::testKeywordItor found " << num_keys << " keywords, not 149 as expected.";
       ReportUnexpected(os.str());
     }
    
     // Make sure getting keywords using the associative container interface yields the same results as
     // the sequential iterator.
-//    for (Header::ConstIterator itor = header.begin(); itor != header.end(); ++itor) {
-//      std::string key_name = itor->getName();
-//      if (!key_name.empty()) {
-//        std::string assoc_value;
-//        header[key_name].get(assoc_value);
-//        if (assoc_value != itor->getValue()) {
-//          discrepancy = true;
-//          ReportUnexpected("TestExtensionData::testKeywordItor obtained keyword \"" + key_name + "\" = \"" + assoc_value +
-//            "\" from associative array, but value was \"" + itor->getValue() + "\" from sequential iterator.");
-//        }
-//      }
-//    }
+    for (Header::ConstIterator itor = header.begin(); itor != header.end(); ++itor) {
+      std::string key_name = itor->getName();
+      if (!key_name.empty()) {
+        std::string assoc_value;
+        header[key_name].get(assoc_value);
+        if (assoc_value != itor->getValue()) {
+          discrepancy = true;
+          ReportUnexpected("TestExtensionData::testKeywordItor obtained keyword \"" + key_name + "\" = \"" + assoc_value +
+            "\" from associative array, but value was \"" + itor->getValue() + "\" from sequential iterator.");
+        }
+      }
+    }
 
     if (!discrepancy) ReportExpected("TestExtensionData::testKeywordItor successfully tested keyword sequence iterator.");
 
