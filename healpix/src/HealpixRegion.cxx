@@ -7,6 +7,7 @@ $Header$
 // Include files
 #include "healpix/HealpixRegion.h"
 
+#include <stdexcept>
 #include <cstring>
 #include <cstdio>
 #include "tip/Header.h"
@@ -24,13 +25,16 @@ namespace healpix {
     pars.clear();
 
     if ( tokens.size() == 0 ) {
-      // FIXME, throw exception
-      return 2;
+      std::cerr << "HealpixRegion::parseString input string tokenize failed: " << st << std::endl;
+      throw std::runtime_error("HealpixRegion::parseString failed.");
+      return -1;
     }
     if ( tokens[0] == "DISK" ){
       if ( tokens.size() < 4 ) {
-	// FIXME, throw exception
-	return 4;
+	std::cerr << "HealpixRegion::parseString input string expects 4 tokens for DISK, got : " << tokens.size() << std::endl
+		  << ".  st=" << st << std::endl;
+	throw std::runtime_error("HealpixRegion::parseString failed.");
+	return -1;
       }
       regionType = DISK;
       pars.push_back( facilities::Util::stringToDouble( tokens[1] ) );
@@ -38,8 +42,10 @@ namespace healpix {
       pars.push_back( facilities::Util::stringToDouble( tokens[3] ) );
     } else if ( tokens[0] == "DISK_INC"){
       if ( tokens.size() < 5 ) {
-	// FIXME, throw exception
-	return 4;
+	std::cerr << "HealpixRegion::parseString input string expects 5 tokens for DISK_INC, got : " << tokens.size() << std::endl
+		  << ".  st=" << st << std::endl;
+	throw std::runtime_error("HealpixRegion::parseString failed.");
+	return -1;
       }
       regionType = DISK_INC;
       pars.push_back( facilities::Util::stringToDouble( tokens[1] ) );
@@ -48,8 +54,10 @@ namespace healpix {
       pars.push_back( facilities::Util::stringToInt( tokens[4] ) );
     } else {
       regionType = UNKNOWN_REGION;
-      // FIXME, throw exception
-      return 2;
+      std::cerr << "HealpixRegion::parseString did not recognize region type : " << tokens[0] << std::endl
+		<< ".  st=" << st << std::endl;
+      throw std::runtime_error("HealpixRegion::parseString failed.");
+      return -1;
     }
     return 0;
   }
@@ -127,8 +135,7 @@ namespace healpix {
   void HealpixRegion::getPixels(const Healpix_Base& healpix,
 			       std::vector<int>& pixelIndices) {
     bool ok(true);
-    
-    
+        
     switch (m_regionType) {
     case DISK:
       query_disk(healpix,m_params,pixelIndices);
@@ -141,7 +148,7 @@ namespace healpix {
       ok = false;
     }
     if ( !ok ) {
-      // FIXME, throw exception
+      
     }
     return;
   }
@@ -164,7 +171,7 @@ namespace healpix {
       c2 = 0.;
       break;
     }
-    // FIXME, throw exception ?
+    throw std::runtime_error("HealpixRegion::getRefDir, unknown region type.");
     return;
   }
 
@@ -179,7 +186,7 @@ namespace healpix {
       r = 180.;
       break;
     }
-    // FIXME, throw exception ?
+    throw std::runtime_error("HealpixRegion::getRegionSize, unknown region type.");
     return;
   }
 
