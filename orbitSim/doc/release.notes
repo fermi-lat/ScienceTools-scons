@@ -6,6 +6,7 @@
 --------------------------------------------------------------------------------
 EOH 
 
+ orbitSim-03-00-01 23-Feb-2016 jchiang ensure that ft2.tpl is installed for gtorbsim
  orbitSim-03-00-00 09-Oct-2014 asercion gtorbsim TAKO timeline has been made less finicky.  Comments have been added to OrbSim.cxx.  Final major overhaul of the program for the time being.
  orbitSim-02-00-12 29-Sep-2014 asercion Bug fix for TAKO timeline date checking function.
  orbitSim-02-00-11 29-Sep-2014 asercion Added better TAKO timeline date checking.
