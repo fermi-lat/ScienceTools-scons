@@ -16,4 +16,5 @@ progEnv.Tool('registerTargets', package = 'orbitSim',
              staticLibraryCxts = [[orbitSimLib, libEnv]],
              includes = listFiles(['orbitSim/*.h']),
              binaryCxts = [[gtorbsim, progEnv]],
+             data = listFiles(['data/*'], recursive=True),
              pfiles = listFiles(['pfiles/*.par']))
