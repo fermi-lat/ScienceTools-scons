@@ -68,8 +68,43 @@ bool testSkyDir(){
 
     std::cout << "galactic center corresponds to Ra = " << sd5.ra() << " , Dec = " << sd5.dec() << std::endl;
 
+    const double delta_tol = 1E-8;
 
+    // FK5 -> Galactic coordinate conversions computed with astropy v1.0.6
+    const int num_coords = 6;
+    double ra_coords[]  = {0.0, 90.0, 180.0, 266.4049962340225, 239.84152631212683,  49.27251462856503};
+    double dec_coords[] = {0.0, 45.0, -45.0, -28.9361724033917,  58.27976170599020,   1.12844288043151};
+    double glon_coords[] = { 96.33726960808245, 167.44960675835588, 293.4638243704655, 0.0, 90.0, 180.0};
+    double glat_coords[] = {-60.18855173096200,  10.50772395649907,  16.9240250287001, 0.0, 45.0, -45.0};
 
+    for(int i = 0; i < num_coords; i++) {
+
+      double ra = ra_coords[i];
+      double dec = dec_coords[i];
+
+      double glon = glon_coords[i];
+      double glat = glat_coords[i];
+
+      SkyDir sd_cel(ra,dec);
+      SkyDir sd_gal(glon,glat,SkyDir::GALACTIC);
+
+      double delta_glon = fabs(sd_cel.l() - glon);
+      double delta_glat = fabs(sd_cel.b() - glat);
+      double delta_ra = fabs(sd_gal.ra() - ra);
+      double delta_dec = fabs(sd_gal.dec() - dec);
+      double separation = sd_cel.difference(sd_gal)*180./M_PI;
+
+      if(separation >= delta_tol || 
+	 delta_glon >= delta_tol || delta_glon >= delta_tol || 
+	 delta_ra >= delta_tol || delta_dec >= delta_tol) {
+	ok=false;
+	std::cout << "error - output does not match input" << std::endl; 
+	std::cout << i << " " << separation << " " << delta_glon << " " 
+		  << delta_glat << " " << delta_ra << " " << delta_dec << std::endl;
+	std::cout << sd_gal.ra() << " " << sd_gal.dec() << " " 
+		  << sd_cel.l() << " " << sd_cel.b() << std::endl;
+      }
+    }
 
     return ok;
 }

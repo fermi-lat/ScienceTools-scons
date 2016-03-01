@@ -91,11 +91,12 @@ SkyDir::SkyDir(double param1, double param2, const ProjBase& projection, bool ch
 
 }
 
+// FK5 to Galactic rotation angles taken from astropy
 HepRotation SkyDir::s_equatorialToGalactic 
 = HepRotation()
-    .rotateZ(-282.8592*M_PI/180)
-    .rotateX(-62.8717 *M_PI/180)
-    .rotateZ( 32.93224*M_PI/180);
+  .rotateZ(-282.85948120653484*M_PI/180)
+  .rotateX(-62.871748819143775*M_PI/180)
+  .rotateZ( 32.9319185680026*M_PI/180);
 
 void  SkyDir::setGalCoordsFromDir(double & l, double & b) const{
 
