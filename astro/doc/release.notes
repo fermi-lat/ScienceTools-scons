@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-04-00-01 05-Mar-2016 mdwood Change to coefficients for FK5 -> Galactic coordinate conversion.
  astro-04-00-00 09-Dec-2015 echarles Split SkyProj into WCS and HEALPix based versions
  astro-03-16-01 04-Apr-2015 jchiang Michael Kuss' fix for IGRF-12 handling, test code added, fix incorrect typedef specification in SolarSystem.h
  astro-03-16-00 27-Mar-2015 echarles Switch to using wcslib and healpix as externals
