@@ -38,7 +38,11 @@ def pickle_dump(roi,  pickle_dir, dampen, ts_min=5, **kwargs):
     
     output['diffuse'] = [s.spectral_model for s in diffuse_sources] #roi.dsm.models
     output['diffuse_names'] = [s.name for s in diffuse_sources]  #roi.dsm.names
-
+    try:
+        output['diffuse_normalization'] = roi.sources.diffuse_normalization
+    except:
+        print 'No diffuse normalization DataFrame to save'
+        
     # a dict for all variable sources
     sources=dict()
     output['sources']= sources

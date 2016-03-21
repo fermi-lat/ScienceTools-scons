@@ -67,7 +67,9 @@ class ExtendedSourceCatalog(object):
 
         # build up a list of the analytic extended source shapes (when applicable)
         self.spatial_models = []
+        fail = False
         for i in range(len(self.names)):
+            #print 'unpacking source {}'.format(self.names[i])
             if self.force_map:
                 self.spatial_models.append(
                     SpatialMap(file=self.templates[i].replace(' ', '')))
@@ -84,9 +86,15 @@ class ExtendedSourceCatalog(object):
                         EllipticalGaussian(p=[major[i]/Gaussian.x68,minor[i]/Gaussian.x68,posang[i]],
                                            center=self.dirs[i]))
             else:
-                self.spatial_models.append(
-                    SpatialMap(file=self.templates[i])
-                )
+                try:
+                    self.spatial_models.append(
+                        SpatialMap(file=self.templates[i])
+                    )
+                except Exception, msg:
+                    print 'Failure: {}'.format(msg)
+                    fail=True
+                    
+            assert not fail, 'Quit due to errors'
             #remember the fits file template in case the XML needs to be saved out.
             self.spatial_models[-1].original_template = self.templates[i]
             self.spatial_models[-1].original_parameters = self.spatial_models[-1].p.copy()

@@ -152,7 +152,7 @@ def source_library(source_list, title='sources', stream=None, strict=False, maxi
     ns=ne=0
     try:
         extended = pd.DataFrame(pyfits.open(glob.glob(
-            os.path.expandvars('$FERMI/catalog/Extended_archive*/LAT_extended_sources*.fit'))[-1]
+            os.path.expandvars('$FERMI/catalog/Extended_archive*/LAT_extended_sources*.fit*'))[-1]
             )[1].data)
         extended.index= [x.strip() for x in extended['Source_Name']]
     except Exception, msg:
