@@ -203,14 +203,14 @@ class ROImodel(list):
         self.initialize()
         return src, old_model
         
-    def to_xml(self, filename):
+    def to_xml(self, filename, strict=False):
         """Create an XML representation
         
         filename : string
             the xml filename
         """
         with open(filename, 'w') as out:
-            to_xml.from_roi(self, stream = out)
+            to_xml.from_roi(self, stream = out, strict=strict)
             
     def add_sources(self, auxcat='plots/seedcheck/good_seeds.csv'):
         """Add new sources from a csv file
