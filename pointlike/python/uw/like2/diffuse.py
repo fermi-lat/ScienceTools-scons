@@ -45,9 +45,9 @@ class DiffuseBase(object):
         """
         self.filename=filename
         self.fullfilename = os.path.expandvars(filename)
-        if not os.path.exists(self.fullfilename):
+        if not os.path.lexists(self.fullfilename):
             self.fullfilename = os.path.expandvars(os.path.join('$FERMI','diffuse',self.filename))
-        assert os.path.exists(self.fullfilename), 'Diffuse data file "%s" not found' % self.fullfilename
+        assert os.path.lexists(self.fullfilename), 'Diffuse data file "%s" not found' % self.fullfilename
         self.loaded =  False
 
     def load(self): 
@@ -465,7 +465,7 @@ class IsotropicList(DiffuseList):
 
 def file_check(files):
     full_files = map( lambda f: os.path.expandvars(os.path.join('$FERMI','diffuse',f)), files)
-    check = map(lambda f: os.path.exists(f) or f[-1]==')', full_files) 
+    check = map(lambda f: os.path.lexists(f) or f[-1]==')', full_files) 
     if not all(check):
         raise DiffuseException('not all diffuse files %s found' % full_files)
     
@@ -540,7 +540,7 @@ def diffuse_factory(value, diffuse_normalization=None, event_type_names=('front'
     else:
         file_check(files)
         full_files = map( lambda f: os.path.expandvars(os.path.join('$FERMI','diffuse',f)), files)
-        check = map(lambda f: os.path.exists(f) or f[-1]==')', full_files) 
+        check = map(lambda f: os.path.lexists(f) or f[-1]==')', full_files) 
         if not all(check):
             raise DiffuseException('not all diffuse files %s found' % full_files)
         diffuse_source= map(dfun, full_files) 
