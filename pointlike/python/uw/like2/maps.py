@@ -215,7 +215,7 @@ class ROItables(object):
         self.index_table = make_index_table(roi_nside, nside)
         self.subdirfun = Band(nside).dir
         self.skyfuns = kwargs.pop('skyfuns', 
-              ( (ResidualTS, 'ts', dict(photon_index=2.2),) , 
+              ( (ResidualTS, 'ts', dict(photon_index=2.3),) , 
                 (KdeMap,     'kde', dict()),
               ),
             )
