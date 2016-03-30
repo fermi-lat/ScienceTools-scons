@@ -217,9 +217,9 @@ class DiffuseResponse(Response):
             return
         dfun = self.dmodel
         
-        if hasattr(dfun, 'kw') and len(dfun.kw.keys())>1: 
+        if hasattr(dfun, 'kw') and dfun.kw is not None and len(dfun.kw.keys())>1: 
             # Manage keywords found in the 
-            if dfun.kw['correction'] is not None:
+            if 'correction' in dfun.kw and dfun.kw['correction'] is not None:
                 if not self.quiet:
                     print '\t%s loading corrections for source %s from %s.kw:' \
                     % (self.__class__.__name__, self.source.name,  dfun.__class__.__name__)
