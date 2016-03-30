@@ -131,7 +131,9 @@ class BinnedAnalysis(AnalysisBase):
         self.srcModel = srcModel
         self.optimizer = optimizer
         if weightMapFile:
-            self.weightMap = pyLike.WcsMapLibrary.instance().wcsmap(weightMapFile,"");
+            self.weightMap = pyLike.WcsMapLibrary.instance().wcsmap(weightMapFile,"")
+            self.weightMap.setInterpolation(False)
+            self.weightMap.setExtrapolation(True)
         else:
             self.weightMap = None
 
