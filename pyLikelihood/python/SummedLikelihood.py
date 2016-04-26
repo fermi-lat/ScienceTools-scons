@@ -123,6 +123,16 @@ class SummedLikelihood(AnalysisBase):
                 else:
                     my_params[j].addParam(par)
         return my_params
+
+    def nFreeParams(self):        
+        '''Count the number of free parameters in the active model.'''
+        nF = 0
+        pars = self.params()
+        for par in pars
+            if par.isFree():
+                nF += 1
+        return nF
+
     def saveBestFit(self, negLogLike=None):
         if negLogLike is None:
             negLogLike = -self.composite.value()
@@ -231,7 +241,10 @@ class SummedLikelihood(AnalysisBase):
         logLike0 = -self()
         if tol is None:
             tol = self.tol
-        if reoptimize:
+        # Number of free parameters in the baseline mode
+        n_free_base = self.nFreeParams()
+   
+        if reoptimize and n_free_base > 0:
             if verbosity > 0:
                 print "** Do reoptimize"
             optFactory = pyLike.OptimizerFactory_instance()
@@ -247,7 +260,7 @@ class SummedLikelihood(AnalysisBase):
                     print "** Iteration :",Niter
                 Niter += 1
         else:
-            if approx:
+            if approx and n_free_base > 0:
                 try:
                     self._renorm()
                 except ZeroDivisionError:
