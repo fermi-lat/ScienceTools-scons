@@ -267,7 +267,7 @@ class BinnedAnalysis(AnalysisBase):
 def binnedAnalysis(mode='ql', ftol=None, **pars):
     """Return a BinnedAnalysis object using the data in gtlike.par."""
     parnames = ('irfs', 'cmap', 'bexpmap', 'expcube', 'srcmdl', 'optimizer',
-                'psfcorr', 'chatter')
+                'psfcorr','wmap', 'chatter')
     pargroup = pyLike.StApp_parGroup('gtlike')
     for item in parnames:
         if not pars.has_key(item):
