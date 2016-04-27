@@ -48,5 +48,6 @@ __all__=[
  #'sunmoonrefit',
  'uwsourcecomparison',
  'transientinfo',
+ 'transient_catalog',
  ]
 

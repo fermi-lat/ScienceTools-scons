@@ -121,7 +121,9 @@ class AnalysisBase(object):
             Creates a folder 'plots' if it does not exist, 
         """
         self.skymodel_dir = os.path.expandvars(skymodel_dir)
-        if skymodel_dir != '.': os.chdir(self.skymodel_dir)
+        if skymodel_dir != '.': 
+            os.chdir(self.skymodel_dir)
+            print 'chdir to {}'.format(self.skymodel_dir)
         self.skymodel = os.path.split(os.getcwd())[-1]
         self.setup(**kwargs)
         if not os.path.exists('plots'):
