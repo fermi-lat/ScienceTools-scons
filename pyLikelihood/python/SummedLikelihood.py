@@ -233,6 +233,11 @@ class SummedLikelihood(AnalysisBase):
         self.syncSrcParams()
         freeParams = pyLike.DoubleVector()
         self.components[0].logLike.getFreeParamValues(freeParams)
+        # Get the number of free parameters in the baseline mode
+        n_free_test = len(freeParams)
+        n_free_src = len(self.freePars(srcName))
+        n_free_base = n_free_test - n_free_src
+
         logLike1 = -self()
         self._ts_src = []
         for comp in self.components:
@@ -241,8 +246,6 @@ class SummedLikelihood(AnalysisBase):
         logLike0 = -self()
         if tol is None:
             tol = self.tol
-        # Number of free parameters in the baseline mode
-        n_free_base = self.nFreeParams()
    
         if reoptimize and n_free_base > 0:
             if verbosity > 0:
