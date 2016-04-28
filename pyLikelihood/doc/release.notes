@@ -7,6 +7,7 @@
    @verbatim
    * EOH *
 
+ pyLikelihood-02-02-02 28-Apr-2016 echarles Fit LK-111, calling Ts(srcName) on models with no free parameters in baseline model causes crash
  pyLikelihood-02-02-01 18-Jan-2016 jchiang restore changes clobbered by healpix changes
  pyLikelihood-02-02-00 09-Dec-2015 echarles Replace SkyProj with ProjBase
  pyLikelihood-02-01-00 17-Jul-2015 jchiang Classes from Eric's gttscube application added
