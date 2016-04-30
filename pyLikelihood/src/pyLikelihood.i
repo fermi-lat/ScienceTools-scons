@@ -242,10 +242,10 @@ using optimizers::Exception;
 %include Likelihood/OneSourceFunc.h
 %include Likelihood/OptEM.h
 %include Likelihood/PointSource.h
-%include Likelihood/RadialDisk.h
-%include Likelihood/RadialGaussian.h
 %include Likelihood/SourceMap.h
 %include Likelihood/SpatialFunction.h
+%include Likelihood/RadialDisk.h
+%include Likelihood/RadialGaussian.h
 %include Likelihood/SpatialMap.h
 %include Likelihood/SkyDirArg.h
 %include Likelihood/SkyDirFunction.h
