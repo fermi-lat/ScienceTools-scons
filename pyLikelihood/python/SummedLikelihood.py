@@ -128,7 +128,7 @@ class SummedLikelihood(AnalysisBase):
         '''Count the number of free parameters in the active model.'''
         nF = 0
         pars = self.params()
-        for par in pars
+        for par in pars:
             if par.isFree():
                 nF += 1
         return nF
