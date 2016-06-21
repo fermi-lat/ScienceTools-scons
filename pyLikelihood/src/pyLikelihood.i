@@ -148,6 +148,7 @@ using optimizers::Exception;
 %template(DoublePair) std::pair<double, double>;
 %template(IntPair) std::pair<int, int>;
 %template(EventVector) std::vector<Likelihood::Event>;
+%template(BoolVector) std::vector<bool>;
 %template(DoubleVector) std::vector<double>;
 %template(FloatVector) std::vector<float>;
 %template(DoubleVectorVector) std::vector< std::vector<double> >;
