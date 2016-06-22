@@ -169,6 +169,8 @@ class DataSet(dataman.DataSpec):
                 custom_irf_dir=self.custom_irf_dir)
         if self.exposure_cube is None:
             self.lt = skymaps.LivetimeCube(self.ltcube,weighted=False) ###<< ok?
+            if self.use_weighted_livetime:
+                self.weighted_lt = skymaps.LivetimeCube(self.ltcube,weighted=True)
         else:
             self.lt = None
         if not self.postpone:

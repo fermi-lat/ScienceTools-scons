@@ -86,7 +86,10 @@ class Psf(object):
         aeffstrs = self.CALDBManager.get_aeff()
         if len(self.CALDBhandles[0]) >=7:
             # new format
-            ew         = ExposureWeighter(aeffstrs[0],aeffstrs[1],livetimefile, 'EFFECTIVE AREA_FRONT', 'EFFECTIVE AREA_BACK')
+            try:
+                ew         = ExposureWeighter(aeffstrs[0],aeffstrs[1],livetimefile, 'EFFECTIVE AREA_FRONT', 'EFFECTIVE AREA_BACK')
+            except Exception:
+                ew         = ExposureWeighter(aeffstrs[0],aeffstrs[1],livetimefile)
         else:
             ew         = ExposureWeighter(aeffstrs[0],aeffstrs[1],livetimefile)
         

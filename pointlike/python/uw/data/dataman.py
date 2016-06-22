@@ -540,8 +540,8 @@ class DataSpec(object):
         self.dss.write(self.ltcube,header_key=0)
         # write some info to livetime file
         f = pyfits.open(self.ltcube)
-        f[0]._header.update('RADIUS',exp_radius)
-        f[0]._header.update('PIXSIZE',self.livetime_pixelsize)
+        f[0]._header['RADIUS'] = exp_radius
+        f[0]._header['PIXSIZE'] = self.livetime_pixelsize
         f.writeto(self.ltcube,clobber=True)
         f.close()
         

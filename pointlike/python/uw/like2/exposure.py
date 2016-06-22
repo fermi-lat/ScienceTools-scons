@@ -22,7 +22,7 @@ class ExposureManager(object):
         dataset :  DataSet object
             for CALDB, aeff, some parameters
             
-        datadict['exposure-correction'] : list of strings defining functions of energy
+        datadict['exposure_correction'] : list of strings defining functions of energy
             the correction factors to apply to front, back 
         """
 

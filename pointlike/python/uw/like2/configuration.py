@@ -163,9 +163,7 @@ class Configuration(object):
         # use dataset to extract psf and exposure, set up respective managers
         
         exposure_correction=datadict.pop('exposure_correction', None) if datadict is not None else None        
-        self.exposureman = exposure.ExposureManager(self.dataset, exposure_correction=exposure_correction)
-        
-        self.psfman = psf.PSFmanager(self.dataset)
+        self.irfs = irfman.IrfManager(self.dataset)
         
         # check location of model
         # possibilites are the all-sky pickle.zip, from which any ROI can be extraccted, or a specific set of

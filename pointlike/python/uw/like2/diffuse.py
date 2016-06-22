@@ -413,6 +413,12 @@ class DiffuseList(list):
         
     def __getitem__(self, index):
         if len(self)==1: index=0
+        try:
+            index = ['front','back',
+                     'psf0','psf1','psf2','psf3',
+                     'edisp0','edisp1','edisp2','edisp3'].index(index)
+        except ValueError:
+            pass
         return super(DiffuseList,self).__getitem__(index) 
     def load(self):
         for x in self:

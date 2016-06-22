@@ -238,7 +238,7 @@ class DSSEntries(list):
         for d in self:
             tup = d.to_header_entries()
             for t in tup:
-                h.update(t[0],t[1])
+                h[t[0]] = t[1]
         # convert unsigned ints to ints -- this is a kluge but perhaps necessary
         for hdu in f:
             if not isinstance(hdu,pyfits.core.BinTableHDU): continue
