@@ -12,7 +12,7 @@ import numpy as np
 import skymaps, pointlike #from the science tools
 from uw.data import dataman, dssman
 from uw.utilities import keyword_options
-from uw.like import pycaldb
+from uw.irfs import caldb
 
 class DataSetError(Exception):pass
 
@@ -125,7 +125,7 @@ class DataSet(dataman.DataSpec):
         'keywords controlling instrument response',
         ('irf',None,'Which IRF to use'),
         ('psf_irf',None,'specify a different IRF to use for the PSF; must be in same format/location as typical IRF file!'),
-        ('CALDB',None,'override the CALDB specified by $CALDB.'),
+        ('CALDB','$CALDB','override the CALDB specified by $CALDB.'),
         ('custom_irf_dir',None,'override the CUSTOM_IRF_DIR specified by the env. variable'),
         
         'keywords defining actual ROI setup',
@@ -162,11 +162,7 @@ class DataSet(dataman.DataSpec):
         # Now invoke the superclass to actually load the data, which may involve creating the binfile and livetime cube
         super(DataSet,self).__init__(  **dataspec)
         assert self.irf is not None, 'irf was not specifed!'
-        self.CALDBManager = pycaldb.CALDBManager(
-                irf=self.irf, 
-                psf_irf=self.psf_irf,
-                CALDB=self.CALDB,
-                custom_irf_dir=self.custom_irf_dir)
+        self.CALDBManager = caldb.CALDB(self.CALDB)
         if self.exposure_cube is None:
             self.lt = skymaps.LivetimeCube(self.ltcube,weighted=False) ###<< ok?
             if self.use_weighted_livetime:

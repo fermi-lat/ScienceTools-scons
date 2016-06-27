@@ -6,6 +6,7 @@ $Header$
 """
 import os, sys, types
 import numpy as np
+from uw.irfs import irfman
 from . import ( dataset, exposure, psf, from_xml)
 import skymaps
 from uw.utilities import keyword_options
@@ -164,6 +165,8 @@ class Configuration(object):
         
         exposure_correction=datadict.pop('exposure_correction', None) if datadict is not None else None        
         self.irfs = irfman.IrfManager(self.dataset)
+        #self.exposureman = exposure.ExposureManager(self.dataset, exposure_correction=exposure_correction)
+        #self.psfman = psf.PSFmanager(self.dataset)
         
         # check location of model
         # possibilites are the all-sky pickle.zip, from which any ROI can be extraccted, or a specific set of
