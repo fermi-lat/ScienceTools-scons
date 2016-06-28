@@ -270,10 +270,13 @@ class AnalysisBase(object):
         Ts_value = 2*(logLike1 - logLike0)
         self.logLike.addSource(self._ts_src)
         self.logLike.setFreeParamValues(freeParams)
+        # Move call to saved_state.restore() here
+        # to avoid issue with EblAtten spectral model, which is nested 
+        # around other spectral models
+        saved_state.restore()
         self.model = SourceModel(self.logLike)
         for src in source_attributes:
-            self.model[src].__dict__.update(source_attributes[src])
-        saved_state.restore()
+            self.model[src].__dict__.update(source_attributes[src])        
         self.logLike.value()
         return Ts_value
     def Ts_old(self, srcName, reoptimize=False, approx=True, tol=None):
