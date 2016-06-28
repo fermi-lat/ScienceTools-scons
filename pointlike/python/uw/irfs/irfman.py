@@ -29,7 +29,13 @@ class IrfManager(object):
         else:
             ets = 'fb'
         self.event_types = self._parse_event_type(ets)
-        self.cthetamin = np.cos(np.radians(dataset.theta_cut.get_bounds()[1]))
+        if dataset.legacy:
+            #No DSS keywords, assume dataset has thetacut member
+            #TODO: Fix dataman.DataSpec to provide a sensible default
+            #      or find something to reference that works for both cases
+            self.cthetamin = np.cos(np.radians(dataset.thetacut))
+        else:
+            self.cthetamin = np.cos(np.radians(dataset.theta_cut.get_bounds()[1]))
         self.dataset = dataset
         self._load_irfs()
 
