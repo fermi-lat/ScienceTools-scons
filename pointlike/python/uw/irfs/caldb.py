@@ -60,7 +60,7 @@ class CALDB(object):
         self.index = self._load_caldb_index()
     
     def __repr__(self):
-        return "{self.__class__}(CALDB_dir={self.CALDB_dir})".format(self)
+        return "{self.__class__}(CALDB_dir={self.CALDB_dir})".format(self=self)
 
     def _load_caldb_index(self):
         if not os.path.exists(self.CALDB_dir):
