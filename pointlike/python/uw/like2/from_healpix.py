@@ -132,8 +132,8 @@ class ROImodelFromHealpix(roimodel.ROImodel):
             # add 
             self.diffuse_normalization = p.get('diffuse_normalization', None)
             
-            global_sources = [load_global_source(name, rec) for name, rec \
-                in zip(p['diffuse_names'], p['diffuse']) if name not in self.ecat.names]
+            global_sources = [load_global_source(name, rec) for name, rec 
+                in zip(p['diffuse_names'], p['diffuse']) if self.ecat.lookup(name) is None]
             self.global_count = len(global_sources)
             for s in global_sources:
                 if s is not None: self.append(s)

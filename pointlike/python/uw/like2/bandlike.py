@@ -55,7 +55,7 @@ class BandLike(object):
         if systematic==0: return 1.0 
         n = 1/systematic**2
         # m is the number of counts from the galactic diffuse in the footprint of a point source
-        m = self['ring'].counts / (self.band.psf(0)[0]*self.band.solid_angle)
+        m = self['ring'].counts / (self.band.psf(0)*self.band.solid_angle)
         u = min(1., n/m)
         return u
 

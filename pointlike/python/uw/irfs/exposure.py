@@ -54,6 +54,7 @@ class BandExposure(Exposure):
         for attr in ('aeff','lt','weighted_lt','correction','_cpp_exposure'):
             setattr(self,attr,getattr(exp,attr))
         self.energy = energy
+        self.correction = exp.correction(self.energy)
 
     def __call__(self,skydir,energy=None):
         if energy is None:
