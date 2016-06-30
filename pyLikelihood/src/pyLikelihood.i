@@ -85,6 +85,7 @@
 #include "Likelihood/ScData.h"
 #include "Likelihood/SkyDirArg.h"
 #include "Likelihood/SkyDirFunction.h"
+#include "Likelihood/Snapshot.h"
 #include "Likelihood/SourceFactory.h"
 #include "Likelihood/SourceModel.h"
 #include "Likelihood/SourceMap.h"
@@ -244,6 +245,7 @@ using optimizers::Exception;
 %include Likelihood/OptEM.h
 %include Likelihood/PointSource.h
 %include Likelihood/SourceMap.h
+%include Likelihood/Snapshot.h
 %include Likelihood/SpatialFunction.h
 %include Likelihood/RadialDisk.h
 %include Likelihood/RadialGaussian.h
