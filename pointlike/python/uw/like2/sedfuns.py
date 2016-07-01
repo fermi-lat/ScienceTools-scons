@@ -34,7 +34,7 @@ class SED(tools.WithMixin):
         try:
             self.full_poiss = self.select(None).poiss
         except Exception, msg:
-            print 'Failed poisson fit to source %s: "%s"' % (source_name, msg)
+            print 'Failed poisson fit to source %s: "%s"' % (self.source_name, msg)
             raise
 
     def __repr__(self):
