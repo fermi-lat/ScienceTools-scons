@@ -174,6 +174,8 @@ public:
 
    void setPrior(Function & log_prior);
 
+   inline bool has_prior() const { return m_log_prior != 0; }
+
    Function * removePrior();
 
    double log_prior_value() const;
@@ -181,6 +183,10 @@ public:
    double log_prior_deriv() const;
 
    Function & log_prior() {
+      return *m_log_prior;
+   }
+
+   const Function & log_prior() const {
       return *m_log_prior;
    }
 
