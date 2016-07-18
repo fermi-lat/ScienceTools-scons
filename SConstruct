@@ -159,7 +159,6 @@ if baseEnv.GetOption('opt'):
         visual_variant += "-Optimized"
     else:
         baseEnv.AppendUnique(CCFLAGS = '-O2')
-        baseEnv.AppendUnique(CCFLAGS = '-g')
     variant+='-Optimized'
     
 if baseEnv.GetOption('ccflags'):
