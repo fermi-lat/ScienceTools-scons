@@ -49,7 +49,7 @@ public:
 
    /// MINOS error analysis for parameter #n.  Valid only for the
    /// two flavors of Minuit.
-   virtual std::pair<double,double> Minos(unsigned int n, double level=1.) {
+   virtual std::pair<double,double> Minos(unsigned int n, double level=1., bool numericDeriv=false) {
       throw Exception("Minos function is not enabled for this optimizer");
       return std::pair<double,double>(0., 0.);
    }
@@ -96,6 +96,9 @@ public:
    
    virtual std::ostream& put (std::ostream& s) const = 0;
    
+   //! Pass a command string to Minuit
+   virtual int doCmd(std::string command, bool set_npar=false) {;}
+  
 protected:
 
    Statistic * m_stat;

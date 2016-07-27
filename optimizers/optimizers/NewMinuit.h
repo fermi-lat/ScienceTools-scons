@@ -76,7 +76,7 @@ namespace optimizers {
     virtual const std::vector<double> & getUncertainty(bool useBase = false);
     virtual std::vector<std::vector<double> > covarianceMatrix() const;
     virtual std::ostream& put (std::ostream& s) const;
-    std::pair<double,double> Minos(unsigned int n, double level=1.);
+    std::pair<double,double> Minos(unsigned int n, double level=1., bool numericDeriv=false);
 
      /// Compute the lower bound error using Minos.
      double minos_lower_error(unsigned int n, double level=1.,

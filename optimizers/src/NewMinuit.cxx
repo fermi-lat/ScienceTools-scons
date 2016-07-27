@@ -144,7 +144,7 @@ namespace optimizers {
   }
 
   // Call MINOS
-  std::pair<double,double> NewMinuit::Minos(unsigned int n, double level) {
+  std::pair<double,double> NewMinuit::Minos(unsigned int n, double level, bool numericDeriv) {
     std::vector<double> parValues;
     checkParValues(n, parValues);
     if(level!=1.){

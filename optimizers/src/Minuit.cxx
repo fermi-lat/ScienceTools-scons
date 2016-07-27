@@ -177,7 +177,7 @@ namespace optimizers {
     return getRetCode();
   } // End of minimize 
 
-  std::pair<double,double> Minuit::Minos(unsigned int n, double level) {
+  std::pair<double,double> Minuit::Minos(unsigned int n, double level, bool numericDeriv) {
     std::vector<double> parValues;
     m_stat->getFreeParamValues(parValues);
     integer npar(m_stat->getNumFreeParams());
@@ -197,19 +197,54 @@ namespace optimizers {
       levelcmd <<"SET ERR "<<level/2.;
       doCmd(levelcmd.str());
     }
+    
+    if ( numericDeriv  ) {
+      doCmd("SET NOGRAD"); 
+    }
     std::ostringstream mcmd;
     mcmd << "MINOS " << m_maxEval << " " << n;
     numPars = npar;
-    doCmd(mcmd.str());
+    int retCode = doCmd(mcmd.str());
     double eplus, eminus, eparab, globcc;
     integer my_n = n;
     mnerrs_(&my_n, &eplus, &eminus, &eparab, &globcc);
+
+    char chname[30];
+    double val, err, bnd1, bnd2;
+    int ivarbl;
+    mnpout_(&my_n,chname, &val, &err, &bnd1, &bnd2, &ivarbl, 30);
+  
+    setRetCode(retCode);    // 
+
     numPars = 0;
     if(level!=1){
       //Set internal error level back to 0.5=1sigma for -logLike optimizer
       doCmd("SET ERR 0.5");
     }
+    if ( numericDeriv  ) {
+      //Turn the numeric derivs back off
+      doCmd("SET GRAD 1"); 
+    }
     m_stat->setFreeParamValues(parValues);
+
+    // Check to see if MINOS failed
+    bool failed(false);
+    if ( eminus == 0 && (val - err > bnd1 ) ) {
+      // Negative error is 0 and value is not bounded, assume it failed
+      failed = true;
+    }
+    if ( eplus == 0 && (val + err < bnd2 ) ) {
+      // positive error is 0 and value is not bounded, assume it failed
+      failed = true;
+    }
+    if ( failed ) {      
+      if ( numericDeriv ) {
+	return std::pair<double,double>(eminus,eplus);
+      } else {
+	return Minos(n-1,level,true);
+      }
+    }
+
     return std::pair<double,double>(eminus,eplus);
   }
 
@@ -244,10 +279,17 @@ namespace optimizers {
     return;
   }
 
-  int Minuit::doCmd(std::string command) {
+  int Minuit::doCmd(std::string command, bool set_npar) {
     // Pass a command string to Minuit
     integer errorFlag = 0;
-    void * statistic = static_cast<void *>(m_stat);
+    
+    // This is need to make sure that this class and MINUIT
+    // stay in agreement about the number of free parameters
+    if (set_npar) {
+      numPars = m_stat->getNumFreeParams();
+    }
+
+    void * statistic = static_cast<void *>(m_stat);    
     mncomd_(&fcn, command.c_str(), &errorFlag, statistic,
 	    command.length());
     return errorFlag;
@@ -260,7 +302,7 @@ namespace optimizers {
      if (numPars == 0) {
         numPars = *npar;
      }
-
+    
     std::vector<double> parameters(xval, xval + numPars);
 
     // What a hack!  Minuit thinks futil is a function 
