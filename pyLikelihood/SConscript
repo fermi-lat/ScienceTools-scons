@@ -1,7 +1,7 @@
 # -*- python -*-
 #
 # $Id$
-# Authors: James Chiang <jchiang@slac.stanford.edu>
+# Authors: James Chiang <jchiang@slac.stanford.edu>, Eric Charles <echarles@slac.stanford.edu>, Matthew Wood <mdwood@slac.stanford.edu> 
 # Version: pyLikelihood-02-03-02
 
 Import('baseEnv')
