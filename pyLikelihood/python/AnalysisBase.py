@@ -519,12 +519,15 @@ class AnalysisBase(object):
         "saveCurrentFit" function.'''
         
         self.logLike.restoreBestFit()
-    def NpredValue(self, src):
+    def NpredValue(self, src, weighted=False):
         '''Returns the number of predicted counts for a source.'''
-        return self.logLike.NpredValue(src)
-    def total_nobs(self):
+        return self.logLike.NpredValue(src,weighted)
+    def total_nobs(self,weighted=False):
         '''Returns the total number of observed counts in the RoI.'''
-        return sum(self.nobs)
+        if weighted:
+            return sum(self.nobs_wt)
+        else:
+            return sum(self.nobs)
     def syncSrcParams(self, src=None):
 
         '''Synchronizes the parameters of a source (identified by

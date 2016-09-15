@@ -147,10 +147,10 @@ class SummedLikelihood(AnalysisBase):
             self.saved_state.restore()
         else:
             self.saveCurrentFit()
-    def NpredValue(self, src):
-        return self.composite.NpredValue(src)
-    def total_nobs(self):
-        return sum([sum(x.nobs) for x in self.components])
+    def NpredValue(self, src, weighted=False):
+        return self.composite.NpredValue(src,weighted)
+    def total_nobs(self, weighted=False):
+        return sum([x.total_nobs(weighted) for x in self.components])
     def __repr__(self):
         return str(self.components[0].model)
     def _syncParams(self):

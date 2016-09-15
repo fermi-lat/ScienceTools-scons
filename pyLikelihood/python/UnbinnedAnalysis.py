@@ -160,6 +160,7 @@ class UnbinnedAnalysis(AnalysisBase):
         self.energies[-1] = eMax
         self.e_vals = num.sqrt(self.energies[:-1]*self.energies[1:])
         self.nobs = self._Nobs()
+        self.nobs_wt = self.nobs
         self.disp = None
         self.resids = None
         self.sourceFitPlots = []

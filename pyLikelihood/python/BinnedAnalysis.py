@@ -162,6 +162,7 @@ class BinnedAnalysis(AnalysisBase):
         self.energies = num.array(self.logLike.energies())
         self.e_vals = num.sqrt(self.energies[:-1]*self.energies[1:])
         self.nobs = self.logLike.countsSpectrum()
+        self.nobs_wt = self.logLike.countsSpectrum(True)
         self.sourceFitPlots = []
         self.sourceFitResids  = []
     def _inputs(self):
