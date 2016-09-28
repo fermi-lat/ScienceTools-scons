@@ -92,6 +92,7 @@
 #include "Likelihood/SourceFactory.h"
 #include "Likelihood/SourceModel.h"
 #include "Likelihood/SourceMap.h"
+#include "Likelihood/SparseVector.h"
 #include "Likelihood/SpatialFunction.h"
 #include "Likelihood/SpatialMap.h"
 #include "Likelihood/SrcArg.h"
@@ -200,6 +201,10 @@ using optimizers::Exception;
 %include Likelihood/EquinoxRotation.h
 %template (FuncPair) std::pair<std::string, optimizers::Function *>;
 %template (FuncMap) std::map<std::string, optimizers::Function *>;
+%include Likelihood/SparseVector.h
+%template (SparseIntVector) Likelihood::SparseVector<int>;
+%template (SparseFloatVector) Likelihood::SparseVector<float>;
+%template (SparseDoubleVector) Likelihood::SparseVector<double>;
 %include Likelihood/Convolve.h
 %include Likelihood/Exception.h
 %include Likelihood/ExpCutoff.h
