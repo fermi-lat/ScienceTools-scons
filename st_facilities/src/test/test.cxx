@@ -20,6 +20,7 @@
 
 #include "st_facilities/dgaus8.h"
 #include "st_facilities/GaussianQuadrature.h"
+#include "st_facilities/RootFinder.h"
 #include "PowerLaw.h"
 
 #include "st_facilities/Env.h"
@@ -35,6 +36,7 @@ class st_facilitiesTests : public CppUnit::TestFixture {
 
    CPPUNIT_TEST(test_dgaus8);
    CPPUNIT_TEST(test_GaussianQuadrature);
+   CPPUNIT_TEST(test_RootFinder);
    CPPUNIT_TEST_EXCEPTION(test_Util_file_ok, std::runtime_error);
    CPPUNIT_TEST(test_Util_readLines);
    CPPUNIT_TEST(test_Util_expectedException);
@@ -53,6 +55,7 @@ public:
 
    void test_dgaus8();
    void test_GaussianQuadrature();
+   void test_RootFinder();
    void test_Util_file_ok();
    void test_Util_readLines();
    void test_Util_expectedException();
@@ -83,6 +86,21 @@ void st_facilitiesTests::setUp() {
 void st_facilitiesTests::tearDown() {
    std::remove(m_filename.c_str());
 }
+
+class Parabola {
+public:
+   Parabola(double a, double b, double c) :
+     m_a(a), m_b(b), m_c(c) { }
+
+   double operator()(double x) const {
+      return m_a*x*x + m_b*x + m_c;
+   }
+
+private:
+  double m_a;
+  double m_b;
+  double m_c;
+};
 
 class Linear {
 public:
@@ -192,6 +210,21 @@ void st_facilitiesTests::test_GaussianQuadrature() {
    double result(GaussianQuadrature::integrate(&power_law, xmin, xmax,
                                                err, ier));
 
+   CPPUNIT_ASSERT(std::fabs((result - true_value)/true_value) < tol);
+}
+
+void st_facilitiesTests::test_RootFinder() {
+   double a = 5.0;
+   double b = 3.2;
+   double c = -3.4;
+   
+   double xmin = -b/(2*a);
+   double xmax = xmin + 2.0*::sqrt(b*b - 4*a*c)/(2*a);
+   double true_value = (-b + ::sqrt(b*b - 4*a*c))/(2*a);
+
+   Parabola fn = Parabola(a,b,c);
+   double tol(1e-4);
+   double result(RootFinder::find_root(fn, xmin, xmax, 0.0, tol));
    CPPUNIT_ASSERT(std::fabs((result - true_value)/true_value) < tol);
 }
 

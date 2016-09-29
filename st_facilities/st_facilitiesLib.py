@@ -8,7 +8,7 @@ def generate(env, **kw):
     env.Tool('addLibrary', library = env['cfitsioLibs'])
     env.Tool('addLibrary', library = env['f2cLibs'])
     env.Tool('addLibrary', library = env['cppunitLibs'])
-
+    env.Tool('addLibrary', library = env['gsllibs'])
 
 def exists(env):
 	return 1
