@@ -214,10 +214,11 @@ void st_facilitiesTests::test_GaussianQuadrature() {
 }
 
 void st_facilitiesTests::test_RootFinder() {
+#ifdef ScienceTools
    double a = 5.0;
    double b = 3.2;
    double c = -3.4;
-   
+
    double xmin = -b/(2*a);
    double xmax = xmin + 2.0*::sqrt(b*b - 4*a*c)/(2*a);
    double true_value = (-b + ::sqrt(b*b - 4*a*c))/(2*a);
@@ -226,6 +227,7 @@ void st_facilitiesTests::test_RootFinder() {
    double tol(1e-4);
    double result(RootFinder::find_root(fn, xmin, xmax, 0.0, tol));
    CPPUNIT_ASSERT(std::fabs((result - true_value)/true_value) < tol);
+#endif // ScienceTools
 }
 
 void st_facilitiesTests::test_Util_file_ok() {
