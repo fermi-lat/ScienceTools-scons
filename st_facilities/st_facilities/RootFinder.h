@@ -9,6 +9,10 @@
 #ifndef st_facilities_RootFinder_h
 #define st_facilities_RootFinder_h
 
+// Don't build for containers other than ScienceTools since the gsl
+// libraries aren't available.
+#ifdef ScienceTools
+
 #include <iostream>
 #include <cmath>
 #include <stdexcept>
@@ -87,4 +91,5 @@ public:
 
 }
 
+#endif // ScienceTools
 #endif // st_facilities_RootFinder_h
