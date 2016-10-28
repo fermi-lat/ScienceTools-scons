@@ -72,7 +72,11 @@ class CountPlots(analysis_base.AnalysisBase):
             print 'Extracting history info from the ROI analyses'
             self.sinfo =t= self.history_info()
             # check for previous creation, ignore them: look for last "monthly*" or "create"
-            y= [(x.startswith('monthly') or (x.startswith('create'))) for x in t.stage]; 
+            y= [(x.startswith('monthly') or x.startswith('create') #or x.startswith('update_full')
+                                ) for x in t.stage]; 
+            if sum(y)==0:
+                y= [ (x.startswith('update_full')) for x in t.stage]; 
+                # no create: use update_full
             lc = t.index[y][-1]; print lc
             self.toshow = t[t.index>= lc]; print self.toshow
             skipped = t.index[y][:-1]; print 'Skipped starts:\n{}'.format(t.ix[skipped])
@@ -207,11 +211,11 @@ class CountPlots(analysis_base.AnalysisBase):
         return fig
         
     def chisq_plots(self, use10=False, unweight=True, hsize=(1.0, 0.7, 1.5, 0.7), 
-            vmin=0, vmax=50, bcut=10, grid_flag=True):
+            vmin=0, vmax=50, bcut=10, grid_flag=True, makecollection=True):
         """ chi squared plots
         chi squared distribution
         <p>Note that this chi squared is modified by the unweighting factors.
-        %(bad_roi_link)s
+        <p>%(bad_roi_link)s
         """
         
         
@@ -227,7 +231,7 @@ class CountPlots(analysis_base.AnalysisBase):
         bad_rois = self.rois[chisq>vmax]['glat glon chisq'.split()]
         bad_rois['chisq'] = chisq
         bad_rois.to_csv('bad_rois.csv')
-        if not self.skymodel.startswith('month'):
+        if not self.skymodel.startswith('month') and makecollection:
             try:
                 pc =makepivot.MakeCollection('bad rois %s' % os.path.split(os.getcwd())[-1], 'countfig', 'bad_rois.csv')
             

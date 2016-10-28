@@ -159,8 +159,8 @@ the second when there is small background, above a few GeV.
         plt.setp(ax, xlabel='Energy (GeV)', ylabel='PSF size (deg)', xscale='log', yscale='log',
             xlim=(0.1, 100), ylim=(0.02, 8), title=title)
         ax.legend(prop=dict(size=10)); ax.grid()
-        ax.set_xticklabels('0.1 1 10 100'.split())
-        ax.set_yticklabels('0.01 0.1 1'.split())
+        #x.set_xticklabels('0.1 1 10 100'.split())
+        #ax.set_yticklabels('0.01 0.1 1'.split())
         if outfile is None: return fig
         self.psf_df = pd.DataFrame(dict(front=front, floc=floc, back=back, bloc=bloc,f68=f68,b68=b68), 
                 index=egev.round(3))

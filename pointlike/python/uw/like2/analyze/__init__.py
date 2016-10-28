@@ -17,6 +17,7 @@ __all__=[
  'cputime',
  'data',
  #'diffuse_info',
+ 'diffuse_correction',
  'environment',
  'export',
  'find_peak',
@@ -49,5 +50,7 @@ __all__=[
  'uwsourcecomparison',
  'transientinfo',
  'transient_catalog',
+ 'residual_maps',
+ 'gc_comparison',
  ]
 

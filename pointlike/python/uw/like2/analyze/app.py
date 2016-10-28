@@ -9,6 +9,8 @@ from uw.like2.analyze import *
 
 newlocs = locals().keys()
 module_names = filter(lambda x:not x[0]=='_',set(newlocs).difference(_locs))
+assert len(module_names)>0, 'No modules found'
+
 #module_names = filter(lambda x:not x[0]=='_', uw.like2.analyze.__all__ ) #set(newlocs).difference(_locs))
 #
 from uw.like2.analyze import _html
@@ -25,7 +27,11 @@ class AppMenu(dict):
         pack = globals()[name]
         doc = pack.__doc__.split('\n')
         title = (doc[0] if doc[0]!='' else doc[1]).strip()
-        classname = self._check_for_class(pack)
+        try:
+            classname = self._check_for_class(pack)
+        except Exception, msg:
+            print '*** Failed to check module {}:{}'.format(name, msg)
+            return None
         if classname is None:
             print '***no class with all_plots found in module %s' %name
             return None

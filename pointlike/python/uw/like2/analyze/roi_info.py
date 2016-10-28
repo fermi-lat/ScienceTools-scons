@@ -251,3 +251,20 @@ class ROIinfo(analysis_base.AnalysisBase):
         
     def all_plots(self): #, other_html=None):
         self.runfigures(self.funcs, self.fnames, **self.plots_kw)
+        
+    def counts_dataframe(self, roi_index):
+        """ return a dataframe with columns for the diffuse sources, free and fixed point sources,
+            total, observed, and pull
+        """
+        c = self.df.ix[roi_index]['counts']
+        cp = dict()
+        scols = []
+        for n,d in c['models']:
+            scols.append(n)
+            cp[n]=np.array(d).round(1)
+        cols = 'total observed'.split()
+        for n in cols:
+            cp[n] = np.array(c[n]).round(1)
+        df= pd.DataFrame(cp, index=np.array(c['energies'],int), columns=scols+cols)
+        df['pull'] = ((df.observed-df.total)/np.sqrt(df.total)).round(1)
+        return df
