@@ -409,7 +409,7 @@ class SubsetFitterView(parameterset.ParSubSet, FitPlotMixin, FitterMixin, Fitter
         """ simple test statistic """
         lnow = self()
         pars = self.parameters
-        pars[0] = self.bounds[0][0]
+        pars[0] = -20 ##### override to be really small self.bounds[0][0]
         return 2 * (self(pars)-lnow)
         
 
@@ -447,7 +447,8 @@ class TSmapView(tools.WithMixin):
 
 class EnergyFluxView(tools.WithMixin):
 
-    def __init__(self, blike, func, energy):
+    def __init__(self, blike, func, energy, **kw):
+        
         self.func = func
         self.blike=blike
         self.source = source = self.func.source
@@ -455,7 +456,7 @@ class EnergyFluxView(tools.WithMixin):
         #assert model[0]==model['norm']
         self.norm = model[0]
         self.tointernal = model.mappers[0].tointernal
-        self.bound = model.bounds[0][0]
+        self.bound = kw.get('bound', -20)# !!! model.bounds[0][0])
         self.set_energy(energy)
 
     def set_energy(self, energy=None):
