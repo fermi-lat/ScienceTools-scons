@@ -16,6 +16,7 @@ class Process(main.MultiROI):
     defaults=(
         ('outdir',        '.',   'output folder'),
         ('load_kw', {'rings':2}, 'a dict specific for the loading'),
+        ('config_kw',    {},     'additional configuration keywords'),
         ('localize_flag', False, 'perform localiation'),
         ('localize_kw',   {},    'keywords for localization'),
         ('repivot_flag',  False, 'repivot the sources'),

@@ -32,6 +32,8 @@ class ExposureManager(object):
                 return [skymaps.DiffuseFunction(f,1000.,False) for f in dataset.exposure_cube]
                 
             type_names = datadict.get('type_names', ('FRONT', 'BACK'))
+            if type_names=='psf':
+                type_names = ['PSF{}'.format(i) for i in range(4)]
             skymaps.EffectiveArea.set_CALDB(dataset.CALDBManager.CALDB)
             skymaps.Exposure.set_cutoff(np.cos(np.radians(dataset.thetacut)))
             aeff_files = dataset.CALDBManager.get_aeff()
