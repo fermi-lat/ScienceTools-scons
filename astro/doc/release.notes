@@ -8,6 +8,7 @@ $Id$
 @verbatim
  * EOH *
 
+ astro-04-00-02 30-Nov-2016 jchiang add leap second for 2017-01-01
  astro-04-00-01 05-Mar-2016 mdwood Change to coefficients for FK5 -> Galactic coordinate conversion.
  astro-04-00-00 09-Dec-2015 echarles Split SkyProj into WCS and HEALPix based versions
  astro-03-16-01 04-Apr-2015 jchiang Michael Kuss' fix for IGRF-12 handling, test code added, fix incorrect typedef specification in SolarSystem.h
