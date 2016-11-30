@@ -410,7 +410,7 @@ bool testJD() {
    utc_values[362793603].push_back("2012-06-30T23:59:59.9999");
 
    // Test around leap second introduced 2015Jul01 at 00:00:00 UTC
-   // The following test value pairs were obtained from 
+   // The following test value pairs were obtained from
    // http://heasarc.gsfc.nasa.gov/cgi-bin/Tools/xTime/xTime.pl
    utc_values[457401602] = std::vector<std::string>();
    utc_values[457401602].push_back("2015-06-30T23:59:59.0000");
@@ -428,6 +428,18 @@ bool testJD() {
    utc_values[457401605].push_back("2015-07-01T00:00:01.0000");
    utc_values[457401605].push_back("2015-07-01T00:00:00.9999");
 
+   // Test around leap second introduced 2017Jan01 at 00:00:01 UTC
+   utc_values[504921604] = std::vector<std::string>();
+   utc_values[504921604].push_back("2017-01-01T00:00:00.0000");
+   utc_values[504921604].push_back("2016-12-31T23:59:59.9999");
+
+   utc_values[504921605] = std::vector<std::string>();
+   utc_values[504921605].push_back("2017-01-01T00:00:00.0000");
+   utc_values[504921605].push_back("2016-12-31T23:59:59.9999");
+
+   utc_values[504921606] = std::vector<std::string>();
+   utc_values[504921606].push_back("2017-01-01T00:00:01.0000");
+   utc_values[504921606].push_back("2017-01-01T00:00:00.9999");
 
    for (Utc_vector_t::const_iterator it(utc_values.begin());
         it != utc_values.end(); ++it) {
