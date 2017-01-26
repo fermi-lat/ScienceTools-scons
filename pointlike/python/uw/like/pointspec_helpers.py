@@ -84,7 +84,11 @@ class ExposureManager(object):
         ok = [os.path.exists(file) for file in aeff_files]
         if not all(ok):
             raise Exception('one of CALDB aeff files not found: %s' %aeff_files)
-        self.ea  = [EffectiveArea('', file) for file in aeff_files]
+
+        #self.ea  = [EffectiveArea('', file) for file in aeff_files]
+        # account for new 'FB'
+        self.ea  = [EffectiveArea('', file, 'EFFECTIVE AREA_'+fb.upper()) for file,fb in zip(aeff_files,inst)]
+
         if sa.verbose: print ' -->effective areas at 1 GeV: ', ['%s: %6.1f'% (inst[i],self.ea[i](1000)) for i in range(len(inst))]
         if sa.use_weighted_livetime:
             self.exposure = [Exposure(sa.pixeldata.lt,sa.pixeldata.weighted_lt,ea) for ea in self.ea]
