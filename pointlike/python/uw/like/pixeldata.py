@@ -183,8 +183,8 @@ Create a new PixelData instance, managing data and livetime.
         dummy = skymaps.SkyDir(0,0)
 
         for bin_center in (bands[:-1]*bands[1:])**0.5:
-             ph_f = pointlike.Photon(dummy,bin_center,2.5e8,0)
-             ph_b = pointlike.Photon(dummy,bin_center,2.5e8,1)
+             ph_f = skymaps.Photon(dummy,bin_center,2.5e8,0)
+             ph_b = skymaps.Photon(dummy,bin_center,2.5e8,1)
              bpd.addBand(ph_f)
              bpd.addBand(ph_b)
 
