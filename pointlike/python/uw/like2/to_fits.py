@@ -41,6 +41,7 @@ from .analyze import fermi_catalog, sourceinfo
 #
 # default column definitions 
 coldata ="""\
+    SourceName             20A None
     NickName               20A None
     RAJ2000                  E deg
     DEJ2000                  E deg
@@ -198,6 +199,7 @@ class MakeCat(object):
         z.sort_index(by='ra')
         self.check=False
         self.bad = z.ts<9
+        self.add('SourceName', z.jname)
         self.add('NickName', z.index)
         self.add('RAJ2000', z.ra)
         self.add('DEJ2000', z.dec)
