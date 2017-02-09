@@ -478,6 +478,8 @@ class DiffuseList(list):
                      'edisp0','edisp1','edisp2','edisp3'].index(index)
         except ValueError:
             pass
+        if index>1: index -=2 # 
+        assert index<4, '{} : bad index {}'.format(self.__class__,index)
         return super(DiffuseList,self).__getitem__(index) 
     def load(self):
         for x in self:
