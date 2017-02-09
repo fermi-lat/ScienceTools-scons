@@ -164,9 +164,9 @@ def main(args):
     elif stage=='tables':
         names = 'ts kde'.split() if stage_args==['none'] else stage_args
         
-        if not os.path.exists('hptables_ts_kde_512.fits'):
-            healpix_map.assemble_tables(names)
         if 'ts' in names:
+            if not os.path.exists('hptables_ts_kde_512.fits'):
+                healpix_map.assemble_tables(names)
             modelname = os.getcwd().split('/')[-1]
             check_ts.pipe_make_seeds( modelname, 'seeds_ts.txt')
             if next_stage is not None:
@@ -177,6 +177,10 @@ def main(args):
             check_ts.pipe_make_seeds( modelname, 'seeds_hard.txt')
             if next_stage is not None:
                 create_stream(next_stage)
+        elif 'mspsens' in names:
+            healpix_map.assemble_tables(names, nside=256) # assume nside
+        else:
+            print 'Unexpected table name: {}'.format(names)
             
 
     elif stage=='ptables':
