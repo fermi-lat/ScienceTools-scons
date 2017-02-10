@@ -7,6 +7,7 @@ $Id$
  --------- -----   --- -----------------------------------------------------------------------
  * EOH *
 
+ pointlike-09-05-02 10-Feb-2017 burnett clean up EventList, like2 modes
  pointlike-09-05-01 26-Jan-2017 burnett CALDB fixes for old pointlike
  pointlike-09-05-00 20-Jan-2017 burnett fix bug in matplots
  pointlike-09-04-00 30-Mar-2016 burnett version used for uw985
