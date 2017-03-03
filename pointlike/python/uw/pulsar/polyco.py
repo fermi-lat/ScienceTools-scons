@@ -192,10 +192,10 @@ class Polyco:
             out_string = '' if self.output is None else ' -polyco_file %s'%self.output
             # generate a 12th order polynomial over 360 minutes unless this
             # is short compared to the binary period
-            if self.binary_period > 0.5:
-                minutes = 360
-            else:
+            if (self.binary_period is not None) and (self.binary_period < 0.5):
                 minutes = max(60,int(self.binary_period*24*20))
+            else:
+                minutes = 360
             t2cmd = 'tempo2 -f %s%s -polyco "%s %s %d 12 12 %s 0 0\"'%(
                 polyconame,out_string,mjd0,endMJD,minutes,obs_string)
             if self.verbose:
