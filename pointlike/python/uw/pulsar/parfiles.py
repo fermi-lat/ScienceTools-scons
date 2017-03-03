@@ -263,6 +263,13 @@ class ParFile(dict):
         ra,dec = self.get_ra(), self.get_dec()
         return SkyDir(ra,dec)
 
+    def get_binary_period(self):
+        """ Return binary period in days."""
+        try:
+            return self.get('PB',type=float)
+        except KeyError:
+            return None
+
     def is_ecliptic(self):
         try:
             elon = self['ELONG']
