@@ -444,7 +444,9 @@ namespace Likelihood {
 						   const std::string & fitsFile) const {
     
     SourceMap* srcMap = getSourceMap(src,false);
-    srcMap->setFilename(fitsFile);
+    srcMap->model();
+    srcMap->setFilename(fitsFile);    
+    srcMap->setModelIsLocal(false);
     switch ( srcMap->mapType() ) {
     case FileUtils::HPX_Sparse:
       return FileUtils::replace_image_from_sparse_vector_healpix(fitsFile,src.getName(),
@@ -464,7 +466,9 @@ namespace Likelihood {
 						  const std::string & fitsFile) const {
     
     SourceMap* srcMap = getSourceMap(src,false);
+    srcMap->model();
     srcMap->setFilename(fitsFile);
+    srcMap->setModelIsLocal(false);
     switch ( srcMap->mapType() ) {
     case FileUtils::HPX_Sparse:
       return FileUtils::append_image_from_sparse_vector_healpix(fitsFile,src.getName(),
