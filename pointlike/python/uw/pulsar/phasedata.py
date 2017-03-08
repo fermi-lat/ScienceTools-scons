@@ -101,8 +101,12 @@ class PhaseData(object):
             f[1] = t
         f.writeto(self.ft1file,clobber=True)
 
-    def toa_data(self,mjd_start,mjd_stop):
+    def toa_data(self,mjd_start,mjd_stop,get_mjds=False):
         mask = (self.mjds >= mjd_start)&(self.mjds < mjd_stop)
+        if get_mjds:
+            if self.weights is None:
+                return self.ph[mask],None,self.mjds[mask]
+            return self.ph[mask],self.weights[mask],self.mjds[mask]
         if self.weights is None:
             return self.ph[mask],None
         return self.ph[mask],self.weights[mask]
