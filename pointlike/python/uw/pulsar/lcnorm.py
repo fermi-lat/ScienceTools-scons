@@ -113,11 +113,17 @@ class NormAngles(object):
             return self.p[self.free]
         return self.p
 
+    def get_parameter_names(self,free=True):
+        return [p for (p,b) in zip(self.pnames,self.free) if b]
+
     def set_errors(self,errs):
         """ errs an array with the 1-sigma error estimates with shape
             equal to the number of free parameters."""
         self.errors[:] = 0.
         self.errors[self.free] = errs
+
+    def get_errors(self,free=True):
+        return self.errors[self.free]
 
     def get_errors(self,propagate=True):
         """ Get errors on components.  If specified, propagate errors from

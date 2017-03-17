@@ -214,11 +214,17 @@ class LCPrimitive(object):
             return self.p[self.free]
         return self.p
 
+    def get_parameter_names(self,free=True):
+        return [p for (p,b) in zip(self.pnames,self.free) if b]
+
     def set_errors(self,errs):
         n = self.free.sum()
         self.errors[:] = 0.
         self.errors[self.free] = errs[:n]
         return n
+
+    def get_errors(self,free=True):
+        return self.errors[self.free]
 
     def get_bounds(self): return self.bounds[self.free]
 
