@@ -255,7 +255,7 @@ class UnweightedLCFitter(object):
         dom = np.linspace(0,1,101)
         cod = map(logl,0.5*(dom[1:]+dom[:-1]))
         idx = np.argmin(cod)
-        ph0 = fmin(logl,[cod[idx]],full_output=True,disp=0)[0][0]
+        ph0 = fmin(logl,[dom[idx]],full_output=True,disp=0)[0][0]
         # set to best fit phase shift
         self.template.set_overall_phase(ph0)
 
