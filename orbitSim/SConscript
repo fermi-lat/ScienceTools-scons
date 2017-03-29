@@ -1,6 +1,6 @@
 # -*- python -*-
 # $Id$
-# Authors: Eric Winter <Eric.L.Winter@nasa.gov>
+# Authors: Eric Winter <Eric.L.Winter@nasa.gov>, Alex Reustle <alexander.reustle@nasa.gov>
 # Version: orbitSim-03-00-01
 Import('baseEnv')
 Import('listFiles')
