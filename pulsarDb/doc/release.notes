@@ -2,6 +2,7 @@
     \brief Pulsar database access package.
     \authors Masaharu Hirayama, GSSC,
              James Peachey, HEASARC/GSSC
+             Joe Asercion, FSSC/GSFC
 $Id$
 
 \verbatim
