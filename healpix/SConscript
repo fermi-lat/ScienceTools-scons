@@ -3,7 +3,7 @@
 # @brief build info for package healpix
 #
 # $Header$
-# Authors: T. Burnett <tburnett@u.washington.edu>
+# Authors: T. Burnett <tburnett@u.washington.edu>, E. Charles <echarles@slac.stanford.edu>
 # Version: healpix-02-05-02
 
 Import('baseEnv')
