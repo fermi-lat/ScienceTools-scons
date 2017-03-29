@@ -1,6 +1,6 @@
 # -*- python -*-
 # $Id$
-# Authors: Aymeric Sauvageon <asauvageon@cea.fr>
+# Authors: Aymeric Sauvageon <asauvageon@cea.fr>, David Landriu <David.Landriu@cea.fr>
 # Version: catalogAccess-00-04-07
 
 Import('baseEnv')
