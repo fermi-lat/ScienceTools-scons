@@ -1,7 +1,7 @@
 /** \file release.notes
     \brief Package for formatting and manipulating output streams.
-    \author James Peachey, HEASARC/GSSC
-    \author Joe Asercion, FSSC/GSFC
+    \author James Peachey, HEASARC/GSSC,
+            Joe Asercion, FSSC/GSFC
 
 \verbatim
 --------------------------------------------------------------------------------
