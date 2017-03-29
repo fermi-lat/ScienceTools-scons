@@ -1,6 +1,6 @@
 # -*- python -*-
 # $Id$
-# Authors: James Peachey <peachey@lheamail.gsfc.nasa.gov>
+# Authors: James Peachey <peachey@lheamail.gsfc.nasa.gov>, Joe Asercion <joseph.a.asercion@nasa.gov>
 # Version: tip-02-18-06
 Import('baseEnv')
 Import('listFiles')
