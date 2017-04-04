@@ -105,7 +105,7 @@ namespace Likelihood {
 
   SourceMap * SourceMapCache::getSourceMap(const Source& src,
 					   bool verbose,
-					   const BinnedLikeConfig* config = 0) const {
+					   const BinnedLikeConfig* config) const {
     
     
 

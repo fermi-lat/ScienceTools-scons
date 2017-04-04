@@ -517,7 +517,7 @@ using optimizers::Exception;
 %extend Likelihood::BinnedLikelihood {
    std::vector<double> modelCounts(const std::string & srcName) {
       const Likelihood::Source * src(self->getSource(srcName));
-      const Likelihood::SourceMap & srcMap(self->sourceMap(srcName));
+      Likelihood::SourceMap & srcMap(self->sourceMap(srcName));
       const std::vector<float> & model(srcMap.model());
       const std::vector<float> & counts(self->countsMap().data());
       const std::vector<double> & energies(self->energies());
