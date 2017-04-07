@@ -183,6 +183,15 @@ class LCTemplate(object):
         n = self.norms(log10_ens)[index]
         return self.primitives[index](phases,log10_ens)*n
 
+    def single_component(self,index,phases,log10_ens=3,add_bg=False):
+        """ Evaluate a single component of template."""
+        n = self.norms(log10_ens)
+        rvals = self.primitives[index](phases,log10_ens)*n[index]
+        if add_bg:
+            return rvals + n.sum(axis=0)
+        return rvals
+
+
     def gradient(self,phases,log10_ens=3,free=True):
         r = np.empty([len(self.get_parameters(free=free)),len(phases)])
         c = 0
