@@ -967,7 +967,7 @@ namespace Likelihood {
       return 0;
     }
 
-    int makeCompositeMap(CompositeSource& compSrc, 
+    int makeCompositeMap(const CompositeSource& compSrc, 
 			 const BinnedCountsCache& dataCache,
 			 const std::string & srcMapsFile,
 			 const Drm* drm,

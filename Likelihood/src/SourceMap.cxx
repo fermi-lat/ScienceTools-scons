@@ -328,7 +328,7 @@ bool SourceMap::spectrum_changed() const {
 }
 
 
-const std::vector<float> & SourceMap::model(bool force) {
+std::vector<float> & SourceMap::model(bool force) {
   if ( m_model.size() == 0 || force ) {
     if ( m_filename.size() > 0 ) {        
       readModel(m_filename);
@@ -605,7 +605,7 @@ int SourceMap::make_model() {
   return status;
 }
 
-void SourceMap::addToVector_full(std::vector<float>& vect, bool includeSpec) const {
+void SourceMap::addToVector_full(std::vector<float>& vect, bool includeSpec) {
   const std::vector<float>& m = model();
   if ( vect.size() != m.size() ) {
     std::cout << "SourceMap::addToVector_full " << vect.size() << ' ' << m.size() << std::endl;

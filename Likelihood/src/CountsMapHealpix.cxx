@@ -65,7 +65,7 @@ namespace Likelihood {
       m_pixelSize(rhs.m_pixelSize),
       m_nPixels(rhs.m_nPixels){
     m_healpixProj = static_cast<astro::HealpixProj*>(m_proj);
-    m_hpx_binner = const_cast<evtbin:HealpixBinner*>(static_cast<const evtbin::HealpixBinner*>(m_hist->getBinners()[0]));    
+    m_hpx_binner = const_cast<evtbin::HealpixBinner*>(static_cast<const evtbin::HealpixBinner*>(m_hist->getBinners()[0]));    
   }
 
   CountsMapHealpix::CountsMapHealpix(const CountsMapHealpix & rhs,

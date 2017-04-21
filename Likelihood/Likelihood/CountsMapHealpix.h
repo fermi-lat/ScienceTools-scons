@@ -99,7 +99,7 @@ private:
 
    // it is actually the same as binners[0]
    // it is just here for convinience
-   const evtbin::HealpixBinner* m_hpx_binner;
+   evtbin::HealpixBinner* m_hpx_binner;
 
    double m_solidAngle;
 
