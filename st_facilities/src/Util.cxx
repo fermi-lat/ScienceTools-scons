@@ -166,6 +166,10 @@ namespace st_facilities {
                  << x.back() << ")";
          throw std::range_error(message.str());
       }
+      // EAC, protect against case that xx == x.back()
+      if ( xx == x.back() ) {
+	return y.back();
+      }
       std::vector<double>::const_iterator it 
          = std::upper_bound(x.begin(), x.end(), xx) - 1;
       unsigned int indx = it - x.begin();
