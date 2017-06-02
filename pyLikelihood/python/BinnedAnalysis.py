@@ -147,7 +147,7 @@ class BinnedAnalysis(AnalysisBase):
         self.srcModel = srcModel
         self.optimizer = optimizer
         if wmap and wmap != "none":
-            self.wmap = pyLike.WcsMap2(wmap,"")
+            self.wmap = pyLike.WcsMapLibrary.instance().wcsmap(wmap,"")
             self.wmap.setInterpolation(False)
             self.wmap.setExtrapolation(True)
         else:
