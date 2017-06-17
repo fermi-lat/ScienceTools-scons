@@ -63,6 +63,7 @@
 #include "Likelihood/Observation.h"
 #include "Likelihood/PiecewisePowerLaw.h"
 #include "Likelihood/PowerLawSuperExpCutoff.h"
+#include "Likelihood/PowerLawSuperExpCutoff2.h"
 #include "Likelihood/PowerLaw2.h"
 #include "Likelihood/RadialProfile.h"
 #include "Likelihood/ResponseFunctions.h"
@@ -234,6 +235,8 @@ addFunctionPrototypes(optimizers::FunctionFactory * funcFactory) {
                         makeClone);
    funcFactory->addFunc("PLSuperExpCutoff", 
                         new PowerLawSuperExpCutoff(), makeClone);
+   funcFactory->addFunc("PLSuperExpCutoff2", 
+                        new PowerLawSuperExpCutoff2(), makeClone);
    funcFactory->addFunc("DMFitFunction", new DMFitFunction(), makeClone);
 
    funcFactory->addFunc("EblAtten::PowerLaw2", new EblAtten(), makeClone);
