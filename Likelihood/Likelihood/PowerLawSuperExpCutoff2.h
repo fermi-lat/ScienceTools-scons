@@ -30,7 +30,7 @@ namespace Likelihood {
     PowerLawSuperExpCutoff2(double Prefactor=10.,
 			    double Index1=-2.1, 
 			    double Scale=1000.,
-			    double InvCutoff=1E-4,
+			    double Expfactor=0,
 			    double Index2=2.);
     
     virtual optimizers::Function * clone() const {
