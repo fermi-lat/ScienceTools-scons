@@ -45,12 +45,14 @@ namespace Likelihood {
       Unknown = -1,
       //! WCS-based
       WCS = 0,
+      //! WCS-sparse represenation
+      WCS_Sparse = 1,
       //! HEALPix, all-sky, implicit numbering
-      HPX_AllSky = 1,
+      HPX_AllSky = 2,
       //! HEALPix, all-sky, sparse mapping
-      HPX_Sparse = 2,
+      HPX_Sparse = 3,
       //! HEALPix, partial sky
-      HPX_Partial = 3 } SrcMapType;
+      HPX_Partial = 4 } SrcMapType;
 
 
     /* Test if a FITS file as an extension
@@ -90,12 +92,14 @@ namespace Likelihood {
 
        filename  : The FITS file
        extension : The FITS HDU extension name
+       npix      : The number of pixels in the healpix map
        vect      : The vector being filled
 
        return 0 for success, error code otherwise
     */
     int read_healpix_table_to_sparse_vector(const std::string& filename, 
 					    const std::string& extension,
+					    size_t npix, 
 					    SparseVector<float>& vect);
 
     /* Gets the type of HEALPix table containted in a FITS file
