@@ -343,7 +343,6 @@ double WcsMap2::operator()(const astro::SkyDir & dir, int k) const {
       // anonymous namespace.) So we have no choice but to catch
       // everything and assume the exception occurs because the
       // direction is outside the map.
-      std::cerr << "WcsMap2::operator() " << dir.ra() << ' ' << dir.dec() << std::endl;
       return 0;
    }
 
