@@ -47,9 +47,11 @@ namespace Likelihood {
     double scale = my_params[Scale].getTrueValue();
     double expfactor = my_params[Expfactor].getTrueValue();
     double index2 = my_params[Index2].getTrueValue();
-    
-    // De Jager
-    return prefactor * pow(x/scale,index1) * exp(- expfactor * pow(x,index2) );
+
+    // max value for exp argument to avoid overflow
+    const double max_expfactor = std::log(1E100);
+    return prefactor * pow(x/scale,index1) * 
+      exp( std::min(- expfactor * pow(x,index2), max_expfactor) );
   }
   
   
