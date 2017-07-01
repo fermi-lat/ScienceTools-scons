@@ -77,7 +77,7 @@ namespace evtbin {
     double refdir2(0.);
     std::string regionString;
     try {
-      header["HPXREGION"].get(regionString);
+      header["HPX_REG"].get(regionString);
     } catch (...) {
       ;
     }

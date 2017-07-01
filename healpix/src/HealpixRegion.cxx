@@ -10,6 +10,7 @@ $Header$
 #include <stdexcept>
 #include <cstring>
 #include <cstdio>
+#include <stdexcept>
 #include "tip/Header.h"
 #include "facilities/Util.h"
 
@@ -25,16 +26,11 @@ namespace healpix {
     pars.clear();
 
     if ( tokens.size() == 0 ) {
-      std::cerr << "HealpixRegion::parseString input string tokenize failed: " << st << std::endl;
-      throw std::runtime_error("HealpixRegion::parseString failed.");
-      return -1;
+      throw std::runtime_error("Could not tokenisze HealpixRegion " + st);
     }
     if ( tokens[0] == "DISK" ){
       if ( tokens.size() < 4 ) {
-	std::cerr << "HealpixRegion::parseString input string expects 4 tokens for DISK, got : " << tokens.size() << std::endl
-		  << ".  st=" << st << std::endl;
-	throw std::runtime_error("HealpixRegion::parseString failed.");
-	return -1;
+	throw std::runtime_error("Not Enough tokens for DISK HealpixRegion " + st);
       }
       regionType = DISK;
       pars.push_back( facilities::Util::stringToDouble( tokens[1] ) );
@@ -42,10 +38,7 @@ namespace healpix {
       pars.push_back( facilities::Util::stringToDouble( tokens[3] ) );
     } else if ( tokens[0] == "DISK_INC"){
       if ( tokens.size() < 5 ) {
-	std::cerr << "HealpixRegion::parseString input string expects 5 tokens for DISK_INC, got : " << tokens.size() << std::endl
-		  << ".  st=" << st << std::endl;
-	throw std::runtime_error("HealpixRegion::parseString failed.");
-	return -1;
+	throw std::runtime_error("Not Enough tokens for DISK_INC HealpixRegion " + st);
       }
       regionType = DISK_INC;
       pars.push_back( facilities::Util::stringToDouble( tokens[1] ) );
@@ -54,10 +47,7 @@ namespace healpix {
       pars.push_back( facilities::Util::stringToInt( tokens[4] ) );
     } else {
       regionType = UNKNOWN_REGION;
-      std::cerr << "HealpixRegion::parseString did not recognize region type : " << tokens[0] << std::endl
-		<< ".  st=" << st << std::endl;
-      throw std::runtime_error("HealpixRegion::parseString failed.");
-      return -1;
+      throw std::runtime_error("Uknown region type HealpixRegion " + st);
     }
     return 0;
   }
@@ -154,7 +144,7 @@ namespace healpix {
   }
 
   void HealpixRegion::setKeywords(tip::Header& header) {
-    header["HPXREGION"].set(m_string);
+    header["HPX_REG"].set(m_string);
   }
 
 
