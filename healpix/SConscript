@@ -4,7 +4,7 @@
 #
 # $Header$
 # Authors: T. Burnett <tburnett@u.washington.edu>, E. Charles <echarles@slac.stanford.edu>
-# Version: healpix-02-05-02
+# Version: healpix-02-05-03
 
 Import('baseEnv')
 Import('listFiles')

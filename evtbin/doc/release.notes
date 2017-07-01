@@ -121,3 +121,4 @@ file.
  evtbin-02-06-05 04-Mar-2014 jchiang change SKYMAPS to SKYMAP in healpix output files
  evtbin-02-06-06 27-Mar-2015 echarles switch to using healpix as an external
  evtbin-03-00-00 09-Dec-2015 echarles Replace SkyProj with ProjBase, update Healpix binning
+ evtbin-03-00-01 30-Jun-2017 echarles Change keyword to define HealpixRegion to HPX_REG to match Matt's conventions
