@@ -3,7 +3,8 @@ Generate the XML representation of a list of sources
 $Header$
 
 """
-import os, collections, argparse, types, glob, pyfits
+import os, collections, argparse, types, glob
+from astropy.io import fits as  pyfits
 import numpy as np
 import pandas as pd
 from uw.like import Models
