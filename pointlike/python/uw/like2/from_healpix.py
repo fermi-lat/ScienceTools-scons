@@ -79,9 +79,11 @@ class ROImodelFromHealpix(roimodel.ROImodel):
                     associations = rec.get('associations', None),
                     band_ts = rec.get('band_ts', None),
                     sedrec = rec.get('sedrec', None),
+                    profile = rec.get('profile', None),
                     ts = rec.get('ts', None),
                     pivot_energy = rec.get('pivot_energy', None),
                     fixed_spectrum = rec.get('fixed_spectrum', False),
+                    ts_beta = rec.get('ts_beta', np.nan)
                     )
                 if src.fixed_spectrum:
                     assert sum(src.model.free)==1, \
@@ -95,7 +97,7 @@ class ROImodelFromHealpix(roimodel.ROImodel):
                     t = rec.get(attr, None)
                     if isinstance(t,tuple): t = t[0]
                     src.__dict__[attr] = t
-                map(tuple_check, ('ts', 'band_ts', 'sedrec', 'pivot_energy'))
+                map(tuple_check, ('ts', 'band_ts', 'sedrec', 'pivot_energy','profile',))
                 
             #if neighbors: src.free[:]=False # not sure this is necessary
             if neighbors: src.model.free[:]=False
@@ -136,8 +138,9 @@ class ROImodelFromHealpix(roimodel.ROImodel):
             # add 
             self.diffuse_normalization = p.get('diffuse_normalization', None)
             
+            # value for "diffuse_names" may have additional names (historical)
             global_sources = [load_global_source(name, rec) for name, rec 
-                in zip(p['diffuse_names'], p['diffuse']) if self.ecat.lookup(name) is None]
+                in zip(p['diffuse_names'], p['diffuse']) if name in self.config.diffuse.keys()] #self.ecat.lookup(name) is None]
             self.global_count = len(global_sources)
             for s in global_sources:
                 if s is not None: self.append(s)
