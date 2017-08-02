@@ -137,6 +137,8 @@ class BandLike(object):
         except FloatingPointError, e:
             print '%s: Floating point error %s evaluating likelihood for band %s' % (e,self,)
             raise
+        except Exception, e:
+            print '{} Exception evaluating likelihood for band {}'.format(e, self)
     
     def gradient(self):
         """ gradient of the likelihood with resepect to the free parameters
