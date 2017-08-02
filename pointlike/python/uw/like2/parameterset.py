@@ -112,7 +112,8 @@ class ParameterSet(object):
     def set_covariance(self, cov):
         """ save the specified convariance matrix into the source models"""
         cnow = np.asarray(self.get_covariance(nomask=True)).flatten()
-        cnow[np.outer(self.mask, self.mask).flatten()] = cov.flatten()
+        
+        cnow[np.outer(self.mask, self.mask).flatten()] = np.array(cov).flatten()
         na = len(self.mask)
         cnew = cnow.reshape(na,na)
         i = 0
