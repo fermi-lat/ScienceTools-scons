@@ -6,7 +6,7 @@ $Header$
 import os
 import numpy as np
 import skymaps
-import pyfits
+from astropy.io import fits as  pyfits
 
 
 class ExposureManager(object):
