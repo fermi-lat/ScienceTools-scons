@@ -15,7 +15,7 @@ import glob
 
 
 import numpy as np
-import pyfits as pf
+from astropy.io import fits as pf
 
 import skymaps
 from uw.utilities import fitstools,keyword_options,path
