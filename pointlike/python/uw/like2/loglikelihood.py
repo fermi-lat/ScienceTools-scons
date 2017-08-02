@@ -80,8 +80,9 @@ class Poisson(object):
         return 'Poisson: mu,beta= %.1f, %.1f' %( mu, beta)
     
     def __repr__(self):
-        e, beta, mu = self.altpars()
-        return '%s.%s: mu,beta=%.1f, %.1f' % (self.__module__, self.__class__.__name__, mu,beta)
+        t = np.array(self.errors)/self.flux-1
+        relerr = np.abs(np.array(self.errors)/self.flux-1)
+        return '{}.{}: {}[1+{:.2f}-{:.2f}'.format(self.__module__, self.__class__.__name__, self.flux, relerr[0],relerr[1] )
     @property
     def flux(self):
         return max(self.p[0], 0)
