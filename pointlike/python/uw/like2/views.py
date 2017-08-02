@@ -57,7 +57,7 @@ class FitterSummaryMixin(object):
                 fmt +='%10.1f'; tup += (grad[index],)
             print >>out,  fmt % tup
     
-    def delta_loglike(self):
+    def delta_loglike(self, quiet=True):
         """ estimate change in log likelihood from current gradient 
         """
         try:
@@ -65,7 +65,7 @@ class FitterSummaryMixin(object):
             H = self.hessian()
             return (gm * H.I * gm.T)[0,0]/4
         except Exception, msg:
-            print 'Failed log likelihood estimate, returning 99.: %s' % msg
+            if not quiet:print 'Failed log likelihood estimate, returning 99.: %s' % msg
             return 99.
 
 
@@ -233,6 +233,7 @@ class FitterMixin(object):
                 diag[bad]=0
             return f[1], f[0], np.sqrt(diag)
         else:
+            self.covariance = None
             return f[1], f[0], np.nan
         
         
