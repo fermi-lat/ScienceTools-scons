@@ -7,7 +7,7 @@ author: M. Kerr
 
 """
 
-import pyfits as pf
+from astropy.io import fits as pf
 import numpy as np
 from os.path import join
 import os

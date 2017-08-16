@@ -13,7 +13,7 @@ from os.path import exists, join
 from textwrap import dedent
 from abc import abstractmethod
 
-import pyfits
+from astropy.io import fits as  pyfits
 from skymaps import SkyDir
 
 from . SpatialModels import Disk,EllipticalDisk,Gaussian,EllipticalGaussian,SpatialMap
