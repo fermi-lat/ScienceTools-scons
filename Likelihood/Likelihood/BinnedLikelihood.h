@@ -168,6 +168,15 @@ namespace Likelihood {
      /// Return the NPreds for the fixed sources
      inline const std::vector<double> & fixedNpreds() const { return  m_fixedNpreds; }
 
+     /// Return the average weighted energy dispersion correction factors for the npreds
+     inline const std::vector<std::pair<double, double> >& fixedNpred_xis() const { return m_fixedNpred_xis; }
+
+     /// Return the avergae weights for the fixed source npreds
+     inline const std::vector<std::pair<double, double> >& fixedNpred_wts() const { return m_fixedNpred_wts; }
+
+     /// Return the weighted energy dispersion correction factors for the fixed source npreds
+     inline const std::vector<std::pair<double, double> >& fixedNpred_xiwts() const { return m_fixedNpred_wts; }
+
      /// Return the predicted counts for all the fixed sources, summed together
      inline const std::vector<double> & fixedModelSpectrum() const { return m_fixed_counts_spec; }
       
@@ -629,6 +638,22 @@ namespace Likelihood {
      /// The npreds are model evaluated at the energy bin edges summed over all pixels
      /// without the spectrum.  This vector has the size of m_energies.size()
      std::vector<double> m_fixedNpreds;
+
+     /// Average energy dispersion correction factors for fixed sources 
+     /// These are evalued at the energy bin edges. 
+     /// This vector has the size of m_energies.size() -1
+     std::vector<std::pair<double, double> > m_fixedNpred_xis;
+
+     /// Average weights for the fixed source npreds
+     /// These are evalued at the energy bin edges. 
+     /// This vector has the size of m_energies.size() -1
+     std::vector<std::pair<double, double> > m_fixedNpred_wts;
+
+     /// Average weighted energy dispersion correction factors for the fixed source npreds
+     /// These are evalued at the energy bin edges. 
+     /// This vector has the size of m_energies.size() -1
+     std::vector<std::pair<double, double> > m_fixedNpred_xiwts;
+     
      /// Summed weights for all fixed sources.
      /// The weights are the model evaluated at the energy bin edges without the 
      /// spectrum for each pixel.  This vector has the size of m_filledPixels.size()
