@@ -103,6 +103,9 @@ namespace Likelihood {
      /// Return the name of the file with the source maps
      inline const std::string& srcMapsFile() const { return m_srcMapsFile; }
 
+     /// Return the number of cached sources
+     inline size_t n_srcs() const { return m_srcMaps.size(); }
+
 
      /* ----------------- Simple setter functions ------------------------ */
       
@@ -285,6 +288,9 @@ namespace Likelihood {
      /* Return true if we use energy dispersion for a particular source */
      bool use_edisp(const Source* src = 0) const;
 
+
+     /* --------------------- Debugging -------------------- */
+     size_t memory_size() const;
 
    protected:
      
