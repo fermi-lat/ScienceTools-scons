@@ -33,7 +33,8 @@ class Optimizer {
 public:
     
    Optimizer(Statistic & stat) : m_stat(&stat), 
-                                 m_maxEval(100*m_stat->getNumParams()) {}
+                                 m_maxEval(100*m_stat->getNumParams()), 
+				 m_numericDeriv(false) {}
 
    virtual ~Optimizer() {}
 
@@ -93,7 +94,9 @@ public:
    void setMaxEval(const int maxEval) {m_maxEval = maxEval;}
    int getMaxEval() const {return m_maxEval;}
    int getRetCode() const {return m_retCode;}
-   
+   bool getNumericDerivFlag() const { return m_numericDeriv; }
+   void setNumericDerivFlag(bool val) { m_numericDeriv = val; }
+  
    virtual std::ostream& put (std::ostream& s) const = 0;
    
    //! Pass a command string to Minuit
@@ -124,6 +127,8 @@ protected:
 private:
 
    int m_retCode;
+  
+   bool m_numericDeriv;
    
 };
 

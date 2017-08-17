@@ -86,7 +86,11 @@ namespace optimizers {
     }
 
     doCmd("SET ERR 0.5");  // Delta value = 1/2: correct for likelihood
-    doCmd("SET GRAD 1");  // Use gradient calculated by fcn
+    if ( getNumericDerivFlag() ) {
+      doCmd("SET NOGRAD"); 
+    } else {
+      doCmd("SET GRAD 1");  // Use gradient calculated by fcn
+    }
     
     double tolerance = 0.;
     if (tolType == ABSOLUTE) {
@@ -198,7 +202,7 @@ namespace optimizers {
       doCmd(levelcmd.str());
     }
     
-    if ( numericDeriv  ) {
+    if ( getNumericDerivFlag() ||  numericDeriv) {
       doCmd("SET NOGRAD"); 
     }
     std::ostringstream mcmd;
@@ -221,7 +225,7 @@ namespace optimizers {
       //Set internal error level back to 0.5=1sigma for -logLike optimizer
       doCmd("SET ERR 0.5");
     }
-    if ( numericDeriv  ) {
+    if ( getNumericDerivFlag() ||  numericDeriv) {
       //Turn the numeric derivs back off
       doCmd("SET GRAD 1"); 
     }

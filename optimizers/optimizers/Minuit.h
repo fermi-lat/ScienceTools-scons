@@ -75,7 +75,7 @@ namespace optimizers {
      virtual std::vector< std::vector<double> > covarianceMatrix() const;
 
      /// Run a MINOS error analysis
-     std::pair<double,double> Minos(unsigned int n, double level=1., bool numericDeriv=false);
+    std::pair<double,double> Minos(unsigned int n, double level=1., bool numericDeriv=false);
 
     /// Run a MNCONTOUR dynamic CONTOUR analysis
     void MnContour(unsigned int par1, unsigned int par2,
@@ -97,6 +97,7 @@ namespace optimizers {
     //! Pass a command string to Minuit
     virtual int doCmd(std::string command, bool set_npar=false);
 
+
   private:
     
     int minimize(int verbose, double tol, int tolType, bool doHesse);
@@ -105,7 +106,8 @@ namespace optimizers {
     double m_distance;
     double m_val;
 
-     unsigned int m_strategy_value;
+    unsigned int m_strategy_value;
+
 
   };
   
