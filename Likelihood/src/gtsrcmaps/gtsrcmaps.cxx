@@ -121,13 +121,15 @@ void gtsrcmaps::run() {
    // EAC, HEALPix maps might not have reference coordinates
    double ra(0.);
    double dec(0.);
+   double roi_size_cut(180.);
    if ( dataMap->projection().method() == astro::ProjBase::WCS ) {
      getRefCoord(cntsMapFile, ra, dec);
-   }
-
+     roi_size_cut = 20.;
+   }      
+     
    RoiCuts &roiCuts = const_cast<RoiCuts &>(m_helper->observation().roiCuts());
-   roiCuts.setCuts(ra, dec, 20., energies.front(), energies.back());
-
+   roiCuts.setCuts(ra, dec, roi_size_cut, energies.front(), energies.back());
+  
    std::string binnedMap = m_pars["bexpmap"];
    AppHelpers::checkExposureMap(m_pars["cmap"], m_pars["bexpmap"]);
 
@@ -199,6 +201,7 @@ void gtsrcmaps::run() {
 
    bool clobber = m_pars["clobber"];
    bool copyall = m_pars["copyall"];
+
    if (copyall) {
       st_facilities::FitsUtil::fcopy(cntsMapFile, srcMapsFile, 
                                      "", "", clobber);
