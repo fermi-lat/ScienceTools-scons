@@ -487,7 +487,8 @@ namespace Likelihood {
 	The counts spectra for the various source in the model are
 	cached.   This will update the cache if needed. 
      */
-     const std::vector<double>& modelCountsSpectrum(const std::string &srcname) const;
+     const std::vector<double>& modelCountsSpectrum(const std::string &srcname,
+						    bool weighted=false) const;
 
   
      /* Return true if any fixed source has changed. 

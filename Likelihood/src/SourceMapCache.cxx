@@ -382,10 +382,12 @@ namespace Likelihood {
   }
 
 
-  const std::vector<double>& SourceMapCache::modelCountsSpectrum(const Source& src) const {
+  const std::vector<double>& SourceMapCache::modelCountsSpectrum(const Source& src,
+								 bool weighted) const {
     SourceMap * srcMap = getSourceMap(src, false);
     // This forces updating the source map if needed
-    return srcMap->drm_cache(true)->meas_counts();
+    const Drm_Cache* drm_cache = srcMap->drm_cache(true);
+    return weighted ? drm_cache->meas_counts_wt() : drm_cache->meas_counts();
   }
 
 

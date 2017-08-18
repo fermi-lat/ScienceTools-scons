@@ -59,7 +59,7 @@ BinnedLikelihood::BinnedLikelihood(CountsMapBase & dataMap,
 	     resamp_factor,
 	     minbinsz,
 	     PsfIntegConfig::adaptive,1e-3,1e-6,
-	     true,false,true,false),
+	     true,false,true,false,false,false),
     m_drm(new Drm(m_dataCache.countsMap().refDir().ra(), m_dataCache.countsMap().refDir().dec(), 
 		  observation, m_dataCache.countsMap().energies())),
     m_srcMapCache(m_dataCache,observation,srcMapsFile,m_config,m_drm),
@@ -654,9 +654,10 @@ void BinnedLikelihood::getFreeDerivs(std::vector<double> & derivs) const {
 
 
   const std::vector<double>& 
-  BinnedLikelihood::modelCountsSpectrum(const std::string & srcName) const {
+  BinnedLikelihood::modelCountsSpectrum(const std::string & srcName,
+					bool weighted) const {
     const Source& src = source(srcName);
-    return m_srcMapCache.modelCountsSpectrum(src);
+    return m_srcMapCache.modelCountsSpectrum(src, weighted);
   }
 
 
