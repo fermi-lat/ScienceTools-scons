@@ -34,6 +34,8 @@
 #include "evtbin/OrderedBinner.h"
 #include "evtbin/HealpixBinner.h"
 
+#include "healpix/HealpixRegion.h"
+
 #include "Likelihood/CountsMapHealpix.h"
 #include "Likelihood/HistND.h"
 
@@ -237,7 +239,6 @@ void CountsMapHealpix::readKeywords(const std::string & countsMapFile) {
   m_proj_name = m_proj->projType();
   m_use_lb = m_healpixProj->isGalactic();
   latchCacheData();
-  setRefDir(0.,0.);
 }
 
 
@@ -311,9 +312,10 @@ void CountsMapHealpix::latchCacheData() {
 
   double c1(0.);
   double c2(0.);  
-  if ( m_hpx_binner->region() != 0 ) {
-    m_hpx_binner->region()->getRegionSize(m_mapRadius);
-    m_hpx_binner->region()->getRefDir(c1,c2);
+  healpix::HealpixRegion* hpx_reg = const_cast<healpix::HealpixRegion*>(m_hpx_binner->region());
+  if ( hpx_reg != 0 ) {
+    hpx_reg->getRegionSize(m_mapRadius);
+    hpx_reg->getRefDir(c1,c2);
   } else {
     m_mapRadius = 180.;
   }
