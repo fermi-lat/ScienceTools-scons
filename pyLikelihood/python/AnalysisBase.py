@@ -29,6 +29,7 @@ class AnalysisBase(object):
         self.covar_is_current = False
         self.tolType = pyLike.ABSOLUTE
         self.optObject = None
+        self.numeric_deriv = False
     def _srcDialog(self):
         paramDict = MyOrderedDict()
         paramDict['Source Model File'] = Param('file', '*.xml')
@@ -58,7 +59,7 @@ class AnalysisBase(object):
             raise RuntimeError("Invalid fit tolerance type. " +
                                "Valid values are 0=RELATIVE or 1=ABSOLUTE")
     def fit(self, verbosity=3, tol=None, optimizer=None,
-            covar=False, optObject=None):
+            covar=False, optObject=None, numericDerivs=False):
 
         '''Perform the likelihood fit.  If "tol" is set to "None" it
         reverts to the global tolerance.  If "optimizer" is set to
@@ -72,7 +73,7 @@ class AnalysisBase(object):
         if tol is None:
             tol = self.tol
         errors = self._errors(optimizer, verbosity, tol, covar=covar,
-                              optObject=optObject)
+                              optObject=optObject, numericDerivs=numericDerivs)
         return -self.logLike.value()
     def optimize(self, verbosity=3, tol=None, optimizer=None,
                  optObject=None):
@@ -103,7 +104,7 @@ class AnalysisBase(object):
             self.optObject = myOpt
         myOpt.find_min_only(verbosity, tol, self.tolType)
     def _errors(self, optimizer=None, verbosity=0, tol=None,
-                useBase=False, covar=False, optObject=None):
+                useBase=False, covar=False, optObject=None, numericDerivs=False):
         self.logLike.syncParams()
         if optimizer is None:
             optimizer = self.optimizer
@@ -115,6 +116,8 @@ class AnalysisBase(object):
         else:
             myOpt = optObject
         self.optObject = myOpt
+        if numericDerivs:
+            myOpt.setNumericDerivFlag(numericDerivs)
         myOpt.find_min(verbosity, tol, self.tolType)
         errors = myOpt.getUncertainty(useBase)
         if covar:
