@@ -280,7 +280,9 @@ void SourceMap::setSource(const Source& src) {
       if ( m_filename.size() > 0 ) {
 	readModel(m_filename);
       } else {
-	std::cout << "No model and no filename for source " << src.getName() << std::endl;
+	m_src = &src;
+	make_model();
+	return;
       }
     } else {
       return;
@@ -603,7 +605,6 @@ int SourceMap::make_model() {
     return status;
   }
 
-  
   applyPhasedExposureMap();
   computeNpredArray();
   setSpectralValues(m_dataCache->energies());
