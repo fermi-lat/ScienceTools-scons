@@ -34,6 +34,10 @@ def BinnedConfig(**kwargs):
                                    kwargs.get('psfEstimatorFtol',1e-3),
                                    kwargs.get('psfEstimatorPeakTh',1e-6),
                                    kwargs.get('verbose',True),
+                                   kwargs.get('use_edisp',False),
+                                   kwargs.get('use_single_fixed_map', True),
+                                   kwargs.get('use_linear_quadrature',False),
+                                   kwargs.get('save_all_srcmaps',False),
                                    kwargs.get('use_single_psf',False))
 
 class BinnedObs(object):
@@ -157,7 +161,7 @@ class BinnedAnalysis(AnalysisBase):
             raise ValueError("BinnedLikelihood2 is no longer supported")
 
         if config is None:
-            config = BinnedConfig(psfcorr=psfcorr)
+            config = BinnedConfig(applyPsfCorrections=psfcorr)
 
         self.logLike = pyLike.BinnedLikelihood(binnedData.countsMap,
                                                binnedData.observation,
