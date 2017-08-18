@@ -183,8 +183,8 @@ class BinnedAnalysis(AnalysisBase):
         return '\n'.join((str(self.binnedData),
                           'Source model file: ' + str(self.srcModel),
                           'Optimizer: ' + str(self.optimizer)))
-    def _srcCnts(self, srcName):
-        cnts = num.array(self.logLike.modelCountsSpectrum(srcName))
+    def _srcCnts(self, srcName, weighted=False):
+        cnts = num.array(self.logLike.modelCountsSpectrum(srcName, weighted))
         return cnts
     def state(self, output=sys.stdout):
         close = False
@@ -218,8 +218,8 @@ class BinnedAnalysis(AnalysisBase):
         self.emin = self.energies[kmin]
         self.emax = self.energies[kmax]
         self.logLike.set_klims(kmin, kmax)
-    def plot(self, oplot=0, color=None, omit=(), symbol='line'):
-        AnalysisBase.plot(self, oplot, color, omit, symbol)
+    def plot(self, oplot=0, color=None, omit=(), symbol='line', weighted=False):
+        AnalysisBase.plot(self, oplot, color, omit, symbol, weighted)
         try:
             yrange = self.spectralPlot.getRange('y')
             self.spectralPlot.overlay([self.emin, self.emin], yrange,

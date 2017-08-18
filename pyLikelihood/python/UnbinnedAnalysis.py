@@ -199,7 +199,7 @@ class UnbinnedAnalysis(AnalysisBase):
         zeros = num.zeros(len(self.e_vals))
         self.sourceFitResids[-1].overlay(self.e_vals, zeros, symbol='dotted')
         self.sourceFitResids[-1].setTitle(srcName)
-    def _srcCnts(self, srcName):
+    def _srcCnts(self, srcName, weighted=False):
         source = self.logLike.getSource(srcName)
         cnts = []
         for emin, emax in zip(self.energies[:-1], self.energies[1:]):
