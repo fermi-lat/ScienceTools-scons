@@ -5,6 +5,7 @@
     @verbatim
     EOH
 
+ optimizers-04-01-03 18-Aug-2017 echarles Add flag to force Minuit to use numerical derivatives
  optimizers-04-01-02 27-Jul-2016 echarles Modify Minuit to fall back to using numerical derivatives if MINOS fails. Also, allow users to call Minuit::doCmd directry
  optimizers-04-01-01 22-Oct-2015  cohen adding extension to no-bound or single-bound parameters (take 2)
  optimizers-04-01-00 22-Oct-2015  cohen adding extension to no-bound or single-bound parameters
