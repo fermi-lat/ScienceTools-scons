@@ -6,6 +6,7 @@
     @verbatim
     * EOH *
     
+ Likelihood-20-12-01 22-Aug-2017 echarles Turn on intropolation for weights map in gtsrcmaps
  Likelihood-20-12-00 18-Aug-2017 echarles Fixes for LK-126 and LK-127
  Likelihood-20-11-01 30-Jun-2017 echarles Fix template data file for healpix_region tests
  Likelihood-20-11-00 30-Jun-2017 mdwood Switch to new FITS format for serializing sparse healpix maps.
