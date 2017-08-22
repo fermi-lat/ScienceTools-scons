@@ -155,7 +155,7 @@ void gtsrcmaps::run() {
    std::string wmap_file = m_pars["wmap"];
    if ( wmap_file != "none" ) {
      wmap = WcsMapLibrary::instance()->wcsmap(wmap_file,std::string());
-     wmap->setInterpolation(false);
+     //wmap->setInterpolation(false);
      wmap->setExtrapolation(true);
    }
 
