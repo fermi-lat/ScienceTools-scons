@@ -4,7 +4,8 @@ $Header$
 
 
 """
-import os, pyfits, pickle
+import os, pickle
+import astropy.io.fits as pyfits
 from pylab import mlab
 import numpy as np
 

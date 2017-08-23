@@ -166,7 +166,7 @@ def test_eclipse(weights,frac=0.95,threshold=8):
 """
 # example
 import pylab as pl
-import pyfits
+import astropy.io.fits as pyfits
 f = pyfits.open('/edata/single_sources/j1124m3653/gamma_products/j1124m3653-ft1_gtselect_gtmktime_r2.fits')
 weights = f[1].data.field('WEIGHT')
 f.close()

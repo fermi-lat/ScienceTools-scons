@@ -5,7 +5,8 @@ $Header$
 
 """
 
-import glob, pyfits
+import glob
+import astropy.io.fits as pyfits
 import pandas as pd
 
 from uw.like2.pub import healpix_map

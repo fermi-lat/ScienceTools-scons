@@ -5,7 +5,7 @@ $Header$
 """
 
 import os, sys, pickle, argparse, glob
-import pyfits
+import astropy.io.fits as pyfits
 from skymaps import Band, SkyDir
 import numpy as np
 import pylab as plt

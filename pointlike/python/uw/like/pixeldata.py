@@ -6,7 +6,8 @@ Manage data and livetime information for an analysis
 
 """
 version='$Revision$'.split()[1]
-import os, math, pyfits, types, glob
+import os, math, types, glob
+import astropy.io.fits as pyfits
 import numpy as N; np = N
 import pointlike, skymaps
 

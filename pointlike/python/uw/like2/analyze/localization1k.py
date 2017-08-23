@@ -8,7 +8,7 @@ $Header$
 import numpy as np
 import pylab as plt
 import pandas as pd
-import pyfits
+import astropy.io.fits as pyfits
 
 from . import localization
 

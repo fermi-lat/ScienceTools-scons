@@ -12,7 +12,7 @@ author: M. Kerr <matthew.kerr@gmail.com>
 
 import numpy as N
 from math import sin,cos
-import pyfits as pf
+import astropy.io.fits as pf
 import uw.utilities.fitstools as fitstools
 from skymaps import Gti,Band,Healpix,SkyDir
 from os.path import join

@@ -9,7 +9,7 @@ author: M. Kerr <matthew.kerr@gmail.com>
 from uw.utilities.fitstools import get_fields
 from lcfitters import TaylorMapper
 import numpy as N
-import pyfits
+import astropy.io.fits as pyfits
 
 class MCPhase(object):
     """Support adding phase to photon events.

@@ -7,7 +7,7 @@ import numpy as np
 import pylab as py
 import skymaps as s
 import pointlike as pl
-import pyfits as pf
+import astropy.io.fits as pf
 import glob as glob
 import scipy.integrate as si
 import scipy.optimize as so

@@ -4,7 +4,8 @@
  $Header$
  author: T. Burnett <tburnett@uw.edu>
 """
-import pyfits, os, glob
+import astropy.io.fits as pyfits
+import os, glob
 import cPickle as pickle
 import numpy as np
 from skymaps import SkyDir

@@ -4,7 +4,7 @@ also, see to_xml, to generate XML for the sources
 $Header$
 """
 import os, argparse
-import pyfits
+import astropy.io.fits as pyfits
 from skymaps import SkyDir
 import numpy as np
 import pandas as pd

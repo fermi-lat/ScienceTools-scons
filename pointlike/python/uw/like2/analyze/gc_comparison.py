@@ -4,7 +4,8 @@ $Header$
 
 """
 
-import os, pyfits
+import os
+import astropy.io.fits as pyfits
 import numpy as np
 import pylab as plt
 import pandas as pd

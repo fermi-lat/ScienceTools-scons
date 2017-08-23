@@ -5,7 +5,7 @@ $Header$
 import os,glob,pickle, types, copy, zipfile
 import pylab as plt
 import numpy as np
-import pyfits
+import astropy.io.fits as pyfits
 from skymaps import Band, SkyDir, Hep3Vector, PySkyFunction, SkyImage, Healpix
 import skymaps
 from pointlike import IntVector
@@ -610,7 +610,7 @@ class Rings(object):
     """ analyze the rings in a fits file with layers """
     
     def __init__(self, nside=256,filename=r'D:\fermi\diffuse\hi\rbands_hi11_qdeg_Ts125.fits.gz'):
-        import pyfits
+        import astropy.io.fits as pyfits
         self.filename = filename
         self.cube = HPfitscube('rings', filename, nside=nside)
         print 'loaded %s, with %d layers' % (filename, self.cube.layers())

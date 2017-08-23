@@ -745,7 +745,8 @@ def summary_table(srcid_path=None):
     """
     Return a summary table of the catalogs as a list of dictionaries
     """
-    import glob, pyfits
+    import glob
+    import astropy.io.fits as pyfits
     # load the catalogs used
     #if srcid_path is None:
     #    srcid_path = os.path.expandvars('$FERMI/catalog/srcid/')

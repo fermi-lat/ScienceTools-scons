@@ -18,7 +18,7 @@ from toagen import UnbinnedTOAGenerator,BinnedTOAGenerator,EDFTOAGenerator
 from optparse import OptionParser
 from lcfitters import LCTemplate
 import numpy as np
-import pyfits
+import astropy.io.fits as pyfits
 
 try:
     import psr_utils

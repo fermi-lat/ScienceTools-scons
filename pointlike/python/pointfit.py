@@ -98,7 +98,8 @@ def photonmap(filename, eventtype=-1, pixeloutput=False, tstart=0, tstop=0, igno
         data = Data(filename, eventtype, tstart, tstop)
     elif filename[-5:]=='.fits' or filename[-4:]=='.fit' :
         # a fits file: either data to read, or a photonmap
-        import pyfits, glob
+        import astropy.io.fits as pyfits
+        import glob
         files = glob.glob(filename)
         if len(files)==0:
             raise Exception('no such file(s): %s' %filename)

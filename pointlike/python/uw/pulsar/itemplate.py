@@ -10,7 +10,7 @@ Authors: Paul S. Ray <paul.ray@nrl.navy.mil>
 import numpy as np
 import pylab as pl
 import os
-import pyfits
+import astropy.io.fits as pyfits
 from lcprimitives import LCGaussian,LCKernelDensity,LCEmpiricalFourier
 from lcfitters import LCFitter
 from lctemplate import LCTemplate

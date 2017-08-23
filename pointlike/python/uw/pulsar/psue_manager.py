@@ -14,7 +14,8 @@ from sys import exit
 import cPickle, glob
 from shutil import copy, copyfile, move
 import time, random
-import numpy as np, pyfits
+import numpy as np
+import astropy.io.fits as pyfits
 from GtApp import GtApp
 
 import matplotlib

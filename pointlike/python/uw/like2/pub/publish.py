@@ -8,7 +8,7 @@ import sys, os, pickle, glob, types, time
 # symptom: accessinit-hash-collision-3-both-1-and-1
 import PIL.Image
 sys.modules['Image']=PIL.Image
-import pyfits
+import astropy.io.fits as pyfits
 import numpy as np
 import pylab as plt
 import pandas as pd

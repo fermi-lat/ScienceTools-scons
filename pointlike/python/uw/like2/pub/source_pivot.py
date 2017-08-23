@@ -5,7 +5,7 @@ $Header$
 """
 
 import os, pickle
-import pyfits
+import astropy.io.fits as pyfits
 import numpy as np
 from . import roi_pivot, pivot
 from skymaps import SkyDir, Band 
