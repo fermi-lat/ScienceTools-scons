@@ -18,7 +18,7 @@ from GtApp import GtApp
 
 import astropy.io.fits as pyfits
 import numpy as np
-import pywcs
+import astropy.wcs as pywcs
 
 from skymaps import IsotropicSpectrum,IsotropicPowerLaw,DiffuseFunction,\
         PySkyFunction,Hep3Vector,SkyImage,SkyDir,PythonUtilities,IsotropicConstant
@@ -546,7 +546,7 @@ class MCModelBuilder(object):
         """ Create an allsky pyfits file with 1s in it.  """
 
         assert 180 % pixelsize == 0
-        import pywcs
+        import astropy.wcs as pywcs
 
         wcs = pywcs.WCS(naxis=2)
 
