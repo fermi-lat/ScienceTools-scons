@@ -1,8 +1,0 @@
-infile,f,a,"",,,"Input FITS file"
-table,s,a,"EVENTS",,,"Extension name"
-suppress_gtis,b,h,yes,,,"Suppress printing of individual GTIs"
-
-chatter,i,h,2,0,4,Output verbosity
-debug,          b, h, no, , , "Activate debugging mode"
-gui,            b, h, no, , , "GUI mode activated"
-mode,           s, h, "ql", , , "Mode of automatic parameters"

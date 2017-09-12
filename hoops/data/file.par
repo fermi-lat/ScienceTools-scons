@@ -1,2 +1,0 @@
-string_par,s,ql,"a valid string",,,"Enter a valid string"
-double_par,r,ql,5,-1.,10.,"Enter a number in the range"

@@ -1,1 +1,0 @@
-from aplpy import *

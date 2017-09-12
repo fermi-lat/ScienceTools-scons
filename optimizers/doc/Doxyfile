@@ -1,5 +1,0 @@
-PROJECT_NAME           = "optimizers"
-PROJECT_NUMBER         = "v1r1"
-FILE_PATTERNS          = *.h *.cxx *.c
-STRIP_CODE_COMMENTS    = NO
-#QUIET                  = YES

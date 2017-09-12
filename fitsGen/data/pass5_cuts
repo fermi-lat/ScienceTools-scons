@@ -1,8 +1,0 @@
-#
-# Pass 5 cuts for most inclusive class, P5_v0_transient
-#
-# See http://confluence.slac.stanford.edu/display/DC2/Trigger+and+Filter+settings+and+Event+classes
-#
-# $Header$
-#
-((GltWord&10)>0) && ((GltWord&7)!=3) && (ObfGamStatus>0) && (CTBClassLevel>0) && (CTBBestEnergyProb>0.1) && (CTBCORE>0.1) && (CTBBestEnergy>10) && (CTBBestEnergyRatio<5)
